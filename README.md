@@ -1,2 +1,2 @@
 # PyTiRiFiC
-a Python wrapper around Tilted Ring Fitting Code (TiRiFiC) 
+a Python MCMC Fitting Algorithm around TiRiFiC 
