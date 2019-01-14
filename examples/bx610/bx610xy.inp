@@ -1,4 +1,16 @@
 ################################################################################
+@changelog
+################################################################################
+
+this part will not be read
+
+################################################################################
+@comments
+################################################################################
+
+this part will not be read
+
+################################################################################
 @co76                                   # object id (per feature per component)
 ################################################################################
 
@@ -58,10 +70,10 @@ inc             'inc@co76'              # [degree] inclination
 #   emissivity/kinematics
 restfreq        809.34197               # GHz
 vsys            'vsys@co76'             # [km/s] [optical convetion]
-radi            radi@co76
-vrot            vrot@co76
+radi            'radi@co76'
+vrot            'vrot@co76'
 esbr            [6.10,0.1]              # exp profile
-vdis            vdis@co76
+vdis            'vdis@co76'
 
 #   modeling algorithm
 method          'kinmspy'               # underline algorithm
@@ -96,19 +108,7 @@ inc             'inc@co76'              # [degree] inclination
 #   in the rest frame.
 restfreq        800.0                   # GHz
 esbr            [6.10,0.1]              # exp profile
-vdis            vdis@co76
+vdis            'vdis@co76'
 
 #   modeling algorithm
 method          'default'               # underline algorithm
-
-################################################################################
-@changelog
-################################################################################
-
-this part will not be read
-
-################################################################################
-@comments
-################################################################################
-
-this part will not be read
