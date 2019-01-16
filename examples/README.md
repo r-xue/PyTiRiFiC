@@ -2,7 +2,7 @@ Special syntax in parameter input files:
 
 **"@"**:
 
-+ tag the parameter set associated with a specific object
++ tag the parameter set associated with a specific object; in short, "A@B" = A of B
 + tie different parameters across different.
 A simple math function could be implemented in future, e.g.,
 *px = 2.0\*(py@objz)*; *px = sqrt(\*(py@objz))*

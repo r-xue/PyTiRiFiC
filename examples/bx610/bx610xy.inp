@@ -18,7 +18,7 @@ name            'bx610-co76'            # something meaningful to you
 note            'CO76 of BX610 in SPW27'
 
 #   data description
-image           'bx610_spw27.fits'      # data cube
+image           'examples/bx610/bx610_spw27.fits'      # data cube
 mask            None                    # mask cube (value=1 for chi^2)
 psf             None                    # psf file (otherwise using header info)
 samp            None                    # sampling index table
@@ -38,7 +38,7 @@ restfreq        806.65181               # GHz
 vsys            0.0                     # [km/s] [optical convention]
 radi            [0,0.15,0.30,0.45]
 vrot            [0,100,100,100]
-esbr            [6.10,0.1]              # exp profile
+sbexp            [6.10,0.1]              # exp profile
 vdis            [20,20,20,20]
 
 #   modeling algorithm
@@ -52,7 +52,7 @@ name            'bx610-ci21'            # something meaningful to you
 note            'CI21 of BX610 in SPW27'
 
 #   data description
-image           'bx610_spw27.fits'      # data cube
+image           'examples/bx610/bx610_spw27.fits'      # data cube
 mask            None                    # mask cube (value=1 for chi^2)
 psf             None                    # psf file (otherwise using header info)
 samp            None                    # sampling index table
@@ -72,11 +72,12 @@ restfreq        809.34197               # GHz
 vsys            'vsys@co76'             # [km/s] [optical convetion]
 radi            'radi@co76'
 vrot            'vrot@co76'
-esbr            [6.10,0.1]              # exp profile
+sbexp            [6.10,0.1]              # exp profile
 vdis            'vdis@co76'
 
 #   modeling algorithm
 method          'kinmspy'               # underline algorithm
+
 
 ################################################################################
 @cont                                   # object id (per feature per component)
@@ -112,3 +113,13 @@ vdis            'vdis@co76'
 
 #   modeling algorithm
 method          'default'               # underline algorithm
+
+
+################################################################################
+@optimize								# optimization setup
+#	key/min/max, etc.
+################################################################################
+
+xypos@co76		xypos@co76-1./3600.		xypos@co76+1./3600.
+vsys@co76		vsys@co76-100.			vsys@co76+100.
+vrot@co76		vrot@co76-100.			vrot@co76+100.
