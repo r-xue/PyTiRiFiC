@@ -2,6 +2,7 @@ from __future__ import print_function
 from KinMS import KinMS
 import numpy as np
 from astropy.io import fits
+from astropy.wcs import WCS
 import scipy.constants as const
 import time
 
@@ -15,7 +16,11 @@ def gmake_kinmspy_api(objs,
     """
     
     models={}
+    
     for tag in objs.keys():
+        
+        if  tag=='optimize' or tag=='cont':
+            continue
         
         if  verbose==True:
             print("+"*40)
@@ -23,36 +28,36 @@ def gmake_kinmspy_api(objs,
             print("-"*40)
         
         obj=objs[tag]
-        im,hd=fits.getdata(obj['image'],header=True)
+        data,hd=fits.getdata(obj['image'],header=True)
+        error,ehd=fits.getdata(obj['error'],header=True)
+        mask,mhd=fits.getdata(obj['mask'],header=True)
         if  verbose==True:
             print(hd['NAXIS1'],hd['NAXIS2'],hd['NAXIS3'])
+        
         psize=np.sqrt(np.abs(hd['CDELT1']*hd['CDELT2']))*3600.0         #   arcsec
+        
         cdelt3=hd['CDELT3']     # hz or m/s
         crval3=hd['CRVAL3']     # hz or m/s
         crpix3=hd['CRPIX3']     # pix
         
-        rfreq=obj['restfreq']/(1.0+obj['z'])                            #   GHz
-        
-        
         #   vector description of the z-axis: 
         #       vdelt3/vrval3/crpix3
-        
+        rfreq=obj['restfreq']/(1.0+obj['z'])                            #   GHz
         if  'Hz' in hd['CUNIT3']:   # by freq
-            vdelt3=const.c*cdelt3/(1.0e9*rfreq)  #   m/s
-            vdelt3=vdelt3/1000.0                                        #   km/s
-            vrval3=const.c*((1.0e9*rfreq)-crval3)/(1.0e9*rfreq)
+            vdelt3=-const.c*cdelt3/(1.0e9*rfreq)/1000.                  #   km/s
+            vrval3=const.c*((1.0e9*rfreq)-crval3)/(1.0e9*rfreq)/1000.0  #   km/s
         else:                       # by velo
             vdelt3=cdelt3/1000.0
-            vrval3=crval3
+            vrval3=crval3/1000.0
         
         if  verbose==True:
-            print(psize,vdelt3,vrval3)
+            print(psize,vdelt3,vrval3,crpix3)
         
         xs=psize*hd['NAXIS1']
         ys=psize*hd['NAXIS2']
-        vs=vsize*hd['NAXIS3']
-        cellsize=psize
-        dv=vdelt3
+        vs=abs(vdelt3)*hd['NAXIS3']
+        cell=psize
+        dv=abs(vdelt3)
         
         beamsize=[0.2,0.2,0.]
         if  'BMAJ' in hd.keys():
@@ -89,12 +94,42 @@ def gmake_kinmspy_api(objs,
         fsys=(1.0-vsys/(const.c/1000.0))*rfreq # line systematic frequency in the observer frame
         
         
-        #   ra    ----      xi_data     ----    (xSize-1.)/2.+phasecen[0]/cellsize
-        #   dec   ----      yi_data     ----    (ySize-1.)/2.+phasecen[1]/cellsize
+        #   ra    ----      xi_data     ----    (xSize-1.)/2.+phasecen[0]/cell
+        #   dec   ----      yi_data     ----    (ySize-1.)/2.+phasecen[1]/cell
         #   vsys  ----      vi_data     ----    (vSize-1.)/2.+voffset/dv
+       
+        #
+        # collect the world coordinates of the disk center (ra,dec,freq/wave)
+        # note: vsys is defined in the radio(freq)/optical(wave) convention, 
+        #       within the rest frame set at obj['z']/
+        #       the convention doesn't really matter, as long as vsys << c
+        #
+        w=WCS(hd)
+        wx=xypos[0]
+        wy=xypos[1]
+        ws=1    # stokes
+        wo=0    # 0-based or 1-based index
+        if  'Hz' in hd['CUNIT3']:
+            wz=obj['restfreq']*1e9/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
+            dv=-const.c*cdelt3/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
+        if  'Angstrom' in hd['CUNIT3']:
+            wz=obj['restwave']*(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
+            dv=const.c*cdelt3/(obj['restwave']*(1.0+obj['z']))/1000.
+        if  'm/s' in hd['CUNIT3']:
+            wz=obj['vsys']/1000.
+            dv=cdelt3/1000.        
+
+        px,py,pz,ps=w.wcs_world2pix(wx,wy,wz,ws,wo)
         
+        px_int=round(px)
+        py_int=round(py)
+        pz_int=round(pz)
+        phasecen=np.array([px-px_int,py-py_int])*cell
+        voffset=(pz-pz_int)*dv
         
-        
+        #print(phasecen,voffset)
+        #print('<-->',tag,px_int,py_int,pz_int,ps)
+        #print('hz:',int(xs/cell*0.5))
         phasecen=[0.,0.]
         
         tic=time.time()
@@ -103,35 +138,114 @@ def gmake_kinmspy_api(objs,
         ys=np.max(sbrad)*2.0*2.0
         vs=np.max(velprof)*1.5*2.0
         
-        
-        
-        
-        model=KinMS(xs,ys,vs,
-                   cellSize=cellsize,dv=dv,
+        px_o=px_int-int(xs/cell*0.5)
+        py_o=py_int-int(ys/cell*0.5)
+        pz_o=pz_int-int(vs/abs(dv)*0.5)
+
+        cube=KinMS(xs,ys,vs,
+                   cellSize=cell,dv=abs(dv),
                    beamSize=beamsize,cleanOut=False,
                    inc=inc,gasSigma=gassigma,sbProf=sbprof,
                    sbRad=sbrad,velRad=velrad,velProf=velprof,
                    #nSamps=nsamps,
                    ra=xypos[0],dec=xypos[1],
-                   restFreq=restfreq,vSys=vsys,phaseCen=phasecen,
-                   fileName=outname+'_'+tag,
+                   restFreq=restfreq,vSys=vsys,phaseCen=phasecen,vOffset=voffset,
+                   #fileName=outname+'_'+tag,
                    posAng=posang,
                    intFlux=intflux)
-        print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
+        #print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
+        if  dv<0:
+            cube=np.flip(cube,axis=2)
         
-        models[tag+'@'+obj['image']]=model
-        
+        model=data.T*0.0
+        #print('shape:',model.shape)
+        #print('shape:',cube.shape)
+        #print('-->',px_int,py_int,pz_int)
+        #print('-->',[px_o,py_o,pz_o])
+        model=gmake_insertmodel(model,cube,offset=[px_o,py_o,pz_o])
+        #fits.writeto(tag+'.fits',model.T,overwrite=True)
+        models[tag+'@'+obj['image']]=model.T
+        if  'model@'+obj['image'] in models.keys():
+            models['model@'+obj['image']]+=model.T
+        else:
+            models['model@'+obj['image']]=model.T.copy()
+            models['header@'+obj['image']]=hd
+            models['data@'+obj['image']]=data
+            models['error@'+obj['image']]=error     
+            models['mask@'+obj['image']]=mask
+            
     return models
+
+def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct):
+    """
+    the likelihood function
+    """
+    
+    blobs={'lnprob':0.0,'chisq':0.0,'ndata':0.0,'npar':len(theta)}
+     
+    inp_dct0=deepcopy(inp_dct)
+    for ind in range(len(fit_dct['p_name'])):
+        #print("")
+        #print('modify par: ',fit_dct['p_name'][ind],theta[ind])
+        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
+        gmake_writepar(inp_dct0,fit_dct['p_name'][ind],theta[ind])
+        #print(">>>")
+        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
+        #print("")
+    #gmake_listpars(inp_dct0)
+    mod_dct=gmake_fillpars(inp_dct0)
+    models=gmake_kinmspy_api(mod_dct,outname='testsample',verbose=False)
+    #gmake_listpars(mod_dct)
+        
+    for key in models.keys(): 
+        
+        if  'data@' not in key:
+            continue
+        
+        im=models[key.replace('data@','error@')]
+        mo=models[key.replace('data@','model@')]
+        em=models[key.replace('data@','error@')]
+        mk=models[key.replace('data@','mask@')]
+        #mm=models[key,replace('')]
+        sigma2=em**2
+        imtmp=im-mo
+        lnl1=np.sum( (imtmp)**2/sigma2*mk )
+        lnl2=np.sum( np.log(sigma2*2.0*np.pi)*mk )
+        lnl=-0.5*(lnl1+lnl2)
+        blobs['lnprob']+=lnl
+        blobs['chisq']+=lnl1
+        blobs['ndata']+=np.sum(mk)
+
+    lnl=blobs['lnprob']
+    
+    return lnl,blobs
+
+
+def gmake_kinmspy_lnprior(theta,fit_dct):
+    """
+    pass through the likelihood prior function (limiting the parameter space)
+    """
+    p_lo=fit_dct['p_lo']
+    p_up=fit_dct['p_up']
+    for index in range(len(theta)):
+        if  theta[index]<p_lo[index] or theta[index]>p_up[index]:
+            return -np.inf
+    return 0.0
+
+    
+def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,verbose=False):
+    """
+    this is the evaluating function for emcee 
+    """
+    lp = gmake_kinmspy_lnprior(theta,fit_dct)
+    if  not np.isfinite(lp):
+        blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+        return -np.inf,blobs
+    if  verbose==True:
+        print("try ->",theta)
+    lnl,blobs=gmake_kinmspy_lnlike(theta,fit_dct,inp_dct)
+    return lp+lnl,blobs    
     
 if  __name__=="__main__":
 
-    objs=gmake_readpars('examples/bx610/bx610xy.inp',verbose=False)
-    #gmake_listpars(objs)
-    objs=gmake_fillpars(objs)
-    gmake_listpars(objs)
-    
-    #tic=time.time()
-    models=gmake_kinmspy_api(objs,outname='testexample')
-    #print(models.keys())
-    #print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
-          
+    pass
