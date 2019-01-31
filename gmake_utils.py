@@ -45,13 +45,13 @@ def sort_on_runtime(p):
 def gmake_readinp(parfile,verbose=False):
     """
     read parameters/setups from a .inp file into a dictionary nest:
-        objs[id][keywords]=values.
-        objs['comments']='??'
-        objs['changlog']='??'
-        objs['optimize']='??'
+        inp_dct[id][keywords]=values.
+        inp_dct['comments']='??'
+        inp_dct['changlog']='??'
+        inp_dct['optimize']='??'
     """
     
-    objs={}
+    inp_dct={}
     with open(parfile,'r') as f:
         lines=f.readlines()
     lines= filter(None, (line.split('#')[0].strip() for line in lines))
@@ -71,13 +71,13 @@ def gmake_readinp(parfile,verbose=False):
             if    'comments' in tag or 'changelog' in tag:
                 pass
                 #pars['content']+=line+"\n"
-                #objs[tag]=pars
+                #inp_dct[tag]=pars
             elif  'optimize' in tag:
                 #pars['content']+=line+"\n"
                 key=line.split()[0]
                 value=line.replace(key,'',1).split()
                 pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
-                objs[tag]=pars
+                inp_dct[tag]=pars
                 if  verbose==True:
                     print(key," : ",value)
             else:
@@ -86,11 +86,11 @@ def gmake_readinp(parfile,verbose=False):
                 value=line.replace(key,'',1).strip()
                 value=eval(value)
                 pars[key]=value
-                objs[tag]=pars
+                inp_dct[tag]=pars
                 if  verbose==True:
                     print(key," : ",value)
         
-    return objs
+    return inp_dct
 
 def gmake_listpars(objs,showcontent=True):
     """
@@ -107,7 +107,7 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def gmake_fillpars(objs):
+def gmake_inp2mod(objs):
     """
     get ready for model constructions:
         add the default values
@@ -307,7 +307,84 @@ def gmake_pformat(fit_dct):
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
+
+def gmake_read_data(inp_dct,verbose=False,
+                    fill_mask=False,fill_error=False):
+    """
+    read data into the dictionary
+    """
+    dat_dct={}
     
+    for tag in inp_dct.keys():
+        if  tag=='optimize':
+            continue
+        obj=inp_dct[tag]
+        
+        im_list=obj['image'].split(",")
+        if  'mask' in obj:
+            mk_list=obj['mask'].split(",")
+        if  'error' in obj:
+            em_list=obj['error'].split(",")
+        
+        for ind in range(len(im_list)):
+            if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
+                data,hd=fits.getdata(im_list[ind],header=True)
+                dat_dct['data@'+im_list[ind]]=data
+                dat_dct['header@'+im_list[ind]]=hd
+                if  verbose==True:
+                    print('loading: '+im_list[ind]+' to ')
+                    print('data@'+im_list[ind],'header@'+im_list[ind])
+            if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
+                data=fits.getdata(em_list[ind])
+                dat_dct['error@'+im_list[ind]]=data
+                if  verbose==True:
+                    print('loading: '+em_list[ind]+' to ')
+                    print('error@'+im_list[ind])
+            if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
+                data=fits.getdata(mk_list[ind])                
+                dat_dct['mask@'+im_list[ind]]=data
+                if  verbose==True:
+                    print('loading: '+mk_list[ind]+' to ')
+                    print('mask@'+im_list[ind])
+    
+    if  fill_mask==True or fill_error==True:
+
+        for tag in dat_dct.keys():
+            if  'data@' in tag:
+                if  (tag.replace('data@','mask@') not in dat_dct) and fill_mask==True:
+                    data=dat_dct[tag]
+                    dat_dct[tag.replace('data@','mask@')]=data*0.0+1.
+                    if  verbose==True:
+                        print('fill '+tag.replace('data@','mask@'),1.0)
+                if  (tag.replace('data@','error@') not in dat_dct) and fill_error==True:
+                    data=dat_dct[tag]
+                    dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
+                    if  verbose==True:
+                        print('fill '+tag.replace('data@','error@'),np.std(data))                
+            
+    
+    return dat_dct
+    
+def gmake_dct2fits(dct,outname='dct2fits',save_npy=False):
+    """
+        save a non-nested dictionary into a FITS binary table
+        note:  not every Python object can be dumped into a FITS column, 
+               e.g. a dictionary type can be aded into a column of a astropy/Table, but
+               the Table can'be saved into FITS.
+        example:
+            gmake_dct2fits(dat_dct,save_npy=True)
+    """
+    print(outname)
+    t=Table()
+    
+    for key in dct:
+        #   the value is wrapped into a one-element list
+        #   so the saved FITS table will "technically" have one row.
+        t.add_column(Column(name=key,data=[dct[key]]))
+    t.write(outname+'.fits',overwrite=True)    
+    if  save_npy==True:
+        np.save(outname+'.npy',dct)
+
 if  __name__=="__main__":
     
     pass

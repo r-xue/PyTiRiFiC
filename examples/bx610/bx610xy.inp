@@ -92,10 +92,10 @@ name            'bx610-cont'            # something meaningful to you
 note            'mm/submm cont of BX610 in SPW25/27/29/31'
 
 #   data description
-image           ['bx610_spw25.fits','bx610_spw27.fits','bx610_spw29.fits','bx610_spw31.fits']
+image           'examples/bx610/bx610_spw25.fits,examples/bx610/bx610_spw27.fits,examples/bx610/bx610_spw29.fits,examples/bx610/bx610_spw31.fits'
     # data cubes or images
     # the continuum model will be mapped into each dataset
-mask            None                    # mask cube (value=1 for chi^2)
+#mask            None                    # mask cube (value=1 for chi^2)
 psf             None                    # psf file (otherwise using header info)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj

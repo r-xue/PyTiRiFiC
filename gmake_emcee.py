@@ -44,10 +44,8 @@ from scipy._lib._numpy_compat import suppress_warnings
 np.warnings.filterwarnings('ignore')
 
 
-
-def gmake_emcee_setup(inp_dct):
+def gmake_emcee_setup(inp_dct,dat_dct):
     
-    #print(inp_dct['optimize'])
     opt_dct=inp_dct['optimize']
     
     fit_dct={}
@@ -55,8 +53,7 @@ def gmake_emcee_setup(inp_dct):
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
-    fit_dct['p_iscale']=[]   
-    #fit_dct['p_scale']=[]
+    fit_dct['p_iscale']=[]
     
     for p_name in opt_dct.keys():
         
@@ -107,15 +104,15 @@ def gmake_emcee_setup(inp_dct):
     np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
 
     sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],gmake_kinmspy_lnprob,
-                                args=(fit_dct,inp_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
+                                args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
     tic0=time.time()
-    lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_start'],fit_dct,inp_dct)
+    lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct)
+    print('Took {0} second for one trial'.format(float(time.time()-tic0))) 
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])
-    print('Took {0} second for one trial'.format(float(time.time()-tic0)))    
-    
+       
     return fit_dct,sampler
     
 def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
@@ -449,13 +446,17 @@ if  __name__=="__main__":
     execfile('gmake_kinmspy.py')
     execfile('gmake_utils.py')
     
-    #inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
-    #fit_dct,sampler=gmake_emcee_setup(inp_dct)
-    #gmake_emcee_iterate(sampler,fit_dct,nstep=20)
+    #   build a dict holding input config
+    inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
+    #   build a dict holding data
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    #   build the sampler and a dict holding sampler metadata
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    #gmake_emcee_iterate(sampler,fit_dct,nstep=10)
     
     
-    fit_dct=gmake_emcee_analyze('test_emcee/',plotsub=None,burnin=10,plotcorner=True,
-                                verbose=True)
+    #fit_dct=gmake_emcee_analyze('test_emcee/',plotsub=None,burnin=10,plotcorner=True,
+    #                            verbose=True)
 
     #op_dct=inp_dct['optimize']
     #print(inp_dct['optimize'])

@@ -6,8 +6,8 @@ from astropy.wcs import WCS
 import scipy.constants as const
 import time
 
-def gmake_kinmspy_api(objs,
-                      outname=False,
+def gmake_kinmspy_api(mod_dct,dat_dct={},
+                      outname='',
                       verbose=False):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
@@ -17,7 +17,7 @@ def gmake_kinmspy_api(objs,
     
     models={}
     
-    for tag in objs.keys():
+    for tag in mod_dct.keys():
         
         if  tag=='optimize' or tag=='cont':
             continue
@@ -27,10 +27,26 @@ def gmake_kinmspy_api(objs,
             print('@',tag)
             print("-"*40)
         
-        obj=objs[tag]
-        data,hd=fits.getdata(obj['image'],header=True)
-        error,ehd=fits.getdata(obj['error'],header=True)
-        mask,mhd=fits.getdata(obj['mask'],header=True)
+        obj=mod_dct[tag]
+        
+        tic=time.time()
+        
+        if  'data@'+obj['image'] not in dat_dct:
+            data,hd=fits.getdata(obj['image'],header=True)
+        else:
+            data=dat_dct['data@'+obj['image']]
+            hd=dat_dct['header@'+obj['image']]
+        if  'error@'+obj['image'] not in dat_dct:
+            error=fits.getdata(obj['error'])
+        else:
+            error=dat_dct['error@'+obj['image']]
+        if  'mask@'+obj['image'] not in dat_dct:
+            mask=fits.getdata(obj['mask'])
+        else:
+            mask=dat_dct['mask@'+obj['image']]                                   
+        
+        print('Took {0} seconds to read FITS'.format(float(time.time()-tic)/float(1)))
+        
         if  verbose==True:
             print(hd['NAXIS1'],hd['NAXIS2'],hd['NAXIS3'])
         
@@ -132,7 +148,7 @@ def gmake_kinmspy_api(objs,
         #print('hz:',int(xs/cell*0.5))
         phasecen=[0.,0.]
         
-        tic=time.time()
+        
         
         xs=np.max(sbrad)*2.0*2.0
         ys=np.max(sbrad)*2.0*2.0
@@ -142,6 +158,7 @@ def gmake_kinmspy_api(objs,
         py_o=py_int-int(ys/cell*0.5)
         pz_o=pz_int-int(vs/abs(dv)*0.5)
 
+        tic=time.time()
         cube=KinMS(xs,ys,vs,
                    cellSize=cell,dv=abs(dv),
                    beamSize=beamsize,cleanOut=False,
@@ -153,7 +170,8 @@ def gmake_kinmspy_api(objs,
                    #fileName=outname+'_'+tag,
                    posAng=posang,
                    intFlux=intflux)
-        #print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
+        print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
+        
         if  dv<0:
             cube=np.flip(cube,axis=2)
         
@@ -176,7 +194,7 @@ def gmake_kinmspy_api(objs,
             
     return models
 
-def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct):
+def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
     """
     the likelihood function
     """
@@ -193,8 +211,11 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct):
         #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
         #print("")
     #gmake_listpars(inp_dct0)
-    mod_dct=gmake_fillpars(inp_dct0)
-    models=gmake_kinmspy_api(mod_dct,outname='testsample',verbose=False)
+    mod_dct=gmake_inp2mod(inp_dct0)
+    
+    tic0=time.time()
+    models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct,verbose=False)
+    print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
         
     for key in models.keys(): 
@@ -233,7 +254,7 @@ def gmake_kinmspy_lnprior(theta,fit_dct):
     return 0.0
 
     
-def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,verbose=False):
+def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,verbose=False):
     """
     this is the evaluating function for emcee 
     """
@@ -243,7 +264,7 @@ def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,verbose=False):
         return -np.inf,blobs
     if  verbose==True:
         print("try ->",theta)
-    lnl,blobs=gmake_kinmspy_lnlike(theta,fit_dct,inp_dct)
+    lnl,blobs=gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct)
     return lp+lnl,blobs    
     
 if  __name__=="__main__":
