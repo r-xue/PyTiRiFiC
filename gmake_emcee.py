@@ -72,7 +72,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     fit_dct['ndim']=len(fit_dct['p_start'])
     fit_dct['nthreads']=multiprocessing.cpu_count()
     fit_dct['nwalkers']=40
-    fit_dct['outfolder']='test_emcee'
+    fit_dct['outfolder']='bx610xy_emcee'
     
     print('nwalkers:',fit_dct['nwalkers'])
     print('nthreads:',fit_dct['nthreads'])
@@ -452,7 +452,7 @@ if  __name__=="__main__":
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     #   build the sampler and a dict holding sampler metadata
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    #gmake_emcee_iterate(sampler,fit_dct,nstep=10)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=1000)
     
     
     #fit_dct=gmake_emcee_analyze('test_emcee/',plotsub=None,burnin=10,plotcorner=True,

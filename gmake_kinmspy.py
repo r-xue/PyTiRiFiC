@@ -8,6 +8,7 @@ import time
 
 def gmake_kinmspy_api(mod_dct,dat_dct={},
                       outname='',
+                      decomp=False,
                       verbose=False):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
@@ -29,8 +30,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         
         obj=mod_dct[tag]
         
-        tic=time.time()
-        
+        #tic=time.time()
         if  'data@'+obj['image'] not in dat_dct:
             data,hd=fits.getdata(obj['image'],header=True)
         else:
@@ -44,8 +44,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
             mask=fits.getdata(obj['mask'])
         else:
             mask=dat_dct['mask@'+obj['image']]                                   
-        
-        print('Took {0} seconds to read FITS'.format(float(time.time()-tic)/float(1)))
+        #print('Took {0} seconds to read FITS'.format(float(time.time()-tic)/float(1)))
         
         if  verbose==True:
             print(hd['NAXIS1'],hd['NAXIS2'],hd['NAXIS3'])
@@ -158,7 +157,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         py_o=py_int-int(ys/cell*0.5)
         pz_o=pz_int-int(vs/abs(dv)*0.5)
 
-        tic=time.time()
+        #tic=time.time()
         cube=KinMS(xs,ys,vs,
                    cellSize=cell,dv=abs(dv),
                    beamSize=beamsize,cleanOut=False,
@@ -170,7 +169,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
                    #fileName=outname+'_'+tag,
                    posAng=posang,
                    intFlux=intflux)
-        print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
+        #print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
         
         if  dv<0:
             cube=np.flip(cube,axis=2)
@@ -182,7 +181,9 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         #print('-->',[px_o,py_o,pz_o])
         model=gmake_insertmodel(model,cube,offset=[px_o,py_o,pz_o])
         #fits.writeto(tag+'.fits',model.T,overwrite=True)
-        models[tag+'@'+obj['image']]=model.T
+        if  decomp==True:
+            models[tag+'@'+obj['image']]=model.T
+        
         if  'model@'+obj['image'] in models.keys():
             models['model@'+obj['image']]+=model.T
         else:
@@ -211,13 +212,16 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
         #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
         #print("")
     #gmake_listpars(inp_dct0)
+    #tic0=time.time()
     mod_dct=gmake_inp2mod(inp_dct0)
+    #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
-    tic0=time.time()
+    #tic0=time.time()
     models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct,verbose=False)
-    print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
+    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
-        
+     
+    
     for key in models.keys(): 
         
         if  'data@' not in key:
@@ -229,15 +233,21 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
         mk=models[key.replace('data@','mask@')]
         #mm=models[key,replace('')]
         sigma2=em**2
-        imtmp=im-mo
-        lnl1=np.sum( (imtmp)**2/sigma2*mk )
-        lnl2=np.sum( np.log(sigma2*2.0*np.pi)*mk )
+        
+        #tic0=time.time()
+        #lnl1=np.sum( (im-mo)**2/sigma2*mk )
+        #lnl2=np.sum( (np.log(sigma2)+np.log(2.0*np.pi))*mk )
+        lnl1=np.sum( ((im-mo)**2/sigma2)[mk==1] )
+        lnl2=np.sum( (np.log(sigma2)+np.log(2.0*np.pi))[mk==1] )
         lnl=-0.5*(lnl1+lnl2)
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
         blobs['ndata']+=np.sum(mk)
-
+        #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
+        
     lnl=blobs['lnprob']
+    
+    
     
     return lnl,blobs
 
