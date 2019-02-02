@@ -9,7 +9,7 @@ import time
 def gmake_kinmspy_api(mod_dct,dat_dct={},
                       outname='',
                       decomp=False,
-                      verbose=True):
+                      verbose=False):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
     a dictionary nest
@@ -32,20 +32,20 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         
         #tic=time.time()
         if  'data@'+obj['image'] not in dat_dct:
-            data,hd=fits.getdata(obj['image'],header=True)
+            data,hd=fits.getdata(obj['image'],header=True,memmap=False)
         else:
             data=dat_dct['data@'+obj['image']]
             hd=dat_dct['header@'+obj['image']]
         if  'error@'+obj['image'] not in dat_dct:
-            error=fits.getdata(obj['error'])
+            error=fits.getdata(obj['error'],memmap=False)
         else:
             error=dat_dct['error@'+obj['image']]
         if  'mask@'+obj['image'] not in dat_dct:
-            mask=fits.getdata(obj['mask'])
+            mask=fits.getdata(obj['mask'],memmap=False)
         else:
             mask=dat_dct['mask@'+obj['image']]
         if  'sample@'+obj['image'] not in dat_dct:
-            sample=fits.getdata(obj['sample'])
+            sample=fits.getdata(obj['sample'],memmap=False)
             sample=sample['sp_index']
         else:
             sample=dat_dct['sample@'+obj['image']]       
@@ -283,6 +283,7 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct,
             fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
             fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
             fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
+            fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
         
         
         #"""

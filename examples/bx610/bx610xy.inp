@@ -134,4 +134,7 @@ method          'default'               # underline algorithm
 xypos[0]@co76	  356.53929-1./3600.  356.53929+1./3600.  1./3600./100.0
 xypos[1]@co76	  12.822-1./3600.     12.822+1./3600.     1./3600./100.0
 vsys@co76		    -200.		            +200.               20.
+# note: we tie vrot[1:4] as a single free parameter here; vrot[0] is fixed to 0 still.
 vrot[1:4]@co76	0.		              +500.               20.
+pa@co76         -110.                -50.                4.
+inc@co76        40                    80.                4.

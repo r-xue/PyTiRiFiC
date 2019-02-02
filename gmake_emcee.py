@@ -114,6 +114,27 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     print('chisq->',blobs['chisq'])
        
     return fit_dct,sampler
+
+def gmake_emcee_savechain(sampler,fitsname,metadata={}):
+    """
+    save the chains from the emcee sampler
+        metadata is a Python dict.
+    
+    """
+    
+    t=Table()
+    t.add_column(Column(name='chain', data=[    sampler.chain[:,:,:]    ]))
+    t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))
+    t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability    ]))
+    if  metadata!={}:
+        for key in metadata:
+            t.add_column(Column(name=key, data=[    metadata[key]    ]))
+    
+    dir=os.path.dirname(fitsname)
+    if  (not os.path.exists(dir)) and os.path.dirname(dir)!='':
+        os.makedirs(dir)
+    t.write(fitsname+".fits", overwrite=True)
+    
     
 def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
     """
@@ -168,19 +189,15 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             #astable.write(fit_dct['fitstable'],format='fits',overwrite=True)
             #dt+=float(time.time()-tic0)            
             
-            #   WRITE NEW-STYLE BTABLE FILE
-            
-            t=Table()
-            for key in fit_dct:
-                    t.add_column(Column(name=key, data=[fit_dct[key]]))
-                # param x step x walker (note: fits/idl array dimension sequence is reversed)    
-            tmpcol=Column(name='chain_array', data=[ sampler.chain[:,0:fit_dct['step_last'],:]  ])
-            t.add_column(tmpcol)
-            t.write(fit_dct['outfolder']+"/chain.fits", overwrite=True)
+            #   WRITE NEW-STYLE FITS FILE
+            gmake_emcee_savechain(sampler,fit_dct['outfolder']+"/emcee_chain",metadata=fit_dct)
             
             np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
             
             #p_median,p_error1,p_error2=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False)
+            
+            fit_dct=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
+                            verbose=False)
             
             
             dt+=float(time.time()-tic0)
@@ -208,14 +225,13 @@ def gmake_emcee_analyze(outfolder,
     # vector.
     # This number should be between approximately 0.25 and 0.5 if everything went as planned.
     """
-
-
     
-    t=Table.read(outfolder+'/'+'chain.fits')
-    chain_array=np.squeeze(t['chain_array'])
-    acceptfraction=np.squeeze(t['acceptfraction'])
     
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    t=Table.read(outfolder+'/'+'emcee_chain.fits')
+    chain_array=t['chain'].data[0]
+    acceptfraction=t['acceptance_fraction'].data[0]
+    
+    #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
 
     p_format=t['p_format'].data[0]
     p_name=t['p_name'].data[0]
@@ -329,7 +345,7 @@ def gmake_emcee_analyze(outfolder,
     if  cc==(nrow*2-1):
         axes[-1,-1].axis('off')
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/fit_dct-iteration.png"
+    figname=outfolder+"/emcee-iteration.png"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:
@@ -373,7 +389,7 @@ def gmake_emcee_analyze(outfolder,
                 ax.plot(value2[xi], value2[yi], "sr")
         
         #fig.savefig(outfolder+"/line-triangle.png")
-        fig.savefig(outfolder+"/fit_dct-corner.png")
+        fig.savefig(outfolder+"/emcee-corner.png")
         pl.close()
         if  verbose==True:
             print('Took {0} seconds'.format(float(time.time()-tic)))
@@ -397,13 +413,13 @@ def gmake_emcee_analyze(outfolder,
         if  verbose==True:
             print('Took {0} seconds'.format(float(time.time()-tic)))    
     
-    fit_dct['p_median']=p_median
-    fit_dct['p_error1']=p_error1
-    fit_dct['p_error2']=p_error2
-    fit_dct['p_error3']=p_error3
-    fit_dct['p_error4']=p_error4
-    fit_dct['p_burnin']=burnin
-    np.save(outfolder+'/fit_dct_analyzed.npy',fit_dct)
+    #fit_dct['p_median']=p_median
+    #fit_dct['p_error1']=p_error1
+    #fit_dct['p_error2']=p_error2
+    #fit_dct['p_error3']=p_error3
+    #fit_dct['p_error4']=p_error4
+    #fit_dct['p_burnin']=burnin
+    #np.save(outfolder+'/fit_dct_analyzed.npy',fit_dct)
     
     t['p_median']=[p_median]
     t['p_error1']=[p_error1]
@@ -411,53 +427,43 @@ def gmake_emcee_analyze(outfolder,
     t['p_error3']=[p_error3]
     t['p_error4']=[p_error4]
     t['p_burnin']=[burnin]
-    outname=fit_dct['outfolder']+"/chain_analyzed.fits"
+    #t.add_column(Column(name='flatchain_samples', data=[  samples  ]),index=0)
+    t['flatchain_samples']=[samples]
+    t['p_ptiles']=[p_ptiles]
+    t['p_mode']=[p_mode]
+    
+    outname=outfolder+"/emcee_chain_analyzed.fits"
     t.write(outname, overwrite=True)
-    
-    if  verbose==True:
-        print(samples.shape)
-    
-    t=Table()
-    for key in fit_dct:
-        t.add_column(Column(name=key, data=[fit_dct[key]]))
-    
-    tmpcol=Column(name='p_chains', data=[  samples  ])
-    t.add_column(tmpcol,index=0)
-    
-    ps_mcmc=np.percentile(samples, [2.5,15.8,50.,84.1,97.5],axis=0)
-
-    tmpcol=Column(name='p_ptiles', data=[ ps_mcmc ])
-    t.add_column(tmpcol,index=0)
-    tmpcol=Column(name='p_modes', data=[  p_mode[0:2]  ])
-    t.add_column(tmpcol,index=0)
-    tmpcol=Column(name='p_chains_fullrange', data=[  samples  ])
-    t.add_column(tmpcol,index=0)    
-
 
     
     if  verbose==True:
+        print(samples.shape)   
         print('File successfully saved as %s'%(outname))
     
-    
-    return fit_dct
+    return
     
 if  __name__=="__main__":
     
-    execfile('gmake_kinmspy.py')
-    execfile('gmake_utils.py')
+    #execfile('gmake_kinmspy.py')
+    #execfile('gmake_utils.py')
     
-
+    """
     #   build a dict holding input config
     inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
     #   build a dict holding data
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     #   build the sampler and a dict holding sampler metadata
-    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    #fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    """
+    #gmake_emcee_savechain(sampler,'bx610xy_emcee/emcee_chain',metadata=fit_dct)
     
-    #fit_dct=gmake_emcee_analyze('bx610xy_emcee/',plotsub=None,burnin=10,plotcorner=True,
-    #                            verbose=True)
-
+    fit_dct=gmake_emcee_analyze('bx610xy_emcee/',plotsub=None,burnin=250,plotcorner=True,
+                                verbose=True)
+    #inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
+    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)    
+    #lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_median'],fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
+    
     #op_dct=inp_dct['optimize']
     #print(inp_dct['optimize'])
     
