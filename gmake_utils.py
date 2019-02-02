@@ -315,6 +315,8 @@ def gmake_read_data(inp_dct,verbose=False,
     """
     dat_dct={}
     
+    if  verbose==True:
+        print("+"*80)
     for tag in inp_dct.keys():
         if  tag=='optimize':
             continue
@@ -325,28 +327,37 @@ def gmake_read_data(inp_dct,verbose=False,
             mk_list=obj['mask'].split(",")
         if  'error' in obj:
             em_list=obj['error'].split(",")
+        if  'sample' in obj:
+            sp_list=obj['sample'].split(",")            
         
         for ind in range(len(im_list)):
             if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
-                data,hd=fits.getdata(im_list[ind],header=True)
+                data,hd=fits.getdata(im_list[ind],header=True,memmap=False)
                 dat_dct['data@'+im_list[ind]]=data
                 dat_dct['header@'+im_list[ind]]=hd
                 if  verbose==True:
                     print('loading: '+im_list[ind]+' to ')
                     print('data@'+im_list[ind],'header@'+im_list[ind])
             if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
-                data=fits.getdata(em_list[ind])
+                data=fits.getdata(em_list[ind],memmap=False)
                 dat_dct['error@'+im_list[ind]]=data
                 if  verbose==True:
                     print('loading: '+em_list[ind]+' to ')
                     print('error@'+im_list[ind])
             if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
-                data=fits.getdata(mk_list[ind])                
+                data=fits.getdata(mk_list[ind],memmap=False)                
                 dat_dct['mask@'+im_list[ind]]=data
                 if  verbose==True:
                     print('loading: '+mk_list[ind]+' to ')
                     print('mask@'+im_list[ind])
-    
+            if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
+                data=fits.getdata(sp_list[ind],memmap=False)                
+                # sp_index; 3xnp array (px index of sampling data points)
+                dat_dct['sample@'+im_list[ind]]=np.squeeze(data['sp_index'])
+                if  verbose==True:
+                    print('loading: '+sp_list[ind]+' to ')
+                    print('sample@'+im_list[ind])
+                        
     if  fill_mask==True or fill_error==True:
 
         for tag in dat_dct.keys():
@@ -361,7 +372,9 @@ def gmake_read_data(inp_dct,verbose=False,
                     dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
                     if  verbose==True:
                         print('fill '+tag.replace('data@','error@'),np.std(data))                
-            
+    
+    if  verbose==True:
+        print("-"*80)    
     
     return dat_dct
     
