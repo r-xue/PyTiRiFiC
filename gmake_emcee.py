@@ -108,7 +108,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
     tic0=time.time()
-    lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct)
+    lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_start')
     print('Took {0} second for one trial'.format(float(time.time()-tic0))) 
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])
@@ -446,16 +446,16 @@ if  __name__=="__main__":
     execfile('gmake_kinmspy.py')
     execfile('gmake_utils.py')
     
+
     #   build a dict holding input config
     inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
     #   build a dict holding data
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     #   build the sampler and a dict holding sampler metadata
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    gmake_emcee_iterate(sampler,fit_dct,nstep=1000)
+    #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
     
-    
-    #fit_dct=gmake_emcee_analyze('test_emcee/',plotsub=None,burnin=10,plotcorner=True,
+    #fit_dct=gmake_emcee_analyze('bx610xy_emcee/',plotsub=None,burnin=10,plotcorner=True,
     #                            verbose=True)
 
     #op_dct=inp_dct['optimize']
