@@ -22,8 +22,11 @@ note            'CO76 of BX610 in SPW27'
 
 #   data description
 image           'examples/bx610/bx610_spw27.fits'       # data cube
-error           'examples/bx610/bx610_spw27_unc.fits'   # error cube
-mask            'examples/bx610/bx610_spw27_mask.fits'  # mask cube (value=1 for chi^2)
+error           'examples/bx610/bx610_spw27.unc.fits'   # error cube
+#mask            'examples/bx610/bx610_spw27_mask.fits'  # mask cube (value=1 for chi^2)
+mask            'examples/bx610/bx610_spw27.hex_im.fits'  # mask cube (value=1 for chi^2)
+sample           'examples/bx610/bx610_spw27.hex_tb.fits'  
+                                        # FITS table (sample.sp_index: indices of sampling)
 psf             None                    # psf file (otherwise using header info)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj
@@ -34,7 +37,7 @@ bpa             None                    # bpa
 type            'linedisk'                  # model type
 xypos           [356.53929,12.822]      # [degree/degree]
 z               2.21                    # optical convention
-pa              100.0                   # [degree] north up / counterclockwise
+pa              -80.0                   # [degree] north up / counterclockwise
 inc             60.0                    # [degree] inclination
 
 #   emissivity/kinematics
@@ -57,8 +60,11 @@ note            'CI21 of BX610 in SPW27'
 
 #   data description
 image           'examples/bx610/bx610_spw27.fits'      # data cube
-error           'examples/bx610/bx610_spw27_unc.fits' # error cube
-mask            'examples/bx610/bx610_spw27_mask.fits'  # mask cube (value=1 for chi^2)
+error           'examples/bx610/bx610_spw27.unc.fits' # error cube
+#mask            'examples/bx610/bx610_spw27.mask.fits'  # mask cube (value=1 for chi^2)
+mask            'examples/bx610/bx610_spw27.hex_im.fits'  # mask cube (value=1 for chi^2)
+sample           'examples/bx610/bx610_spw27.hex_tb.fits'  
+                                        # FITS table (sample.sp_index: indices of sampling)
 psf             None                    # psf file (otherwise using header info)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj

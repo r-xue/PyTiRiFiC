@@ -9,7 +9,7 @@ import time
 def gmake_kinmspy_api(mod_dct,dat_dct={},
                       outname='',
                       decomp=False,
-                      verbose=False):
+                      verbose=True):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
     a dictionary nest
@@ -43,7 +43,13 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         if  'mask@'+obj['image'] not in dat_dct:
             mask=fits.getdata(obj['mask'])
         else:
-            mask=dat_dct['mask@'+obj['image']]                                   
+            mask=dat_dct['mask@'+obj['image']]
+        if  'sample@'+obj['image'] not in dat_dct:
+            sample=fits.getdata(obj['sample'])
+            sample=sample['sp_index']
+        else:
+            sample=dat_dct['sample@'+obj['image']]       
+                                                           
         #print('Took {0} seconds to read FITS'.format(float(time.time()-tic)/float(1)))
         
         if  verbose==True:
@@ -75,21 +81,18 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         dv=abs(vdelt3)
         
         beamsize=[0.2,0.2,0.]
+        
         if  'BMAJ' in hd.keys():
-            beamsize[0]=hd['BMAJ']
+            beamsize[0]=hd['BMAJ']*3600.
         if  'BMIN' in hd.keys():
-            beamsize[0]=hd['BMIN']
+            beamsize[1]=hd['BMIN']*3600.
         if  'BPA' in hd.keys():
-            beamsize[0]=hd['BPA']                        
+            beamsize[2]=hd['BPA']                        
         if  verbose==True:
-            print(beamsize)
+            print('beamsize->',beamsize)
         
         inc=obj['inc']
         gassigma=np.array(obj['vdis'])
-        
-        #print,hd['BMAJ']
-        #print,hd['BMIN']
-        #print,hd['BPA']
         
         sbrad=np.array(obj['radi'])
         sbprof=obj['sbexp'][0]*np.exp(-sbrad/obj['sbexp'][1])
@@ -158,6 +161,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         pz_o=pz_int-int(vs/abs(dv)*0.5)
 
         #tic=time.time()
+        # cube needs to be transposed to match the fits.data dimension 
         cube=KinMS(xs,ys,vs,
                    cellSize=cell,dv=abs(dv),
                    beamSize=beamsize,cleanOut=False,
@@ -192,10 +196,13 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
             models['data@'+obj['image']]=data
             models['error@'+obj['image']]=error     
             models['mask@'+obj['image']]=mask
+            models['sample@'+obj['image']]=sample
             
     return models
 
-def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
+def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct,
+                         savemodel='',
+                         verbose=False):
     """
     the likelihood function
     """
@@ -217,7 +224,7 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
     #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
     #tic0=time.time()
-    models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct,verbose=False)
+    models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
      
@@ -227,14 +234,18 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
         if  'data@' not in key:
             continue
         
-        im=models[key.replace('data@','error@')]
+        im=models[key]
         mo=models[key.replace('data@','model@')]
         em=models[key.replace('data@','error@')]
         mk=models[key.replace('data@','mask@')]
-        #mm=models[key,replace('')]
-        sigma2=em**2
+        sp=models[key.replace('data@','sample@')]
+        hd=models[key.replace('data@','header@')]
         
         #tic0=time.time()
+
+        
+        """
+        sigma2=em**2
         #lnl1=np.sum( (im-mo)**2/sigma2*mk )
         #lnl2=np.sum( (np.log(sigma2)+np.log(2.0*np.pi))*mk )
         lnl1=np.sum( ((im-mo)**2/sigma2)[mk==1] )
@@ -243,6 +254,39 @@ def gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct):
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
         blobs['ndata']+=np.sum(mk)
+        """
+        
+        
+        #"""
+        imtmp=np.squeeze(em)
+        nxyz=np.shape(imtmp)
+        imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                        imtmp,sp[:,::-1],method='linear')
+        sigma2=imtmp**2.0
+        imtmp=np.squeeze(im-mo)
+        imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                        imtmp,sp[:,::-1],method='linear')
+        lnl1=np.sum( (imtmp)**2/sigma2 )
+        lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
+        lnl=-0.5*(lnl1+lnl2)
+        
+        blobs['lnprob']+=lnl
+        blobs['chisq']+=lnl1
+        blobs['ndata']+=(np.shape(sp))[0]
+        
+        if  savemodel!='':
+            basename=key.replace('data@','')
+            basename=os.path.basename(basename)
+            if  not os.path.exists(savemodel):
+                os.makedirs(savemodel)
+            fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
+            fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
+            fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
+            fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
+        
+        
+        #"""
+
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
         
     lnl=blobs['lnprob']
@@ -264,7 +308,9 @@ def gmake_kinmspy_lnprior(theta,fit_dct):
     return 0.0
 
     
-def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,verbose=False):
+def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,
+                         savemodel='',
+                         verbose=False):
     """
     this is the evaluating function for emcee 
     """
@@ -274,7 +320,7 @@ def gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,verbose=False):
         return -np.inf,blobs
     if  verbose==True:
         print("try ->",theta)
-    lnl,blobs=gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct)
+    lnl,blobs=gmake_kinmspy_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
     return lp+lnl,blobs    
     
 if  __name__=="__main__":
