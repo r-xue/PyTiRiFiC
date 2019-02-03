@@ -71,7 +71,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     fit_dct['nthreads']=multiprocessing.cpu_count()
-    fit_dct['nwalkers']=40
+    fit_dct['nwalkers']=60
     fit_dct['outfolder']='bx610xy_emcee'
     
     print('nwalkers:',fit_dct['nwalkers'])
@@ -126,6 +126,12 @@ def gmake_emcee_savechain(sampler,fitsname,metadata={}):
     t.add_column(Column(name='chain', data=[    sampler.chain[:,:,:]    ]))
     t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))
     t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability    ]))
+    
+    blobs=sampler.blobs
+    for key in blobs[0][0].keys():
+        tmp0=map(lambda v: map(lambda w: w[key], v), blobs)
+        t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
+        
     if  metadata!={}:
         for key in metadata:
             t.add_column(Column(name=key, data=[    metadata[key]    ]))
@@ -160,6 +166,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             blobs  (nwalkers,)
         """
         fit_dct['step_last']+=1
+        fit_dct['pos_last']=pos_i
         
         #   WRITE ASCII TABLE
         tic0=time.time() 
@@ -196,13 +203,13 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             
             #p_median,p_error1,p_error2=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False)
             
-            fit_dct=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
+            fit_tab=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
                             verbose=False)
             
             
             dt+=float(time.time()-tic0)
         
-        fit_dct['pos_last']=pos_i
+        
 
         
     print("Done.")
@@ -230,15 +237,28 @@ def gmake_emcee_analyze(outfolder,
     t=Table.read(outfolder+'/'+'emcee_chain.fits')
     chain_array=t['chain'].data[0]
     acceptfraction=t['acceptance_fraction'].data[0]
+    lnprobability=t['lnprobability'].data[0]
+    
+    blobs_lnprob=t['blobs_lnprob'].data[0]
+    blobs_chisq=t['blobs_chisq'].data[0]
+    blobs_ndata=t['blobs_ndata'].data[0]
+    blobs_npar=t['blobs_npar'].data[0]
+    
+    #print('##',lnprobability.shape) #nwalker x nstep
+    #print('##',blobs_lnprob.shape)  #nstep x nwalker
+    #print('##',blobs_chisq.shape)   #nstep x nwalker
+    #print('##',blobs_ndata.shape)   #nstep x nwalker
+    #print('##',blobs_npar.shape)    #nstep x nwalker
     
     #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-
     p_format=t['p_format'].data[0]
     p_name=t['p_name'].data[0]
     p_scale=t['p_iscale'].data[0]
     p_lo=t['p_lo'].data[0]
     p_up=t['p_up'].data[0]
     p_start=t['p_start'].data[0]
+    
+    
     
     if  verbose==True:
         print("Mean acceptance fraction: ",np.mean(acceptfraction))
@@ -260,7 +280,6 @@ def gmake_emcee_analyze(outfolder,
     for index in range(len(p_ptiles)):
         
         #tmp0=stats.mode(np.around(samples[:,index],decimals=3))
-        
         hist,bin_edges=np.histogram(samples[:,index],modebin)
         bin_cent=.5*(bin_edges[:-1] + bin_edges[1:])
         tmp0=bin_cent[np.argmax(hist)]
@@ -299,13 +318,12 @@ def gmake_emcee_analyze(outfolder,
         print('-'*90)    
 
 
-    #   ITERATION PLOTS
-     
-    picki=range(len(p_name))
-    
-    figsize=(8.,len(p_name)*2.5)
+    #   ITERATION PARAMETR PLOTS
+
+    figsize=(8.,(len(p_name))*2.5)
     ncol=1
     pl.clf()
+    picki=range(len(p_name))
     nrow=int(np.ceil(len(picki)*1.0/ncol))
     fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
     cc=0
@@ -313,46 +331,86 @@ def gmake_emcee_analyze(outfolder,
         iy=cc % nrow
         ix=(cc - iy)/nrow
         if  plotburnin==False:
-            axes[iy,ix].plot(chain_array[:, burnin:, i].T, color="k", alpha=0.4)
+            axes[iy,ix].plot(chain_array[:, burnin:, i].T, color="gray", alpha=0.4)
         else:
             axes[iy,ix].plot(chain_array[:, :, i].T, color="gray", alpha=0.4)
             axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
         axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
         ymin, ymax = axes[iy,ix].get_ylim()
         xmin, xmax = axes[iy,ix].get_xlim()
-        
         bfrac=(burnin-xmin)/(xmax-xmin)
         axes[iy,ix].axhline(p_start[i],xmax=bfrac, color="b", lw=2,ls='-')
         axes[iy,ix].axhline(p_start[i]+p_scale[i],xmax=bfrac, color="b", lw=2,ls='--')
         axes[iy,ix].axhline(p_start[i]-p_scale[i],xmax=bfrac, color="b", lw=2,ls='--')
-        
         axes[iy,ix].set_ylim(ymin, ymax)
         axes[iy,ix].axhline(p_lo[i], color="r", lw=0.8,ls='-')
         axes[iy,ix].axhline(p_up[i], color="r", lw=0.8,ls='-')
-
         axes[iy,ix].axhline(p_median[i]+p_error1[i],xmin=bfrac, color="g", lw=2,ls='--')
         axes[iy,ix].axhline(p_median[i]+p_error2[i],xmin=bfrac, color="g", lw=2,ls='--')
         axes[iy,ix].axhline(p_median[i]+p_error3[i],xmin=bfrac, color="g", lw=2,ls=':')
         axes[iy,ix].axhline(p_median[i]+p_error4[i],xmin=bfrac, color="g", lw=2,ls=':')
         axes[iy,ix].axhline(p_median[i],xmin=bfrac, color="g", lw=3,ls='-')
-        
         axes[iy,ix].axhline(p_mode[i],xmin=bfrac, color="cyan", lw=3,ls='-')
-        
         axes[iy,ix].set_ylabel(p_name[i])
         if  i==len(p_start)-1:
             axes[iy,ix].set_xlabel("step number")
         cc+=1
     if  cc==(nrow*2-1):
         axes[-1,-1].axis('off')
+
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/emcee-iteration.png"
+    figname=outfolder+"/emcee-iteration-par.png"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:
         print("analyzing outfolder:"+outfolder)
         print("plotting..."+figname)
 
+    #   ITERATION METADATA PLOTS
+    
+    m_name=['blobs_lnprob','blobs_chisq']
+    figsize=(8.,len(m_name)*2.5)
+    ncol=1
+    pl.clf()
+    picki=range(len(m_name))
+    nrow=int(np.ceil(len(picki)*1.0/ncol))
+    fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
+    cc=0
+    for i in picki:
+        iy=cc % nrow
+        ix=(cc - iy)/nrow
+        if  plotburnin==False:
+            axes[iy,ix].plot(t[m_name[i]].data[0][burnin:,:], color="k", alpha=0.4)
+        else:
+            axes[iy,ix].plot(t[m_name[i]].data[0][:,:], color="gray", alpha=0.4)
+            axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
+        axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
+        ymin, ymax = axes[iy,ix].get_ylim()
+        xmin, xmax = axes[iy,ix].get_xlim()
+        bfrac=(burnin-xmin)/(xmax-xmin)
+        axes[iy,ix].set_ylim(ymin, ymax)
+        axes[iy,ix].set_ylabel(m_name[i])
+        
+        if  m_name[i]=='blobs_chisq':
+            axes[iy,ix].axhline(np.mean(t['blobs_ndata'].data[0][:,:]), color="r", lw=0.8,ls='-')
+        if  i==len(m_name)-1:
+            axes[iy,ix].set_xlabel("step number")
+        cc+=1
+    if  cc==(nrow*2-1):
+        axes[-1,-1].axis('off')
 
+    fig.tight_layout(h_pad=0.0)
+    figname=outfolder+"/emcee-iteration-meta.png"
+    fig.savefig(figname)
+    pl.close()
+    if  verbose==True:
+        print("analyzing outfolder:"+outfolder)
+        print("plotting..."+figname)    
+
+    
+    
+    #   CORNER PLOTS
+    
     if  plotcorner==True:
         if  verbose==True:
             print("plotting..."+outfolder+"/line-triangle.png")
@@ -388,7 +446,6 @@ def gmake_emcee_analyze(outfolder,
                 ax.plot(value1[xi], value1[yi], "sg")
                 ax.plot(value2[xi], value2[yi], "sr")
         
-        #fig.savefig(outfolder+"/line-triangle.png")
         fig.savefig(outfolder+"/emcee-corner.png")
         pl.close()
         if  verbose==True:
@@ -440,30 +497,53 @@ def gmake_emcee_analyze(outfolder,
         print(samples.shape)   
         print('File successfully saved as %s'%(outname))
     
-    return
+    
+    
+    return t
     
 if  __name__=="__main__":
     
-    #execfile('gmake_kinmspy.py')
-    #execfile('gmake_utils.py')
+    execfile('gmake_kinmspy.py')
+    execfile('gmake_utils.py')
     
-    """
+    #"""
     #   build a dict holding input config
     inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
     #   build a dict holding data
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     #   build the sampler and a dict holding sampler metadata
-    #fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    """
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    #   iterate
+    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    
+    #"""
+    
     #gmake_emcee_savechain(sampler,'bx610xy_emcee/emcee_chain',metadata=fit_dct)
     
-    fit_dct=gmake_emcee_analyze('bx610xy_emcee/',plotsub=None,burnin=250,plotcorner=True,
-                                verbose=True)
+    #outfolder='bx610xy_emcee/'
+    #fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
+    #                    verbose=True)
+    #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    #inp_dct=np.load(outfolder+'/inp_dct.npy').item()
     #inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
-    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)    
-    #lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_median'],fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
+    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     
+    #fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    
+    #print(fit_dct['p_name'])
+
+    #theta=fit_tab['p_median'].data[0]
+    #theta[0]=theta[0]*100.
+    #theta[2]=theta[2]*100.
+    
+    #print('-->',theta)
+    #print(fit_dct['p_up'])  
+    #fit_dct['p_up'][0]=fit_dct['p_up'][0]*100.
+    #fit_dct['p_up'][2]=fit_dct['p_up'][2]*100.
+    #print(fit_dct['p_up'])
+    
+    #lnl,blobs=gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
+    #print(lnl,blobs)
     #op_dct=inp_dct['optimize']
     #print(inp_dct['optimize'])
     

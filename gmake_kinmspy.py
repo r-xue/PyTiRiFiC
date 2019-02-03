@@ -95,12 +95,13 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
         gassigma=np.array(obj['vdis'])
         
         sbrad=np.array(obj['radi'])
-        sbprof=obj['sbexp'][0]*np.exp(-sbrad/obj['sbexp'][1])
+        
+        sbprof=1.*np.exp(-sbrad/obj['sbexp'])
         
         velrad=obj['radi']
         velprof=obj['vrot']
         posang=obj['pa']
-        intflux=0.01
+        intflux=obj['intflux']
         filename='test'
         
         xypos=obj['xypos']
