@@ -71,7 +71,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     fit_dct['nthreads']=multiprocessing.cpu_count()
-    fit_dct['nwalkers']=60
+    fit_dct['nwalkers']=40
     fit_dct['outfolder']='bx610xy_emcee'
     
     print('nwalkers:',fit_dct['nwalkers'])
@@ -89,10 +89,10 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     fit_dct['chainfile']=fit_dct['outfolder']+'/chain.dat'
     f=open(fit_dct['chainfile'], "w")
-    output='{0:<5}'.format('#is')
-    output+=' {0:<5}'.format('iw')
-    output+=' '.join(('{0:'+fit_dct['p_format_keys'][x]+'}').format(fit_dct['p_name'][x]) for x in range(len(fit_dct['p_name'])))
-    output+=' {0:<6} {1:<6}'.format('lnprob','chisq')
+    output='{0:<5}'.format('it')+' '
+    output+='{0:<5}'.format('wk')+' '
+    output+=' '.join(('{0:'+fit_dct['p_format_keys'][x]+'}').format(fit_dct['p_name'][x]) for x in range(len(fit_dct['p_name'])))+' '
+    output+='{0:<8} {1:<8}'.format('lnprob','chisq')
     output+='\n'
     f.write(output)
     f.close()
@@ -123,14 +123,16 @@ def gmake_emcee_savechain(sampler,fitsname,metadata={}):
     """
     
     t=Table()
-    t.add_column(Column(name='chain', data=[    sampler.chain[:,:,:]    ]))
-    t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))
-    t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability    ]))
     
     blobs=sampler.blobs
     for key in blobs[0][0].keys():
         tmp0=map(lambda v: map(lambda w: w[key], v), blobs)
         t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
+        (nstep,nwalker)=(np.array(tmp0)).shape
+        
+    t.add_column(Column(name='chain', data=[    sampler.chain[:,:nstep,:]    ]))                  # nwalker x nstep x npar
+    t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))    # nwalker
+    t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability[:,:nstep]    ]))    # nwalker x nstep
         
     if  metadata!={}:
         for key in metadata:
@@ -172,10 +174,10 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
         tic0=time.time() 
         f = open(fit_dct['chainfile'], "a")
         for k in range(pos_i.shape[0]):
-            output='{0:<5}'.format(fit_dct['step_last'])
-            output+=' {0:<5}'.format(k)
-            output+=' '.join(('{0:'+fit_dct['p_format'][x]+'}').format(pos_i[k][x]) for x in range(len(pos_i[k])))
-            output+=' {0:<6.2f} {1:<6.0f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
+            output='{0:<5}'.format(fit_dct['step_last'])+' '
+            output+='{0:<5}'.format(k)+' '
+            output+=' '.join(('{0:'+fit_dct['p_format'][x]+'}').format(pos_i[k][x]) for x in range(len(pos_i[k])))+' '
+            output+='{0:<8.2f} {1:<8.1f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
             output+='\n'
             f.write(output)
         f.close()
@@ -244,6 +246,7 @@ def gmake_emcee_analyze(outfolder,
     blobs_ndata=t['blobs_ndata'].data[0]
     blobs_npar=t['blobs_npar'].data[0]
     
+    #print('##',chain_array.shape) #nwalker x nstep
     #print('##',lnprobability.shape) #nwalker x nstep
     #print('##',blobs_lnprob.shape)  #nstep x nwalker
     #print('##',blobs_chisq.shape)   #nstep x nwalker
@@ -506,7 +509,7 @@ if  __name__=="__main__":
     execfile('gmake_kinmspy.py')
     execfile('gmake_utils.py')
     
-    #"""
+    """
     #   build a dict holding input config
     inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
     #   build a dict holding data
@@ -515,24 +518,24 @@ if  __name__=="__main__":
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     #   iterate
     gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    
-    #"""
-    
-    #gmake_emcee_savechain(sampler,'bx610xy_emcee/emcee_chain',metadata=fit_dct)
-    
-    #outfolder='bx610xy_emcee/'
-    #fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
-    #                    verbose=True)
-    #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    #inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    #inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
-    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
-    
-    #fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
-    
-    #print(fit_dct['p_name'])
+    """
 
-    #theta=fit_tab['p_median'].data[0]
+    
+    
+    
+    outfolder='bx610xy_emcee/'
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
+                        verbose=True)
+    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    #inp_dct=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
+    
+    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    print(fit_tab['p_name'].data[0])
+    theta=fit_tab['p_median'].data[0]
+    print(theta)
     #theta[0]=theta[0]*100.
     #theta[2]=theta[2]*100.
     
@@ -542,10 +545,12 @@ if  __name__=="__main__":
     #fit_dct['p_up'][2]=fit_dct['p_up'][2]*100.
     #print(fit_dct['p_up'])
     
-    #lnl,blobs=gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
-    #print(lnl,blobs)
-    #op_dct=inp_dct['optimize']
-    #print(inp_dct['optimize'])
+    lnl,blobs=gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
+    print(lnl,blobs)
+    
+    
+    
+    
     
     """
     opt_dct=inp_dct['optimize']
