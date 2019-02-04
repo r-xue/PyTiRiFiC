@@ -15,8 +15,7 @@ def gmake_model_disk2d(header,ra,dec,beamsize,
                        posang=0.):
     
     
-    cell=np.sqrt(np.abs(header['CDELT1']*header['CDELT2']))*3600.0
-    
+    cell=np.sqrt(np.abs(header['CDELT1']*header['CDELT2']))*3600.0    
     if  not isinstance(beamsize, (list, tuple, np.ndarray)):
         beamsize = np.array([beamsize,beamsize,0])    
 
@@ -45,14 +44,14 @@ def gmake_model_disk2d(header,ra,dec,beamsize,
 
 if  __name__=="__main__":
     
-    pass
+    #pass
 
-    """
+    #"""
     
     data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
     
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,[1.0,1.0,0.0],
-                             cleanout=True)
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,[0.2,0.2,0.0],
+                             cleanout=False)
     
     fits.writeto('test_model_disk2d.fits',model,hd,overwrite=True)
     
@@ -67,7 +66,7 @@ if  __name__=="__main__":
     cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
     plt.savefig('test_model_disk2d.eps')
     
-    """
+    #"""
 
 
 
