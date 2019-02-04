@@ -266,7 +266,9 @@ def gmake_writepar(mod_dct,par_name,par_value):
     
 def gmake_pformat(fit_dct):
     """
-    add p_format / p_format_keys
+    fill..
+    p_format            : format for values
+    p_format_keys       : format for p_name
     """
     p_format=[]
     p_format_keys=[]
@@ -289,11 +291,14 @@ def gmake_pformat(fit_dct):
             p_format0='<'+str(max(smin,5))+'.0f'
             p_format0_keys='<'+str(max(smin,5))
         #   SURFACE BRIGHTNESS
-        if  fnmatch.fnmatch(p_key,'es*'):
+        if  fnmatch.fnmatch(p_key,'sb*'):
             p_format0='<'+str(max(smin,5))+'.4f'
             p_format0_keys='<'+str(max(smin,5))
+        if  fnmatch.fnmatch(p_key,'intflux*'):
+            p_format0='<'+str(max(smin,5))+'.4f'
+            p_format0_keys='<'+str(max(smin,5))            
         #   INC OR PA
-        if  fnmatch.fnmatch(p_key,'in*') or fnmatch.fnmatch(p_key,'pa*'):
+        if  fnmatch.fnmatch(p_key,'inc*') or fnmatch.fnmatch(p_key,'pa*'):
             p_format0='<'+str(max(smin,3))+'.0f'
             p_format0_keys='<'+str(max(smin,3))         
         #   ERRR SCALING
@@ -397,6 +402,7 @@ def gmake_dct2fits(dct,outname='dct2fits',save_npy=False):
     t.write(outname+'.fits',overwrite=True)    
     if  save_npy==True:
         np.save(outname+'.npy',dct)
+
 
 if  __name__=="__main__":
     

@@ -20,15 +20,16 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
     
     for tag in mod_dct.keys():
         
-        if  tag=='optimize' or tag=='cont':
+        obj=mod_dct[tag]
+        if  'method' not in obj.keys():
+            continue
+        elif 'kinmspy' not in obj['method'].lower():
             continue
         
         if  verbose==True:
             print("+"*40)
             print('@',tag)
             print("-"*40)
-        
-        obj=mod_dct[tag]
         
         #tic=time.time()
         if  'data@'+obj['image'] not in dat_dct:
