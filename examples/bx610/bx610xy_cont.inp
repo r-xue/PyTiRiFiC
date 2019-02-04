@@ -18,7 +18,7 @@ tips:
 ################################################################################
 
 name            'bx610-cont'            # something meaningful to you
-note            'mm/submm cont of BX610 in SPW25/27/29/31'
+note            'submm cont of BX610 in SPW25/27/29/31'
 
 #   data description
 image           'examples/bx610/bx610_spw25.mfs.fits,examples/bx610/bx610_spw27.mfs.fits,examples/bx610/bx610_spw29.mfs.fits,examples/bx610/bx610_spw31.mfs.fits'
@@ -34,7 +34,7 @@ bpa             None                    # bpa
 
 #   model geometry
 type            'contdisk'              # model type
-xypos           [356.539321,12.8220179445]            # [degree/degree]
+xypos           [356.539321,12.8220179445+0.02/3600.]            # [degree/degree]
 z               2.21                    # optical convention
 pa              -61                     # [degree] north up / counterclockwise
 inc              52                     # [degree] inclination
@@ -42,10 +42,10 @@ inc              52                     # [degree] inclination
 #   emissivity/kinematics
 #   the continuum model is described by a reference frequency / intensity / slope
 #   in the rest frame.
-intflux         1.0                     #Jy
-sbser           0.2,1.0                 # sersic profile
-restfreq        251.6825177459          #GHz
-alpha           0.0                     # spectral index s_nu ~ nu^alpha
+intflux         1.0e-3                  # Jy
+sbser           [0.1,1.0]               # sersic profile
+restfreq        251.6825177459          # GHz
+alpha           0.2                     # spectral index s_nu ~ nu^alpha
 
 #   modeling algorithm
 method          'disk2d'               # underline algorithm
@@ -59,6 +59,10 @@ xypos[0]@cont	  356.539321-3./3600.  356.539321+3./3600.     1./3600./100.0
 xypos[1]@cont	  12.8220179445-1./3600.  12.8220179445+1./3600.     1./3600./100.0
 pa@cont         -110.                -10.                4.
 inc@cont        40                    80.                4.
-intflux@cont   0.1                  200.0              0.1
+intflux@cont    0.1e-3                10.e-3              0.1
 sbser[0]@cont     0.01                   1.0              0.01
 alpha@cont        -1.0                  1.0               0.10  
+
+method          'emcee'
+nwalkers        40
+outdir         'bx610xy_cont_emcee'

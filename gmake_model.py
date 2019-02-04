@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy as np
 from astropy.modeling.models import Sersic2D
 import matplotlib.pyplot as plt
@@ -5,49 +7,238 @@ from astropy.wcs import WCS
 from astropy.io import fits
 from makebeam import makebeam
 from astropy.convolution import convolve_fft
+import pprint
 
-def gmake_model_disk2d(header,ra,dec,beamsize,
-                       r_eff=20.0,
-                       n=1.0,
-                       intflux=1.,
-                       ellip=0.0,       # 1-b/a
-                       cleanout=False,
-                       posang=0.):
+def gmake_model_api(mod_dct,dat_dct={},
+                      outname='',
+                      decomp=False,
+                      verbose=True):
     
+    models={}
     
-    cell=np.sqrt(np.abs(header['CDELT1']*header['CDELT2']))*3600.0    
-    if  not isinstance(beamsize, (list, tuple, np.ndarray)):
-        beamsize = np.array([beamsize,beamsize,0])    
+    for tag in mod_dct.keys():
+        
+        obj=mod_dct[tag]
+        if  'method' not in obj.keys():
+            continue
+        elif 'disk2d' not in obj['method'].lower():
+            continue
+    
+        if  verbose==True:
+            print("+"*40)
+            print('@',tag)
+            print("-"*40)
+        
+        image_list=mod_dct[tag]['image'].split(",")
+        
+        for image in image_list:
+            
+            data=dat_dct['data@'+image]
+            hd=dat_dct['header@'+image]
+            error=dat_dct['error@'+image]
+            mask=dat_dct['mask@'+image]
+            sample=dat_dct['sample@'+image]
+            
+            beamsize=[0.2,0.2,0.]
+            
+            if  'BMAJ' in hd.keys():
+                beamsize[0]=hd['BMAJ']*3600.
+            if  'BMIN' in hd.keys():
+                beamsize[1]=hd['BMIN']*3600.
+            if  'BPA' in hd.keys():
+                beamsize[2]=hd['BPA']
+                
+            xypos=obj['xypos']
+            restfreq=obj['restfreq']
+            intflux=obj['intflux']*(hd['CRVAL3']/1e9/obj['restfreq'])**obj['alpha']                                        
+            posang=obj['pa']
+            inc=obj['inc']
+            ellip=1.-np.cos(np.deg2rad(inc))
+            ser=obj['sbser']
+            if  verbose==True:
+                print('beamsize->',beamsize)
+                print(image,hd['CRVAL3']/1e9,intflux)
+                
+            model=gmake_model_disk2d(hd,
+                                     xypos[0],xypos[1],beamsize,
+                                     r_eff=ser[0],
+                                     n=ser[1],                                     
+                                     cleanout=False,
+                                     intflux=intflux,
+                                     posang=posang,
+                                     ellip=ellip)
+            if  decomp==True:
+                models[tag+'@'+image]=model
+            
+            if  'model@'+image in models.keys():
+                models['model@'+image]+=model
+            else:
+                models['model@'+image]=model.copy()
+                models['header@'+image]=hd
+                models['data@'+image]=data
+                models['error@'+image]=error     
+                models['mask@'+image]=mask
+                models['sample@'+image]=sample            
+                
+    return models                
 
-    w=WCS(header).celestial
-    pos=w.wcs_world2pix(np.array([[ra],[dec]]).T,0)
-    px=pos[:,0]
-    py=pos[:,1]
-    
-    # use meshgrid and don't worry about transposing
-    x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
 
-    mod = Sersic2D(amplitude=1.0,r_eff=r_eff,n=4.,x_0=px,y_0=py,
-               ellip=ellip,theta=np.deg2rad(posang+90.0))
-    model=mod(x,y)
+def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
+                         savemodel='',
+                         verbose=False):
+    """
+    the likelihood function
+    """
     
+    blobs={'lnprob':0.0,'chisq':0.0,'ndata':0.0,'npar':len(theta)}
+     
+    inp_dct0=deepcopy(inp_dct)
+    for ind in range(len(fit_dct['p_name'])):
+        #print("")
+        #print('modify par: ',fit_dct['p_name'][ind],theta[ind])
+        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
+        gmake_writepar(inp_dct0,fit_dct['p_name'][ind],theta[ind])
+        #print(">>>")
+        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
+        #print("")
+    #gmake_listpars(inp_dct0)
+    #tic0=time.time()
+    mod_dct=gmake_inp2mod(inp_dct0)
+    #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
-    psf = makebeam(header['NAXIS1'],header['NAXIS2'],[beamsize[0]/cell,beamsize[1]/cell],rot=beamsize[2])
-    if  not cleanout:
-        model=convolve_fft(model,psf)
-    if  not cleanout:
-        model *= ( intflux*psf.sum()/model.sum() )
-    else: 
-        model *= ( intflux/model.sum() )
+    #tic0=time.time()
+    #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
+    models=gmake_model_api(mod_dct,dat_dct=dat_dct)
+    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
+    #gmake_listpars(mod_dct)
+     
+    
+    for key in models.keys(): 
+        
+        if  'data@' not in key:
+            continue
+        
+        im=models[key]
+        mo=models[key.replace('data@','model@')]
+        em=models[key.replace('data@','error@')]
+        mk=models[key.replace('data@','mask@')]
+        sp=models[key.replace('data@','sample@')]
+        hd=models[key.replace('data@','header@')]
+        
+        #tic0=time.time()
 
-    return model
+        
+        """
+        sigma2=em**2
+        #lnl1=np.sum( (im-mo)**2/sigma2*mk )
+        #lnl2=np.sum( (np.log(sigma2)+np.log(2.0*np.pi))*mk )
+        lnl1=np.sum( ((im-mo)**2/sigma2)[mk==1] )
+        lnl2=np.sum( (np.log(sigma2)+np.log(2.0*np.pi))[mk==1] )
+        lnl=-0.5*(lnl1+lnl2)
+        blobs['lnprob']+=lnl
+        blobs['chisq']+=lnl1
+        blobs['ndata']+=np.sum(mk)
+        """
+        
+        #print(im.shape)
+        #print(sp.shape)
+        #print(sp[:,2:0:-1].shape)
+        #"""
+        imtmp=np.squeeze(em)
+        nxyz=np.shape(imtmp)
+        if  len(nxyz)==3:
+            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                        imtmp,sp[:,::-1],method='linear')
+        else:
+            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
+                                        imtmp,sp[:,2:0:-1],method='linear')
+        sigma2=imtmp**2.0
+        imtmp=np.squeeze(im-mo)
+        
+        if  len(nxyz)==3:
+            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                        imtmp,sp[:,::-1],method='linear')
+        else:
+            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
+                                        imtmp,sp[:,2:0:-1],method='linear')
+        
+        lnl1=np.sum( (imtmp)**2/sigma2 )
+        lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
+        lnl=-0.5*(lnl1+lnl2)
+        
+        blobs['lnprob']+=lnl
+        blobs['chisq']+=lnl1
+        blobs['ndata']+=(np.shape(sp))[0]
+        
+        if  savemodel!='':
+            basename=key.replace('data@','')
+            basename=os.path.basename(basename)
+            if  not os.path.exists(savemodel):
+                os.makedirs(savemodel)
+            fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
+            fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
+            fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
+            fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
+            fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
+
+        #"""
+        #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
+        
+    lnl=blobs['lnprob']
+    
+    return lnl,blobs
+
+
+def gmake_model_lnprior(theta,fit_dct):
+    """
+    pass through the likelihood prior function (limiting the parameter space)
+    """
+    p_lo=fit_dct['p_lo']
+    p_up=fit_dct['p_up']
+    for index in range(len(theta)):
+        if  theta[index]<p_lo[index] or theta[index]>p_up[index]:
+            return -np.inf
+    return 0.0
+
+    
+def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
+                         savemodel='',
+                         verbose=False):
+    """
+    this is the evaluating function for emcee 
+    """
+    lp = gmake_model_lnprior(theta,fit_dct)
+    if  not np.isfinite(lp):
+        blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+        return -np.inf,blobs
+    if  verbose==True:
+        print("try ->",theta)
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    return lp+lnl,blobs        
+
 
 if  __name__=="__main__":
     
     #pass
 
     #"""
+    execfile('gmake_kinmspy.py')
+    execfile('gmake_utils.py')
+    execfile('gmake_emcee.py')
+
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     
+    mod_dct=gmake_inp2mod(inp_dct)
+    fit_dct=gmake_emcee_setup(inp_dct,dat_dct)
+    #print(fit_dct['p_name'])
+    #print(fit_dct['p_start'])
+    #gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,data_dct,savemodel='test',verbose=True)
+    
+    #pprint.pprint(models)
+    #print(models.keys())
+    
+    """
     data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
     
     model=gmake_model_disk2d(hd,356.539321,12.8220179445,[0.2,0.2,0.0],
@@ -66,7 +257,7 @@ if  __name__=="__main__":
     cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
     plt.savefig('test_model_disk2d.eps')
     
-    #"""
+    """
 
 
 

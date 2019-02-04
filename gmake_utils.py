@@ -76,7 +76,11 @@ def gmake_readinp(parfile,verbose=False):
                 #pars['content']+=line+"\n"
                 key=line.split()[0]
                 value=line.replace(key,'',1).split()
-                pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
+                if  len(value)==1:
+                    pars[key]=eval(value[0])
+                else:
+                    pars[key]=[eval(value0) for value0 in value]
+                #pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
                 inp_dct[tag]=pars
                 if  verbose==True:
                     print(key," : ",value)
@@ -120,12 +124,13 @@ def gmake_inp2mod(objs):
             if  'comments' in tag or 'changelog' in tag:
                 pass
             elif 'optimize' in tag:
-                value=objs[tag][key]
-                for value0 in value:
-                    if  isinstance(value0,str):
-                        if  '@' in value:
-                            key_nest=value0.split("@")
-                            objs[tag][key]=objs[key_nest[1]][key_nest[0]]
+                pass
+                #value=objs[tag][key]
+                #for value0 in value:
+                #    if  isinstance(value0,str):
+                #        if  '@' in value:
+                #            key_nest=value0.split("@")
+                #            objs[tag][key]=objs[key_nest[1]][key_nest[0]]
             else:    
                 value=objs[tag][key]
                 if  isinstance(value, str):

@@ -56,7 +56,8 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     fit_dct['p_iscale']=[]
     
     for p_name in opt_dct.keys():
-        
+        if  '@' not in p_name:
+            continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],opt_dct[p_name][0])
@@ -71,8 +72,8 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     fit_dct['nthreads']=multiprocessing.cpu_count()
-    fit_dct['nwalkers']=40
-    fit_dct['outfolder']='bx610xy_emcee'
+    fit_dct['nwalkers']=opt_dct['nwalkers']
+    fit_dct['outfolder']=opt_dct['outdir']
     
     print('nwalkers:',fit_dct['nwalkers'])
     print('nthreads:',fit_dct['nthreads'])
@@ -103,12 +104,12 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
 
-    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],gmake_kinmspy_lnprob,
+    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],gmake_model_lnprob,
                                 args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
     tic0=time.time()
-    lnl,blobs=gmake_kinmspy_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_start')
+    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/p_start')
     print('Took {0} second for one trial'.format(float(time.time()-tic0))) 
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])
@@ -520,9 +521,19 @@ if  __name__=="__main__":
     gmake_emcee_iterate(sampler,fit_dct,nstep=500)
     """
 
+
+    #   build a dict holding input config
+    #inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
+    #   build a dict holding data
+    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    #   build the sampler and a dict holding sampler metadata
+    #fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    #   iterate
+    #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+
     
     
-    
+    """
     outfolder='bx610xy_emcee/'
     fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
                         verbose=True)
@@ -536,6 +547,8 @@ if  __name__=="__main__":
     print(fit_tab['p_name'].data[0])
     theta=fit_tab['p_median'].data[0]
     print(theta)
+    """
+    
     #theta[0]=theta[0]*100.
     #theta[2]=theta[2]*100.
     
@@ -545,8 +558,8 @@ if  __name__=="__main__":
     #fit_dct['p_up'][2]=fit_dct['p_up'][2]*100.
     #print(fit_dct['p_up'])
     
-    lnl,blobs=gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
-    print(lnl,blobs)
+    #lnl,blobs=gmake_kinmspy_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel='bx610xy_emcee/p_median')
+    #print(lnl,blobs)
     
     
     
