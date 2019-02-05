@@ -12,7 +12,7 @@ import pprint
 def gmake_model_api(mod_dct,dat_dct={},
                       outname='',
                       decomp=False,
-                      verbose=True):
+                      verbose=False):
     
     models={}
     
@@ -151,7 +151,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                                         imtmp,sp[:,::-1],method='linear')
         else:
             imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
-                                        imtmp,sp[:,2:0:-1],method='linear')
+                                        imtmp,sp[:,1::-1],method='linear')
         sigma2=imtmp**2.0
         imtmp=np.squeeze(im-mo)
         
@@ -160,8 +160,9 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                                         imtmp,sp[:,::-1],method='linear')
         else:
             imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
-                                        imtmp,sp[:,2:0:-1],method='linear')
+                                        imtmp,sp[:,1::-1],method='linear')
         
+        #print(sp[:,1::-1])
         lnl1=np.sum( (imtmp)**2/sigma2 )
         lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
         lnl=-0.5*(lnl1+lnl2)
@@ -221,17 +222,32 @@ if  __name__=="__main__":
     
     #pass
 
-    #"""
     execfile('gmake_kinmspy.py')
     execfile('gmake_utils.py')
     execfile('gmake_emcee.py')
 
     inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     
-    mod_dct=gmake_inp2mod(inp_dct)
-    fit_dct=gmake_emcee_setup(inp_dct,dat_dct)
+    #"""
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    #"""
+    
+    """
+    outfolder='bx610xy_cont_emcee'
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
+                        verbose=True)
+    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    theta=fit_tab['p_median'].data[0]
+    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
+    print(lnl,blobs)
+    """
+    
     #print(fit_dct['p_name'])
+    
     #print(fit_dct['p_start'])
     #gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,data_dct,savemodel='test',verbose=True)
     
