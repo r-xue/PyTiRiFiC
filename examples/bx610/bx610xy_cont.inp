@@ -42,10 +42,10 @@ inc              52                     # [degree] inclination
 #   emissivity/kinematics
 #   the continuum model is described by a reference frequency / intensity / slope
 #   in the rest frame.
-intflux         1.0e-3                  # Jy
+intflux         1.e-3                  # Jy
 sbser           [0.1,1.0]               # sersic profile
 restfreq        251.6825177459          # GHz
-alpha           0.2                     # spectral index s_nu ~ nu^alpha
+alpha           2.0                     # spectral index s_nu ~ nu^alpha
 
 #   modeling algorithm
 method          'disk2d'               # underline algorithm
@@ -57,11 +57,11 @@ method          'disk2d'               # underline algorithm
 
 xypos[0]@cont	  356.539321-3./3600.  356.539321+3./3600.     1./3600./100.0
 xypos[1]@cont	  12.8220179445-1./3600.  12.8220179445+1./3600.     1./3600./100.0
-pa@cont         -110.                -10.                4.
-inc@cont        40                    80.                4.
-intflux@cont    0.1e-3                10.e-3              0.1
+pa@cont         -61.-90                -61.+90                4.
+inc@cont        10                    85.                4.
+intflux@cont    0.1e-3                100.e-3             0.1e-3
 sbser[0]@cont     0.01                   1.0              0.01
-alpha@cont        -1.0                  1.0               0.10  
+alpha@cont        -1.0                  5.0               0.10  
 
 method          'emcee'
 nwalkers        40

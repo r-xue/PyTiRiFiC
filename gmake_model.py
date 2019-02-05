@@ -229,12 +229,12 @@ if  __name__=="__main__":
     inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     
-    #"""
+    """
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    #"""
-    
     """
+    
+    #"""
     outfolder='bx610xy_cont_emcee'
     fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
                         verbose=True)
@@ -244,7 +244,7 @@ if  __name__=="__main__":
     theta=fit_tab['p_median'].data[0]
     lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
     print(lnl,blobs)
-    """
+    #"""
     
     #print(fit_dct['p_name'])
     
