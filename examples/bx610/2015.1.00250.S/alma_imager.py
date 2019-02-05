@@ -7,7 +7,7 @@ def exportimages(imagenames,
                  dropmask=True,
                  compress=False):
     """
-    expoprt tclean products into FITS
+    export tclean products into FITS
     """
     
     ext_list=['pb','pb.tt0',
@@ -139,3 +139,30 @@ if  __name__=="__main__":
                 weightng='briggs',robust=1.0,
                 threshold='1.49009361083e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
                 runclean=False,runexport=True)
+    
+    alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb2_msc_ro1.mfs',
+                spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',field='BX610',datacolumn='data',
+                imsize=[960,960],cell='0.043arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
+                start='',width='',nchan=-1,
+                deconvolver='mtmfs',specmode='mfs',scales=[0,5],
+                weightng='briggs',robust=1.0,
+                threshold='1.7066454469e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                runclean=False,runexport=True)
+    
+    alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb3_msc_ro1.mfs',
+                spw='2:233.2859375~235.10625GHz',field='BX610',datacolumn='data',
+                imsize=[960,960],cell='0.043arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
+                start='',width='',nchan=-1,
+                deconvolver='mtmfs',specmode='mfs',scales=[0,5],
+                weightng='briggs',robust=1.0,
+                threshold='1.36334159083e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                runclean=False,runexport=True)
+    
+    alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb4_msc_ro1.mfs',
+                spw='3:234.9859375~236.80625GHz',field='BX610',datacolumn='data',
+                imsize=[960,960],cell='0.043arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
+                start='',width='',nchan=-1,
+                deconvolver='mtmfs',specmode='mfs',scales=[0,5],
+                weightng='briggs',robust=1.0,
+                threshold='1.27647451525e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                runclean=False,runexport=True)            
