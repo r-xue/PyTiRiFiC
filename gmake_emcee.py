@@ -65,10 +65,10 @@ def gmake_emcee_setup(inp_dct,dat_dct):
         fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],opt_dct[p_name][2])
 
     gmake_pformat(fit_dct)
-    print(fit_dct['p_name'])
-    print(fit_dct['p_start'])
-    print(fit_dct['p_format'])
-    print(fit_dct['p_format_keys'])
+    #print(fit_dct['p_name'])
+    #print(fit_dct['p_start'])
+    #print(fit_dct['p_format'])
+    #print(fit_dct['p_format_keys'])
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     fit_dct['nthreads']=multiprocessing.cpu_count()
@@ -85,15 +85,13 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     if  not os.path.exists(fit_dct['outfolder']):
         os.makedirs(fit_dct['outfolder'])
-    
-    fit_dct['fitstable']=fit_dct['outfolder']+'/chain.fits'
-    
-    fit_dct['chainfile']=fit_dct['outfolder']+'/chain.dat'
+
+    fit_dct['chainfile']=fit_dct['outfolder']+'/emcee_chain.dat'
     f=open(fit_dct['chainfile'], "w")
     output='{0:<5}'.format('it')+' '
     output+='{0:<5}'.format('wk')+' '
     output+=' '.join(('{0:'+fit_dct['p_format_keys'][x]+'}').format(fit_dct['p_name'][x]) for x in range(len(fit_dct['p_name'])))+' '
-    output+='{0:<8} {1:<8}'.format('lnprob','chisq')
+    output+='{0:<10} {1:<8}'.format('lnprob','chisq')
     output+='\n'
     f.write(output)
     f.close()
@@ -157,8 +155,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
     print("")
     print("Running MCMC...")
     print(">>"+fit_dct['chainfile'])
-    print(">>"+fit_dct['outfolder']+"/chain_mef.fits")
-    print(">>"+fit_dct['outfolder']+"/chain.fits")
+    print(">>"+fit_dct['outfolder']+"/emcee_chain.fits")
     print("")
 
     for i,(pos_i,lnprob_i,rstat_i,blobs_i) in enumerate(sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'])):
@@ -178,7 +175,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             output='{0:<5}'.format(fit_dct['step_last'])+' '
             output+='{0:<5}'.format(k)+' '
             output+=' '.join(('{0:'+fit_dct['p_format'][x]+'}').format(pos_i[k][x]) for x in range(len(pos_i[k])))+' '
-            output+='{0:<8.2f} {1:<8.1f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
+            output+='{0:<10.1f} {1:<8.1f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
             output+='\n'
             f.write(output)
         f.close()
