@@ -224,7 +224,7 @@ def gmake_model_disk2d(header,ra,dec,beamsize,
     # use meshgrid and don't worry about transposing
     x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
 
-    mod = Sersic2D(amplitude=1.0,r_eff=r_eff,n=4.,x_0=px,y_0=py,
+    mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
     model=mod(x,y)
 

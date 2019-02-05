@@ -269,7 +269,7 @@ def gmake_writepar(mod_dct,par_name,par_value):
             par_value=[par_value]*len(mod_dct[o_key][p_key][make_slice(i_key)])
         mod_dct[o_key][p_key][make_slice(i_key)]=par_value
     
-def gmake_pformat(fit_dct):
+def gmake_pformat(fit_dct,verbose=True):
     """
     fill..
     p_format            : format for values
@@ -277,8 +277,11 @@ def gmake_pformat(fit_dct):
     """
     p_format=[]
     p_format_keys=[]
-    print("+"*90)
-    print("optimizing parameters:")
+    
+    if  verbose==True:
+        print("+"*90)
+        print("optimizing parameters:")
+    
     for ind in range(len(fit_dct['p_name'])):
         
         p_key=fit_dct['p_name'][ind]
@@ -287,6 +290,7 @@ def gmake_pformat(fit_dct):
         p_up=fit_dct['p_up'][ind]
         
         smin=len(p_key)
+        
         print("{0:<3} {1} {2} {3} {4}".format(ind,p_key,p_start,p_lo,p_up))
 
         p_format0='<'+str(max(smin,5))
@@ -310,10 +314,16 @@ def gmake_pformat(fit_dct):
         if  fnmatch.fnmatch(p_key,'lnf*'):
             p_format0='<'+str(max(smin,4))+'.4f'
             p_format0_keys='<'+str(max(smin,4))
+        #   spectral index
+        if  fnmatch.fnmatch(p_key,'alpha*'):
+            p_format0='<'+str(max(smin,5))+'.2f'
+            p_format0_keys='<'+str(max(smin,5))        
         
         p_format+=[p_format0]
         p_format_keys+=[p_format0_keys]
-    print("+"*90)
+    
+    if  verbose==True:
+        print("+"*90)
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
