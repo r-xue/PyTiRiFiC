@@ -348,7 +348,9 @@ def gmake_read_data(inp_dct,verbose=False,
         if  'error' in obj:
             em_list=obj['error'].split(",")
         if  'sample' in obj:
-            sp_list=obj['sample'].split(",")            
+            sp_list=obj['sample'].split(",")
+        if  'psf' in obj:
+            pf_list=obj['psf'].split(",")                        
         
         for ind in range(len(im_list)):
             if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
@@ -377,6 +379,12 @@ def gmake_read_data(inp_dct,verbose=False,
                 if  verbose==True:
                     print('loading: '+sp_list[ind]+' to ')
                     print('sample@'+im_list[ind])
+            if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
+                data=fits.getdata(pf_list[ind],memmap=False)                
+                dat_dct['psf@'+im_list[ind]]=data
+                if  verbose==True:
+                    print('loading: '+pf_list[ind]+' to ')
+                    print('mask@'+im_list[ind])                    
                         
     if  fill_mask==True or fill_error==True:
 

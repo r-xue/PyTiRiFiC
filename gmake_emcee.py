@@ -360,7 +360,7 @@ def gmake_emcee_analyze(outfolder,
         axes[-1,-1].axis('off')
 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/emcee-iteration-par.png"
+    figname=outfolder+"/emcee-iteration.png"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:
@@ -401,7 +401,7 @@ def gmake_emcee_analyze(outfolder,
         axes[-1,-1].axis('off')
 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/emcee-iteration-meta.png"
+    figname=outfolder+"/emcee-iteration-blobs.png"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:

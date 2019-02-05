@@ -12,7 +12,11 @@ this part will not be skipped by gmake_readpars()
 tips:
     keyword values need to be in the Python syntax, i.e. put quote around the 
     variable you would like to let the program to interpret.
-
+    
+    one risk of using dirty image/beam: 
+        if a strong source is not included into the model-list, its sidelob
+        will show up in the cutout
+    
 ################################################################################
 @cont                                   # object id (per feature per component)
 ################################################################################
@@ -21,13 +25,12 @@ name            'bx610-cont'            # something meaningful to you
 note            'submm cont of BX610 in SPW25/27/29/31'
 
 #   data description
-image           'examples/bx610/bx610_spw25.mfs.fits,examples/bx610/bx610_spw27.mfs.fits,examples/bx610/bx610_spw29.mfs.fits,examples/bx610/bx610_spw31.mfs.fits'
-error           'examples/bx610/bx610_spw25.mfs.unc.fits,examples/bx610/bx610_spw27.mfs.unc.fits,examples/bx610/bx610_spw29.mfs.unc.fits,examples/bx610/bx610_spw31.mfs.unc.fits'
-mask            'examples/bx610/bx610_spw25.mfs.hex_im.fits,examples/bx610/bx610_spw27.mfs.hex_im.fits,examples/bx610/bx610_spw29.mfs.hex_im.fits,examples/bx610/bx610_spw31.mfs.hex_im.fits'
-sample          'examples/bx610/bx610_spw25.mfs.hex_tb.fits,examples/bx610/bx610_spw27.mfs.hex_tb.fits,examples/bx610/bx610_spw29.mfs.hex_tb.fits,examples/bx610/bx610_spw31.mfs.hex_tb.fits'
-
-psf             None                    # psf file (otherwise using header info)
-samp            None                    # sampling index table
+image           'examples/bx610/bx610.bb1.mfs.iter0.image.fits,examples/bx610/bx610.bb2.mfs.iter0.image.fits,examples/bx610/bx610.bb3.mfs.iter0.image.fits,examples/bx610/bx610.bb4.mfs.iter0.image.fits'
+error           'examples/bx610/bx610.bb1.mfs.iter0.unc.fits,examples/bx610/bx610.bb2.mfs.iter0.unc.fits,examples/bx610/bx610.bb3.mfs.iter0.unc.fits,examples/bx610/bx610.bb4.mfs.iter0.unc.fits'
+mask            'examples/bx610/bx610.bb1.mfs.iter0.mask.fits,examples/bx610/bx610.bb2.mfs.iter0.mask.fits,examples/bx610/bx610.bb3.mfs.iter0.mask.fits,examples/bx610/bx610.bb4.mfs.iter0.mask.fits'
+sample          'examples/bx610/bx610.bb1.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb2.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb3.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb4.mfs.iter0.hex_tb.fits'
+psf             'examples/bx610/bx610.bb1.mfs.iter0.psf.fits,examples/bx610/bx610.bb2.mfs.iter0.psf.fits,examples/bx610/bx610.bb3.mfs.iter0.psf.fits,examples/bx610/bx610.bb4.mfs.iter0.psf.fits' 
+                                        # psf file (otherwise using header info)
 bmaj            None                    # bmaj
 bmin            None                    # bmin
 bpa             None                    # bpa

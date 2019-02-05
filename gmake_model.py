@@ -38,6 +38,7 @@ def gmake_model_api(mod_dct,dat_dct={},
             error=dat_dct['error@'+image]
             mask=dat_dct['mask@'+image]
             sample=dat_dct['sample@'+image]
+            psf=dat_dct['psf@'+image]
             
             beamsize=[0.2,0.2,0.]
             
@@ -61,6 +62,7 @@ def gmake_model_api(mod_dct,dat_dct={},
                 
             model=gmake_model_disk2d(hd,
                                      xypos[0],xypos[1],beamsize,
+                                     psf=psf,
                                      r_eff=ser[0],
                                      n=ser[1],                                     
                                      cleanout=False,
@@ -79,6 +81,7 @@ def gmake_model_api(mod_dct,dat_dct={},
                 models['error@'+image]=error     
                 models['mask@'+image]=mask
                 models['sample@'+image]=sample            
+                models['psf@'+image]=psf
                 
     return models                
 
@@ -124,6 +127,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         mk=models[key.replace('data@','mask@')]
         sp=models[key.replace('data@','sample@')]
         hd=models[key.replace('data@','header@')]
+        pf=models[key.replace('data@','psf@')]
         
         #tic0=time.time()
 
@@ -181,6 +185,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
             fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
             fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
+            fits.writeto(savemodel+'/psf_'+basename,pf,hd,overwrite=True)
 
         #"""
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
@@ -227,17 +232,20 @@ if  __name__=="__main__":
     execfile('gmake_emcee.py')
 
     inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
+    #pprint.pprint(inp_dct)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     
-    """
-    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    """
-    
     #"""
+    #fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    #"""
+    
+    
+    outfolder='bx610xy_cont_emcee_working1'
     outfolder='bx610xy_cont_emcee'
     fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
                         verbose=True)
+    #"""
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
     fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')

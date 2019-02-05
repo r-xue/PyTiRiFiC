@@ -204,6 +204,7 @@ def gmake_kinmspy_api(mod_dct,dat_dct={},
 
 
 def gmake_model_disk2d(header,ra,dec,beamsize,
+                       psf=None,
                        r_eff=20.0,
                        n=1.0,
                        intflux=1.,
@@ -227,13 +228,19 @@ def gmake_model_disk2d(header,ra,dec,beamsize,
     mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
     model=mod(x,y)
+    
+    #   PSF_BEAM normalized to 1 at PEAK
+    if  psf is None:
+        psf_beam=makebeam(header['NAXIS1'],header['NAXIS2'],[beamsize[0]/cell,beamsize[1]/cell],rot=beamsize[2])
+    else:
+        psf_beam=np.squeeze(psf)
 
-    psf = makebeam(header['NAXIS1'],header['NAXIS2'],[beamsize[0]/cell,beamsize[1]/cell],rot=beamsize[2])
     if  not cleanout:
-        model=convolve_fft(model,psf)
-    if  not cleanout:
-        model *= ( intflux*psf.sum()/model.sum() )
+        # end up wuth Jy/beam
+        model=convolve_fft(model,psf_beam)
+        model *= ( intflux*psf_beam.sum()/model.sum() )
     else: 
+        # end up with Jy/pix
         model *= ( intflux/model.sum() )
 
     return model
