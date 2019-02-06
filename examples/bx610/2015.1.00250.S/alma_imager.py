@@ -99,7 +99,8 @@ def alma_imager(vis='',imagename='',
 
     for i in range(npass):
         
-        os.system('rm -rf '+imagename_list[i]+'*')
+        if  imagename_list[i]==im0:
+            os.system('rm -rf '+imagename_list[i]+'*')
         
         tclean(vis=vis,
                field=field,
@@ -112,15 +113,13 @@ def alma_imager(vis='',imagename='',
                deconvolver=deconvolver, scales=scales,
                pblimit=pblimit, restoration=True,
                restoringbeam='common', pbcor=False, weighting=weighting, robust=robust,
-               niter=0, threshold=threshold, interactive=0,
+               niter=niter_list[i], threshold=threshold, interactive=0,
                usemask=usemask,pbmask=pbmask,
                sidelobethreshold=3.0, noisethreshold=5.0, lownoisethreshold=1.5,
                negativethreshold=0.0, minbeamfrac=0.3, growiterations=75,
                dogrowprune=True, minpercentchange=1.0, savemodel='none',
                restart=True, calcres=calcrp_list[i], calcpsf=calcrp_list[i], parallel=False)
         
-        if  runexport==True:
-            exportimages(imagename_list[i])
         
         if  imagename_list[i]==im0:
             for ext in ext_list:
@@ -130,8 +129,12 @@ def alma_imager(vis='',imagename='',
 
         if  imagename_list[i]==imn:
             os.system('cp -rf summaryplot_1.png '+imn+'.summaryplot.png')
-        
-
+    
+    
+    if  runexport==True:
+        for i in range(npass):
+            exportimages(imagename_list[i])
+            
     return
     
 
@@ -143,7 +146,7 @@ if  __name__=="__main__":
                 start='',width='',nchan=-1,
                 deconvolver='mtmfs',specmode='mfs',scales=[0,5],
                 weighting='briggs',robust=1.0,
-                threshold='1.49009361083e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                threshold='6.1230152e-05Jy',usemask='pb',pbmask=0.2,niter=10000,
                 runclean=True,runexport=True)
     
     alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb2_msc_ro1.mfs',
@@ -152,7 +155,7 @@ if  __name__=="__main__":
                 start='',width='',nchan=-1,
                 deconvolver='mtmfs',specmode='mfs',scales=[0,5],
                 weighting='briggs',robust=1.0,
-                threshold='1.7066454469e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                threshold='6.7647961e-05Jy',usemask='pb',pbmask=0.2,niter=10000,
                 runclean=True,runexport=True)
     
     alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb3_msc_ro1.mfs',
@@ -161,7 +164,7 @@ if  __name__=="__main__":
                 start='',width='',nchan=-1,
                 deconvolver='mtmfs',specmode='mfs',scales=[0,5],
                 weighting='briggs',robust=1.0,
-                threshold='1.36334159083e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                threshold='5.6094865e-05Jy',usemask='pb',pbmask=0.2,niter=10000,
                 runclean=True,runexport=True)
     
     alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename='bx610.bb4_msc_ro1.mfs',
@@ -170,5 +173,5 @@ if  __name__=="__main__":
                 start='',width='',nchan=-1,
                 deconvolver='mtmfs',specmode='mfs',scales=[0,5],
                 weighting='briggs',robust=1.0,
-                threshold='1.27647451525e-4Jy',usemask='pb',pbmask=0.2,niter=10000,
+                threshold='5.1352235e-05Jy',usemask='pb',pbmask=0.2,niter=10000,
                 runclean=True,runexport=True)            
