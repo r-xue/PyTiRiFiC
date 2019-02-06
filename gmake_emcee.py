@@ -504,7 +504,7 @@ def gmake_emcee_analyze(outfolder,
     
 if  __name__=="__main__":
     
-    execfile('gmake_kinmspy.py')
+    execfile('gmake_model_func.py')
     execfile('gmake_utils.py')
     
     """

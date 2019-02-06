@@ -5,13 +5,13 @@ from astropy.modeling.models import Sersic2D
 import matplotlib.pyplot as plt
 from astropy.wcs import WCS
 from astropy.io import fits
-from makebeam import makebeam
 from astropy.convolution import convolve_fft
 import pprint
 
 def gmake_model_api(mod_dct,dat_dct={},
                       outname='',
                       decomp=False,
+                      cleanout=True,
                       verbose=False):
     
     models={}
@@ -69,13 +69,28 @@ def gmake_model_api(mod_dct,dat_dct={},
                                      intflux=intflux,
                                      posang=posang,
                                      ellip=ellip)
+            if  cleanout==True:
+                cmodel=gmake_model_disk2d(hd,
+                                         xypos[0],xypos[1],beamsize,
+                                         psf=psf,
+                                         r_eff=ser[0],
+                                         n=ser[1],                                     
+                                         cleanout=True,
+                                         intflux=intflux,
+                                         posang=posang,
+                                         ellip=ellip)            
+            
             if  decomp==True:
                 models[tag+'@'+image]=model
             
             if  'model@'+image in models.keys():
                 models['model@'+image]+=model
+                if  cleanout==True:
+                    models['cmodel@'+image]+=cmodel
             else:
                 models['model@'+image]=model.copy()
+                if  cleanout==True:
+                    models['cmodel@'+image]=cmodel.copy()
                 models['header@'+image]=hd
                 models['data@'+image]=data
                 models['error@'+image]=error     
@@ -123,6 +138,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         
         im=models[key]
         mo=models[key.replace('data@','model@')]
+        cm=models[key.replace('data@','cmodel@')]
         em=models[key.replace('data@','error@')]
         mk=models[key.replace('data@','mask@')]
         sp=models[key.replace('data@','sample@')]
@@ -182,6 +198,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 os.makedirs(savemodel)
             fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
             fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
+            fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)
             fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
             fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
             fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
@@ -227,7 +244,7 @@ if  __name__=="__main__":
     
     #pass
 
-    execfile('gmake_kinmspy.py')
+    execfile('gmake_model_func.py')
     execfile('gmake_utils.py')
     execfile('gmake_emcee.py')
 
@@ -241,15 +258,18 @@ if  __name__=="__main__":
     #"""
     
     
-    outfolder='bx610xy_cont_emcee_working1'
-    outfolder='bx610xy_cont_emcee'
-    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
-                        verbose=True)
+    #outfolder='bx610xy_cont_emcee_working1'
+    #outfolder='bx610xy_cont_emcee'
+    #fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
+    #                    verbose=True)
+    
     #"""
+    outfolder='bx610xy_cont_emcee'
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    fit_tab=Table.read(outfolder+'_working1/'+'emcee_chain_analyzed.fits')
     theta=fit_tab['p_median'].data[0]
+    print(theta)
     lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
     print(lnl,blobs)
     #"""
