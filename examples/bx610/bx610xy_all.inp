@@ -46,7 +46,7 @@ vsys            110.0                     # [km/s] [optical convention]
 radi            [0,0.12,0.24,0.36,0.48]
 vrot            [0,193,193,193,193]
 intflux         0.93                     # Jy/km/s
-sbexp           0.084                    # exp profile : scale-length
+sbser           [0.084,1.]                    # exp profile : scale-length
 vdis            [20,20,20,20,20]
 
 #   modeling algorithm
@@ -85,7 +85,7 @@ vsys            'vsys@co76'             # [km/s] [optical convetion]
 radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
-sbexp           0.093                     # exp profile : scale-length
+sbser           [0.093,1.]                     # exp profile : scale-length
 vdis            'vdis@co76'
 
 #   modeling algorithm
@@ -96,15 +96,15 @@ method          'kinmspy'               # underline algorithm
 ################################################################################
 
 name            'bx610-cont'            # something meaningful to you
-note            'mm/submm cont of BX610 in SPW25/27/29/31'
+note            'submm cont of BX610 in SPW25/27/29/31'
 
 #   data description
-image           'examples/bx610/bx610_spw25.fits,examples/bx610/bx610_spw27.fits,examples/bx610/bx610_spw29.fits,examples/bx610/bx610_spw31.fits'
-    # data cubes or images
-    # the continuum model will be mapped into each dataset
-#mask            None                    # mask cube (value=1 for chi^2)
-psf             None                    # psf file (otherwise using header info)
-samp            None                    # sampling index table
+image           'examples/bx610/bx610.bb1.mfs.itern.image.fits,examples/bx610/bx610.bb2.mfs.itern.image.fits,examples/bx610/bx610.bb3.mfs.itern.image.fits,examples/bx610/bx610.bb4.mfs.itern.image.fits'
+error           'examples/bx610/bx610.bb1.mfs.itern.unc.fits,examples/bx610/bx610.bb2.mfs.itern.unc.fits,examples/bx610/bx610.bb3.mfs.itern.unc.fits,examples/bx610/bx610.bb4.mfs.itern.unc.fits'
+mask            'examples/bx610/bx610.bb1.mfs.itern.mask.fits,examples/bx610/bx610.bb2.mfs.itern.mask.fits,examples/bx610/bx610.bb3.mfs.itern.mask.fits,examples/bx610/bx610.bb4.mfs.itern.mask.fits'
+sample          'examples/bx610/bx610.bb1.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb2.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb3.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb4.mfs.itern.hex_tb.fits'
+psf             'examples/bx610/bx610.bb1.mfs.itern.psf.fits,examples/bx610/bx610.bb2.mfs.itern.psf.fits,examples/bx610/bx610.bb3.mfs.itern.psf.fits,examples/bx610/bx610.bb4.mfs.itern.psf.fits' 
+                                        # psf file (otherwise using header info)
 bmaj            None                    # bmaj
 bmin            None                    # bmin
 bpa             None                    # bpa
@@ -112,19 +112,21 @@ bpa             None                    # bpa
 #   model geometry
 type            'contdisk'              # model type
 xypos           'xypos@co76'            # [degree/degree]
-z               'z@co76'                # optical convention
-pa              'pa@co76'               # [degree] north up / counterclockwise
-inc             'inc@co76'              # [degree] inclination
+z               'z@co76'                    # optical convention
+pa              'pa@co76'                     # [degree] north up / counterclockwise
+inc             'inc@co76'                     # [degree] inclination
 
 #   emissivity/kinematics
 #   the continuum model is described by a reference frequency / intensity / slope
 #   in the rest frame.
-restfreq        800.0                   # GHz
-esbr            [6.10,0.1]              # exp profile
-vdis            'vdis@co76'
+intflux         1.e-3                  # Jy
+sbser           [0.1,1.0]               # sersic profile
+restfreq        251.6825177459          # GHz
+alpha           2.0                     # spectral index s_nu ~ nu^alpha
 
 #   modeling algorithm
-method          'default'               # underline algorithm
+method          'disk2d'               # underline algorithm
+
 
 ################################################################################
 @optimize								# optimization setup
@@ -139,6 +141,15 @@ vrot[1:5]@co76	0.		              +800.               10.
 pa@co76         -110.                -10.                4.
 inc@co76        40                    80.                4.
 intflux@co76   0.1                  200.0              0.1
-sbexp@co76     0.01                   1.0              0.01
+sbser[0]@co76     0.01                   1.0              0.01
+
 intflux@ci21   0.1                  200.0              0.1
-sbexp@ci21     0.01                   1.0              0.01
+sbser[0]@ci21     0.01                   1.0              0.01
+
+intflux@cont    0.1e-3                100.e-3             0.1e-3
+sbser[0]@cont     0.01                   1.0              0.01
+alpha@cont        -1.0                  5.0               0.10 
+
+method          'emcee'
+nwalkers        40
+outdir         'bx610xy_all_cm_emcee'
