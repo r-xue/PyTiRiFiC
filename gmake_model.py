@@ -11,7 +11,7 @@ import pprint
 def gmake_model_api(mod_dct,dat_dct={},
                       outname='',
                       decomp=False,
-                      cleanout=True,
+                      cleanout=False,
                       verbose=False):
     
     models={}
@@ -38,8 +38,10 @@ def gmake_model_api(mod_dct,dat_dct={},
             error=dat_dct['error@'+image]
             mask=dat_dct['mask@'+image]
             sample=dat_dct['sample@'+image]
-            psf=dat_dct['psf@'+image]
-            
+            if  'psf@'+image in dat_dct.keys():
+                psf=dat_dct['psf@'+image]
+            else:
+                psf=None
             beamsize=[0.2,0.2,0.]
             
             if  'BMAJ' in hd.keys():
@@ -138,7 +140,8 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         
         im=models[key]
         mo=models[key.replace('data@','model@')]
-        cm=models[key.replace('data@','cmodel@')]
+        if  'cmodel@' in key:
+            cm=models[key.replace('data@','cmodel@')]
         em=models[key.replace('data@','error@')]
         mk=models[key.replace('data@','mask@')]
         sp=models[key.replace('data@','sample@')]
@@ -198,7 +201,8 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 os.makedirs(savemodel)
             fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
             fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
-            fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)
+            if  'cmodel@' in key:
+                fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)
             fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
             fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
             fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
@@ -248,30 +252,33 @@ if  __name__=="__main__":
     execfile('gmake_utils.py')
     execfile('gmake_emcee.py')
 
+    """
     inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
     #pprint.pprint(inp_dct)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    """
+    
     
     #"""
-    #fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    #"""
-    
     
     #outfolder='bx610xy_cont_emcee_working1'
-    #outfolder='bx610xy_cont_emcee'
-    #fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=50,plotcorner=True,
-    #                    verbose=True)
+    outfolder='bx610xy_emcee'
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
+                        verbose=True)
     
-    #"""
-    outfolder='bx610xy_cont_emcee'
+    """
+    outfolder='bx610xy_cont_cm_emcee'
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    fit_tab=Table.read(outfolder+'_working1/'+'emcee_chain_analyzed.fits')
+    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
     theta=fit_tab['p_median'].data[0]
     print(theta)
     lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
     print(lnl,blobs)
+    """
     #"""
     
     #print(fit_dct['p_name'])

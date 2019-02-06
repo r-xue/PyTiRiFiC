@@ -25,11 +25,11 @@ name            'bx610-cont'            # something meaningful to you
 note            'submm cont of BX610 in SPW25/27/29/31'
 
 #   data description
-image           'examples/bx610/bx610.bb1.mfs.iter0.image.fits,examples/bx610/bx610.bb2.mfs.iter0.image.fits,examples/bx610/bx610.bb3.mfs.iter0.image.fits,examples/bx610/bx610.bb4.mfs.iter0.image.fits'
-error           'examples/bx610/bx610.bb1.mfs.iter0.unc.fits,examples/bx610/bx610.bb2.mfs.iter0.unc.fits,examples/bx610/bx610.bb3.mfs.iter0.unc.fits,examples/bx610/bx610.bb4.mfs.iter0.unc.fits'
-mask            'examples/bx610/bx610.bb1.mfs.iter0.mask.fits,examples/bx610/bx610.bb2.mfs.iter0.mask.fits,examples/bx610/bx610.bb3.mfs.iter0.mask.fits,examples/bx610/bx610.bb4.mfs.iter0.mask.fits'
-sample          'examples/bx610/bx610.bb1.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb2.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb3.mfs.iter0.hex_tb.fits,examples/bx610/bx610.bb4.mfs.iter0.hex_tb.fits'
-psf             'examples/bx610/bx610.bb1.mfs.iter0.psf.fits,examples/bx610/bx610.bb2.mfs.iter0.psf.fits,examples/bx610/bx610.bb3.mfs.iter0.psf.fits,examples/bx610/bx610.bb4.mfs.iter0.psf.fits' 
+image           'examples/bx610/bx610.bb1.mfs.itern.image.fits,examples/bx610/bx610.bb2.mfs.itern.image.fits,examples/bx610/bx610.bb3.mfs.itern.image.fits,examples/bx610/bx610.bb4.mfs.itern.image.fits'
+error           'examples/bx610/bx610.bb1.mfs.itern.unc.fits,examples/bx610/bx610.bb2.mfs.itern.unc.fits,examples/bx610/bx610.bb3.mfs.itern.unc.fits,examples/bx610/bx610.bb4.mfs.itern.unc.fits'
+mask            'examples/bx610/bx610.bb1.mfs.itern.mask.fits,examples/bx610/bx610.bb2.mfs.itern.mask.fits,examples/bx610/bx610.bb3.mfs.itern.mask.fits,examples/bx610/bx610.bb4.mfs.itern.mask.fits'
+sample          'examples/bx610/bx610.bb1.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb2.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb3.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb4.mfs.itern.hex_tb.fits'
+psf             'examples/bx610/bx610.bb1.mfs.itern.psf.fits,examples/bx610/bx610.bb2.mfs.itern.psf.fits,examples/bx610/bx610.bb3.mfs.itern.psf.fits,examples/bx610/bx610.bb4.mfs.itern.psf.fits' 
                                         # psf file (otherwise using header info)
 bmaj            None                    # bmaj
 bmin            None                    # bmin
@@ -68,4 +68,4 @@ alpha@cont        -1.0                  5.0               0.10
 
 method          'emcee'
 nwalkers        40
-outdir         'bx610xy_cont_emcee'
+outdir         'bx610xy_cont_cm_emcee'

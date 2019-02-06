@@ -64,3 +64,15 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + Estimation
 + Analysis
 + Assessment
+
+### To-Do List
+
++ ~~implement hex index~~
++ ~~implement cont fitting~~
++ ~~streamline archival data imaging~~
++ ~~dirty PSF~~
++ galario xy-uv transfer & efficiency
++ plotting: channel maps / xy-xz-yz mom0
++ save metadata
++ improve corner plots
++ sampler pickle
