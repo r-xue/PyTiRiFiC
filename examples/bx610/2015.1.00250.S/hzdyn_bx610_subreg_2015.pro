@@ -17,49 +17,48 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 
-input=[ '*bb1*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
-        '*bb2*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
-        '*bb3*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
-        '*bb4*nm.mfs/bx610.iter0.image.tt0.fits.gz']
-for i=0,n_elements(input)-1 do begin
-    im=readfits(repo+input[i],hd)
+input_temp='*bbx*nm.cube/bx610.iter0.image.fits.gz'
+output_temp='bx610.bbx.cube.iter0.image.fits'
+
+for i=0,3 do begin
+    input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
+    im=readfits(repo+input,hd)
     hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.5393354,12.8220249]
-    shortname='bx610.bb'+strtrim(i+1,2)+'.mfs.iter0.image.fits'
-    writefits,shortname,subim,subhd
+    output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
+    writefits,output,subim,subhd
 endfor
 
-input=[ '*bb1*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
-        '*bb2*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
-        '*bb3*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
-        '*bb4*pm.mfs/bx610.iter0.psf.tt0.fits.gz']
-for i=0,n_elements(input)-1 do begin
-    im=readfits(repo+input[i],hd)
+
+for i=0,3 do begin
+    input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
+    input=repstr(input,'.image.','.psf.')
+    im=readfits(repo+input,hd)
     loc=where(im eq max(im,/nan))
     loc=loc[0]
     ind = ARRAY_INDICES(im, loc)
     hsize=52
-    hextract,im,hd,subim,subhd,ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize
-    shortname='bx610.bb'+strtrim(i+1,2)+'.mfs.iter0.psf.fits'
-    writefits,shortname,subim,subhd
+    hextract3d,im,hd,subim,subhd,[ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize]
+    output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
+    output=repstr(output,'.image.','.psf.')
+    writefits,output,subim,subhd
 endfor
 
 END
 
 PRO HZDYN_BX610_SUBREG_2015_MASK
 
-prefix_list=[   'bx610.bb1.mfs.iter0.image.fits',$
-                'bx610.bb2.mfs.iter0.image.fits',$
-                'bx610.bb3.mfs.iter0.image.fits',$
-                'bx610.bb4.mfs.iter0.image.fits']
 
-for i=0,n_elements(prefix_list)-1 do begin
-    im=readfits(prefix_list[i],hd)
+input_temp='bx610.bbx.cube.iter0.image.fits'
+
+for i=0,3 do begin
+    input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
+    im=readfits(input,hd)
     mk=im*0.0
     mk[(54-25):(54+25),(53-25):(53+25),*]=1.0
-    writefits,repstr(prefix_list[i],'.image','.mask'),mk,hd
+    writefits,repstr(input,'.image','.mask'),mk,hd
     unc=im*0.0
     unc=unc+robust_sigma(im)
-    writefits,repstr(prefix_list[i],'.image','.unc'),unc,hd
+    writefits,repstr(input,'.image','.unc'),unc,hd
 endfor
 
 END
@@ -68,10 +67,12 @@ PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 
 ;hexsample_bx610,'bx610_spw27',356.53929,12.822,xlimit=[33.-10.,60.+10.],ylimit=[40.-10.,64.+10.]
 
-hexsample_bx610,'bx610.bb1.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb2.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb3.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb4.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+
+
+hexsample_bx610,'bx610.bb1.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb2.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb3.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb4.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
 
 END
 

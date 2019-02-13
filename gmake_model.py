@@ -41,17 +41,15 @@ def gmake_model_api(mod_dct,dat_dct={},
                 psf=dat_dct['psf@'+image]
             else:
                 psf=None
-            beamsize=[0.2,0.2,0.]
             
+            beamsize=[0.2,0.2,0.]
             if  'BMAJ' in hd.keys():
                 beamsize[0]=hd['BMAJ']*3600.
             if  'BMIN' in hd.keys():
                 beamsize[1]=hd['BMIN']*3600.
             if  'BPA' in hd.keys():
                 beamsize[2]=hd['BPA']
-                
-            #beamsize=[0.5,0.2,20.0]
-                
+            
             xypos=obj['xypos']
             restfreq=obj['restfreq']
             intflux=obj['intflux']*(hd['CRVAL3']/1e9/obj['restfreq'])**obj['alpha']                                        
@@ -252,80 +250,6 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
 
 if  __name__=="__main__":
     
-    #pass
-    #pprint.pprint(inp_dct)
-    execfile('gmake_model_func.py')
-    execfile('gmake_utils.py')
-    execfile('gmake_emcee.py')
-
-    """
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_cm_cont.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    
-    outfolder='bx610xy_cont_cm_emcee'
-    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
-                        verbose=True)
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
-    theta=fit_tab['p_median'].data[0]
-    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
-    print(lnl,blobs)
-    """
-    
-    #"""
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_cont.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-
-    outfolder='bx610xy_cont_dm_emcee'
-    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
-                        verbose=True)
-
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
-    theta=fit_tab['p_median'].data[0]
-    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
-    print(lnl,blobs)    
-    #"""
-    
-    
-    
-    #"""
-    #"""
-    
-    #print(fit_dct['p_name'])
-    
-    #print(fit_dct['p_start'])
-    #gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,data_dct,savemodel='test',verbose=True)
-    
-    #pprint.pprint(models)
-    #print(models.keys())
-    
-    """
-    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
-    
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,[0.2,0.2,0.0],
-                             cleanout=False)
-    
-    fits.writeto('test_model_disk2d.fits',model,hd,overwrite=True)
-    
-    log_model=np.log(model)
-    plt.figure()
-    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
-           vmin=np.min(log_model), vmax=np.max(log_model))
-    plt.xlabel('x')
-    plt.ylabel('y')
-    cbar = plt.colorbar()
-    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
-    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
-    plt.savefig('test_model_disk2d.eps')
-    
-    """
-
+    pass
 
 
