@@ -107,7 +107,8 @@ def gmake_emcee_setup(inp_dct,dat_dct):
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
     tic0=time.time()
-    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/p_start')
+    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                                 savemodel=fit_dct['outfolder']+'/p_start')
     print('Took {0} second for one trial'.format(float(time.time()-tic0))) 
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])

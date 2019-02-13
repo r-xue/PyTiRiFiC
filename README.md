@@ -72,7 +72,13 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + ~~streamline archival data imaging~~
 + ~~dirty PSF~~
 + galario xy-uv transfer & efficiency
-+ plotting: channel maps / xy-xz-yz mom0
++ plotting: 
+	- 1D: data/model spectra
+	- 1D: rotation curve
+	- 2D: channel map
+	- 2D: face-on distribution
+	- 2D: mom0 mom1 maps
+	- 3D: volume rendering
 + save metadata
 + improve corner plots
 + sampler pickle

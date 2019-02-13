@@ -1,4 +1,4 @@
-PRO HZDYN_SUBREG_BX610_2015
+PRO HZDYN_BX610_SUBREG_2015
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 
@@ -15,47 +15,47 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 ;    writefits,'bx610_'+output_tag[i]+'.fits',subim,subhd
 ;endfor
 
-input=[ 'bx610.bb1_msc_ro1.mfs.itern.image.tt0.fits',$
-        'bx610.bb2_msc_ro1.mfs.itern.image.tt0.fits',$
-        'bx610.bb3_msc_ro1.mfs.itern.image.tt0.fits',$
-        'bx610.bb4_msc_ro1.mfs.itern.image.tt0.fits']
+repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
+
+input=[ '*bb1*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
+        '*bb2*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
+        '*bb3*nm.mfs/bx610.iter0.image.tt0.fits.gz',$
+        '*bb4*nm.mfs/bx610.iter0.image.tt0.fits.gz']
 for i=0,n_elements(input)-1 do begin
     im=readfits(repo+input[i],hd)
-    hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.53929,12.822]
-    shortname=repstr(input[i],'.tt0','')
-    shortname=repstr(shortname,'_msc_ro1','')
+    hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.5393354,12.8220249]
+    shortname='bx610.bb'+strtrim(i+1,2)+'.mfs.iter0.image.fits'
     writefits,shortname,subim,subhd
 endfor
 
-input=[ 'bx610.bb1_msc_ro1.mfs.itern.psf.tt0.fits',$
-    'bx610.bb2_msc_ro1.mfs.itern.psf.tt0.fits',$
-    'bx610.bb3_msc_ro1.mfs.itern.psf.tt0.fits',$
-    'bx610.bb4_msc_ro1.mfs.itern.psf.tt0.fits']
+input=[ '*bb1*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
+        '*bb2*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
+        '*bb3*pm.mfs/bx610.iter0.psf.tt0.fits.gz',$
+        '*bb4*pm.mfs/bx610.iter0.psf.tt0.fits.gz']
 for i=0,n_elements(input)-1 do begin
     im=readfits(repo+input[i],hd)
     loc=where(im eq max(im,/nan))
     loc=loc[0]
     ind = ARRAY_INDICES(im, loc)
-    hsize=49
+    hsize=52
     hextract,im,hd,subim,subhd,ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize
-    shortname=repstr(input[i],'.tt0','')
-    shortname=repstr(shortname,'_msc_ro1','')
+    shortname='bx610.bb'+strtrim(i+1,2)+'.mfs.iter0.psf.fits'
     writefits,shortname,subim,subhd
 endfor
 
 END
 
-PRO HZDYN_SUBREG_BX610_2015_MASK
+PRO HZDYN_BX610_SUBREG_2015_MASK
 
-prefix_list=[   'bx610.bb1.mfs.itern.image.fits',$
-                'bx610.bb2.mfs.itern.image.fits',$
-                'bx610.bb3.mfs.itern.image.fits',$
-                'bx610.bb4.mfs.itern.image.fits']
+prefix_list=[   'bx610.bb1.mfs.iter0.image.fits',$
+                'bx610.bb2.mfs.iter0.image.fits',$
+                'bx610.bb3.mfs.iter0.image.fits',$
+                'bx610.bb4.mfs.iter0.image.fits']
 
 for i=0,n_elements(prefix_list)-1 do begin
     im=readfits(prefix_list[i],hd)
     mk=im*0.0
-    mk[(33-10):(60+10),(40-10):(64+10),*]=1.0
+    mk[(54-25):(54+25),(53-25):(53+25),*]=1.0
     writefits,repstr(prefix_list[i],'.image','.mask'),mk,hd
     unc=im*0.0
     unc=unc+robust_sigma(im)
@@ -64,14 +64,14 @@ endfor
 
 END
 
-PRO HZDYN_SUBREG_BX610_2015_HEXSAMPLE
+PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 
 ;hexsample_bx610,'bx610_spw27',356.53929,12.822,xlimit=[33.-10.,60.+10.],ylimit=[40.-10.,64.+10.]
 
-hexsample_bx610,'bx610.bb1.mfs.itern',356.53929,12.822,xlimit=[33.-10,60.+10],ylimit=[40.-10,64.+10]
-hexsample_bx610,'bx610.bb2.mfs.itern',356.53929,12.822,xlimit=[33.-10,60.+10],ylimit=[40.-10,64.+10]
-hexsample_bx610,'bx610.bb3.mfs.itern',356.53929,12.822,xlimit=[33.-10,60.+10],ylimit=[40.-10,64.+10]
-hexsample_bx610,'bx610.bb4.mfs.itern',356.53929,12.822,xlimit=[33.-10,60.+10],ylimit=[40.-10,64.+10]
+hexsample_bx610,'bx610.bb1.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb2.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb3.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+hexsample_bx610,'bx610.bb4.mfs.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
 
 END
 

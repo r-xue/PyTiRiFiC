@@ -9,7 +9,6 @@ from astropy.convolution import convolve_fft
 import pprint
 
 def gmake_model_api(mod_dct,dat_dct={},
-                      outname='',
                       decomp=False,
                       cleanout=False,
                       verbose=False):
@@ -50,6 +49,8 @@ def gmake_model_api(mod_dct,dat_dct={},
                 beamsize[1]=hd['BMIN']*3600.
             if  'BPA' in hd.keys():
                 beamsize[2]=hd['BPA']
+                
+            #beamsize=[0.5,0.2,20.0]
                 
             xypos=obj['xypos']
             restfreq=obj['restfreq']
@@ -97,11 +98,11 @@ def gmake_model_api(mod_dct,dat_dct={},
                 models['data@'+image]=data
                 models['error@'+image]=error     
                 models['mask@'+image]=mask
-                models['sample@'+image]=sample            
-                models['psf@'+image]=psf
+                models['sample@'+image]=sample
+                if  'psf@'+image in dat_dct.keys():
+                    models['psf@'+image]=psf
                 
     return models                
-
 
 def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                          savemodel='',
@@ -128,7 +129,12 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     #tic0=time.time()
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
-    models=gmake_model_api(mod_dct,dat_dct=dat_dct)
+    if  savemodel!='':
+        cleanout=True
+    else:
+        cleanout=False
+    models=gmake_model_api(mod_dct,dat_dct=dat_dct,
+                           decomp=False,cleanout=cleanout,verbose=False)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
      
@@ -139,14 +145,15 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             continue
         
         im=models[key]
+        hd=models[key.replace('data@','header@')]        
         mo=models[key.replace('data@','model@')]
-        if  'cmodel@' in key:
-            cm=models[key.replace('data@','cmodel@')]
         em=models[key.replace('data@','error@')]
         mk=models[key.replace('data@','mask@')]
         sp=models[key.replace('data@','sample@')]
-        hd=models[key.replace('data@','header@')]
-        pf=models[key.replace('data@','psf@')]
+        if  key.replace('data@','cmodel@') in models.keys():
+            cm=models[key.replace('data@','cmodel@')]        
+        if  key.replace('data@','psf@') in models.keys():
+            pf=models[key.replace('data@','psf@')]
         
         #tic0=time.time()
 
@@ -201,16 +208,15 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 os.makedirs(savemodel)
             fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
             fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
-            if  'cmodel@' in key:
-                fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)
             fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
             fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
             fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
-            fits.writeto(savemodel+'/psf_'+basename,pf,hd,overwrite=True)
-
+            if  key.replace('data@','cmodel@') in models.keys():
+                fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)            
+            if  key.replace('data@','psf@') in models.keys():
+                fits.writeto(savemodel+'/psf_'+basename,pf,hd,overwrite=True)
         #"""
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
-        
     lnl=blobs['lnprob']
     
     return lnl,blobs
@@ -247,38 +253,49 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
 if  __name__=="__main__":
     
     #pass
-
+    #pprint.pprint(inp_dct)
     execfile('gmake_model_func.py')
     execfile('gmake_utils.py')
     execfile('gmake_emcee.py')
 
     """
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_cont.inp',verbose=False)
-    #pprint.pprint(inp_dct)
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_cm_cont.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=500)
-    """
     
-    
-    #"""
-    
-    #outfolder='bx610xy_cont_emcee_working1'
-    outfolder='bx610xy_emcee'
+    outfolder='bx610xy_cont_cm_emcee'
     fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
                         verbose=True)
-    
-    """
-    outfolder='bx610xy_cont_cm_emcee'
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
     fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
     theta=fit_tab['p_median'].data[0]
-    print(theta)
     lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
     print(lnl,blobs)
     """
+    
+    #"""
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_cont.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+
+    outfolder='bx610xy_cont_dm_emcee'
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,
+                        verbose=True)
+
+    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    theta=fit_tab['p_median'].data[0]
+    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
+    print(lnl,blobs)    
+    #"""
+    
+    
+    
+    #"""
     #"""
     
     #print(fit_dct['p_name'])
