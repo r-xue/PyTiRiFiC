@@ -1,0 +1,74 @@
+################################################################################
+@changelog
+################################################################################
+
+this part will not be skipped by gmake_readpars()
+
+################################################################################
+@comments
+################################################################################
+
+this part will not be skipped by gmake_readpars()
+tips:
+    keyword values need to be in the Python syntax, i.e. put quote around the 
+    variable you would like to let the program to interpret.
+    
+    one risk of using dirty image/beam: 
+        if a strong source is not included into the model-list, its sidelob
+        will show up in the cutout
+    
+################################################################################
+@cont                                   # object id (per feature per component)
+################################################################################
+
+name            'bx610-cont'            # something meaningful to you
+note            'submm cont of BX610 in SPW25/27/29/31'
+
+#   data description
+image           'examples/bx610/bx610.bb1.mfs.itern.image.fits,examples/bx610/bx610.bb2.mfs.itern.image.fits,examples/bx610/bx610.bb3.mfs.itern.image.fits,examples/bx610/bx610.bb4.mfs.itern.image.fits'
+error           'examples/bx610/bx610.bb1.mfs.itern.unc.fits,examples/bx610/bx610.bb2.mfs.itern.unc.fits,examples/bx610/bx610.bb3.mfs.itern.unc.fits,examples/bx610/bx610.bb4.mfs.itern.unc.fits'
+mask            'examples/bx610/bx610.bb1.mfs.itern.hex_im.fits,examples/bx610/bx610.bb2.mfs.itern.hex_im.fits,examples/bx610/bx610.bb3.mfs.itern.hex_im.fits,examples/bx610/bx610.bb4.mfs.itern.hex_im.fits'
+sample          'examples/bx610/bx610.bb1.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb2.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb3.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb4.mfs.itern.hex_tb.fits'
+#image           'examples/bx610/bx610.bb1.mfs.itern.image.fits,examples/bx610/bx610.bb2.mfs.itern.image.fits,examples/bx610/bx610.bb4.mfs.itern.image.fits'
+#error           'examples/bx610/bx610.bb1.mfs.itern.unc.fits,examples/bx610/bx610.bb2.mfs.itern.unc.fits,examples/bx610/bx610.bb4.mfs.itern.unc.fits'
+#mask            'examples/bx610/bx610.bb1.mfs.itern.hex_im.fits,examples/bx610/bx610.bb2.mfs.itern.hex_im.fits,examples/bx610/bx610.bb4.mfs.itern.hex_im.fits'
+#sample          'examples/bx610/bx610.bb1.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb2.mfs.itern.hex_tb.fits,examples/bx610/bx610.bb4.mfs.itern.hex_tb.fits'
+                                        # psf file (otherwise using header info)
+bmaj            None                    # bmaj
+bmin            None                    # bmin
+bpa             None                    # bpa
+
+#   model geometry
+type            'contdisk'              # model type
+xypos           [356.539321,12.8220179445+0.02/3600.]            # [degree/degree]
+z               2.21                    # optical convention
+pa              -61                     # [degree] north up / counterclockwise
+inc              0.0                     # [degree] inclination
+
+#   emissivity/kinematics
+#   the continuum model is described by a reference frequency / intensity / slope
+#   in the rest frame.
+intflux         1.e-3                  # Jy
+sbser           [0.1,1.0]               # sersic profile
+restfreq        251.6825177459          # GHz
+alpha           2.0                     # spectral index s_nu ~ nu^alpha
+
+#   modeling algorithm
+method          'disk2d'               # underline algorithm
+
+################################################################################
+@optimize								# optimization setup
+#	key/min/max, etc.
+################################################################################
+
+xypos[0]@cont	  356.539321-3./3600.  356.539321+3./3600.     1./3600./100.0
+xypos[1]@cont	  12.8220179445-1./3600.  12.8220179445+1./3600.     1./3600./100.0
+#pa@cont         -61.-90                -61.+90                4.   #   poorly constrained
+#inc@cont        5.                    85.                4.        #   poorly constrained
+intflux@cont    0.1e-3                100.e-3             0.1e-3
+sbser[0]@cont     0.01                   1.0              0.01
+alpha@cont        -1.0                  5.0               0.10  
+
+method          'emcee'
+nwalkers        40
+outdir         'bx610xy_cont_cm_emcee'
