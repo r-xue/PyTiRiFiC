@@ -4,12 +4,15 @@ import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
+from astropy.wcs.utils import skycoord_to_pixel
 import scipy.constants as const
 import time
 from astropy.modeling.models import Sersic2D
 from astropy.modeling.models import Gaussian2D
+from astropy.coordinates import SkyCoord
+from spectral_cube import SpectralCube
 
-def makebeam(xpixels,ypixels,beam,pa=0.,cent=0):
+def makekernel(xpixels,ypixels,beam,pa=0.,cent=0):
     """
 
     beam=[bmaj,bmin] FWHM
@@ -33,7 +36,7 @@ def makebeam(xpixels,ypixels,beam,pa=0.,cent=0):
                                 technically it's not the pixel index of image center
                                 but the center pixel is "considers"as index=4
         the rule of thumb-up:
-            cent=np.round((ks-1.)/2.)
+            cent=round((ks-1.)/2.)
         
         note:
             
@@ -254,62 +257,94 @@ def gmake_model_kinmspy(mod_dct,dat_dct={},
     return models
 
 
-def gmake_model_disk2d(header,ra,dec,
-                       beam=None,psf=None,
-                       r_eff=20.0,      # r_eff in arcsec
-                       n=1.0,           # sersic index
-                       intflux=1.,      # Jy
-                       restfreq=100.0,  # GHz
-                       alpha=3.0,       # alpha
-                       posang=0.,       # degree
-                       ellip=0.0,       # 
-                       cleanout=False):
+def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False):
     """
-        insert a continuum model into a 2D image or 3D cube
-            ellip:     1-b/a
-            posang:    in the astronomical convention
+        simulate the observation in the image-domain
+        input is expected in units of Jy/pix
+        output will in the Jy/cbeam or Jy/dbeam if kernel is peaked at unity.
+        
+        the adopted kernel can be returned
     """
-
-    #   build objects
-    #   use np.meshgrid and don't worry about transposing
-    w=WCS(header).celestial
-    cell=np.mean(proj_plane_pixel_scales(w))*3600.0
-    pos=w.wcs_world2pix(np.array([[ra],[dec]]).T,0)
-    px=pos[:,0]
-    py=pos[:,1]
-    x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
-    mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
-               ellip=ellip,theta=np.deg2rad(posang+90.0))
-    model=mod(x,y)
     
-    #   get Kernel normalized to 1 at PEAK
-    #   priority: psf>beam>header
+    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
+    
+    #   get the convolution Kernel normalized to 1 at PEAK
+    #   priority: psf>beam>header(2D or 3D KERNEL) 
+    
     if  psf is not None:
-        kernel=np.squeeze(psf)
+        kernel=psf.copy()
     elif beam is not None:
         if  not isinstance(beam, (list, tuple, np.ndarray)):
             gbeam = [beam,beam,0]
         else:
             gbeam = beam
-        kernel=makebeam(header['NAXIS1'],header['NAXIS2'],
+        kernel=makekernel(header['NAXIS1'],header['NAXIS2'],
                         [gbeam[0]/cell,gbeam[1]/cell],pa=gbeam[2])
     else:
-        kernel=makebeam(header['NAXIS1'],header['NAXIS2'],
-                        [hd['BMAJ']*3600./cell,hd['BMIN']*3600./cell],pa=hd['BPA'])
+        kernel=makekernel(header['NAXIS1'],header['NAXIS2'],
+                        [header['BMAJ']*3600./cell,header['BMIN']*3600./cell],pa=header['BPA'])
 
+    model=data.copy()
+    for i in range(header['NAXIS3']):
+        if  kernel.ndim==2:
+            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel)
+        else:
+            model[0,i,:,:]=convolve_fft(data[0,i,:,:],psf[0,i,:,:])
 
-    intflux_model=intflux*(header['CRVAL3']/1e9/restfreq)**alpha
+    if  returnkernel==True:
+        return model,kernel
+    else:
+        return model
+def gmake_model_disk2d(header,ra,dec,
+                       r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
+                       intflux=1.,restfreq=235.0,alpha=3.0):
+    """
     
-    if  not cleanout:
-        # end up with Jy/beam
-        #print(model.shape,psf_beam.shape)
-        model=convolve_fft(model,kernel)
-        model *= ( intflux_model*kernel.sum()/model.sum() )
-    else: 
-        # end up with Jy/pix
-        model *= ( intflux_model/model.sum() )
+        insert a continuum model into a 2D image or 3D cube
+        
+        header:    data header including WCS
+        
+        ra,dec:    object center ra/dec
+        ellip:     1-b/a
+        posang:    in the astronomical convention
+        r_eff:     in arcsec
+        n:         sersic index
+        
+        intflux:   Jy
+        restfreq:  GHz
+        alpha:     
+        
+        the header is assumed to be ra-dec-freq-stokes
+    
+        note:
+            since the convolution is the bottom-neck, a plane-by-plane processing should
+            be avoided.
+    """
 
-    return kernel
+    #   build objects
+    #   use np.meshgrid and don't worry about transposing
+    
+    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
+    px,py=skycoord_to_pixel(SkyCoord(ra,dec,unit="deg"),WCS(header),origin=0)
+    vz=np.arange(header['NAXIS3'])
+    wz=(WCS(header).wcs_pix2world(0,0,vz,0,0))[2]
+    
+    #   get 2D disk model
+    
+    x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
+    mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
+               ellip=ellip,theta=np.deg2rad(posang+90.0))
+    model2d=mod(x,y)
+    
+    #   intflux at different planes / broadcasting to the data dimension
+    #   return model in units of Jy/pix
+    
+    intflux_z=(wz/1e9/restfreq)**alpha*intflux
+    model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+    for i in range(header['NAXIS3']):
+        model[0,i,:,:]*=intflux_z[i]/model2d.sum()
+
+    return model
     
 if  __name__=="__main__":
 
@@ -317,14 +352,34 @@ if  __name__=="__main__":
     examples
     """
     pass
-    #im=makebeam(29,21,[6.0,6.0],pa=0)
-    #fits.writeto('makebeam_im.fits',im,overwrite=True)
+
+
+         #   for the 2D "common-beam" case
+        #   broadcasting to 4D (broadcast_to just create a "view"; .copy needed)
+        
+#         model2d=convolve_fft(model2d,kernel)
+#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+#     else:
+#         #   for the varying-PSF case
+#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+     
+#     model=np.zeros('')
+#     if  not cleanout:
+#         # end up with Jy/beam
+#         #print(model.shape,psf_beam.shape)
+#         model=convolve_fft(model,kernel)
+#         model *= ( intflux_model*kernel.sum()/model.sum() )
+#     else: 
+#         # end up with Jy/pix
+#         model *= ( intflux_model/model.sum() )
+    #im=makekernel(29,21,[6.0,6.0],pa=0)
+    #fits.writeto('makekernel_im.fits',im,overwrite=True)
     
-    #psf=makebeam(15,15,[6.0,3.0],pa=20)
-    #fits.writeto('makebeam_psf.fits',psf,overwrite=True)
-#     psf1=makebeam(11,11,[3.0,3.0],pa=0,cent=0)
-#     fits.writeto('makebeam_psf1.fits',psf1,overwrite=True)
-#     psf2=makebeam(13,13,[3.0,3.0],pa=0,cent=0)
-#     fits.writeto('makebeam_psf2.fits',psf2,overwrite=True)
+    #psf=makekernel(15,15,[6.0,3.0],pa=20)
+    #fits.writeto('makekernel_psf.fits',psf,overwrite=True)
+#     psf1=makekernel(11,11,[3.0,3.0],pa=0,cent=0)
+#     fits.writeto('makekernel_psf1.fits',psf1,overwrite=True)
+#     psf2=makekernel(13,13,[3.0,3.0],pa=0,cent=0)
+#     fits.writeto('makekernel_psf2.fits',psf2,overwrite=True)
     #cm=convolve_fft(im,psf)
-    #fits.writeto('makebeam_convol.fits',cm,overwrite=True)
+    #fits.writeto('makekernel_convol.fits',cm,overwrite=True)
