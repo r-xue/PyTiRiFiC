@@ -20,14 +20,16 @@ def gmake_model_api(mod_dct,dat_dct,
     for tag in mod_dct.keys():
         
         obj=mod_dct[tag]
-        if  'method' not in obj.keys():
-            continue
-        elif 'disk2d' not in obj['method'].lower():
-            continue
-    
-        if  verbose==True:
-            print("+"*40); print('@',tag); print("-"*40)
         
+        #   skip if no "method"
+        
+        if  'method' not in obj.keys():
+            continue    
+        if  verbose==True:
+            print("+"*40); print('@',tag); print('method:',obj['method']) ; print("-"*40)
+
+        
+
         image_list=mod_dct[tag]['image'].split(",")
         
         for image in image_list:
@@ -42,28 +44,17 @@ def gmake_model_api(mod_dct,dat_dct,
             else:
                 psf=None
             
-            beamsize=[0.2,0.2,0.]
-            if  'BMAJ' in hd.keys():
-                beamsize[0]=hd['BMAJ']*3600.
-            if  'BMIN' in hd.keys():
-                beamsize[1]=hd['BMIN']*3600.
-            if  'BPA' in hd.keys():
-                beamsize[2]=hd['BPA']
+            if  'disk2d' in obj['method'].lower():
             
-            xypos=obj['xypos']
-            restfreq=obj['restfreq']
-            intflux=obj['intflux']*(hd['CRVAL3']/1e9/obj['restfreq'])**obj['alpha']                                        
-            posang=obj['pa']
-            inc=obj['inc']
-            ellip=1.-np.cos(np.deg2rad(inc))
-            ser=obj['sbser']
-            if  verbose==True:
-                print('beamsize->',beamsize)
-                print(image,hd['CRVAL3']/1e9,intflux)
-            
-            imodel=gmake_model_disk2d(hd,xypos[0],xypos[1],
-                                     r_eff=ser[0],n=ser[1],posang=posang,ellip=ellip,
-                                     intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+                imodel=gmake_model_disk2d(hd,obj['xypos'][0],obj['xypos'][1],
+                                         r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
+                                         ellip=1.-np.cos(np.deg2rad(obj['inc'])),
+                                         intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+
+            if  'kimspy' in obj['method'].lower():
+                
+                imodel=gmake_model_kinmspy(hd,obj)
+                
 
             if  'imodel@'+image in models.keys():
                 models['imodel@'+image]+=imodel
