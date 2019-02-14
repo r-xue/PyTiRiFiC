@@ -6,14 +6,16 @@ import matplotlib.pyplot as plt
 from astropy.wcs import WCS
 from astropy.io import fits
 from astropy.convolution import convolve_fft
+from astropy.convolution import convolve
 import pprint
 
-def gmake_model_api(mod_dct,dat_dct={},
+def gmake_model_api(mod_dct,dat_dct,
                       decomp=False,
-                      cleanout=False,
                       verbose=False):
     
     models={}
+    
+    #   FIRST PASS: add models OBJECT by OBJECT
     
     for tag in mod_dct.keys():
         
@@ -24,9 +26,7 @@ def gmake_model_api(mod_dct,dat_dct={},
             continue
     
         if  verbose==True:
-            print("+"*40)
-            print('@',tag)
-            print("-"*40)
+            print("+"*40); print('@',tag); print("-"*40)
         
         image_list=mod_dct[tag]['image'].split(",")
         
@@ -60,46 +60,34 @@ def gmake_model_api(mod_dct,dat_dct={},
             if  verbose==True:
                 print('beamsize->',beamsize)
                 print(image,hd['CRVAL3']/1e9,intflux)
-                
-            model=gmake_model_disk2d(hd,
-                                     xypos[0],xypos[1],beamsize,
-                                     psf=psf,
-                                     r_eff=ser[0],
-                                     n=ser[1],                                     
-                                     cleanout=False,
-                                     intflux=intflux,
-                                     posang=posang,
-                                     ellip=ellip)
-            if  cleanout==True:
-                cmodel=gmake_model_disk2d(hd,
-                                         xypos[0],xypos[1],beamsize,
-                                         psf=psf,
-                                         r_eff=ser[0],
-                                         n=ser[1],                                     
-                                         cleanout=True,
-                                         intflux=intflux,
-                                         posang=posang,
-                                         ellip=ellip)            
             
-            if  decomp==True:
-                models[tag+'@'+image]=model
-            
-            if  'model@'+image in models.keys():
-                models['model@'+image]+=model
-                if  cleanout==True:
-                    models['cmodel@'+image]+=cmodel
+            imodel=gmake_model_disk2d(hd,xypos[0],xypos[1],
+                                     r_eff=ser[0],n=ser[1],posang=posang,ellip=ellip,
+                                     intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+
+            if  'imodel@'+image in models.keys():
+                models['imodel@'+image]+=imodel
             else:
-                models['model@'+image]=model.copy()
-                if  cleanout==True:
-                    models['cmodel@'+image]=cmodel.copy()
+                models['imodel@'+image]=imodel.copy()
                 models['header@'+image]=hd
                 models['data@'+image]=data
                 models['error@'+image]=error     
                 models['mask@'+image]=mask
                 models['sample@'+image]=sample
-                if  'psf@'+image in dat_dct.keys():
-                    models['psf@'+image]=psf
+                models['psf@'+image]=psf
                 
+    #   SECOND PASS: simulate observations IMAGE BY IMAGE
+    
+    for tag in models.keys():
+        
+        if  'imodel@' in tag:
+            cmodel,kernel=gmake_model_simobs(models[tag],
+                                             models[tag.replace('imodel@','header@')],
+                                             psf=models[tag.replace('imodel@','psf@')],
+                                             returnkernel=True)
+            models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
+            models[tag.replace('imodel@','kernel@')]=kernel.copy()
+            
     return models                
 
 def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
@@ -251,5 +239,19 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
 if  __name__=="__main__":
     
     pass
+
+
+    """
+    log_model=np.log(model)
+    plt.figure()
+    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
+           vmin=np.min(log_model), vmax=np.max(log_model))
+    plt.xlabel('x')
+    plt.ylabel('y')
+    cbar = plt.colorbar()
+    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
+    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
+    plt.savefig('test/test_model_disk2d.eps')
+    """
 
 
