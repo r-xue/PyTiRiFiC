@@ -4,6 +4,36 @@ execfile('gmake_model.py')
 execfile('gmake_utils.py')
 execfile('gmake_emcee.py')
 
+def test_gmake_model_disk2d():
+    
+    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
+    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
+    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
+    #psf=psf[0,100,:,:]
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
+                             beam=[0.1,0.2,10.0],
+                             psf=psf,
+                             r_eff=0.2,n=1.0,posang=20,ellip=0.5,
+                             cleanout=False)
+    
+    
+    #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
+    """
+    log_model=np.log(model)
+    plt.figure()
+    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
+           vmin=np.min(log_model), vmax=np.max(log_model))
+    plt.xlabel('x')
+    plt.ylabel('y')
+    cbar = plt.colorbar()
+    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
+    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
+    plt.savefig('test/test_model_disk2d.eps')
+    """
+
+if  __name__=="__main__":
+    
+    pass
 
 #inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
 #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
@@ -160,28 +190,4 @@ print(x)
 #pprint.pprint(models)
 #print(models.keys())
 
-def test_gmake_model_disk2d():
-    
-    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
-    
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
-                             beam=[0.9,0.2,10.0],
-                             cleanout=False)
-    
-    fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
-    
-    log_model=np.log(model)
-    plt.figure()
-    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
-           vmin=np.min(log_model), vmax=np.max(log_model))
-    plt.xlabel('x')
-    plt.ylabel('y')
-    cbar = plt.colorbar()
-    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
-    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
-    plt.savefig('test/test_model_disk2d.eps')
 
-
-if  __name__=="__main__":
-    
-    test_gmake_model_disk2d()
