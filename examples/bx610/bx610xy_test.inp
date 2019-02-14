@@ -131,7 +131,43 @@ vdis            'vdis@co76'
 method          'kinmspy'               # underline algorithm
 
 ################################################################################
-@cont                                   # object id (per feature per component)
+@cont1                                   # object id (per feature per component)
+################################################################################
+
+name            'bx610-cont'            # something meaningful to you
+note            'submm cont of BX610 in BB1/2/3/4'
+
+#   data description
+image           'examples/bx610/bx610.bb1.cube.iter0.image.fits,examples/bx610/bx610.bb2.cube.iter0.image.fits,examples/bx610/bx610.bb3.cube.iter0.image.fits,examples/bx610/bx610.bb4.cube.iter0.image.fits'
+error           'examples/bx610/bx610.bb1.cube.iter0.unc.fits,examples/bx610/bx610.bb2.cube.iter0.unc.fits,examples/bx610/bx610.bb3.cube.iter0.unc.fits,examples/bx610/bx610.bb4.cube.iter0.unc.fits'
+mask            'examples/bx610/bx610.bb1.cube.iter0.hex_im.fits,examples/bx610/bx610.bb2.cube.iter0.hex_im.fits,examples/bx610/bx610.bb3.cube.iter0.hex_im.fits,examples/bx610/bx610.bb4.cube.iter0.hex_im.fits'
+sample          'examples/bx610/bx610.bb1.cube.iter0.hex_tb.fits,examples/bx610/bx610.bb2.cube.iter0.hex_tb.fits,examples/bx610/bx610.bb3.cube.iter0.hex_tb.fits,examples/bx610/bx610.bb4.cube.iter0.hex_tb.fits'
+psf             'examples/bx610/bx610.bb1.cube.iter0.psf.fits,examples/bx610/bx610.bb2.cube.iter0.psf.fits,examples/bx610/bx610.bb3.cube.iter0.psf.fits,examples/bx610/bx610.bb4.cube.iter0.psf.fits' 
+                                        # psf file (otherwise using header info)
+bmaj            None                    # bmaj
+bmin            None                    # bmin
+bpa             None                    # bpa
+
+#   model geometry
+type            'contdisk'              # model type
+xypos           [356.539321+0.4/3600.,12.8220179445]            # [degree/degree]
+z               'z@co76'                # optical convention
+pa              'pa@co76'               # [degree] north up / counterclockwise
+inc             'inc@co76'              # [degree] inclination
+
+#   emissivity/kinematics
+#   the continuum model is described by a reference frequency / intensity / slope
+#   in the rest frame.
+intflux         1.e-3                  # Jy
+sbser           [0.1,1.0]               # sersic profile
+restfreq        251.6825177459          # GHz
+alpha           3.0                     # spectral index s_nu ~ nu^alpha
+
+#   modeling algorithm
+method          'disk2d'               # underline algorithm
+
+################################################################################
+@cont2                                   # object id (per feature per component)
 ################################################################################
 
 name            'bx610-cont'            # something meaningful to you
