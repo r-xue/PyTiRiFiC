@@ -36,7 +36,7 @@ def test_gmake_model_disk2d():
     fits.writeto('test/test_model_disk2d_cmodel_psf.fits',cmodel_psf,hd,overwrite=True)
     fits.writeto('test/test_model_disk2d_cmodel_beam.fits',cmodel_beam,hd,overwrite=True)
     
-def test_gmnake_model_api():
+def test_gmake_model_api():
     
     inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
@@ -44,7 +44,7 @@ def test_gmnake_model_api():
     mod_dct=gmake_inp2mod(inp_dct)
     
     start_time = time.time()
-    models=gmake_model_api(mod_dct,dat_dct)
+    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
     print("--- %s seconds ---" % (time.time() - start_time))
     
     pprint.pprint(models.keys())
@@ -62,11 +62,27 @@ def test_gmnake_model_api():
 
     return models
 
+def test_gmake_model_kinmspy():
+    
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    
+    mod_dct=gmake_inp2mod(inp_dct)
+    obj=mod_dct['co76']
+    
+    start_time = time.time()
+    hd=dat_dct['header@examples/bx610/bx610.bb2.cube.iter0.image.fits']
+    model=gmake_model_kinmspy(hd,obj)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    fits.writeto('test/test_model_kinmspy_model.fits',model,hd,overwrite=True)
+
 if  __name__=="__main__":
     
-    
+
     
     #test_gmake_model_disk2d()
-    models=test_gmnake_model_api()
+    models=test_gmake_model_api()
+    #test_gmake_model_kinmspy()
 
     
