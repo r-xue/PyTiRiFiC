@@ -260,3 +260,33 @@ print(x)
 #print(models.keys())
 
 
+        
+             #   for the 2D "common-beam" case
+        #   broadcasting to 4D (broadcast_to just create a "view"; .copy needed)
+        
+#         model2d=convolve_fft(model2d,kernel)
+#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+#     else:
+#         #   for the varying-PSF case
+#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+     
+#     model=np.zeros('')
+#     if  not cleanout:
+#         # end up with Jy/beam
+#         #print(model.shape,psf_beam.shape)
+#         model=convolve_fft(model,kernel)
+#         model *= ( intflux_model*kernel.sum()/model.sum() )
+#     else: 
+#         # end up with Jy/pix
+#         model *= ( intflux_model/model.sum() )
+    
+    #   the same as the center method
+    #psf=makekernel(15,15,[6.0,3.0],pa=20)
+    #fits.writeto('makekernel_psf.fits',psf,overwrite=True)
+#     psf1=makekernel(11,11,[3.0,3.0],pa=0,cent=0)
+#     fits.writeto('makekernel_psf1.fits',psf1,overwrite=True)
+#     psf2=makekernel(13,13,[3.0,3.0],pa=0,cent=0)
+#     fits.writeto('makekernel_psf2.fits',psf2,overwrite=True)
+    #cm=convolve_fft(im,psf)
+    #fits.writeto('makekernel_convol.fits',cm,overwrite=True)
+    

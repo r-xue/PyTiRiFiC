@@ -7,12 +7,28 @@ from astropy.wcs import WCS
 from astropy.io import fits
 from astropy.convolution import convolve_fft
 from astropy.convolution import convolve
+from astropy.convolution import discretize_model
 import pprint
+import scipy.fftpack 
+import pyfftw
 
 def gmake_model_api(mod_dct,dat_dct,
                       decomp=False,
                       verbose=False):
+    """
+    call for the model construction:
     
+    notes on evaluating efficiency:
+    
+        While building the intrinsic data-model from a physical model can be expensive,
+        the simulated observation (2D/3D convolution) is usually the bottle-neck.
+        
+        some tips to improve the effeciency:
+            + exclude empty (masked/flux=0) region for the convolution
+            + joint all objects in the intrinsic model before the convolution, e.g.
+                overlapping objects, lines
+            + use to low-dimension convolution when possible (e.g. for the narrow-band continumm) 
+    """
     models={}
     
     #   FIRST PASS: add models OBJECT by OBJECT
@@ -67,13 +83,14 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['sample@'+image]=sample
                 models['psf@'+image]=psf
                 
-    #   "OPTIONAL" SECOND PASS: simulate observations IMAGE BY IMAGE
+    #   SECOND PASS (OPTIONAL): simulate observations IMAGE BY IMAGE
     
     #start_time = time.time()
     
     for tag in list(models.keys()):
         
         if  'imodel@' in tag:
+            print(tag)
             cmodel,kernel=gmake_model_simobs(models[tag],
                                              models[tag.replace('imodel@','header@')],
                                              psf=models[tag.replace('imodel@','psf@')],

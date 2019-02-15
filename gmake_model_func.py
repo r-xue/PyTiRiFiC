@@ -152,7 +152,7 @@ def gmake_model_kinmspy(header,obj,
     #   flip z-axis if dv<0
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
-    
+    print(cube.shape)
     model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     
@@ -227,8 +227,11 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     else:
         return model
     
-def makekernel(xpixels,ypixels,beam,pa=0.,cent=0):
+def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
+               mode=None,
+               verbose=True):
     """
+    mode: 'center','linear_interp','oversample','integrate'
 
     beam=[bmaj,bmin] FWHM
     pa=east from north (ccw)deli
@@ -269,10 +272,13 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0):
     mod=Gaussian2D(amplitude=1.,x_mean=cent[0],y_mean=cent[1],
                x_stddev=beam[1]/sigma2fwhm,y_stddev=beam[0]/sigma2fwhm,
                theta=np.deg2rad(pa))
-    x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels))
-    psf=mod(x,y)
-    #print(psf.shape)
-    #print(cent)
+    if  mode==None:
+        x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels))
+        psf=mod(x,y)
+    else:
+        psf=discretize_model(mod,(0,int(xpixels)),(0,int(ypixels)),
+                             mode=mode)
+    
     return psf
     
 
@@ -285,32 +291,3 @@ if  __name__=="__main__":
     pass
 
 
-         #   for the 2D "common-beam" case
-        #   broadcasting to 4D (broadcast_to just create a "view"; .copy needed)
-        
-#         model2d=convolve_fft(model2d,kernel)
-#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
-#     else:
-#         #   for the varying-PSF case
-#         model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
-     
-#     model=np.zeros('')
-#     if  not cleanout:
-#         # end up with Jy/beam
-#         #print(model.shape,psf_beam.shape)
-#         model=convolve_fft(model,kernel)
-#         model *= ( intflux_model*kernel.sum()/model.sum() )
-#     else: 
-#         # end up with Jy/pix
-#         model *= ( intflux_model/model.sum() )
-    #im=makekernel(29,21,[6.0,6.0],pa=0)
-    #fits.writeto('makekernel_im.fits',im,overwrite=True)
-    
-    #psf=makekernel(15,15,[6.0,3.0],pa=20)
-    #fits.writeto('makekernel_psf.fits',psf,overwrite=True)
-#     psf1=makekernel(11,11,[3.0,3.0],pa=0,cent=0)
-#     fits.writeto('makekernel_psf1.fits',psf1,overwrite=True)
-#     psf2=makekernel(13,13,[3.0,3.0],pa=0,cent=0)
-#     fits.writeto('makekernel_psf2.fits',psf2,overwrite=True)
-    #cm=convolve_fft(im,psf)
-    #fits.writeto('makekernel_convol.fits',cm,overwrite=True)
