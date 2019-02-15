@@ -8,6 +8,7 @@ from astropy.wcs.utils import skycoord_to_pixel
 import scipy.constants as const
 import time
 from astropy.modeling.models import Sersic2D
+from astropy.modeling.models import Sersic1D
 from astropy.modeling.models import Gaussian2D
 from astropy.coordinates import SkyCoord
 from spectral_cube import SpectralCube
@@ -76,113 +77,84 @@ def gmake_model_kinmspy(header,obj,
         to construct a xyv cube with the size sufficient to cover the model object. Then 
         we insert it into the data using the WCS/dimension info. 
     """    
-    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
-    
-    cdelt3=header['CDELT3']     # hz or m/s
-    crval3=header['CRVAL3']     # hz or m/s
-    crpix3=header['CRPIX3']     # pix
-    
-    #   vector description of the z-axis: 
-    #       vdelt3/vrval3/crpix3
-    rfreq=obj['restfreq']/(1.0+obj['z'])                            #   GHz
-    if  'Hz' in header['CUNIT3']:   # by freq
-        vdelt3=-const.c*cdelt3/(1.0e9*rfreq)/1000.                  #   km/s
-        vrval3=const.c*((1.0e9*rfreq)-crval3)/(1.0e9*rfreq)/1000.0  #   km/s
-    else:                       # by velo
-        vdelt3=cdelt3/1000.0
-        vrval3=crval3/1000.0
-    
-    if  verbose==True:
-        print(cell,vdelt3,vrval3,crpix3)
-    
-    xs=cell*header['NAXIS1']
-    ys=cell*header['NAXIS2']
-    vs=abs(vdelt3)*header['NAXIS3']
-    cell=cell
-    dv=abs(vdelt3)
-    beamsize=1.0
-    inc=obj['inc']
-    gassigma=np.array(obj['vdis'])
-    sbrad=np.array(obj['radi'])
-    sbprof=1.*np.exp(-sbrad/obj['sbexp'])
-    velrad=obj['radi']
-    velprof=obj['vrot']
-    posang=obj['pa']
-    intflux=obj['intflux']
-    xypos=obj['xypos']
-    restfreq=obj['restfreq']
-    vsys=obj['vsys']
-    fsys=(1.0-vsys/(const.c/1000.0))*rfreq # line systematic frequency in the observer frame
-    
-    #   ra    ----      xi_data     ----    (xSize-1.)/2.+phasecen[0]/cell
-    #   dec   ----      yi_data     ----    (ySize-1.)/2.+phasecen[1]/cell
-    #   vsys  ----      vi_data     ----    (vSize-1.)/2.+voffset/dv
-   
+
+    #######################################################################
+    #   WORLD ----      DATA        ----    MODEL
+    #######################################################################
+    #   ra    ----      xi_data     ----    xSize/2.+phasecen[0]/cell
+    #   dec   ----      yi_data     ----    ySize/2.+phasecen[1]/cell
+    #   vsys  ----      vi_data     ----    vSize/2.+voffset/dv
     #
     # collect the world coordinates of the disk center (ra,dec,freq/wave)
     # note: vsys is defined in the radio(freq)/optical(wave) convention, 
     #       within the rest frame set at obj['z']/
     #       the convention doesn't really matter, as long as vsys << c
-    #
-    wx=xypos[0]
-    wy=xypos[1]
-    ws=1    # stokes
-    wo=0    # 0-based or 1-based index
+    #######################################################################
+    #   vector description of the z-axis (data in Hz or m/s; model in km/s)
+    #   rfreq=obj['restfreq']/(1.0+obj['z'])            # GHz (obs-frame)
+    #   fsys=(1.0-obj['vsys']/(const.c/1000.0))*rfreq   # line systematic frequency (obs-frame)
+        
     if  'Hz' in header['CUNIT3']:
         wz=obj['restfreq']*1e9/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
-        dv=-const.c*cdelt3/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
+        dv=-const.c*header['CDELT3']/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
     if  'Angstrom' in header['CUNIT3']:
         wz=obj['restwave']*(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
-        dv=const.c*cdelt3/(obj['restwave']*(1.0+obj['z']))/1000.
+        dv=const.c*header['CDELT3']/(obj['restwave']*(1.0+obj['z']))/1000.
     if  'm/s' in header['CUNIT3']:
         wz=obj['vsys']/1000.
-        dv=cdelt3/1000.        
+        dv=header['CDELT3']/1000.        
 
-    px,py,pz,ps=WCS(header).wcs_world2pix(wx,wy,wz,ws,wo)
+    #   get 0-based pix-index
     
-    px_int=round(px)
-    py_int=round(py)
-    pz_int=round(pz)
-    phasecen=np.array([px-px_int,py-py_int])*cell
-    voffset=(pz-pz_int)*dv
-    
-    #print(phasecen,voffset)
-    #print('<-->',tag,px_int,py_int,pz_int,ps)
-    #print('hz:',int(xs/cell*0.5))
-    phasecen=[0.,0.]
-    xs=np.max(sbrad)*2.0*2.0
-    ys=np.max(sbrad)*2.0*2.0
-    vs=np.max(velprof)*1.5*2.0
-    
-    px_o=px_int-int(xs/cell*0.5)
-    py_o=py_int-int(ys/cell*0.5)
-    pz_o=pz_int-int(vs/abs(dv)*0.5)
+    px,py,pz,ps=WCS(header).wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
 
-    #tic=time.time()
-    # cube needs to be transposed to match the fits.data dimension 
-    # the WCS from kinms is buggy/offseted: don't use it
+    xs=np.max(np.array(obj['radi']))*2.0*2.0
+    ys=np.max(np.array(obj['radi']))*2.0*2.0
+    vs=np.max(obj['vrot'])*1.5*2.0
+    
+    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
+    
+    px_o=px-float(round(xs/cell))/2.0
+    py_o=px-float(round(ys/cell))/2.0
+    pz_o=pz-float(round(ys/abs(dv)))/2.0
+    #   when the z-axis is decreasing in velocity, we count offset backwards
+    if  dv<0: pz_o=pz_o+1.0
+    
+    px_o_int=round(px_o) ; px_o_frac=px_o-px_o_int
+    py_o_int=round(py_o) ; py_o_frac=py_o-py_o_int
+    pz_o_int=round(pz_o) ; pz_o_frac=pz_o-pz_o_int
+    
+    phasecen=np.array([px_o_frac,py_o_frac])*cell
+    voffset=(pz_o_frac)*dv
+
+    #   About KinMS:
+    #       + cube needs to be transposed to match the fits.data dimension 
+    #       + the WCS/FITSIO in KINMSPY is buggy/offseted: don't use it
+    #       + turn off convolution at this point
+    #       + KinMS only works in the RA/DEC/VELO domain.
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    sbprof=mod(np.array(obj['radi']))
+    #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
-               beamSize=beamsize,cleanOut=False,
-               inc=inc,gasSigma=gassigma,sbProf=sbprof,
-               sbRad=sbrad,velRad=velrad,velProf=velprof,
-               #nSamps=nsamps,
-               ra=xypos[0],dec=xypos[1],
-               restFreq=restfreq,vSys=vsys,phaseCen=phasecen,vOffset=voffset,
-               #fileName=outname+'_'+tag,
-               posAng=posang,
-               intFlux=intflux)
+               beamSize=1.0,cleanOut=True,
+               inc=obj['inc'],gasSigma=np.array(obj['vdis']),sbProf=sbprof,
+               sbRad=np.array(obj['radi']),velRad=obj['radi'],velProf=obj['vrot'],
+               ra=obj['xypos'][0],dec=obj['xypos'][1],
+               restFreq=obj['restfreq'],vSys=obj['vsys'],phaseCen=phasecen,vOffset=voffset,
+               fixSeed=False,
+               #nSamps=nsamps,fileName=outname+'_'+tag,
+               posAng=obj['pa'],
+               intFlux=obj['intflux'])
+    
+    #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
+    #   flip z-axis if dv<0
     cube=cube.T
-    if  dv<0:
-        cube=np.flip(cube,axis=2)
-    #print('Took {0} seconds to execute KinMSpy'.format(float(time.time()-tic)/float(1)))
-
-    model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
-    model=gmake_insertmodel(model,cube,offset=[px_o,py_o,pz_o])
-    #print('shape:',model.shape)
-    #print('shape:',cube.shape)
-    #print('-->',px_int,py_int,pz_int)
-    #print('-->',[px_o,py_o,pz_o])
+    if  dv<0: cube=np.flip(cube,axis=0)
+    
+    model=np.zeros((header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    model=paste_array(model,cube,(int(pz_o_int),int(py_o_int),int(px_o_int)))
     
     return model
 
@@ -230,7 +202,7 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0):
     """
 
     beam=[bmaj,bmin] FWHM
-    pa=east from north (ccw)
+    pa=east from north (ccw)deli
     
     make a "centered" Gaussian PSF kernel:
         e.g. npixel=7, centered at px=3

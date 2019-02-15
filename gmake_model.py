@@ -18,17 +18,16 @@ def gmake_model_api(mod_dct,dat_dct,
     #   FIRST PASS: add models OBJECT by OBJECT
     
     for tag in mod_dct.keys():
+
+        #   skip if no "method" or the item is not a physical model
         
         obj=mod_dct[tag]
-        
-        #   skip if no "method"
-        
+        if  tag=='optimize':
+            continue        
         if  'method' not in obj.keys():
             continue    
         if  verbose==True:
             print("+"*40); print('@',tag); print('method:',obj['method']) ; print("-"*40)
-
-        
 
         image_list=mod_dct[tag]['image'].split(",")
         
@@ -51,11 +50,12 @@ def gmake_model_api(mod_dct,dat_dct,
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
 
-            if  'kimspy' in obj['method'].lower():
+            if  'kinmspy' in obj['method'].lower():
                 
                 imodel=gmake_model_kinmspy(hd,obj)
                 
-
+            imodel=np.squeeze(imodel)
+            
             if  'imodel@'+image in models.keys():
                 models['imodel@'+image]+=imodel
             else:
