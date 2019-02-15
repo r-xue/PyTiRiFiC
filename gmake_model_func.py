@@ -153,8 +153,8 @@ def gmake_model_kinmspy(header,obj,
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
     
-    model=np.zeros((header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
-    model=paste_array(model,cube,(int(pz_o_int),int(py_o_int),int(px_o_int)))
+    model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     
     return model
 
@@ -171,6 +171,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False):
     cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
     
     #   get the convolution Kernel normalized to 1 at PEAK
+    #   turn on normalization in convolve() will force the Jy/Pix->Jy/beam conversion
     #   priority: psf>beam>header(2D or 3D KERNEL) 
     
     if  psf is not None:
@@ -186,12 +187,14 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False):
         kernel=makekernel(header['NAXIS1'],header['NAXIS2'],
                         [header['BMAJ']*3600./cell,header['BMIN']*3600./cell],pa=header['BPA'])
 
-    model=data.copy()
+    model=np.zeros_like(data)
     for i in range(header['NAXIS3']):
+        if  np.sum(data[0,i,:,:])==0.0:
+            continue
         if  kernel.ndim==2:
-            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel)
+            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel,normalize_kernel=False)
         else:
-            model[0,i,:,:]=convolve_fft(data[0,i,:,:],psf[0,i,:,:])
+            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel[0,i,:,:],normalize_kernel=False)
 
     if  returnkernel==True:
         return model,kernel

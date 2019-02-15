@@ -38,24 +38,19 @@ def test_gmake_model_disk2d():
     
 def test_gmake_model_api():
     
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
 
     mod_dct=gmake_inp2mod(inp_dct)
     
     start_time = time.time()
-    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    models=gmake_model_api(mod_dct,dat_dct,verbose=False)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
     
-    pprint.pprint(models.keys())
-    fits.writeto('test/test_gmake_model_api_imodel.fits',
-                 models['imodel@examples/bx610/bx610.bb3.cube.iter0.image.fits'],
-                 models['header@examples/bx610/bx610.bb3.cube.iter0.image.fits'],
-                 overwrite=True)
-    fits.writeto('test/test_gmake_model_api_cmodel.fits',
-                 models['cmodel@examples/bx610/bx610.bb3.cube.iter0.image.fits'],
-                 models['header@examples/bx610/bx610.bb3.cube.iter0.image.fits'],
-                 overwrite=True)    
+    start_time = time.time()
+    gmake_model_export(models,outdir='./test')
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('export',time.time()-start_time))
+  
     
     #lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
     #                             savemodel='test/test_gmake_model_api')

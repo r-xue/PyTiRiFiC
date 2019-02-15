@@ -54,7 +54,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 
                 imodel=gmake_model_kinmspy(hd,obj)
                 
-            imodel=np.squeeze(imodel)
+            #imodel=np.squeeze(imodel)
             
             if  'imodel@'+image in models.keys():
                 models['imodel@'+image]+=imodel
@@ -67,7 +67,9 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['sample@'+image]=sample
                 models['psf@'+image]=psf
                 
-    #   SECOND PASS: simulate observations IMAGE BY IMAGE
+    #   "OPTIONAL" SECOND PASS: simulate observations IMAGE BY IMAGE
+    
+    start_time = time.time()
     
     for tag in models.keys():
         
@@ -79,6 +81,8 @@ def gmake_model_api(mod_dct,dat_dct,
             models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
             models[tag.replace('imodel@','kernel@')]=kernel.copy()
             
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+    
     return models                
 
 def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
@@ -197,6 +201,34 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     lnl=blobs['lnprob']
     
     return lnl,blobs
+
+
+def gmake_model_export(models,outdir='./'):
+    """
+        export model into FITS
+    """
+    for key in models.keys(): 
+        
+        if  'data@' not in key:
+            continue
+        
+        basename=key.replace('data@','')
+        basename=os.path.basename(basename)
+        if  not os.path.exists(outdir):
+            os.makedirs(outdir)
+        versions=['data','imodel','cmodel','error','mask','kernel','psf','residual']
+        hd=models[key.replace('data@','header@')]
+        for version in versions:
+            if  version=='residual' and key.replace('data@','cmodel@') in models.keys():
+                fits.writeto(outdir+'/'+version+'_'+basename,
+                             models[key]-models[key.replace('data@','cmodel@')],
+                             models[key.replace('data@','header@')],
+                             overwrite=True)                
+            if  key.replace('data@',version+'@') in models.keys():
+                fits.writeto(outdir+'/'+version+'_'+basename,
+                             models[key.replace('data@',version+'@')],
+                             models[key.replace('data@','header@')],
+                             overwrite=True)
 
 
 def gmake_model_lnprior(theta,fit_dct):
