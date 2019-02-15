@@ -167,8 +167,10 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         
         the adopted kernel can be returned
         
-        note: we only use cellsize/bmaj/bmin/bpa info from the header.
-              the header doesn't need to match the data "dimension"
+        note: + we only use cellsize/bmaj/bmin/bpa info from the header.
+                so the header doesn't need to match the data "dimension"
+              + the function will skip any plane with 0-flux
+              
     """
 
     
@@ -212,12 +214,12 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     if  verbose==True:
         print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
         print("convolved plane counts: ",cc)
-        start_time = time.time()
-        test1=(data[0,:,:,:])
-        test2=(kernel[np.newaxis,0,100,(52-10):(52+10),(52-10):(52+10)])
-        print(test1.shape,test2.shape)
-        test=convolve_fft(test1,test2)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-beta',time.time()-start_time))
+        #start_time = time.time()
+        #test1=(data[0,:,:,:])
+        #test2=(kernel[np.newaxis,0,100,(52-10):(52+10),(52-10):(52+10)])
+        #print(test1.shape,test2.shape)
+        #test=convolve(test1,test2)
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-beta',time.time()-start_time))
         
 
     if  returnkernel==True:

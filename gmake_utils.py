@@ -36,7 +36,6 @@ from scipy.interpolate import interpn
 from astropy.convolution import Gaussian2DKernel, interpolate_replace_nans, convolve
 
 
-
 def sort_on_runtime(p):
     p = np.atleast_2d(p)
     idx = np.argsort(p[:, 0])[::-1]

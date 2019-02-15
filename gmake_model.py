@@ -17,7 +17,7 @@ def gmake_model_api(mod_dct,dat_dct,
     
     #   FIRST PASS: add models OBJECT by OBJECT
     
-    for tag in mod_dct.keys():
+    for tag in list(mod_dct.keys()):
 
         #   skip if no "method" or the item is not a physical model
         
@@ -71,7 +71,7 @@ def gmake_model_api(mod_dct,dat_dct,
     
     #start_time = time.time()
     
-    for tag in models.keys():
+    for tag in list(models.keys()):
         
         if  'imodel@' in tag:
             cmodel,kernel=gmake_model_simobs(models[tag],
