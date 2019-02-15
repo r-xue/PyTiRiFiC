@@ -7,7 +7,7 @@ from astropy.io import fits
 import emcee
 import uuid
 import random
-import cPickle as pickle
+#import cPickle as pickle
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 import subprocess
@@ -37,9 +37,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pprint
 import shutil
-import commands
+#import commands
 import multiprocessing
-import FITS_tools
+#import FITS_tools
 from scipy._lib._numpy_compat import suppress_warnings
 np.warnings.filterwarnings('ignore')
 

@@ -159,20 +159,26 @@ def gmake_model_kinmspy(header,obj,
     return model
 
 
-def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False):
+def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose=True):
     """
         simulate the observation in the image-domain
         input is expected in units of Jy/pix
         output will in the Jy/cbeam or Jy/dbeam if kernel is peaked at unity.
         
         the adopted kernel can be returned
+        
+        note: we only use cellsize/bmaj/bmin/bpa info from the header.
+              the header doesn't need to match the data "dimension"
     """
+
     
     cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
     
     #   get the convolution Kernel normalized to 1 at PEAK
     #   turn on normalization in convolve() will force the Jy/Pix->Jy/beam conversion
     #   priority: psf>beam>header(2D or 3D KERNEL) 
+    
+    dshape=data.shape
     
     if  psf is not None:
         kernel=psf.copy()
@@ -181,20 +187,38 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False):
             gbeam = [beam,beam,0]
         else:
             gbeam = beam
-        kernel=makekernel(header['NAXIS1'],header['NAXIS2'],
+        kernel=makekernel(dshape[-1],dshape[-2],
                         [gbeam[0]/cell,gbeam[1]/cell],pa=gbeam[2])
     else:
-        kernel=makekernel(header['NAXIS1'],header['NAXIS2'],
+        kernel=makekernel(dshape[-1],dshape[-2],
                         [header['BMAJ']*3600./cell,header['BMIN']*3600./cell],pa=header['BPA'])
 
+    if  verbose==True:
+        print('data   dim:',data.shape)
+        print('kernel dim:',kernel.shape)
+        start_time = time.time()
+
     model=np.zeros_like(data)
-    for i in range(header['NAXIS3']):
+    cc=0
+    for i in range(dshape[-3]):
         if  np.sum(data[0,i,:,:])==0.0:
             continue
+        cc=cc+1
         if  kernel.ndim==2:
             model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel,normalize_kernel=False)
         else:
             model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel[0,i,:,:],normalize_kernel=False)
+
+    if  verbose==True:
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+        print("convolved plane counts: ",cc)
+        start_time = time.time()
+        test1=(data[0,:,:,:])
+        test2=(kernel[np.newaxis,0,100,(52-10):(52+10),(52-10):(52+10)])
+        print(test1.shape,test2.shape)
+        test=convolve_fft(test1,test2)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-beta',time.time()-start_time))
+        
 
     if  returnkernel==True:
         return model,kernel

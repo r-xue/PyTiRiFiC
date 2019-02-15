@@ -7,11 +7,11 @@ from astropy.io import fits
 import emcee
 import uuid
 import random
-import cPickle as pickle
+#import cPickle as pickle
 from reproject import reproject_interp
 
 import matplotlib
-from astropy.io.fits.diff import indent
+#from astropy.io.fits.diff import indent
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -23,12 +23,12 @@ import fnmatch
 import pprint
 import fitsio
 import shutil
-import commands
+#import commands
 import multiprocessing
 import numpy as np
 import copy
 import sys
-import FITS_tools
+#import FITS_tools
 
 
 from scipy.interpolate import Rbf
@@ -68,7 +68,7 @@ def gmake_readinp(parfile,verbose=False):
                 print('@',tag)
                 print("-"*40)
         else:
-            if    'comments' in tag or 'changelog' in tag:
+            if    'comments' in tag or 'changelog' in tag or 'ignore' in tag:
                 pass
                 #pars['content']+=line+"\n"
                 #inp_dct[tag]=pars

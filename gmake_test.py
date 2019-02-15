@@ -2,10 +2,11 @@
     used to test various functions
 """
 
-execfile('gmake_model_func.py')
-execfile('gmake_model.py')
-execfile('gmake_utils.py')
-execfile('gmake_emcee.py')
+exec(open('gmake_model_func.py').read())
+exec(open('gmake_model.py').read())
+exec(open('gmake_utils.py').read())
+exec(open('gmake_emcee.py').read())
+
 
 def test_gmake_model_disk2d():
     

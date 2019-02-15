@@ -69,7 +69,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 
     #   "OPTIONAL" SECOND PASS: simulate observations IMAGE BY IMAGE
     
-    start_time = time.time()
+    #start_time = time.time()
     
     for tag in models.keys():
         
@@ -77,11 +77,12 @@ def gmake_model_api(mod_dct,dat_dct,
             cmodel,kernel=gmake_model_simobs(models[tag],
                                              models[tag.replace('imodel@','header@')],
                                              psf=models[tag.replace('imodel@','psf@')],
-                                             returnkernel=True)
+                                             returnkernel=True,
+                                             verbose=True)
             models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
             models[tag.replace('imodel@','kernel@')]=kernel.copy()
             
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+    #print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
     
     return models                
 
