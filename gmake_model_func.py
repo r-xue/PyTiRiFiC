@@ -159,20 +159,71 @@ def gmake_model_kinmspy(header,obj,
     return model
 
 
-def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose=True):
+def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):
     """
         simulate the observation in the image-domain
         input is expected in units of Jy/pix
         output will in the Jy/cbeam or Jy/dbeam if kernel is peaked at unity.
+        
+        average=True:
+        
+            the data is assumed to a continuum image even it's a 3D cube.
+            we will take the middle plane of 2D data and PSF for one-time convolution, and broadcast the
+            results back into 3D with channel-wise flux changes corrected.
+            in this way, we can save the plane-by-plane convolution loop.
+            
+            It should be only used for narrow-band imaging without near galaxy morphology/PSF changes.
+            *DO NOT* turn this one for a model including spectral line emission 
         
         the adopted kernel can be returned
         
         note: + we only use cellsize/bmaj/bmin/bpa info from the header.
                 so the header doesn't need to match the data "dimension"
               + the function will skip any plane with 0-flux
+              + no clear advantage from 3D-FFT vs. 2D-FFT+loop
+              + In 2D-FFT+loop, we can selectively choose the usefull planes
+              
+        TestLog (numpy vs. mkl):
+        
+            (62, 48, 48)
+            (62, 48, 48)
+            (58, 48, 48)
+            imodel@examples/bx610/bx610.bb2.cube.iter0.image.fits
+            data   dim: (1, 238, 105, 105)
+            kernel dim: (1, 238, 105, 105)
+            ---  simobs   : 1.12489  seconds ---
+            convolved plane counts:  96
+            imodel@examples/bx610/bx610.bb3.cube.iter0.image.fits
+            data   dim: (1, 238, 105, 105)
+            kernel dim: (1, 238, 105, 105)
+            ---  simobs   : 0.53417  seconds ---
+            convolved plane counts:  45
+            --- apicall   : 1.96320  seconds ---
+            ---  export   : 0.98041  seconds ---
+            
+            In [43]: execfile('/Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake_test.py')
+            (62, 48, 48)
+            (62, 48, 48)
+            (58, 48, 48)
+            imodel@examples/bx610/bx610.bb2.cube.iter0.image.fits
+            data   dim: (1, 238, 105, 105)
+            kernel dim: (1, 238, 105, 105)
+            ---  simobs   : 0.30933  seconds ---
+            convolved plane counts:  98
+            imodel@examples/bx610/bx610.bb3.cube.iter0.image.fits
+            data   dim: (1, 238, 105, 105)
+            kernel dim: (1, 238, 105, 105)
+            ---  simobs   : 0.12595  seconds ---
+            convolved plane counts:  44
+            --- apicall   : 0.75084  seconds ---
+            ---  export   : 1.02895  seconds ---
+              
               
     """
 
+    convol_fft_pad=True
+    #convol_complex_dtype=np.complex128
+    convol_complex_dtype=np.complex64
     
     cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
     
@@ -203,15 +254,38 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     model=np.zeros_like(data)
     cc=0
     for i in range(dshape[-3]):
+
+        #   skip blank planes
         if  np.sum(data[0,i,:,:])==0.0:
             continue
-        cc=cc+1
+        #   skip all-but-one planes if average==True
+        if  average==True and i!=int(dshape[-3]/2.0):
+            continue
+                
         if  kernel.ndim==2:
-            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel,normalize_kernel=False)
+            kernel_used=kernel
         else:
-            model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel[0,i,:,:],normalize_kernel=False)
+            kernel_used=kernel[0,i,:,:]
+        
+        model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel_used,
+                                    fft_pad=convol_fft_pad,
+                                    complex_dtype=convol_complex_dtype,
+                                    fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
+                                    normalize_kernel=False)
+        cc=cc+1
+    
+    if  average==True:
+        
+        i0=int(dshape[-3]/2.0)
+        model0=model[0,i0,:,:]
+        data0sum=data[0,i0,:,:].sum()
+        
+        for i in range(dshape[-3]):
+            model[0,i,:,:]=model0*(data[0,i,:,:]).sum()/data0sum
+    
 
     if  verbose==True:
+        
         print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
         print("convolved plane counts: ",cc)
         #start_time = time.time()
