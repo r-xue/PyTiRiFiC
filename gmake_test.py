@@ -67,8 +67,8 @@ import numpy as np
 import reikna.cluda as cluda
 from reikna.cluda import any_api
 import reikna.fft as cluda_fft
-import pyopencl as cl
-import pyopencl.array as cla
+#import pyopencl as cl
+#import pyopencl.array as cla
 #import gpyfft.fft as gpyfft_fft
 from reikna.cluda import dtypes, any_api
 from reikna.core import Annotation, Type, Transformation, Parameter
@@ -481,17 +481,13 @@ def test_gmake_model_kinmspy():
 
 if  __name__=="__main__":
     
-    pass
-    
-    #data_host = np.ones((4, 1024, 1024), dtype = np.complex64)
-    
-    #res_host=gpyfft_fftn(data_host)
-    #back_host=gpyfft_ifftn(res_host)
-    #print(back_host)
+    #pass
+ 
+
     #test_gmake_model_disk2d()
-    qmodels=test_gmake_model_api()
+    models=test_gmake_model_api()
     #test_gmake_model_kinmspy()
-    #test_convolve_eff()
+
     
 
 

@@ -9,8 +9,12 @@ from astropy.convolution import convolve_fft
 from astropy.convolution import convolve
 from astropy.convolution import discretize_model
 import pprint
+
+#   FFT related
 import scipy.fftpack 
-import pyfftw
+import pyfftw #pyfftw3 doesn't work
+import mkl_fft
+#import reikna.fft
 
 def gmake_model_api(mod_dct,dat_dct,
                       decomp=False,
@@ -28,6 +32,11 @@ def gmake_model_api(mod_dct,dat_dct,
             + joint all objects in the intrinsic model before the convolution, e.g.
                 overlapping objects, lines
             + use to low-dimension convolution when possible (e.g. for the narrow-band continumm) 
+            
+        before splitting line & cont models:
+            --- apicall   : 2.10178  seconds ---
+        after splitting line & cont models:
+            --- apicall   : 0.84662  seconds ---
     """
     models={}
     
@@ -49,46 +58,42 @@ def gmake_model_api(mod_dct,dat_dct,
         
         for image in image_list:
             
-            data=dat_dct['data@'+image]
-            hd=dat_dct['header@'+image]
-            error=dat_dct['error@'+image]
-            mask=dat_dct['mask@'+image]
-            sample=dat_dct['sample@'+image]
-            if  'psf@'+image in dat_dct.keys():
-                psf=dat_dct['psf@'+image]
-            else:
-                psf=None
-            
+            if  'data@'+image not in models.keys():
+                
+                models['header@'+image]=dat_dct['header@'+image]
+                models['data@'+image]=dat_dct['data@'+image]
+                models['error@'+image]=dat_dct['error@'+image]   
+                models['mask@'+image]=dat_dct['mask@'+image]
+                models['sample@'+image]=dat_dct['sample@'+image]
+                models['psf@'+image]=dat_dct['psf@'+image]
+                models['imodel@'+image]=np.zeros_like(models['data@'+image])
+                models['cmodel@'+image]=np.zeros_like(models['data@'+image])
+                #   save 2d objects (even it has been broadcasted to 3D for spectral cube)
+                models['imod2d@'+image]=np.zeros_like(models['data@'+image])
+                #   save 3D objects (like spectral line emission from kinmspy/tirific)
+                models['imod3d@'+image]=np.zeros_like(models['data@'+image])
+  
+                
             if  'disk2d' in obj['method'].lower():
-            
-                imodel=gmake_model_disk2d(hd,obj['xypos'][0],obj['xypos'][1],
+                imodel=gmake_model_disk2d(models['header@'+image],obj['xypos'][0],obj['xypos'][1],
                                          r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
-
-            if  'kinmspy' in obj['method'].lower():
-                
-                imodel=gmake_model_kinmspy(hd,obj)
-                
-            #imodel=np.squeeze(imodel)
-            
-            if  'imodel@'+image in models.keys():
+                models['imod2d@'+image]+=imodel
                 models['imodel@'+image]+=imodel
-            else:
-                models['imodel@'+image]=imodel.copy()
-                models['header@'+image]=hd
-                models['data@'+image]=data
-                models['error@'+image]=error     
-                models['mask@'+image]=mask
-                models['sample@'+image]=sample
-                models['psf@'+image]=psf
-                
+
+            if  'kinmspy' in obj['method'].lower():                
+                imodel=gmake_model_kinmspy(models['header@'+image],obj)
+                models['imod3d@'+image]+=imodel
+                models['imodel@'+image]+=imodel                
+
     #   SECOND PASS (OPTIONAL): simulate observations IMAGE BY IMAGE
     
     #start_time = time.time()
     
     for tag in list(models.keys()):
         
+        """
         if  'imodel@' in tag:
             print(tag)
             cmodel,kernel=gmake_model_simobs(models[tag],
@@ -98,7 +103,34 @@ def gmake_model_api(mod_dct,dat_dct,
                                              verbose=True)
             models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
             models[tag.replace('imodel@','kernel@')]=kernel.copy()
-            
+        """
+        
+        #"""
+        if  'imod2d@' in tag:
+            #print(tag)
+            cmodel,kernel=gmake_model_simobs(models[tag],
+                                 models[tag.replace('imod2d@','header@')],
+                                 psf=models[tag.replace('imod2d@','psf@')],
+                                 returnkernel=True,
+                                 average=True,
+                                 verbose=False)
+            #models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
+            models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
+            models[tag.replace('imod2d@','kernel@')]=kernel.copy()
+
+        if  'imod3d@' in tag:
+            #print(tag)
+            cmodel,kernel=gmake_model_simobs(models[tag],
+                                 models[tag.replace('imod3d@','header@')],
+                                 psf=models[tag.replace('imod3d@','psf@')],
+                                 returnkernel=True,
+                                 average=False,
+                                 verbose=False)
+            #models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
+            models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
+            models[tag.replace('imod3d@','kernel@')]=kernel.copy()
+        #"""
+                        
     #print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
     
     return models                
@@ -234,7 +266,7 @@ def gmake_model_export(models,outdir='./'):
         basename=os.path.basename(basename)
         if  not os.path.exists(outdir):
             os.makedirs(outdir)
-        versions=['data','imodel','cmodel','error','mask','kernel','psf','residual']
+        versions=['data','imodel','cmodel','error','mask','kernel','psf','residual','imod2d','imod3d']
         hd=models[key.replace('data@','header@')]
         for version in versions:
             if  version=='residual' and key.replace('data@','cmodel@') in models.keys():
