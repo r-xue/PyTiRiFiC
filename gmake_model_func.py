@@ -156,7 +156,7 @@ def gmake_model_kinmspy(header,obj,
     #   flip z-axis if dv<0
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
-    print(cube.shape)
+    #print(cube.shape)
     model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     

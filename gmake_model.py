@@ -14,6 +14,10 @@ import pprint
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
 import mkl_fft
+# turn off THREADS
+#export OMP_NUM_THREADS=8
+#export MKL_NUM_THREADS=8
+
 #import reikna.fft
 
 def gmake_model_api(mod_dct,dat_dct,
@@ -165,7 +169,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     else:
         cleanout=False
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
-                           decomp=False,cleanout=cleanout,verbose=False)
+                           decomp=False,verbose=False)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
      
@@ -177,14 +181,10 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         
         im=models[key]
         hd=models[key.replace('data@','header@')]        
-        mo=models[key.replace('data@','model@')]
+        mo=models[key.replace('data@','cmodel@')]
         em=models[key.replace('data@','error@')]
         mk=models[key.replace('data@','mask@')]
         sp=models[key.replace('data@','sample@')]
-        if  key.replace('data@','cmodel@') in models.keys():
-            cm=models[key.replace('data@','cmodel@')]        
-        if  key.replace('data@','psf@') in models.keys():
-            pf=models[key.replace('data@','psf@')]
         
         #tic0=time.time()
 
@@ -232,20 +232,12 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         blobs['chisq']+=lnl1
         blobs['ndata']+=(np.shape(sp))[0]
         
-        if  savemodel!='':
-            basename=key.replace('data@','')
-            basename=os.path.basename(basename)
-            if  not os.path.exists(savemodel):
-                os.makedirs(savemodel)
-            fits.writeto(savemodel+'/data_'+basename,im,hd,overwrite=True)
-            fits.writeto(savemodel+'/model_'+basename,mo,hd,overwrite=True)
-            fits.writeto(savemodel+'/error_'+basename,em,hd,overwrite=True)
-            fits.writeto(savemodel+'/mask_'+basename,mk,hd,overwrite=True)
-            fits.writeto(savemodel+'/residual_'+basename,im-mo,hd,overwrite=True)
-            if  key.replace('data@','cmodel@') in models.keys():
-                fits.writeto(savemodel+'/cmodel_'+basename,cm,hd,overwrite=True)            
-            if  key.replace('data@','psf@') in models.keys():
-                fits.writeto(savemodel+'/psf_'+basename,pf,hd,overwrite=True)
+    if  savemodel!='':
+        print('export set:')
+        start_time = time.time()
+        gmake_model_export(models,outdir=savemodel)
+        print("---{0:^50} : {1:<8.5f} seconds ---".format('export '+savemodel,time.time()-start_time))
+
         #"""
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
     lnl=blobs['lnprob']

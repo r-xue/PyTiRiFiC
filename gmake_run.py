@@ -9,12 +9,12 @@ execfile('gmake_emcee.py')
 
 if  __name__=="__main__":
     
-    pass
+    #pass
 
     inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-#gmake_emcee_iterate(sampler,fit_dct,nstep=500)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=300)
 
 #outfolder='bx610xy_cont_dm_emcee'
 #fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=250,plotcorner=True,

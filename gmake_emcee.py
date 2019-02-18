@@ -106,12 +106,15 @@ def gmake_emcee_setup(inp_dct,dat_dct):
                                 args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
-    tic0=time.time()
+    start_time = time.time()
     lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                                 savemodel=fit_dct['outfolder']+'/p_start')
-    print('Took {0} second for one trial'.format(float(time.time()-tic0))) 
+                                 savemodel='')
+    print("---{0:^50} : {1:<8.5f} seconds ---".format('one trail',time.time()-start_time))
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])
+    
+    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                             savemodel=fit_dct['outfolder']+'/p_start')    
        
     return fit_dct,sampler
 
@@ -182,6 +185,12 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
         f.close()
         dt+=float(time.time()-tic0)
         
+        """
+        print("Done.")
+        print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+        """
+
+    #"""        
         if  (i+1) % int(fit_dct['nstep']/10.0) == 0 :
             
             print("")
@@ -211,10 +220,9 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             dt+=float(time.time()-tic0)
         
         
-
-        
     print("Done.")
     print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+    #"""
 
 
 def gmake_emcee_analyze(outfolder,
