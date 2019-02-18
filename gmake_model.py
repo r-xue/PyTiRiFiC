@@ -69,8 +69,8 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['imodel@'+image]=np.zeros_like(models['data@'+image])
                 models['cmodel@'+image]=np.zeros_like(models['data@'+image])
                 #   save 2d objects (even it has been broadcasted to 3D for spectral cube)
-                models['imod2d@'+image]=np.zeros_like(models['data@'+image])
                 #   save 3D objects (like spectral line emission from kinmspy/tirific)
+                models['imod2d@'+image]=np.zeros_like(models['data@'+image])
                 models['imod3d@'+image]=np.zeros_like(models['data@'+image])
   
                 
@@ -114,7 +114,7 @@ def gmake_model_api(mod_dct,dat_dct,
                                  returnkernel=True,
                                  average=True,
                                  verbose=False)
-            #models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
+            models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
             models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod2d@','kernel@')]=kernel.copy()
 
@@ -126,7 +126,7 @@ def gmake_model_api(mod_dct,dat_dct,
                                  returnkernel=True,
                                  average=False,
                                  verbose=False)
-            #models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
+            models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
             models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod3d@','kernel@')]=kernel.copy()
         #"""
@@ -266,7 +266,8 @@ def gmake_model_export(models,outdir='./'):
         basename=os.path.basename(basename)
         if  not os.path.exists(outdir):
             os.makedirs(outdir)
-        versions=['data','imodel','cmodel','error','mask','kernel','psf','residual','imod2d','imod3d']
+        versions=['data','imodel','cmodel','error','mask','kernel','psf','residual',
+                  'imod2d','imod3d','cmod2d','cmod3d']
         hd=models[key.replace('data@','header@')]
         for version in versions:
             if  version=='residual' and key.replace('data@','cmodel@') in models.keys():

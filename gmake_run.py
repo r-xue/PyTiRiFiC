@@ -4,109 +4,16 @@ execfile('gmake_model.py')
 execfile('gmake_utils.py')
 execfile('gmake_emcee.py')
 
-def gmake_insertmodel(data,model,offset=[0,0,0],verbose=False):
-    """
-    insert a model into the data
-        data/model is supposed to be transposed already,
-        therefore follows the IDL indexing convention.
-    offset is define from the left-bottom corner of data.
-        so    model        -->    data
-            [0,0,0]-pix    -->    offset-pix
-    """
-    d_nd=data.shape
-    m_nd=model.shape
 
-    
-    mx_range=[0,m_nd[0]]
-    my_range=[0,m_nd[1]]
-    mz_range=[0,m_nd[2]]
-    dx_range=[0+int(offset[0]),m_nd[0]+int(offset[0])]
-    dy_range=[0+int(offset[1]),m_nd[1]+int(offset[1])]
-    dz_range=[0+int(offset[2]),m_nd[2]+int(offset[2])]
-    
-    if  dx_range[0]<0:
-        mx_range[0]+=-dx_range[0]
-        dx_range[0]=0
-    if  dx_range[1]>d_nd[0]:
-        mx_range[1]+=-(dx_range[1]-d_nd[0])
-        dx_range[1]+=-(dx_range[1]-d_nd[0])
-    
-    if  dy_range[0]<0:
-        my_range[0]+=-dy_range[0]
-        dy_range[0]=0
-    if  dy_range[1]>d_nd[1]:
-        my_range[1]+=-(dy_range[1]-d_nd[1])
-        dy_range[1]+=-(dy_range[1]-d_nd[1])
-    
-    if  dz_range[0]<0:
-        mz_range[0]+=-dz_range[0]
-        dz_range[0]=0
-    if  dz_range[1]>d_nd[2]:
-        mz_range[1]+=-(dz_range[1]-d_nd[2])
-        dz_range[1]+=-(dz_range[1]-d_nd[2])
-    
-    if  verbose==True:
-        print("+"*20)
-        print(offset)
-        print(d_nd)
-        print(dx_range[0],dx_range[1])
-        print(dy_range[0],dy_range[1])
-        print(dz_range[0],dz_range[1])
-        print(m_nd)
-        print(mx_range[0],mx_range[1])
-        print(my_range[0],my_range[1])
-        print(mz_range[0],mz_range[1])    
-    
-    if  data.ndim==3 and model.ndim==3:
-        data[dx_range[0]:dx_range[1],
-             dy_range[0]:dy_range[1],
-             dz_range[0]:dz_range[1]]=model[mx_range[0]:mx_range[1],
-                                            my_range[0]:my_range[1],
-                                            mz_range[0]:mz_range[1]]
-    if  data.ndim==4 and model.ndim==3:
-        data[0,
-             dx_range[0]:dx_range[1],
-             dy_range[0]:dy_range[1],
-             dz_range[0]:dz_range[1]]=model[mx_range[0]:mx_range[1],
-                                            my_range[0]:my_range[1],
-                                            mz_range[0]:mz_range[1]]    
-    
-    return data
 
-def test_gmake_model_disk2d():
-    
-    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
-    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
-    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
-    #psf=psf[0,100,:,:]
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
-                             beam=[0.1,0.2,10.0],
-                             psf=psf,
-                             r_eff=0.2,n=1.0,posang=20,ellip=0.5,
-                             cleanout=False)
-    
-    
-    #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
-    """
-    log_model=np.log(model)
-    plt.figure()
-    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
-           vmin=np.min(log_model), vmax=np.max(log_model))
-    plt.xlabel('x')
-    plt.ylabel('y')
-    cbar = plt.colorbar()
-    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
-    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
-    plt.savefig('test/test_model_disk2d.eps')
-    """
 
 if  __name__=="__main__":
     
     pass
 
-#inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
-#dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
-#fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
 #gmake_emcee_iterate(sampler,fit_dct,nstep=500)
 
 #outfolder='bx610xy_cont_dm_emcee'

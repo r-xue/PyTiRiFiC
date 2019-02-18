@@ -44,10 +44,14 @@ def gmake_model_disk2d(header,ra,dec,
     #   use np.meshgrid and don't worry about transposing
     
     cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
+    #print(ra,dec)
+    #print(SkyCoord(ra,dec,unit="deg"))
     px,py=skycoord_to_pixel(SkyCoord(ra,dec,unit="deg"),WCS(header),origin=0)
     vz=np.arange(header['NAXIS3'])
     wz=(WCS(header).wcs_pix2world(0,0,vz,0,0))[2]
-    
+    #print(px,py)
+    #px,py,pz,ps=(WCS(header).wcs_world2pix(ra,dec,0,0,0))
+    #print(px,py)
     #   get 2D disk model
     
     x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
@@ -114,9 +118,9 @@ def gmake_model_kinmspy(header,obj,
     
     cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
     
-    px_o=px-float(round(xs/cell))/2.0
-    py_o=px-float(round(ys/cell))/2.0
-    pz_o=pz-float(round(ys/abs(dv)))/2.0
+    px_o=px-float(round(xs/cell))/2.
+    py_o=py-float(round(ys/cell))/2.
+    pz_o=pz-float(round(vs/abs(dv)))/2.
     #   when the z-axis is decreasing in velocity, we count offset backwards
     if  dv<0: pz_o=pz_o+1.0
     

@@ -3,6 +3,15 @@
 """
 
 from past.builtins import execfile
+import numpy as np
+import reikna.cluda as cluda
+from reikna.cluda import any_api
+import reikna.fft as cluda_fft
+#import pyopencl as cl
+#import pyopencl.array as cla
+#import gpyfft.fft as gpyfft_fft
+from reikna.cluda import dtypes, any_api
+from reikna.core import Annotation, Type, Transformation, Parameter
 
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
@@ -63,15 +72,7 @@ def fftw_ifftn(input_data):
     return ifftn_obj()
 
 
-import numpy as np
-import reikna.cluda as cluda
-from reikna.cluda import any_api
-import reikna.fft as cluda_fft
-#import pyopencl as cl
-#import pyopencl.array as cla
-#import gpyfft.fft as gpyfft_fft
-from reikna.cluda import dtypes, any_api
-from reikna.core import Annotation, Type, Transformation, Parameter
+
 
 #pyfftw.config.NUM_THREADS=1
 
@@ -447,9 +448,8 @@ def test_gmake_model_api():
     
     inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-
     mod_dct=gmake_inp2mod(inp_dct)
-    
+    #pprint.pprint(mod_dct)
     start_time = time.time()
     models=gmake_model_api(mod_dct,dat_dct,verbose=False)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
@@ -479,16 +479,53 @@ def test_gmake_model_kinmspy():
     
     fits.writeto('test/test_model_kinmspy_model.fits',model,hd,overwrite=True)
 
+def test_gmake_model_disk2d():
+    
+    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
+    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
+    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
+    #psf=psf[0,100,:,:]
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
+                             beam=[0.1,0.2,10.0],
+                             psf=psf,
+                             r_eff=0.2,n=1.0,posang=20,ellip=0.5,
+                             cleanout=False)
+    
+    
+    #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
+    """
+    log_model=np.log(model)
+    plt.figure()
+    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
+           vmin=np.min(log_model), vmax=np.max(log_model))
+    plt.xlabel('x')
+    plt.ylabel('y')
+    cbar = plt.colorbar()
+    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
+    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
+    plt.savefig('test/test_model_disk2d.eps')
+    """
+def test_wcs2pix():
+    
+    data,header=fits.getdata('examples/bx610/bx610.bb2.cube.iter0.image.fits',header=True,memmap=False)
+    xypos=[356.539321,12.8220179445]
+    px,py,pz,ps=(WCS(header).wcs_world2pix(xypos[0],xypos[1],0,0,0))
+    print(xypos)
+    print(px,py)
+
 if  __name__=="__main__":
     
-    #pass
+    pass
  
 
     #test_gmake_model_disk2d()
     models=test_gmake_model_api()
+    #test_wcs2pix()
     #test_gmake_model_kinmspy()
 
     
+
+
 
 
 
