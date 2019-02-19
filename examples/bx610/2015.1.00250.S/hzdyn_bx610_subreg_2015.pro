@@ -16,14 +16,21 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 ;endfor
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
+itype='cube'
+tag=''
+tag='64x64'
 
-input_temp='*bbx*nm.cube/bx610.iter0.image.fits.gz'
-output_temp='bx610.bbx.cube.iter0.image.fits'
+input_temp='*bbx*nm.'+itype+'/bx610.iter0.image.fits.gz'
+output_temp='bx610.bbx.'+itype+tag+'.iter0.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
     im=readfits(repo+input,hd)
-    hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.5393354,12.8220249]
+    
+    ;hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.5393354,12.8220249]
+    adxy,hd,356.5393354,12.8220249,xc,yc
+    hextract3d,im,hd,subim,subhd,[xc-32,xc+31,yc-32,yc+31]
+   
     output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
     writefits,output,subim,subhd
 endfor
@@ -36,8 +43,10 @@ for i=0,3 do begin
     loc=where(im eq max(im,/nan))
     loc=loc[0]
     ind = ARRAY_INDICES(im, loc)
-    hsize=52
-    hextract3d,im,hd,subim,subhd,[ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize]
+    ;hsize=52
+    ;hextract3d,im,hd,subim,subhd,[ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize]
+    hextract3d,im,hd,subim,subhd,[ind[0]-32,ind[0]+31,ind[1]-32,ind[1]+31]
+    
     output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
     output=repstr(output,'.image.','.psf.')
     writefits,output,subim,subhd
@@ -47,14 +56,15 @@ END
 
 PRO HZDYN_BX610_SUBREG_2015_MASK
 
-
-input_temp='bx610.bbx.cube.iter0.image.fits'
+itype='cube'
+tag='64x64'
+input_temp='bx610.bbx.'+itype+tag+'.iter0.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
     im=readfits(input,hd)
     mk=im*0.0
-    mk[(54-25):(54+25),(53-25):(53+25),*]=1.0
+    mk[(32-16):(32+16),(32-16):(32+16),*]=1.0
     writefits,repstr(input,'.image','.mask'),mk,hd
     unc=im*0.0
     unc=unc+robust_sigma(im)
@@ -67,12 +77,14 @@ PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 
 ;hexsample_bx610,'bx610_spw27',356.53929,12.822,xlimit=[33.-10.,60.+10.],ylimit=[40.-10.,64.+10.]
 
-
-
-hexsample_bx610,'bx610.bb1.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb2.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb3.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
-hexsample_bx610,'bx610.bb4.cube.iter0',356.5393354,12.8220249,xlimit=[54.-25,54.+25],ylimit=[53.-25,53.+25]
+itype='cube'
+tag='64x64'
+xlimit0=[32.-18,32.+18]
+ylimit0=[32.-18,32.+18]
+hexsample_bx610,'bx610.bb1.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb2.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb3.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb4.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
 
 END
 
