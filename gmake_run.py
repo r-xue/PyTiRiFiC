@@ -12,9 +12,9 @@ if  __name__=="__main__":
     #   build a dict holding input config
     #   build a dict holding data
     #   build the sampler and a dict holding sampler metadata
-    #inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm64_all.inp',verbose=False)
     #inp_dct=gmake_readinp('examples/bx610/bx610xy_cm_cont.inp',verbose=False)
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_cm_cont.inp',verbose=False)
+    #inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_cont.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=400)

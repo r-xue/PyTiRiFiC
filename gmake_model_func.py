@@ -38,34 +38,43 @@ def gmake_model_disk2d(header,ra,dec,
         note:
             since the convolution is the bottom-neck, a plane-by-plane processing should
             be avoided.
+            avoid too many header->wcs / wcs-header calls
+            
     """
 
     #   build objects
     #   use np.meshgrid and don't worry about transposing
-    
-    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
-    #print(ra,dec)
-    #print(SkyCoord(ra,dec,unit="deg"))
-    px,py=skycoord_to_pixel(SkyCoord(ra,dec,unit="deg"),WCS(header),origin=0)
+
+    w=WCS(header)
+    cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
+    #px,py=skycoord_to_pixel(SkyCoord(ra,dec,unit="deg"),w,origin=0) # default to IRCS
+    px,py,pz,ps=(w.wcs_world2pix(ra,dec,0,0,0))
     vz=np.arange(header['NAXIS3'])
-    wz=(WCS(header).wcs_pix2world(0,0,vz,0,0))[2]
-    #print(px,py)
-    #px,py,pz,ps=(WCS(header).wcs_world2pix(ra,dec,0,0,0))
-    #print(px,py)
+    wz=(w.wcs_pix2world(0,0,vz,0,0))[2]
+
     #   get 2D disk model
-    
+    #start_time = time.time()
     x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
     mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
     model2d=mod(x,y)
+    model2d=model2d/model2d.sum()
+    #print("--- %s seconds ---" % (time.time() - start_time))
     
     #   intflux at different planes / broadcasting to the data dimension
     #   return model in units of Jy/pix
     
+    #start_time = time.time()
     intflux_z=(wz/1e9/restfreq)**alpha*intflux
-    model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
+    #start_time = time.time()
+    model=np.empty((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    #model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
     for i in range(header['NAXIS3']):
-        model[0,i,:,:]*=intflux_z[i]/model2d.sum()
+        model[0,i,:,:]=intflux_z[i]*model2d
+    #print("--- %s seconds ---" % (time.time() - start_time))    
+    #model_test=np.array([ map(lambda v : v*model2d, range(header['NAXIS3'])) ])
+    #print("--- %s seconds ---" % (time.time() - start_time))
+    #print(model.shape)
 
     return model
 
@@ -98,6 +107,7 @@ def gmake_model_kinmspy(header,obj,
     #   rfreq=obj['restfreq']/(1.0+obj['z'])            # GHz (obs-frame)
     #   fsys=(1.0-obj['vsys']/(const.c/1000.0))*rfreq   # line systematic frequency (obs-frame)
         
+    w=WCS(header)
     if  'Hz' in header['CUNIT3']:
         wz=obj['restfreq']*1e9/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
         dv=-const.c*header['CDELT3']/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
@@ -110,13 +120,13 @@ def gmake_model_kinmspy(header,obj,
 
     #   get 0-based pix-index
     
-    px,py,pz,ps=WCS(header).wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
+    px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
 
     xs=np.max(np.array(obj['radi']))*2.0*2.0
     ys=np.max(np.array(obj['radi']))*2.0*2.0
     vs=np.max(obj['vrot'])*1.5*2.0
     
-    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
+    cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     
     px_o=px-float(round(xs/cell))/2.
     py_o=py-float(round(ys/cell))/2.
@@ -140,6 +150,7 @@ def gmake_model_kinmspy(header,obj,
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
     sbprof=mod(np.array(obj['radi']))
     #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
+    #start_time = time.time()
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
@@ -151,12 +162,12 @@ def gmake_model_kinmspy(header,obj,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
                intFlux=obj['intflux'])
-    
+    #print("--- %s seconds ---" % (time.time() - start_time))
     #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
     #   flip z-axis if dv<0
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
-    #print(cube.shape)
+    #print('sub:',cube.shape)
     model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     
@@ -225,12 +236,22 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
               
     """
 
-    convol_fft_pad=True
-    #convol_complex_dtype=np.complex128
-    convol_complex_dtype=np.complex64
+    # the default setting in convolve_fft is optimzed for the precision rather than speed..
+    # https://software.intel.com/en-us/articles/mkl-ipp-choosing-an-fft
+    # https://software.intel.com/en-us/articles/fft-length-and-layout-advisor
+    # http://www.fftw.org/fftw2_doc/fftw_3.html
+    convol_fft_pad=False # we don't care about 2^n since the fancy MKL or FFTW is used: 
+                         # the optimized radices are 2, 3, 5, 7, and 11.
+                         # we will control the imsize when extracting subregion
+    convol_complex_dtype=np.complex64   #np.complex128
+    convol_psf_pad=False # psf_pad=True can avoild edge wrap by padding the original image to naxis1+naxis2 (or twice if square)
+                         # since our sampling/masking cube already restrict the inner quarter for chi^2, we don't need to pad further.
     
-    cell=np.mean(proj_plane_pixel_scales(WCS(header).celestial))*3600.0
-    
+    #w=WCS(header)
+    #cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
+    cell=np.sqrt(abs(header['CDELT1']*header['CDELT2']))*3600.0
+
+
     #   get the convolution Kernel normalized to 1 at PEAK
     #   turn on normalization in convolve() will force the Jy/Pix->Jy/beam conversion
     #   priority: psf>beam>header(2D or 3D KERNEL) 
@@ -272,7 +293,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
             kernel_used=kernel[0,i,:,:]
         
         model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel_used,
-                                    fft_pad=convol_fft_pad,
+                                    fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
                                     complex_dtype=convol_complex_dtype,
                                     #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
                                     fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
@@ -293,8 +314,8 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
 
     if  verbose==True:
         
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
         print("convolved plane counts: ",cc)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
         #start_time = time.time()
         #test1=(data[0,:,:,:])
         #test2=(kernel[np.newaxis,0,100,(52-10):(52+10),(52-10):(52+10)])

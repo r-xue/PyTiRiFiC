@@ -1,4 +1,5 @@
 from __future__ import print_function
+from past.builtins import map
 
 import numpy as np
 from astropy.modeling.models import Sersic2D
@@ -13,8 +14,8 @@ import pprint
 #   FFT related
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
-pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
-pyfftw.interfaces.cache.enable()
+#pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
+#pyfftw.interfaces.cache.enable()
 import mkl_fft
 # turn off THREADS
 #export OMP_NUM_THREADS=8
@@ -69,6 +70,7 @@ def gmake_model_api(mod_dct,dat_dct,
             
             if  'data@'+image not in models.keys():
                 
+                #test_time = time.time()
                 models['header@'+image]=dat_dct['header@'+image]
                 models['data@'+image]=dat_dct['data@'+image]
                 models['error@'+image]=dat_dct['error@'+image]   
@@ -84,21 +86,29 @@ def gmake_model_api(mod_dct,dat_dct,
                 #   save 3D objects (like spectral line emission from kinmspy/tirific)
                 models['imod2d@'+image]=np.zeros_like(models['data@'+image])
                 models['imod3d@'+image]=np.zeros_like(models['data@'+image])
+                #print("---{0:^10} : {1:<8.5f} seconds ---".format('import:'+image,time.time() - test_time))
   
-            test_time = time.time()
+            
             if  'disk2d' in obj['method'].lower():
+                #test_time = time.time()
                 imodel=gmake_model_disk2d(models['header@'+image],obj['xypos'][0],obj['xypos'][1],
                                          r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
+                #print(imodel.shape)
                 models['imod2d@'+image]+=imodel
                 models['imodel@'+image]+=imodel
+                
 
-            if  'kinmspy' in obj['method'].lower():                
+            if  'kinmspy' in obj['method'].lower():
+                #test_time = time.time()                
                 imodel=gmake_model_kinmspy(models['header@'+image],obj)
+                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
+                #print(imodel.shape)
                 models['imod3d@'+image]+=imodel
                 models['imodel@'+image]+=imodel      
-            print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))   
+              
             
     if  verbose==True:            
         print("---{0:^10} : {1:<8.5f} seconds ---".format('imodel-total',time.time() - start_time))                          
@@ -129,9 +139,9 @@ def gmake_model_api(mod_dct,dat_dct,
                                  psf=models[tag.replace('imod2d@','psf@')],
                                  returnkernel=True,
                                  average=True,
-                                 verbose=verbose)
+                                 verbose=False)
             models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
-            models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
+            models[tag.replace('imod2d@','cmodel@')]+=cmodel
             models[tag.replace('imod2d@','kernel@')]=kernel.copy()
 
         if  'imod3d@' in tag:
@@ -141,9 +151,9 @@ def gmake_model_api(mod_dct,dat_dct,
                                  psf=models[tag.replace('imod3d@','psf@')],
                                  returnkernel=True,
                                  average=False,
-                                 verbose=verbose)
+                                 verbose=False)
             models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
-            models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
+            models[tag.replace('imod3d@','cmodel@')]+=cmodel
             models[tag.replace('imod3d@','kernel@')]=kernel.copy()
 
     if  verbose==True:            

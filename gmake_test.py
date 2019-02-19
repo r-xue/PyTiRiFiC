@@ -451,7 +451,7 @@ def test_gmake_model_api():
     mod_dct=gmake_inp2mod(inp_dct)
     #pprint.pprint(mod_dct)
     start_time = time.time()
-    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
+    models=gmake_model_api(mod_dct,dat_dct,verbose=False)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
     
     start_time = time.time()
@@ -481,16 +481,15 @@ def test_gmake_model_kinmspy():
 
 def test_gmake_model_disk2d():
     
-    data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
+    #data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
     data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
     psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
     #psf=psf[0,100,:,:]
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
-                             beam=[0.1,0.2,10.0],
-                             psf=psf,
-                             r_eff=0.2,n=1.0,posang=20,ellip=0.5,
-                             cleanout=False)
     
+    start_time = time.time()
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
+                             r_eff=0.2,n=1.0,posang=20,ellip=0.5)
+    print("--- %s seconds ---" % (time.time() - start_time))
     
     #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
     """
@@ -507,7 +506,7 @@ def test_gmake_model_disk2d():
     """
 def test_wcs2pix():
     
-    data,header=fits.getdata('examples/bx610/bx610.bb2.cube.iter0.image.fits',header=True,memmap=False)
+    data,header=fits.getdata('examples/bx610/bx610.bb1.cube.iter0.image.fits',header=True,memmap=False)
     xypos=[356.539321,12.8220179445]
     px,py,pz,ps=(WCS(header).wcs_world2pix(xypos[0],xypos[1],0,0,0))
     print(xypos)
@@ -523,12 +522,15 @@ def test_mcspeed():
 if  __name__=="__main__":
     
     pass
- 
-
+    
+    #%timeit -n 100 for _ in range(10): True
+    #   %timeit -n 10 "np.zeros((100,100,100)"
+    #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
+    #test_gmake_model_kinmspy()
     models=test_gmake_model_api()
     #test_wcs2pix()
-    #test_gmake_model_kinmspy()
+    
     #test_mcspeed()
 
     
