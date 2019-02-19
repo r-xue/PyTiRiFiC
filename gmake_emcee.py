@@ -45,6 +45,35 @@ np.warnings.filterwarnings('ignore')
 
 
 def gmake_emcee_setup(inp_dct,dat_dct):
+    """
+    Notes:
+        + nthreads
+            if the calling function uses the CPU multiple-threading functon for calculations, 
+            turn on threading in emcee may have adverse effects actually
+            
+            log:
+                * didn't find clear way to turn off threading for mkl_fft
+                * mkl_num_threads doesn't apply here
+                mkl_fft/threads=8 emecee-threads=1
+                    iteration:  1
+                    Took 1.22294176419576 minutes
+                mkl_fft/threads=8 emecee-threads=4
+                    iteration:  1
+                    Took 2.3464738647143046 minutes
+                mkl_fft/threads=8 emecee-threads=8
+                    iteration:  1
+                    Took 2.845475753148397 minutes
+                pyfftw/threads=1 emecee-threads=1
+                    iteration:  1
+                    Took 2.0895618041356405 minutes
+                pyfftw/threads=8 emecee-threads=8
+                    iteration:  1
+                    Took 2.9587043801943462 minutes                  
+                pyfftw/threads=8 emecee-threads=1
+                    iteration:  1
+                    Took 2.0195618041356405 minutes                                                            
+            
+    """
     
     opt_dct=inp_dct['optimize']
     
@@ -71,7 +100,8 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     #print(fit_dct['p_format_keys'])
     
     fit_dct['ndim']=len(fit_dct['p_start'])
-    fit_dct['nthreads']=multiprocessing.cpu_count()
+    #   turn off mutiple-processing since mkl_fft has been threaded.
+    fit_dct['nthreads']=1   #multiprocessing.cpu_count()
     fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=opt_dct['outdir']
     
@@ -99,6 +129,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     fit_dct['pos_last']=deepcopy(fit_dct['pos_start'])
     fit_dct['step_last']=0
     
+    np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
 
@@ -112,7 +143,6 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     print("---{0:^50} : {1:<8.5f} seconds ---".format('one trail',time.time()-start_time))
     print('ndata->',blobs['ndata'])
     print('chisq->',blobs['chisq'])
-    
     lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
                              savemodel=fit_dct['outfolder']+'/p_start')    
        
@@ -129,7 +159,7 @@ def gmake_emcee_savechain(sampler,fitsname,metadata={}):
     
     blobs=sampler.blobs
     for key in blobs[0][0].keys():
-        tmp0=map(lambda v: map(lambda w: w[key], v), blobs)
+        tmp0=list(map(lambda v: list(map(lambda w: w[key], v)), blobs))
         t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
         (nstep,nwalker)=(np.array(tmp0)).shape
         
@@ -147,7 +177,7 @@ def gmake_emcee_savechain(sampler,fitsname,metadata={}):
     t.write(fitsname+".fits", overwrite=True)
     
     
-def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
+def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
     """
         RUN the sampler
     """
@@ -184,13 +214,12 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100):
             f.write(output)
         f.close()
         dt+=float(time.time()-tic0)
-        
-        """
-        print("Done.")
-        print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
-        """
 
-    #"""        
+        if  mctest==True:
+            print("iteration: ",i+1)
+            print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+            continue
+            
         if  (i+1) % int(fit_dct['nstep']/10.0) == 0 :
             
             print("")
@@ -261,14 +290,12 @@ def gmake_emcee_analyze(outfolder,
     #print('##',blobs_npar.shape)    #nstep x nwalker
     
     #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    p_format=t['p_format'].data[0]
-    p_name=t['p_name'].data[0]
+    p_format=list((t['p_format'].data[0]).astype(str))
+    p_name=list((t['p_name'].data[0]).astype(str))
     p_scale=t['p_iscale'].data[0]
     p_lo=t['p_lo'].data[0]
     p_up=t['p_up'].data[0]
     p_start=t['p_start'].data[0]
-    
-    
     
     if  verbose==True:
         print("Mean acceptance fraction: ",np.mean(acceptfraction))
@@ -281,7 +308,7 @@ def gmake_emcee_analyze(outfolder,
         print('sample shape: ',samples.shape)
         print("MCMC initialize scale / MCMC result:")
     
-    p_ptiles=map(lambda v: v,zip(*np.percentile(samples,[2.5,16.,50.,84.,97.5],axis=0)))
+    p_ptiles=list(map(lambda v: v,zip(*np.percentile(samples,[2.5,16.,50.,84.,97.5],axis=0))))
     p_median=p_error1=p_error2=p_error3=p_error4=p_int1=p_int2=p_mode=np.array([])    
     
     if  verbose==True:
@@ -338,8 +365,8 @@ def gmake_emcee_analyze(outfolder,
     fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
     cc=0
     for i in picki:
-        iy=cc % nrow
-        ix=(cc - iy)/nrow
+        iy=int(cc % nrow)
+        ix=int((cc - iy)/nrow)
         if  plotburnin==False:
             axes[iy,ix].plot(chain_array[:, burnin:, i].T, color="gray", alpha=0.4)
         else:
@@ -387,8 +414,8 @@ def gmake_emcee_analyze(outfolder,
     fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
     cc=0
     for i in picki:
-        iy=cc % nrow
-        ix=(cc - iy)/nrow
+        iy=int(cc % nrow)
+        ix=int((cc - iy)/nrow)
         if  plotburnin==False:
             axes[iy,ix].plot(t[m_name[i]].data[0][burnin:,:], color="k", alpha=0.4)
         else:

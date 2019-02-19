@@ -446,12 +446,12 @@ def test_gmake_model_disk2d():
     
 def test_gmake_model_api():
     
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all.inp',verbose=False)
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     mod_dct=gmake_inp2mod(inp_dct)
     #pprint.pprint(mod_dct)
     start_time = time.time()
-    models=gmake_model_api(mod_dct,dat_dct,verbose=False)
+    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
     
     start_time = time.time()
@@ -513,6 +513,13 @@ def test_wcs2pix():
     print(xypos)
     print(px,py)
 
+def test_mcspeed():
+    
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
+
 if  __name__=="__main__":
     
     pass
@@ -522,6 +529,7 @@ if  __name__=="__main__":
     models=test_gmake_model_api()
     #test_wcs2pix()
     #test_gmake_model_kinmspy()
+    #test_mcspeed()
 
     
 

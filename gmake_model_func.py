@@ -274,7 +274,10 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel_used,
                                     fft_pad=convol_fft_pad,
                                     complex_dtype=convol_complex_dtype,
+                                    #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
                                     fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
+                                    #fftn=scipy.fftpack.fftn, ifftn=scipy.fftpack.ifftn,
+                                    #fftn=pyfftw.interfaces.numpy_fft.fftn, ifftn=pyfftw.interfaces.numpy_fft.ifftn,
                                     normalize_kernel=False)
         cc=cc+1
     

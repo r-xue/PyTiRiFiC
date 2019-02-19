@@ -13,6 +13,8 @@ import pprint
 #   FFT related
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
+pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
+pyfftw.interfaces.cache.enable()
 import mkl_fft
 # turn off THREADS
 #export OMP_NUM_THREADS=8
@@ -45,7 +47,10 @@ def gmake_model_api(mod_dct,dat_dct,
     models={}
     
     #   FIRST PASS: add models OBJECT by OBJECT
-    
+
+    if  verbose==True:
+        start_time = time.time()
+            
     for tag in list(mod_dct.keys()):
 
         #   skip if no "method" or the item is not a physical model
@@ -69,7 +74,10 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['error@'+image]=dat_dct['error@'+image]   
                 models['mask@'+image]=dat_dct['mask@'+image]
                 models['sample@'+image]=dat_dct['sample@'+image]
-                models['psf@'+image]=dat_dct['psf@'+image]
+                if  'psf@'+image in dat_dct.keys():
+                    models['psf@'+image]=dat_dct['psf@'+image]
+                else:
+                    models['psf@'+image]=None
                 models['imodel@'+image]=np.zeros_like(models['data@'+image])
                 models['cmodel@'+image]=np.zeros_like(models['data@'+image])
                 #   save 2d objects (even it has been broadcasted to 3D for spectral cube)
@@ -77,7 +85,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['imod2d@'+image]=np.zeros_like(models['data@'+image])
                 models['imod3d@'+image]=np.zeros_like(models['data@'+image])
   
-                
+            test_time = time.time()
             if  'disk2d' in obj['method'].lower():
                 imodel=gmake_model_disk2d(models['header@'+image],obj['xypos'][0],obj['xypos'][1],
                                          r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
@@ -89,11 +97,16 @@ def gmake_model_api(mod_dct,dat_dct,
             if  'kinmspy' in obj['method'].lower():                
                 imodel=gmake_model_kinmspy(models['header@'+image],obj)
                 models['imod3d@'+image]+=imodel
-                models['imodel@'+image]+=imodel                
+                models['imodel@'+image]+=imodel      
+            print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))   
+            
+    if  verbose==True:            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('imodel-total',time.time() - start_time))                          
 
     #   SECOND PASS (OPTIONAL): simulate observations IMAGE BY IMAGE
     
-    #start_time = time.time()
+    if  verbose==True:
+        start_time = time.time()
     
     for tag in list(models.keys()):
         
@@ -108,8 +121,7 @@ def gmake_model_api(mod_dct,dat_dct,
             models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
             models[tag.replace('imodel@','kernel@')]=kernel.copy()
         """
-        
-        #"""
+
         if  'imod2d@' in tag:
             #print(tag)
             cmodel,kernel=gmake_model_simobs(models[tag],
@@ -117,7 +129,7 @@ def gmake_model_api(mod_dct,dat_dct,
                                  psf=models[tag.replace('imod2d@','psf@')],
                                  returnkernel=True,
                                  average=True,
-                                 verbose=False)
+                                 verbose=verbose)
             models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
             models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod2d@','kernel@')]=kernel.copy()
@@ -129,13 +141,13 @@ def gmake_model_api(mod_dct,dat_dct,
                                  psf=models[tag.replace('imod3d@','psf@')],
                                  returnkernel=True,
                                  average=False,
-                                 verbose=False)
+                                 verbose=verbose)
             models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
             models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod3d@','kernel@')]=kernel.copy()
-        #"""
-                        
-    #print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+
+    if  verbose==True:            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-total',time.time() - start_time))
     
     return models                
 
@@ -164,10 +176,6 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     #tic0=time.time()
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
-    if  savemodel!='':
-        cleanout=True
-    else:
-        cleanout=False
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
                            decomp=False,verbose=False)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
@@ -263,15 +271,17 @@ def gmake_model_export(models,outdir='./'):
         hd=models[key.replace('data@','header@')]
         for version in versions:
             if  version=='residual' and key.replace('data@','cmodel@') in models.keys():
-                fits.writeto(outdir+'/'+version+'_'+basename,
-                             models[key]-models[key.replace('data@','cmodel@')],
-                             models[key.replace('data@','header@')],
-                             overwrite=True)                
+                if  models[key.replace('data@','cmodel@')] is not None:
+                    fits.writeto(outdir+'/'+version+'_'+basename,
+                                 models[key]-models[key.replace('data@','cmodel@')],
+                                 models[key.replace('data@','header@')],
+                                 overwrite=True)                
             if  key.replace('data@',version+'@') in models.keys():
-                fits.writeto(outdir+'/'+version+'_'+basename,
-                             models[key.replace('data@',version+'@')],
-                             models[key.replace('data@','header@')],
-                             overwrite=True)
+                if  models[key.replace('data@',version+'@')] is not None:
+                    fits.writeto(outdir+'/'+version+'_'+basename,
+                                 models[key.replace('data@',version+'@')],
+                                 models[key.replace('data@','header@')],
+                                 overwrite=True)
 
 
 def gmake_model_lnprior(theta,fit_dct):
@@ -292,13 +302,20 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
     """
     this is the evaluating function for emcee 
     """
+
+    if  verbose==True:
+        start_time = time.time()
+        
     lp = gmake_model_lnprior(theta,fit_dct)
     if  not np.isfinite(lp):
         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
         return -np.inf,blobs
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    
     if  verbose==True:
         print("try ->",theta)
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+    
     return lp+lnl,blobs        
 
 
