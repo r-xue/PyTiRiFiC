@@ -334,17 +334,5 @@ if  __name__=="__main__":
     pass
 
 
-    """
-    log_model=np.log(model)
-    plt.figure()
-    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
-           vmin=np.min(log_model), vmax=np.max(log_model))
-    plt.xlabel('x')
-    plt.ylabel('y')
-    cbar = plt.colorbar()
-    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
-    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
-    plt.savefig('test/test_model_disk2d.eps')
-    """
 
 
