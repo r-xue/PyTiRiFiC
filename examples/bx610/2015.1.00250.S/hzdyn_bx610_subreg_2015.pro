@@ -19,9 +19,10 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 itype='cube'
 tag=''
 tag='64x64'
+iter='itern'
 
-input_temp='*bbx*nm.'+itype+'/bx610.iter0.image.fits.gz'
-output_temp='bx610.bbx.'+itype+tag+'.iter0.image.fits'
+input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
+output_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
@@ -58,7 +59,9 @@ PRO HZDYN_BX610_SUBREG_2015_MASK
 
 itype='cube'
 tag='64x64'
-input_temp='bx610.bbx.'+itype+tag+'.iter0.image.fits'
+iter='iter0'
+iter='itern'
+input_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
@@ -81,10 +84,11 @@ itype='cube'
 tag='64x64'
 xlimit0=[32.-18,32.+18]
 ylimit0=[32.-18,32.+18]
-hexsample_bx610,'bx610.bb1.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb2.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb3.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb4.'+itype+tag+'.iter0',356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+iter='itern'
+hexsample_bx610,'bx610.bb1.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb2.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb3.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb4.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
 
 END
 

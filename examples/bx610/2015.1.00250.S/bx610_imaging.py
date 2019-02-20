@@ -135,9 +135,9 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 niter_list=[0,10000]
 imsize=[1280,1280]
 
-threshold_list=list(np.array([0.,2.])*0.00041169411)
+threshold_list=list(np.array([0.,2.])*0.0009)
 imagename_list=['bx610.bb1_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
-imagename_list=imagename_list[0]
+#imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='0',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
@@ -145,11 +145,12 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.00038525544)
+threshold_list=list(np.array([0.,2.])*0.0009)
 imagename_list=['bx610.bb2_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
-imagename_list=imagename_list[0]
+#imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='1',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
@@ -157,11 +158,12 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.00036389730)
+threshold_list=list(np.array([0.,2.])*0.0008)
 imagename_list=['bx610.bb3_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
-imagename_list=imagename_list[0]
+#imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='2',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
@@ -169,11 +171,12 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.00033714264)
+threshold_list=list(np.array([0.,2.])*0.0008)
 imagename_list=['bx610.bb4_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
-imagename_list=imagename_list[0]
+#imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='3',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
@@ -181,4 +184,5 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
