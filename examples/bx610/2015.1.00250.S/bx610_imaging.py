@@ -135,54 +135,66 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 niter_list=[0,10000]
 imsize=[1280,1280]
 
-threshold_list=list(np.array([0.,2.])*0.0009)
-imagename_list=['bx610.bb1_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+#threshold_list=list(np.array([0.,2.])*0.0009)
+#imagename_list=['bx610.bb1_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+threshold_list=list(np.array([0.,2.])*0.0013)
+imagename_list=['bx610.bb1_msc_ro0_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
 #imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='0',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='249.147701942GHz',width='7.81215119823MHz',nchan=238,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
-            weighting='briggs',robust=1.0,
+            #weighting='briggs',robust=1.0,
+            weighting='briggs',robust=0.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.0009)
-imagename_list=['bx610.bb2_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+#threshold_list=list(np.array([0.,2.])*0.0009)
+#imagename_list=['bx610.bb2_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+threshold_list=list(np.array([0.,2.])*0.0013)
+imagename_list=['bx610.bb2_msc_ro0_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
 #imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='1',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='250.752890409GHz',width='7.81215322296MHz',nchan=238,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
-            weighting='briggs',robust=1.0,
+            #weighting='briggs',robust=1.0,
+            weighting='briggs',robust=0.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.0008)
-imagename_list=['bx610.bb3_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+#threshold_list=list(np.array([0.,2.])*0.0008)
+#imagename_list=['bx610.bb3_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+threshold_list=list(np.array([0.,2.])*0.0011)
+imagename_list=['bx610.bb3_msc_ro0_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
 #imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='2',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
-            weighting='briggs',robust=1.0,
+            #weighting='briggs',robust=1.0,
+            weighting='briggs',robust=0.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*0.0008)
-imagename_list=['bx610.bb4_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+#threshold_list=list(np.array([0.,2.])*0.0008)
+#imagename_list=['bx610.bb4_msc_ro1_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
+threshold_list=list(np.array([0.,2.])*0.0011)
+imagename_list=['bx610.bb4_msc_ro0_nm.cube/bx610.iter'+str(x) for x in ['0','n']]
 #imagename_list=imagename_list[0]
 alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             spw='3',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='234.954234198GHz',width='7.8121332951MHz',nchan=238,
             deconvolver='multiscale',specmode='cube',scales=[0,5],
-            weighting='briggs',robust=1.0,
+            #weighting='briggs',robust=1.0,
+            weighting='briggs',robust=0.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)

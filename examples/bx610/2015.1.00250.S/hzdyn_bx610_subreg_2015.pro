@@ -17,11 +17,14 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 itype='cube'
+itype='mfs'
+
 tag=''
 tag='64x64'
 iter='itern'
 
 input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
+input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
 output_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
