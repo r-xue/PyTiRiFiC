@@ -87,3 +87,4 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + import MS natively
 + Add more panel models
 + fitting on ~~the robust=0 dataset~~
++ Consider to add a "bar" or a "hole" / add assymetric cloudlets sampling in kinmspy
