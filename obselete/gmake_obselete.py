@@ -2,6 +2,40 @@
 
 
 
+    #fig,ax=plt.subplots(1,1,sharex=True,figsize=(8,8))
+     
+
+    #ax.projection=wcs
+    #cbar = fig.colorbar(cs1,ax=(ax1,ax2,ax3),orientation='vertical',fraction=.1)
+    #cbar.set_label('Log Brightness', rotation=270, labelpad=25)
+    #cbar.set_ticks([vmin,vmax])
+    
+    #model_m0.write('model_mom0.fits',overwrite=True)
+    
+#     fig = plt.figure(figsize=(14, 7))
+#     
+#     f1 = aplpy.FITSFigure(model_m0.array,hdu=model_m0.hdu, figure=fig,
+#                           subplot=[0.13, 0.1, 0.35, 0.7])
+#     
+#     f1.tick_labels.set_font(size='x-small')
+#     f1.axis_labels.set_font(size='small')
+#     f1.show_grayscale()
+#     
+#     f2 = aplpy.FITSFigure('model_mom0.fits', figure=fig,
+#                           subplot=[0.5, 0.1, 0.35, 0.7])
+#     
+#     f2.tick_labels.set_font(size='x-small')
+#     f2.axis_labels.set_font(size='small')
+#     f2.show_grayscale()
+#     
+#     f2.axis_labels.hide_y()
+#     f2.tick_labels.hide_y()
+#     
+#     fig.savefig('subplots.png', bbox_inches='tight')    
+    
+    #"""
+    #log_model=np.log(model)
+
 """
 opt_dct=inp_dct['optimize']
 
