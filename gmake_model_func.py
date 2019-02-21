@@ -1,5 +1,7 @@
 from __future__ import print_function
-from KinMS import KinMS
+#from KinMS import KinMS
+execfile('/Users/Rui/Dropbox/Worklib/progs/KinMSpy/KinMS.py')
+
 import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -57,7 +59,15 @@ def gmake_model_disk2d(header,ra,dec,
     x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
     mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
-    model2d=mod(x,y)
+    #   since the intrinsic model is likley undersampled... we'd be careful on this one.
+    #   use discretize_model(mode='oversample') rather than discretize_model(mode='center')
+    #model2d=mod(x,y)
+    model2d=discretize_model(mod,\
+                            (0,int(np.arange(header['NAXIS1']))),\
+                            (0,int(np.arange(header['NAXIS2']))),\
+                            mode='oversample',factor=10.0)
+    
+    
     model2d=model2d/model2d.sum()
     #print("--- %s seconds ---" % (time.time() - start_time))
     
@@ -366,6 +376,9 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
             
             "forget about how the np.array is stored, just use the array as it is IDL;
              when it comes down to shape/index, reverse the sequence"
+             
+            About Undersampling Images:
+            http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html
             
     """
     
