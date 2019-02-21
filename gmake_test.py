@@ -458,6 +458,14 @@ def test_gmake_model_api():
     gmake_model_export(models,outdir='./test')
     print("---{0:^10} : {1:<8.5f} seconds ---".format('export',time.time()-start_time))
   
+    m3d=SpectralCube.read('test/imod3d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
+    m2d=SpectralCube.read('test/imod2d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
+    m3d_m0=m3d.moment(order=0)
+    m2d_m0=m2d.moment(order=0)
+    m3d_m0=m3d_m0/np.max(m3d_m0.array)
+    m2d_m0=m2d_m0/np.max(m2d_m0.array)
+    m3d_m0.write('test/imod3d_mom0.fits',overwrite=True)
+    m2d_m0.write('test/imod2d_mom0.fits',overwrite=True)
     
     #lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
     #                             savemodel='test/test_gmake_model_api')
@@ -537,12 +545,180 @@ def imcontsub(fn):
     m0=cube_submean.moment(order=0)
     m0.write('test_cube_submean_mom0.fits',overwrite=True)
     
+def test_sersic1d_sample():
+    
+
+    plt.clf()
+    #fig,ax=plt.figure(figsize=(8,8)) 
+    
+    fig,ax=plt.subplots(1,1,figsize=(16,8))
+    s1 = Sersic1D(amplitude=1, r_eff=0.12)
+    r=np.arange(-0.72, 0.72, .04)
+    r_fine=np.arange(-0.7, 0.7, .0001)
+    r_test=np.arange(-0.6, 0.6, .12)
+    print(r)
+    for n in np.arange(1, 2):
+         s1.n = n
+         ax.plot(r, s1(np.abs(r)),color='blue')
+         #ax.plot(r_test, s1(np.abs(r_test)),drawstyle='steps-mid',color='blue')
+         ax.plot(r_test, s1(np.abs(r_test)),color='red',drawstyle='steps-mid')
+         ax.plot(r_fine, s1(np.abs(r_fine)),color='gray')
+         
+    #plt.axis([1e-1, 30, 1e-2, 1e3])
+    ax.set_xlabel('radius')
+    ax.set_ylabel('Surface Brightness')
+    ax.text(.25, 1.5, 'n=1')
+    ax.text(.25, 300, 'n=10')
+
+    fig.savefig('test/test_sersic1d_sample.pdf')
+    
+def test_make_cloudlet():
+    
+    seed=[100,101,102,103]
+    nSamps=100000
+    
+
+    
+
+    
+    ##########
+    #   good enough (better at flux conservatition)
+    ##########
+    
+    x,y = np.meshgrid(np.arange(50), np.arange(50))
+    mod = Sersic2D(amplitude=1.0,r_eff=0.20/0.04,n=1,x_0=25,y_0=25,
+               ellip=0,theta=0)
+    dmodel2d=discretize_model(mod,(0,50),(0,50),mode='oversample')
+    dmodel2d=dmodel2d/np.max(dmodel2d)
+    fits.writeto('test/test_make_cloudlet_dmodel.fits',dmodel2d,overwrite=True)
+    
+    ##########
+    #   good enough
+    ##########
+    
+    x,y = np.meshgrid(np.arange(50), np.arange(50))
+    mod = Sersic2D(amplitude=1.0,r_eff=0.20/0.04,n=1,x_0=25,y_0=25,
+               ellip=0,theta=0)
+    model2d=mod(x,y)
+    model2d=model2d/np.max(model2d)
+    fits.writeto('test/test_make_cloudlet_model.fits',model2d,overwrite=True)
+    
+    
+    #########
+    #   original
+    #########
+    
+    sbRad=np.arange(0,1,0.12)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.20,n=1.0)
+    sbProf=mod(sbRad)
+    
+    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    px = np.zeros(len(sbProf))
+    sbProf = sbProf * (2 * np.pi * abs(sbRad))  
+    px = np.cumsum(sbProf)
+    px /= max(px)           
+    rng1 = np.random.RandomState(seed[0])            
+    pick = rng1.random_sample(nSamps)  
+    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
+    r_flat = interpfunc(pick)
+    
+    r_3d=r_flat
+    
+    #Generates a random phase around the galaxy's axis for each cloud
+    rng2 = np.random.RandomState(seed[1])        
+    phi = rng2.random_sample(nSamps) * 2 * np.pi        
+    
+    theta = np.arccos(0 / r_3d)
+    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
+    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
+    
+    xybin,xedge,yedge=np.histogram2d(xPos,yPos,bins=50,range=[[-1, 1], [-1, 1]])
+    fits.writeto('test/test_make_cloudlet_xybin_undersample.fits',xybin/np.max(xybin),overwrite=True)
+    
+
+    #########
+    #  hacked (oversample) [ clode to the actual model)
+    #########
+    
+    sbRad=np.arange(0,1,0.04)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.20,n=1.0)
+    sbProf=mod(sbRad)
+    
+    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    px = np.zeros(len(sbProf))
+    sbProf = sbProf * (2 * np.pi * abs(sbRad))  
+    px = np.cumsum(sbProf)
+    px /= max(px)           
+    rng1 = np.random.RandomState(seed[0])            
+    pick = rng1.random_sample(nSamps)  
+    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
+    r_flat = interpfunc(pick)
+    
+    r_3d=r_flat
+    
+    #Generates a random phase around the galaxy's axis for each cloud
+    rng2 = np.random.RandomState(seed[1])        
+    phi = rng2.random_sample(nSamps) * 2 * np.pi        
+    
+    theta = np.arccos(0 / r_3d)
+    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
+    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
+    
+    xybin,xedge,yedge=np.histogram2d(xPos,yPos,bins=50,range=[[-1, 1], [-1, 1]])
+    fits.writeto('test/test_make_cloudlet_xybin_okaysample.fits',xybin/np.max(xybin),overwrite=True)    
+    
+    #########
+    #  hacked (oversample) [ clode to the actual model)
+    #########
+    
+    sbRad=np.arange(0,1,0.01)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.20,n=1.0)
+    sbProf=mod(sbRad)
+    
+    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    px = np.zeros(len(sbProf))
+    sbProf = sbProf * (2 * np.pi * abs(sbRad))  
+    px = np.cumsum(sbProf)
+    px /= max(px)           
+    rng1 = np.random.RandomState(seed[0])            
+    pick = rng1.random_sample(nSamps)  
+    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
+    r_flat = interpfunc(pick)
+    
+    r_3d=r_flat
+    
+    #Generates a random phase around the galaxy's axis for each cloud
+    rng2 = np.random.RandomState(seed[1])        
+    phi = rng2.random_sample(nSamps) * 2 * np.pi        
+    
+    theta = np.arccos(0 / r_3d)
+    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
+    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
+    
+    xybin,xedge,yedge=np.histogram2d(xPos,yPos,bins=50,range=[[-1, 1], [-1, 1]])
+    fits.writeto('test/test_make_cloudlet_xybin_oversample.fits',xybin/np.max(xybin),overwrite=True)    
+    
+    
+    #######
+    #   improved
+    #######
+    
+    plt.clf()
+    fig,ax=plt.subplots(1,1,sharex=True,figsize=(12,12))
+    ax.plot(xPos,yPos,'+')
+    fig.savefig('test/test_make_cloudlet.pdf')
+    
+    
 if  __name__=="__main__":
     
     #pass
 
-    imcontsub('examples/bx610/bx610.bb2.cube64x64.iter0.image.fits')
+    #imcontsub('examples/bx610/bx610.bb2.cube64x64.iter0.image.fits')
+    #test_sersic1d_sample()
+    #test_gmake_model_api()
     
+    #test_makekernel()
+    test_make_cloudlet()
     #%timeit -n 100 for _ in range(10): True
     #   %timeit -n 10 "np.zeros((100,100,100)"
     #   %timeit -n 10 "np.empty((100,100,100)"
