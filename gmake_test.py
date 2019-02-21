@@ -519,17 +519,39 @@ def test_mcspeed():
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
 
+
+def imcontsub(fn):
+    
+    cube=SpectralCube.read(fn,mode='readonly')
+    spectral_axis = cube.spectral_axis
+    good_channels=  ((spectral_axis > 250.000*u.GHz) & (spectral_axis < 250.964*u.GHz)) | \
+                    ((spectral_axis > 251.448*u.GHz) & (spectral_axis < 251.847*u.GHz)) | \
+                    ((spectral_axis > 252.246*u.GHz) & (spectral_axis < 253.000*u.GHz))
+    masked_cube = cube.with_mask(good_channels[:, np.newaxis, np.newaxis])
+    med = masked_cube.median(axis=0)
+    cube_mean = masked_cube.mean(axis=0)  
+    cube_submean=cube-cube_mean
+    cube.write('test_cube.fits',overwrite=True)
+    cube_submean.write('test_cube_submean.fits',overwrite=True)
+    cube_mean.write('test_cube_mean.fits',overwrite=True)
+    m0=cube_submean.moment(order=0)
+    m0.write('test_cube_submean_mom0.fits',overwrite=True)
+    
 if  __name__=="__main__":
     
-    pass
+    #pass
+
+    imcontsub('examples/bx610/bx610.bb2.cube64x64.iter0.image.fits')
     
     #%timeit -n 100 for _ in range(10): True
     #   %timeit -n 10 "np.zeros((100,100,100)"
     #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
-    models=test_gmake_model_api()
+    #models=test_gmake_model_api()
     #test_wcs2pix()
+    
+    
     
     #test_mcspeed()
 

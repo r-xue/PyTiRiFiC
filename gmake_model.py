@@ -288,8 +288,11 @@ def gmake_model_export(models,outdir='./'):
                                  overwrite=True)                
             if  key.replace('data@',version+'@') in models.keys():
                 if  models[key.replace('data@',version+'@')] is not None:
+                    tmp=(models[key.replace('data@',version+'@')]).copy()
+                    if  tmp.ndim==2:
+                        tmp=tmp[np.newaxis,np.newaxis,:,:]
                     fits.writeto(outdir+'/'+version+'_'+basename,
-                                 models[key.replace('data@',version+'@')],
+                                 tmp,
                                  models[key.replace('data@','header@')],
                                  overwrite=True)
 
