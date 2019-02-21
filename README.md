@@ -79,5 +79,11 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 	- 2D: face-on distribution
 	- 2D: ~mom0~ mom1 maps
 	- 3D: volume rendering (yt)
+	- ~~add intrinsic models~~
+	- SB profile along major/minor axes
 + ~~save metadata~~
 + ~~improve corner plots~~
++ fix the undersampling problem in kinmspy
++ import MS natively
++ Add more panel models
++ fitting on ~~the robust=0 dataset~~
