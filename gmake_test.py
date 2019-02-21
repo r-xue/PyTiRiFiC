@@ -718,13 +718,13 @@ if  __name__=="__main__":
     #test_gmake_model_api()
     
     #test_makekernel()
-    test_make_cloudlet()
+    #test_make_cloudlet()
     #%timeit -n 100 for _ in range(10): True
     #   %timeit -n 10 "np.zeros((100,100,100)"
     #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
-    #models=test_gmake_model_api()
+    models=test_gmake_model_api()
     #test_wcs2pix()
     
     

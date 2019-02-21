@@ -62,10 +62,10 @@ def gmake_model_disk2d(header,ra,dec,
     #   since the intrinsic model is likley undersampled... we'd be careful on this one.
     #   use discretize_model(mode='oversample') rather than discretize_model(mode='center')
     #model2d=mod(x,y)
-    model2d=discretize_model(mod,\
-                            (0,int(np.arange(header['NAXIS1']))),\
-                            (0,int(np.arange(header['NAXIS2']))),\
-                            mode='oversample',factor=10.0)
+    model2d=discretize_model(mod,
+                            (0,header['NAXIS1']),
+                            (0,header['NAXIS2']),
+                            mode='oversample',factor=10)
     
     
     model2d=model2d/model2d.sum()
@@ -150,24 +150,32 @@ def gmake_model_kinmspy(header,obj,
     
     phasecen=np.array([px_o_frac,py_o_frac])*cell
     voffset=(pz_o_frac)*dv
-
+    ####
     #   About KinMS:
     #       + cube needs to be transposed to match the fits.data dimension 
     #       + the WCS/FITSIO in KINMSPY is buggy/offseted: don't use it
     #       + turn off convolution at this point
     #       + KinMS only works in the RA/DEC/VELO domain.
-    
+    #       + KinMS is not preicse for undersampling SBPROFILE/VROT
+    #           - we feed an oversampling netgral-conservative vector to kinMS here.
+    ####
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
     sbprof=mod(np.array(obj['radi']))
     #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
     #start_time = time.time()
+    sbrad=np.array(obj['radi'])
+    velrad=obj['radi']
+    velprof=obj['vrot']
+    gassigma=np.array(obj['vdis'])
+    
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
-               inc=obj['inc'],gasSigma=np.array(obj['vdis']),sbProf=sbprof,
-               sbRad=np.array(obj['radi']),velRad=obj['radi'],velProf=obj['vrot'],
+               inc=obj['inc'],gasSigma=gassigma,sbProf=sbprof,
+               sbRad=sbrad,velRad=velrad,velProf=velprof,
                ra=obj['xypos'][0],dec=obj['xypos'][1],
-               restFreq=obj['restfreq'],vSys=obj['vsys'],phaseCen=phasecen,vOffset=voffset,
+               restFreq=obj['restfreq'],vSys=obj['vsys'],
+               phaseCen=phasecen,vOffset=voffset,
                fixSeed=False,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
@@ -268,6 +276,9 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     
     dshape=data.shape
     
+    #   we didn't turn on mode='oversample' since the data pixelization 
+    #   is generally oversampling the beam
+     
     if  psf is not None:
         kernel=psf.copy()
     elif beam is not None:
@@ -276,10 +287,12 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         else:
             gbeam = beam
         kernel=makekernel(dshape[-1],dshape[-2],
-                        [gbeam[0]/cell,gbeam[1]/cell],pa=gbeam[2])
+                        [gbeam[0]/cell,gbeam[1]/cell],pa=gbeam[2],
+                        mode=None)
     else:
         kernel=makekernel(dshape[-1],dshape[-2],
-                        [header['BMAJ']*3600./cell,header['BMIN']*3600./cell],pa=header['BPA'])
+                        [header['BMAJ']*3600./cell,header['BMIN']*3600./cell],pa=header['BPA'],
+                        mode=None)
 
     if  verbose==True:
         print('data   dim:',data.shape)
