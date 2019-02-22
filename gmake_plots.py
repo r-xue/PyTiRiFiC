@@ -7,6 +7,8 @@ import matplotlib as mpl
 import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
+from astropy.table import Table
+from astropy.table import Column
 
 from spectral_cube import SpectralCube
 from yt.mods import ColorTransferFunction, write_bitmap
@@ -50,7 +52,7 @@ def calc_ppbeam(header):
     return ppbeam
 
 
-def gmake_plots_spec1d(fn,roi='icrs; circle(356.5393251886618,12.822017924848527 , 1") # text={example}'):
+def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.822017913507711 , 1") # text={example}'):
     """
     1D spectrum diagnostic plot
     e.g.:
@@ -188,11 +190,12 @@ def gmake_plots_makeslice(fn,width=1.0,length=2.5,pa=-45):
     
      #path1 = Path([(0., 0.), (62., 62.)],width=10.0)
      #slice1 = extract_pv_slice(array, path1) 
-     ra=356.5393156
-     dec=12.8220309
+     
+     radec=[356.53932576899575,12.822017913507711]
+
      pa=-45
      
-     radec=SkyCoord(ra,dec,unit="deg")
+     radec=SkyCoord(radec[0],radec[1],unit="deg",frame='icrs')
      cube = SpectralCube.read(fn)
      mod2d=SpectralCube.read(fn.replace('data_','cmod2d_'),mode='readonly')
      mod3d=SpectralCube.read(fn.replace('data_','cmod3d_'),mode='readonly')
@@ -496,14 +499,49 @@ def gmake_plots_mom0xy(fn):
 #     f.save('moment_0.png')
 
 
+def gmake_plots_radprof(fn):
+
+    wd=fn.replace('data','imod3d_prof*')
+
+    flist=glob.glob(wd)
+    
+    fig=plt.figure(figsize=(8.,4.*len(flist))) 
+    
+    cc=0
+    for fn0 in flist:
+        print(fn0)
+        cc=cc+1
+        ax = fig.add_subplot(len(flist),1,cc)
+        
+        t=Table.read(fn0)
+        x=t['sbrad'].data[0]
+        y=t['sbprof'].data[0]
+        ax.plot(x,y,color='black') 
+        ax.set_title(os.path.basename(fn0))
+        ax.set_ylabel('SB')
+        ax.set_xlabel('Radius [arcsec]')
+        
+        ax1 = ax.twinx()
+        x1=t['velrad'].data[0]
+        y1=t['velprof'].data[0]
+        ax1.plot(x1,y1,color='blue')
+        y1=t['gassigma'].data[0]
+        ax1.plot(x1,y1,color='red')
+        ax1.set_ylabel('Vrot/Vdis [km/s]')
+        
+    odir='gmake_plots_radprof'
+    if not os.path.exists(odir):
+        os.makedirs(odir)   
+        
+    fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf') 
 
 if  __name__=="__main__":
     
     #"""
-    cen1='icrs; circle(356.5393251886618,12.822017924848527,1.00") # text={cen1}'
-    cen2='icrs; circle(356.5393251886618,12.822017924848527,0.20") # text={cen2}'
-    slice1='icrs; box(356.5393251886618,12.822017924848527,0.20",0.75",135) # text={slice1}'
-    slice2='icrs; box(356.5393251886618,12.822017924848527,0.20",0.75",45)  # text={slice2}'
+    cen1='icrs; circle(356.53932576899575,12.822017913507711,1.00") # text={cen1}'
+    cen2='icrs; circle(356.53932576899575,12.822017913507711,0.05") # text={cen2}'
+    slice1='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",135) # text={slice1}'
+    slice2='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",45)  # text={slice2}'
     rois=[cen1,cen2,slice1,slice2]
     
     bbs=['bb1','bb2','bb3','bb4']
@@ -512,7 +550,7 @@ if  __name__=="__main__":
     fn_name_tmp='./data_bx610.bbx.cube64x64.iterx.image.fits'
     
     for bb in bbs:
-        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','itern')
+        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','iter0')
         
         """
         for roi in rois:
@@ -525,11 +563,13 @@ if  __name__=="__main__":
         gmake_plots_mom0xy(fn_name)
         """
 
-        #"""
-        #gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
+        """
+        gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
         gmake_plots_slice(fn_name,i=1)
         gmake_plots_slice(fn_name,i=2)        
-        #"""
+        """
+        
+        gmake_plots_radprof(fn_name)
 
 
     
