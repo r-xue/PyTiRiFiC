@@ -9,6 +9,7 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.table import Table
 from astropy.table import Column
+import scipy.integrate
 
 from spectral_cube import SpectralCube
 from yt.mods import ColorTransferFunction, write_bitmap
@@ -515,6 +516,12 @@ def gmake_plots_radprof(fn):
         
         t=Table.read(fn0)
         ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black')
+        ymin,ymax=ax.get_ylim()
+        
+        cog=scipy.integrate.cumtrapz(t['sbprof'].data[0]*2.*np.pi*t['sbrad'].data[0],t['sbrad'].data[0],initial=0.)
+        cog /= np.max(cog) 
+        ax.plot(t['sbrad'].data[0],cog*ymax,linestyle='--',color='black')
+        
         ax.set_xlim(np.min(t['sbrad'].data[0]),np.max(t['sbrad'].data[0]))
         
         ax.set_title(os.path.basename(fn0))
