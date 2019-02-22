@@ -12,6 +12,7 @@ import reikna.fft as cluda_fft
 #import gpyfft.fft as gpyfft_fft
 from reikna.cluda import dtypes, any_api
 from reikna.core import Annotation, Type, Transformation, Parameter
+import scipy.integrate
 
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
@@ -708,7 +709,81 @@ def test_make_cloudlet():
     ax.plot(xPos,yPos,'+')
     fig.savefig('test/test_make_cloudlet.pdf')
     
+def test_cog_precision():    
     
+    # https://docs.scipy.org/doc/scipy/reference/integrate.html#module-scipy.integrate
+    
+    plt.clf()
+    fig,ax=plt.subplots(1,1,sharex=True,figsize=(20,20))
+    
+    #   precise integration
+    step=0.00001
+    sbRad=np.arange(0,1,step)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.12,n=1.0)
+    sbProf=mod(sbRad)
+    
+    start_time = time.time()
+    csbProf_trapz=scipy.integrate.cumtrapz(sbProf*2.0*np.pi*sbRad,sbRad,initial=0)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
+    start_time = time.time()
+    csbProf_sum = np.cumsum(sbProf * (2. * np.pi * abs(sbRad))*step)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumsum',time.time()-start_time))      
+
+    ax.plot(sbRad,csbProf_trapz,color='black')
+    ax.plot(sbRad,csbProf_sum,'-',color='black')
+    
+    #   1/10=r_e sampling (cumtrapz better)
+    step=0.012
+    sbRad=np.arange(0,1,step)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.12,n=1.0)
+    sbProf=mod(sbRad)
+    
+    start_time = time.time()
+    csbProf_trapz=scipy.integrate.cumtrapz(sbProf*2.0*np.pi*sbRad,sbRad,initial=0)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
+
+    start_time = time.time()
+    csbProf_sum = np.cumsum(sbProf * (2. * np.pi * abs(sbRad))*step)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumsum',time.time()-start_time))      
+
+    ax.plot(sbRad,csbProf_trapz,color='cyan')
+    ax.plot(sbRad,csbProf_sum,'--',color='cyan')    
+    
+    #   even worse (both failed)
+    step=0.04
+    sbRad=np.arange(0,1,step)
+    mod = Sersic1D(amplitude=1.0,r_eff=0.12,n=1.0)
+    sbProf=mod(sbRad)
+    
+    start_time = time.time()
+    csbProf_trapz=scipy.integrate.cumtrapz(sbProf*2.0*np.pi*sbRad,sbRad,initial=0)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
+
+    start_time = time.time()
+    csbProf_sum = np.cumsum(sbProf * (2. * np.pi * abs(sbRad))*step)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumsum',time.time()-start_time))      
+
+    ax.plot(sbRad,csbProf_trapz,color='red')
+    ax.plot(sbRad,csbProf_sum,'--',color='red')
+  
+    
+    
+#     step_fine=0.001
+#     sbRad_fine=np.arange(0,1,step_fine)
+#     sbProf_fine=mod(sbRad_fine)
+#     
+#     start_time = time.time()
+#     x_fine=sbRad_fine
+#     y_fine=scipy.integrate.cumtrapz(sbProf_fine*2.0*np.pi*sbRad_fine,sbRad_fine,initial=0)
+#     print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
+#     
+#     ax.plot(x,y1,color='red')
+#     ax.plot(x,y1-y)
+#     ax.plot(x_fine,y_fine,color='black')
+    
+    fig.savefig('test/test_cog_precision.pdf')
+    
+    #print(y)
 if  __name__=="__main__":
     
     #pass
@@ -725,6 +800,7 @@ if  __name__=="__main__":
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
     models=test_gmake_model_api()
+    #test_cog_precision()
     #test_wcs2pix()
     
     

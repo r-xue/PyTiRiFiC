@@ -46,7 +46,7 @@ bpa             None                    # bpa
 type            'linedisk'                  # model type
 xypos           [356.539321,12.8220179445]      # [degree/degree] (IRCS)
 z               2.21                    # optical convention
-pa              -61.0                   # [degree] north up / counterclockwise
+pa              -30.0                   # [degree] north up / counterclockwise
 inc             52.0                    # [degree] inclination
 
 #   emissivity/kinematics
@@ -55,7 +55,7 @@ vsys            120.0                     # [km/s] [optical convention]
 radi            [0,0.12,0.24,0.36,0.48]
 vrot            [0,300,300,300,300]
 intflux         0.93                     # Jy/km/s
-sbser           [0.084,1.]                    # exp profile : scale-length
+sbser           [0.12,1.]                    # exp profile : scale-length
 vdis            [50,50,50,50,50]
 
 #   modeling algorithm
@@ -94,7 +94,7 @@ vsys            'vsys@co76'             # [km/s] [optical convetion]
 radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
-sbser           [0.093,1.]                     # exp profile : scale-length
+sbser           [0.12,1.]                     # exp profile : scale-length
 vdis            'vdis@co76'
 
 #   modeling algorithm
@@ -133,7 +133,7 @@ vsys            'vsys@co76'             # [km/s] [optical convetion]
 radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
-sbser           [0.093,1.]                     # exp profile : scale-length
+sbser           [0.12,1.]                     # exp profile : scale-length
 vdis            'vdis@co76'
 
 #   modeling algorithm

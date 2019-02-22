@@ -366,7 +366,7 @@ def gmake_read_data(inp_dct,verbose=False,
     
     return dat_dct
     
-def gmake_dct2fits(dct,outname='dct2fits',save_npy=False):
+def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
     """
         save a non-nested dictionary into a FITS binary table
         note:  not every Python object can be dumped into a FITS column, 
@@ -375,7 +375,10 @@ def gmake_dct2fits(dct,outname='dct2fits',save_npy=False):
         example:
             gmake_dct2fits(dat_dct,save_npy=True)
     """
-    print(outname)
+    
+    if  verbose==True:
+        print('dct2fits->outname',outname)
+        
     t=Table()
     
     for key in dct:
