@@ -8,7 +8,7 @@ if  __name__=="__main__":
     
     #pass
     
-    #"""
+    """
     #   build a dict holding input config
     #   build a dict holding data
     #   build the sampler and a dict holding sampler metadata
@@ -19,12 +19,12 @@ if  __name__=="__main__":
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=600)
-    #"""
-    
     """
+    
+    #"""
     outfolder='bx610xy_cm64_all_emcee'
     
-    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=900,plotcorner=True,
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=400,plotcorner=True,
                     verbose=True)
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
@@ -36,5 +36,5 @@ if  __name__=="__main__":
     theta=fit_tab['p_median'].data[0]
     lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_median')
     print('p_median: ',lnl,blobs)
-    """
+    #"""
 

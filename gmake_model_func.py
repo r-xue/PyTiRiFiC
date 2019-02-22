@@ -152,7 +152,7 @@ def gmake_model_kinmspy(header,obj,
     #   build an oversampled SB vector.
     
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    sbrad=np.arange(0.,obj['sbser'][0]*8.0,obj['sbser'][0]/25.0)
+    sbrad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
     sbprof=mod(sbrad)
     #print(sbrad)
     #print(np.array(obj['radi']))

@@ -555,29 +555,29 @@ if  __name__=="__main__":
     rois=[cen1,cen2,slice1,slice2]
     
     bbs=['bb1','bb2','bb3','bb4']
-    bbs=['bb2']
+    #bbs=['bb2']
 
     fn_name_tmp='./data_bx610.bbx.cube64x64.iterx.image.fits'
     
     for bb in bbs:
-        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','iter0')
+        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','itern')
         
-        """
+        #"""
         for roi in rois:
             print('plots_spec1d: ',fn_name)
             gmake_plots_spec1d(fn_name,roi=roi)
-        """
+        #"""
         
-        """
+        #"""
         print('plots_mom0xy: ',fn_name)
         gmake_plots_mom0xy(fn_name)
-        """
+        #"""
 
-        """
+        #"""
         gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
         gmake_plots_slice(fn_name,i=1)
         gmake_plots_slice(fn_name,i=2)        
-        """
+        #"""
         #"""
         gmake_plots_radprof(fn_name)
         #"""

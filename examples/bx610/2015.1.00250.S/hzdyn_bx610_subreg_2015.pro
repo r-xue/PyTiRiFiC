@@ -17,14 +17,15 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 itype='cube'
-itype='mfs'
+;itype='mfs'
 
 tag=''
 tag='64x64'
+tag='64x64_ro0'
 iter='itern'
 
-input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
-input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
+input_temp='*bbx*ro0_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
+;input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
 output_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
@@ -62,6 +63,7 @@ PRO HZDYN_BX610_SUBREG_2015_MASK
 
 itype='cube'
 tag='64x64'
+tag='64x64_ro0'
 iter='iter0'
 iter='itern'
 input_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
@@ -85,6 +87,7 @@ PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 
 itype='cube'
 tag='64x64'
+tag='64x64_ro0'
 xlimit0=[32.-18,32.+18]
 ylimit0=[32.-18,32.+18]
 iter='itern'
