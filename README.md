@@ -83,8 +83,12 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 	- SB profile along major/minor axes
 + ~~save metadata~~
 + ~~improve corner plots~~
++ automatically minimize sub-cube sizes
 + fix the undersampling problem in kinmspy
 + import MS natively
 + Add more panel models
 + fitting on ~~the robust=0 dataset~~
++ use random process to avoid undersamping pixelization
 + Consider to add a "bar" or a "hole" / add assymetric cloudlets sampling in kinmspy
++ return radial profile
++ fix WCS header from KinMSpy

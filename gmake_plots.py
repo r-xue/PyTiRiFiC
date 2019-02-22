@@ -435,7 +435,7 @@ def gmake_plots_mom0xy(fn):
            vmin=vmin, vmax=vmax)
     ax5.coords['dec'].set_ticklabel_visible(False)
     ax5.contour(tmp,levels=dlevels,colors='white', alpha=0.5,origin='image')
-    ax5.contour(tmp,levels=[np.max(tmp)*0.5],colors='yellow', alpha=0.5,origin='image')
+    ax5.contour(tmp,levels=[np.max(tmp)*0.1,np.max(tmp)*0.5],colors='yellow', alpha=0.5,origin='image')
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax5.get_transform('icrs'))                          
@@ -479,7 +479,7 @@ def gmake_plots_mom0xy(fn):
                vmin=np.min(tmp), vmax=np.max(tmp))
         ax10.coords['dec'].set_ticklabel_visible(False)
         ax10.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
-        #ax10.contour(tmp,levels=np.max(tmp)*0.5,colors='yellow', alpha=0.5)
+        ax10.contour(tmp,levels=[np.max(tmp)*0.1,np.max(tmp)*0.5],colors='yellow', alpha=0.5)
         ax10.set_title('Model/Line')    
 
     #fig.tight_layout()
@@ -550,7 +550,7 @@ if  __name__=="__main__":
     fn_name_tmp='./data_bx610.bbx.cube64x64.iterx.image.fits'
     
     for bb in bbs:
-        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','iter0')
+        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','itern')
         
         """
         for roi in rois:
@@ -563,13 +563,13 @@ if  __name__=="__main__":
         gmake_plots_mom0xy(fn_name)
         """
 
-        """
+        #"""
         gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
         gmake_plots_slice(fn_name,i=1)
         gmake_plots_slice(fn_name,i=2)        
+        #"""
         """
-        
         gmake_plots_radprof(fn_name)
-
+        """
 
     
