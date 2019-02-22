@@ -396,7 +396,7 @@ def gmake_emcee_analyze(outfolder,
         axes[-1,-1].axis('off')
 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/emcee-iteration.png"
+    figname=outfolder+"/emcee-iteration.pdf"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:
@@ -406,7 +406,7 @@ def gmake_emcee_analyze(outfolder,
     #   ITERATION METADATA PLOTS
     
     m_name=['blobs_lnprob','blobs_chisq']
-    figsize=(8.,len(m_name)*2.5)
+    figsize=(8.,8.)
     ncol=1
     pl.clf()
     picki=range(len(m_name))
@@ -437,7 +437,7 @@ def gmake_emcee_analyze(outfolder,
         axes[-1,-1].axis('off')
 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/emcee-iteration-blobs.png"
+    figname=outfolder+"/emcee-iteration-blobs.pdf"
     fig.savefig(figname)
     pl.close()
     if  verbose==True:
@@ -450,7 +450,7 @@ def gmake_emcee_analyze(outfolder,
     
     if  plotcorner==True:
         if  verbose==True:
-            print("plotting..."+outfolder+"/line-triangle.png")
+            print("plotting..."+outfolder+"/line-triangle.pdf")
             print("input data size:"+str(np.shape(samples)))
         tic=time.time()
         quantiles=None
@@ -483,7 +483,7 @@ def gmake_emcee_analyze(outfolder,
                 ax.plot(value1[xi], value1[yi], "sg")
                 ax.plot(value2[xi], value2[yi], "sr")
         
-        fig.savefig(outfolder+"/emcee-corner.png")
+        fig.savefig(outfolder+"/emcee-corner.pdf")
         pl.close()
         if  verbose==True:
             print('Took {0} seconds'.format(float(time.time()-tic)))
@@ -492,7 +492,7 @@ def gmake_emcee_analyze(outfolder,
     if  plotsub!=None:
         #plotsub is the parameter index array
         if  verbose==True:
-            print("plotting..."+outfolder+"/line-triangle-sub.png")
+            print("plotting..."+outfolder+"/line-triangle-sub.pdf")
         subsamples = chain_array[:, burnin:, plotsub].reshape((-1, len(plotsub)))
         tic=time.time()
         quantiles=None
@@ -502,7 +502,7 @@ def gmake_emcee_analyze(outfolder,
         if  plotlevel==True:
             levels=(1-np.exp(-0.5),)        
         fig = corner.corner(subsamples, labels=p_name[plotsub],truths=p_start[plotsub],quantiles=quantiles,levels=levels)
-        fig.savefig(outfolder+"/line-triangle-sub.png")
+        fig.savefig(outfolder+"/line-triangle-sub.pdf")
         pl.close()
         if  verbose==True:
             print('Took {0} seconds'.format(float(time.time()-tic)))    
