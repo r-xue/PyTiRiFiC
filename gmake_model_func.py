@@ -66,6 +66,7 @@ def gmake_model_disk2d(header,ra,dec,
                             (0,header['NAXIS1']),
                             (0,header['NAXIS2']),
                             mode='oversample',factor=10)
+                            #mode='center')
     
     
     model2d=model2d/model2d.sum()
@@ -132,10 +133,13 @@ def gmake_model_kinmspy(header,obj,
     
     px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
 
-    xs=np.max(np.array(obj['radi']))*2.0*2.0
-    ys=np.max(np.array(obj['radi']))*2.0*2.0
-    vs=np.max(obj['vrot'])*1.5*2.0
-    
+    xs=np.max(np.array(obj['radi']))*1.25*2.0
+    ys=np.max(np.array(obj['radi']))*1.25*2.0
+
+    vs=np.max(obj['vrot'])*np.abs(np.sin(np.deg2rad(obj['inc'])))
+    vs=vs+4.*np.max(np.array(obj['vdis']))
+    vs=vs*2.
+
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     
     px_o=px-float(round(xs/cell))/2.
@@ -154,19 +158,31 @@ def gmake_model_kinmspy(header,obj,
     #   About KinMS:
     #       + cube needs to be transposed to match the fits.data dimension 
     #       + the WCS/FITSIO in KINMSPY is buggy/offseted: don't use it
-    #       + turn off convolution at this point
+    #       + turn off convolution in kinmspy
     #       + KinMS only works in the RA/DEC/VELO domain.
-    #       + KinMS is not preicse for undersampling SBPROFILE/VROT
-    #           - we feed an oversampling netgral-conservative vector to kinMS here.
+    #       + KinMS is not preicse for undersampling SBPROFILE/VROT (linear interp -> integral)
+    #           - we feed an oversampling vector to kinMS here.
     ####
+    
+    #   build an oversampled SB vector.
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    sbprof=mod(np.array(obj['radi']))
-    #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
-    #start_time = time.time()
-    sbrad=np.array(obj['radi'])
+    dr_fine=obj['sbser'][0]/50.0
+    sbrad=np.arange(0.,np.max(np.array(obj['radi'])),dr_fine)
+    sbprof=mod(sbrad)
+    #print('delta radius:',dr_fine)
+    #print(sbrad[0:10])
+    #print(sbprof[0:10])
+    
     velrad=obj['radi']
     velprof=obj['vrot']
     gassigma=np.array(obj['vdis'])
+    
+    velrad=sbrad.copy()
+    velprof=np.interp(velrad,np.array(obj['radi']), np.array(obj['vrot']))
+    gassigma=np.interp(velrad,np.array(obj['radi']), np.array(obj['vdis']))
+
+    #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
+    #start_time = time.time()
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
@@ -183,13 +199,21 @@ def gmake_model_kinmspy(header,obj,
     #print("--- %s seconds ---" % (time.time() - start_time))
     #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
     #   flip z-axis if dv<0
+    #print(cube.shape)
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
     #print('sub:',cube.shape)
     model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     
-    return model
+    model_prof={}
+    model_prof['sbrad']=sbrad.copy()
+    model_prof['sbprof']=sbprof.copy()
+    model_prof['velrad']=velrad.copy()
+    model_prof['velprof']=velprof.copy()
+    model_prof['gassigma']=gassigma.copy()
+    
+    return model,model_prof
 
 
 def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):
