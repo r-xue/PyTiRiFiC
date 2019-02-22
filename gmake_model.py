@@ -47,11 +47,11 @@ def gmake_model_api(mod_dct,dat_dct,
     """
     models={}
     
-    #   FIRST PASS: add models OBJECT by OBJECT
-
     if  verbose==True:
         start_time = time.time()
-            
+    
+    #   FIRST PASS: add models OBJECT by OBJECT
+                
     for tag in list(mod_dct.keys()):
 
         #   skip if no "method" or the item is not a physical model
@@ -103,10 +103,11 @@ def gmake_model_api(mod_dct,dat_dct,
 
             if  'kinmspy' in obj['method'].lower():
                 #test_time = time.time()                
-                imodel=gmake_model_kinmspy(models['header@'+image],obj)
+                imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj)
                 #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
                 #print(imodel.shape)
                 models['imod3d@'+image]+=imodel
+                models['imod3d_prof@'+tag+'@'+image]=imodel_prof.copy()
                 models['imodel@'+image]+=imodel      
               
             
@@ -267,7 +268,7 @@ def gmake_model_export(models,outdir='./'):
     """
         export model into FITS
     """
-    for key in models.keys(): 
+    for key in list(models.keys()): 
         
         if  'data@' not in key:
             continue
@@ -295,6 +296,15 @@ def gmake_model_export(models,outdir='./'):
                                  tmp,
                                  models[key.replace('data@','header@')],
                                  overwrite=True)
+        
+        for prof in list(models.keys()):
+            
+            if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
+
+                outname=prof.replace(key.replace('data@',''),'')
+                outname=outname.replace('@','_')
+                gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
+
 
 
 def gmake_model_lnprior(theta,fit_dct):
