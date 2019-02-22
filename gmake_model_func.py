@@ -14,7 +14,8 @@ from astropy.modeling.models import Sersic1D
 from astropy.modeling.models import Gaussian2D
 from astropy.coordinates import SkyCoord
 from spectral_cube import SpectralCube
-
+from scipy.interpolate import interp1d
+from scipy import interpolate
 
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
@@ -133,27 +134,9 @@ def gmake_model_kinmspy(header,obj,
     
     px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
 
-    xs=np.max(np.array(obj['radi']))*1.25*2.0
-    ys=np.max(np.array(obj['radi']))*1.25*2.0
 
-    vs=np.max(obj['vrot'])*np.abs(np.sin(np.deg2rad(obj['inc'])))
-    vs=vs+4.*np.max(np.array(obj['vdis']))
-    vs=vs*2.
 
-    cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
-    
-    px_o=px-float(round(xs/cell))/2.
-    py_o=py-float(round(ys/cell))/2.
-    pz_o=pz-float(round(vs/abs(dv)))/2.
-    #   when the z-axis is decreasing in velocity, we count offset backwards
-    if  dv<0: pz_o=pz_o+1.0
-    
-    px_o_int=round(px_o) ; px_o_frac=px_o-px_o_int
-    py_o_int=round(py_o) ; py_o_frac=py_o-py_o_int
-    pz_o_int=round(pz_o) ; pz_o_frac=pz_o-pz_o_int
-    
-    phasecen=np.array([px_o_frac,py_o_frac])*cell
-    voffset=(pz_o_frac)*dv
+
     ####
     #   About KinMS:
     #       + cube needs to be transposed to match the fits.data dimension 
@@ -164,24 +147,64 @@ def gmake_model_kinmspy(header,obj,
     #           - we feed an oversampling vector to kinMS here.
     ####
     
-    #   build an oversampled SB vector.
-    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    dr_fine=obj['sbser'][0]/50.0
-    sbrad=np.arange(0.,np.max(np.array(obj['radi'])),dr_fine)
-    sbprof=mod(sbrad)
-    #print('delta radius:',dr_fine)
-    #print(sbrad[0:10])
-    #print(sbprof[0:10])
+    #####################
     
-    velrad=obj['radi']
-    velprof=obj['vrot']
-    gassigma=np.array(obj['vdis'])
+    #   build an oversampled SB vector.
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    sbrad=np.arange(0.,obj['sbser'][0]*8.0,obj['sbser'][0]/25.0)
+    sbprof=mod(sbrad)
+    #print(sbrad)
+    #print(np.array(obj['radi']))
+    #velrad=obj['radi']
+    #velprof=obj['vrot']
+    #gassigma=np.array(obj['vdis'])
     
     velrad=sbrad.copy()
-    velprof=np.interp(velrad,np.array(obj['radi']), np.array(obj['vrot']))
-    gassigma=np.interp(velrad,np.array(obj['radi']), np.array(obj['vdis']))
+    
+    
+    ikind='linear' # stable
+    ikind='cubic'  # bad for extraplate
+    #ikind='quadratic' #
 
-    #sbprof=1.*np.exp(-np.array(obj['radi'])/(obj['sbser'][0]/1.68))
+    if_vrot=interp1d(np.array(obj['radi']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
+    if_vdis=interp1d(np.array(obj['radi']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
+    velprof=if_vrot(velrad)
+    gassigma=if_vdis(velrad)    
+    
+    """
+    #   same as above
+    if_vrot=interpolate.UnivariateSpline(np.array(obj['radi']),np.array(obj['vrot']),s=1.0,ext=3)
+    velprof=if_vrot(velrad)
+    #   not good for RC
+    if_vrot=interp1d(np.array(obj['radi']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value='extrapolate')
+    if_vdis=interp1d(np.array(obj['radi']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value='extrapolate')
+    velprof=if_vrot(velrad)
+    gassigma=if_vdis(velrad)    
+    """
+
+    
+    ####################
+    
+    xs=np.max(sbrad)*1.0*2.0
+    ys=np.max(sbrad)*1.0*2.0
+    vs=np.max(velprof*np.abs(np.sin(np.deg2rad(obj['inc'])))+3.0*gassigma)
+    vs=vs*1.0*2.
+
+    cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
+    
+    px_o=px-float(round(xs/cell))/2.
+    py_o=py-float(round(ys/cell))/2.
+    pz_o=pz-float(round(vs/abs(dv)))/2.
+    if  dv<0: pz_o=pz_o+1.0 # count offset backwards if the z-axis is decreasing in velocity
+    
+    px_o_int=round(px_o) ; px_o_frac=px_o-px_o_int
+    py_o_int=round(py_o) ; py_o_frac=py_o-py_o_int
+    pz_o_int=round(pz_o) ; pz_o_frac=pz_o-pz_o_int
+    
+    phasecen=np.array([px_o_frac,py_o_frac])*cell
+    voffset=(pz_o_frac)*dv
+
     #start_time = time.time()
     
     cube=KinMS(xs,ys,vs,
@@ -212,6 +235,12 @@ def gmake_model_kinmspy(header,obj,
     model_prof['velrad']=velrad.copy()
     model_prof['velprof']=velprof.copy()
     model_prof['gassigma']=gassigma.copy()
+    
+    model_prof['sbrad_node']=obj['radi'].copy()
+    #model_prof['sbprof_node']=obj['radi'].copy()
+    model_prof['velrad_node']=obj['radi'].copy()
+    model_prof['velprof_node']=obj['vrot'].copy()
+    model_prof['gassigma_node']=obj['vdis'].copy()    
     
     return model,model_prof
 

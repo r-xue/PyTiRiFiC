@@ -553,7 +553,7 @@ def test_sersic1d_sample():
     #fig,ax=plt.figure(figsize=(8,8)) 
     
     fig,ax=plt.subplots(1,1,figsize=(16,8))
-    s1 = Sersic1D(amplitude=1, r_eff=0.12)
+    s1 = Sersic1D(amplitude=1, r_eff=0.20)
     r=np.arange(-0.72, 0.72, .04)
     r_fine=np.arange(-0.7, 0.7, .0001)
     r_test=np.arange(-0.6, 0.6, .12)
@@ -800,6 +800,7 @@ if  __name__=="__main__":
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
     models=test_gmake_model_api()
+    #test_sersic1d_sample()
     #test_cog_precision()
     #test_wcs2pix()
     

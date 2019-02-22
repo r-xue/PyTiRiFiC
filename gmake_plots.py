@@ -514,19 +514,22 @@ def gmake_plots_radprof(fn):
         ax = fig.add_subplot(len(flist),1,cc)
         
         t=Table.read(fn0)
-        x=t['sbrad'].data[0]
-        y=t['sbprof'].data[0]
-        ax.plot(x,y,color='black') 
+        ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black')
+        ax.set_xlim(np.min(t['sbrad'].data[0]),np.max(t['sbrad'].data[0]))
+        
         ax.set_title(os.path.basename(fn0))
         ax.set_ylabel('SB')
-        ax.set_xlabel('Radius [arcsec]')
+        if  cc==len(flist):
+            ax.set_xlabel('Radius [arcsec]')
         
         ax1 = ax.twinx()
         x1=t['velrad'].data[0]
         y1=t['velprof'].data[0]
         ax1.plot(x1,y1,color='blue')
+        ax1.plot(t['velrad_node'].data[0],t['velprof_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
         y1=t['gassigma'].data[0]
         ax1.plot(x1,y1,color='red')
+        ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
         ax1.set_ylabel('Vrot/Vdis [km/s]')
         
     odir='gmake_plots_radprof'
@@ -550,7 +553,7 @@ if  __name__=="__main__":
     fn_name_tmp='./data_bx610.bbx.cube64x64.iterx.image.fits'
     
     for bb in bbs:
-        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','itern')
+        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','iter0')
         
         """
         for roi in rois:
@@ -563,13 +566,13 @@ if  __name__=="__main__":
         gmake_plots_mom0xy(fn_name)
         """
 
-        #"""
+        """
         gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
         gmake_plots_slice(fn_name,i=1)
         gmake_plots_slice(fn_name,i=2)        
+        """
         #"""
-        """
         gmake_plots_radprof(fn_name)
-        """
+        #"""
 
     
