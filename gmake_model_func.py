@@ -90,6 +90,99 @@ def gmake_model_disk2d(header,ra,dec,
 
     return model
 
+def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000):
+    """
+    replace the cloudlet generator in KinMSpy(); replacement for kinms_sampleFromArbDist_oneSided()
+    
+    Note from KinMSpy()
+        inclouds : np.ndarray of double, optional
+         (Default value = [])
+        If your required gas distribution is not symmetric you
+        may input vectors containing the position of the
+        clouds you wish to simulate. This 3-vector should
+        contain the X, Y and Z positions, in units of arcseconds
+        from the phase centre. If this variable is used, then
+        `diskthick`, `sbrad` and `sbprof` are ignored.
+        Example: INCLOUDS=[[0,0,0],[10,-10,2],...,[xpos,ypos,zpos]]
+
+    This function takes the input radial distribution and generates the positions of
+    `nsamps` cloudlets from under it. It also accounts for disk thickness
+    if requested. Returns 
+    
+    Parameters
+    ----------
+    sbRad : np.ndarray of double
+            Radius vector (in units of pixels).
+    
+    sbProf : np.ndarray of double
+            Surface brightness profile (arbitrarily scaled).
+    
+    nSamps : int
+            Number of samples to draw from the distribution.
+    
+    seed : list of int
+            List of length 4 containing the seeds for random number generation.
+    
+    diskThick : double or np.ndarray of double
+         (Default value = 0.0)
+            The disc scaleheight. If a single value then this is used at all radii.
+            If a ndarray then it should have the same length as sbrad, and will be 
+            the disc thickness as a function of sbrad. 
+
+    Returns
+    -------
+    inClouds : np.ndarray of double
+            Returns an ndarray of `nsamps` by 3 in size. Each row corresponds to
+            the x, y, z position of a cloudlet. 
+    """
+
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    
+    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    sbProf=mod(sbRad)
+    diskThick=0.0
+    if  'diskthick' in obj:
+        diskThick=obj['diskthick']
+    
+    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    px=scipy.integrate.cumtrapz(sbProf*2.*np.pi*abs(sbRad),abs(sbRad),initial=0.)
+    px /= max(px)           
+    rng1 = np.random.RandomState(seed[0])            
+    pick = rng1.random_sample(nSamps)  
+    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
+    r_flat = interpfunc(pick)
+    
+    #Generates a random phase around the galaxy's axis for each cloud
+    rng2 = np.random.RandomState(seed[1])        
+    phi = rng2.random_sample(nSamps) * 2 * np.pi    
+ 
+    # Find the thickness of the disk at the radius of each cloud
+    if isinstance(diskThick, (list, tuple, np.ndarray)):
+        interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
+        diskThick_here = interpfunc2(r_flat)
+    else:
+        diskThick_here = diskThick    
+    
+    #Generates a random (uniform) z-position satisfying |z|<disk_here 
+    rng3 = np.random.RandomState(seed[3])       
+    zPos = diskThick_here * rng3.uniform(-1,1,nSamps)
+    
+    #Calculate the x & y position of the clouds in the x-y plane of the disk
+    r_3d = np.sqrt((r_flat**2) + (zPos**2))                                                               
+    theta = np.arccos(zPos / r_3d)                                                              
+    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
+    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
+    
+    #Generates the output array
+    inClouds = np.empty((nSamps,3))
+    inClouds[:,0] = xPos
+    inClouds[:,1] = yPos
+    inClouds[:,2] = zPos                                                          
+    
+    return inClouds
+
+
 def gmake_model_kinmspy(header,obj,
                         decomp=False,
                         verbose=False):
@@ -133,10 +226,7 @@ def gmake_model_kinmspy(header,obj,
     #   get 0-based pix-index
     
     px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
-
-
-
-
+    
     ####
     #   About KinMS:
     #       + cube needs to be transposed to match the fits.data dimension 
@@ -151,9 +241,10 @@ def gmake_model_kinmspy(header,obj,
     
     #   build an oversampled SB vector.
     
-    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    #mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
     sbrad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
-    sbprof=mod(sbrad)
+    #sbprof=mod(sbrad)
+    
     #print(sbrad)
     #print(np.array(obj['radi']))
     #velrad=obj['radi']
@@ -206,12 +297,17 @@ def gmake_model_kinmspy(header,obj,
     voffset=(pz_o_frac)*dv
 
     #start_time = time.time()
+
+    fixseed = np.random.randint(0,100,4)
+    inclouds=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=100000)
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
-               inc=obj['inc'],gasSigma=gassigma,sbProf=sbprof,
-               sbRad=sbrad,velRad=velrad,velProf=velprof,
+               inc=obj['inc'],gasSigma=gassigma,
+               #sbProf=sbprof,sbRad=sbrad,
+               inClouds=inclouds,
+               velRad=velrad,velProf=velprof,
                ra=obj['xypos'][0],dec=obj['xypos'][1],
                restFreq=obj['restfreq'],vSys=obj['vsys'],
                phaseCen=phasecen,vOffset=voffset,
@@ -231,7 +327,7 @@ def gmake_model_kinmspy(header,obj,
     
     model_prof={}
     model_prof['sbrad']=sbrad.copy()
-    model_prof['sbprof']=sbprof.copy()
+    #model_prof['sbprof']=sbprof.copy()
     model_prof['velrad']=velrad.copy()
     model_prof['velprof']=velprof.copy()
     model_prof['gassigma']=gassigma.copy()

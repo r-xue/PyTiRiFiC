@@ -13,6 +13,7 @@ import reikna.fft as cluda_fft
 from reikna.cluda import dtypes, any_api
 from reikna.core import Annotation, Type, Transformation, Parameter
 import scipy.integrate
+import astropy.units as u
 
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
@@ -51,10 +52,10 @@ def test_makekernel():
     
     #   slow..slow...
     
-    start_time = time.time()
-    im=makekernel(29,21,[6.0,3.0],pa=10,mode='integrate')
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('integrate',time.time()-start_time))
-    fits.writeto('test/test_makekernel_integrate.fits',im,overwrite=True)                    
+    #start_time = time.time()
+    #im=makekernel(29,21,[6.0,3.0],pa=10,mode='integrate')
+    #print("---{0:^10} : {1:<8.5f} seconds ---".format('integrate',time.time()-start_time))
+    #fits.writeto('test/test_makekernel_integrate.fits',im,overwrite=True)                    
     
 def fftw_fftn(input_data): 
     
@@ -529,7 +530,7 @@ def test_mcspeed():
     gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
 
 
-def imcontsub(fn):
+def test_imcontsub(fn):
     
     cube=SpectralCube.read(fn,mode='readonly')
     spectral_axis = cube.spectral_axis
@@ -540,11 +541,11 @@ def imcontsub(fn):
     med = masked_cube.median(axis=0)
     cube_mean = masked_cube.mean(axis=0)  
     cube_submean=cube-cube_mean
-    cube.write('test_cube.fits',overwrite=True)
-    cube_submean.write('test_cube_submean.fits',overwrite=True)
-    cube_mean.write('test_cube_mean.fits',overwrite=True)
+    cube.write('test/test_cube.fits',overwrite=True)
+    cube_submean.write('test/test_cube_submean.fits',overwrite=True)
+    cube_mean.write('test/test_cube_mean_mom0.fits',overwrite=True)
     m0=cube_submean.moment(order=0)
-    m0.write('test_cube_submean_mom0.fits',overwrite=True)
+    m0.write('test/test_cube_submean_mom0.fits',overwrite=True)
     
 def test_sersic1d_sample():
     
@@ -579,7 +580,9 @@ def test_make_cloudlet():
     nSamps=100000
     
 
-    
+    """
+    make random cloud position in 2D using the inverse transform sampling 
+    """
 
     
     ##########
@@ -784,22 +787,150 @@ def test_cog_precision():
     fig.savefig('test/test_cog_precision.pdf')
     
     #print(y)
+
+def test_makeclouds_fun2d():
+    
+    pass
+
+def test_make_cloudlet2d_mc():
+    """
+    mcmc
+    https://pymc-devs.github.io/pymc/theory.html?highlight=random%20sample
+    """
+    kernel=makekernel(1024,1024,[100,100],pa=10)
+    
+    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True)
+
+def test_make_cloudlet2d_grid():
+    """
+    fine 2d gridding
+    """
+    kernel=makekernel(1024,1024,[100,100],pa=10)
+    
+    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True)    
+
+def test_make_cloudlet2d_itf():
+    """
+    inverse transforming
+    """
+    kernel=makekernel(1024,1024,[100,300],pa=45)
+    
+    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True) 
+    
+    cs=kernel.cumsum(axis=1)
+    cs=cs.cumsum(axis=0)
+    
+    fits.writeto('test/test_makeclouds_cs.fits',cs,overwrite=True) 
+    
+#     cx=cx.sum(axis=0)
+#     cx=cx/np.max(cx)
+#     
+#     cy=kernel.cumsum(axis=1)
+#     cy=cy.sum(axis=0)
+#     cy=cy/np.max(cy)
+#     
+#     rng1 = np.random.RandomState(101) 
+#     pick = rng1.random_sample(size=(1024,2))
+#     print(pick.shape)
+#     
+#     
+#     int_cx = interpolate.interp1d(cx,np.arange(1024), kind='linear')
+#     int_cy = interpolate.interp1d(cy,np.arange(1024), kind='linear')
+#     xPos = int_cx(pick[:,0])
+#     yPos = int_cy(pick[:,1])
+#     
+#     plt.clf()
+#     fig,ax=plt.subplots(1,1,sharex=True,figsize=(12,12))
+#     ax.plot(xPos,yPos,'+')
+#     ax.set_xlim(0,1024)
+#     ax.set_ylim(0,1024)
+#     fig.savefig('test/test_make_cloudlet_ift.pdf')
+    
+    #fits.writeto('test/test_makeclouds_csum.fits',csum,overwrite=True) 
+
+def density1(z):
+    z = np.reshape(z, [z.shape[0], 2])
+    z1, z2 = z[:, 0], z[:, 1]
+    norm = np.sqrt(z1 ** 2 + z2 ** 2)
+    exp1 = np.exp(-0.5 * ((z1 - 2) / 0.8) ** 2)
+    exp2 = np.exp(-0.5 * ((z1 + 2) / 0.8) ** 2)
+    u = 0.5 * ((norm - 4) / 0.4) ** 2 - np.log(exp1 + exp2)
+    return np.exp(-u)
+
+def metropolis_hastings(target_density, size=10000):
+    
+    burnin_size = 1000
+    size += burnin_size
+    x0 = np.array([[0, 0]])
+    xt = x0
+    samples = []
+    for i in range(size):
+        xt_candidate = np.array([np.random.multivariate_normal(xt[0], np.eye(2))])
+        accept_prob = (target_density(xt_candidate))/(target_density(xt))
+        if np.random.uniform(0, 1) < accept_prob:
+            xt = xt_candidate
+        samples.append(xt)
+    samples = np.array(samples[burnin_size:])
+    samples = np.reshape(samples, [samples.shape[0], 2])
+    return samples
+
+def test_plots():
+    
+    start_time = time.time()
+    samples = metropolis_hastings(density1)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
+    
+    fig=plt.figure(figsize=(5,5)) 
+    ax= fig.add_subplot(1,1,1)
+    ax.hexbin(samples[:,0], samples[:,1], cmap='rainbow')
+    ax.set_xlim([-3, 3])
+    ax.set_ylim([-3, 3])
+    fig.savefig('test/test_mh.pdf')   
+
+def test_gmake_model_kimspy_inclouds():
+    
+    obj={}
+    obj['sbser']=[0.2,1.0]
+    obj['diskthick']=0.0
+    
+    seed = np.random.randint(0,100,4)
+    
+    start_time = time.time()
+    inclouds=gmake_model_kinmspy_inclouds(obj,seed)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('kinmspy_inclouds',time.time()-start_time)) 
+    
+    xpos=inclouds[:,0]
+    ypos=inclouds[:,1]
+    
+    fig=plt.figure(figsize=(12,12)) 
+    ax= fig.add_subplot(1,1,1)
+    ax.plot(xpos,ypos,linestyle='None',marker='.')
+    #ax.hexbin(s[:,0], samples[:,1], cmap='rainbow')
+    ax.set_xlim([-1, 1])
+    ax.set_ylim([-1, 1])
+    fig.savefig('test/test_gmake_model_kimspy_inclouds.pdf')
+    
 if  __name__=="__main__":
     
     #pass
 
-    #imcontsub('examples/bx610/bx610.bb2.cube64x64.iter0.image.fits')
+    #test_imcontsub('examples/bx610/bx610.bb2.cube64x64.itern.image.fits')
     #test_sersic1d_sample()
     #test_gmake_model_api()
     
-    #test_makekernel()
+    #test_make_cloudlet2d_itf()
+    #test_plots()
+    
     #test_make_cloudlet()
     #%timeit -n 100 for _ in range(10): True
     #   %timeit -n 10 "np.zeros((100,100,100)"
     #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
-    models=test_gmake_model_api()
+    #models=test_gmake_model_api()
+    
+    test_gmake_model_kimspy_inclouds()
+    
     #test_sersic1d_sample()
     #test_cog_precision()
     #test_wcs2pix()
