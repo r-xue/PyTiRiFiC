@@ -42,6 +42,7 @@ def gmake_model_disk2d(header,ra,dec,
             since the convolution is the bottom-neck, a plane-by-plane processing should
             be avoided.
             avoid too many header->wcs / wcs-header calls
+            1D use inverse transsforming
             
     """
 
@@ -284,15 +285,14 @@ def gmake_model_kinmspy(header,obj,
 
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     
+    # this transformation follows the whatever defination of "cubecenter" in kinmspy
     px_o=px-float(round(xs/cell))/2.
     py_o=py-float(round(ys/cell))/2.
     pz_o=pz-float(round(vs/abs(dv)))/2.
     if  dv<0: pz_o=pz_o+1.0 # count offset backwards if the z-axis is decreasing in velocity
-    
     px_o_int=round(px_o) ; px_o_frac=px_o-px_o_int
     py_o_int=round(py_o) ; py_o_frac=py_o-py_o_int
     pz_o_int=round(pz_o) ; pz_o_frac=pz_o-pz_o_int
-    
     phasecen=np.array([px_o_frac,py_o_frac])*cell
     voffset=(pz_o_frac)*dv
 
@@ -501,7 +501,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     else:
         return model
     
-def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
+def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
                mode=None,
                verbose=True):
     """
@@ -509,6 +509,9 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
 
     beam=[bmaj,bmin] FWHM
     pa=east from north (ccw)deli
+    
+    by default: the resulted kernel is always centered around a single pixel, and the application of
+        the kernel will lead to zero offset,
     
     make a "centered" Gaussian PSF kernel:
         e.g. npixel=7, centered at px=3
@@ -528,14 +531,18 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
                                 technically it's not the pixel index of image center
                                 but the center pixel is "considers"as index=4
         the rule of thumb-up:
-            cent=round((ks-1.)/2.)
+            cent=floor(ks/2.) or int(ks/2) #  int() try to truncate towards zero.
         
         note:
             
-            be careful about rounding:
-                NumPy rounds to the nearest even value. Thus 1.5 and 2.5 round to 2.0, -0.5 and 0.5 round to 0.0,
+            Python "rounding half to even" rule vs. traditional IDL:
                 https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html
-            
+                https://realpython.com/python-rounding/
+                Python>round(1.5)    # 2
+                Python>round(0.5)    # 0
+                IDL>round(1.5)       # 2 
+                IDL>round(0.5)       # 1
+ 
             "forget about how the np.array is stored, just use the array as it is IDL;
              when it comes down to shape/index, reverse the sequence"
              
@@ -544,7 +551,8 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=0,
             
     """
     
-    if not cent: cent=[round((xpixels-1.)/2.)*1.,round((ypixels-1.)/2.)*1.]
+    if  cent is None:
+        cent=[np.floor(xpixels/2.),np.floor(ypixels/2.)]
     sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
     mod=Gaussian2D(amplitude=1.,x_mean=cent[0],y_mean=cent[1],
                x_stddev=beam[1]/sigma2fwhm,y_stddev=beam[0]/sigma2fwhm,
