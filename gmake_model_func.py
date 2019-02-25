@@ -16,6 +16,7 @@ from astropy.coordinates import SkyCoord
 from spectral_cube import SpectralCube
 from scipy.interpolate import interp1d
 from scipy import interpolate
+import scipy.stats 
 
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
@@ -193,10 +194,28 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
     r_flat = interpfunc(pick)
     
-    #Generates a random phase around the galaxy's axis for each cloud
-    rng2 = np.random.RandomState(seed[1])        
-    phi = rng2.random_sample(nSamps) * 2 * np.pi    
- 
+    #Generates a random phase around the galaxy's axis for each cloud (with the Fourier Models)
+    #rng2 = np.random.RandomState(seed[1])        
+    #phi = rng2.random_sample(nSamps) * 2 * np.pi
+    nres=1000   # good enough
+    fm_m=2
+    if  'fm_m' in obj:
+        fm_m=obj['fm_m']
+    fm_frac=0.0
+    if  'fm_frac' in obj:
+        fm_frac=obj['fm_frac']    
+    fm_pa=0.0
+    if  'fm_pa' in obj:
+        fm_frac=obj['fm_pa']        
+    phi=np.arange(nres+1)/nres*2.0*np.pi-np.pi
+    cdf=fm_frac*np.sin(fm_m*phi)/fm_m+phi
+    cdf=cdf-cdf[0]
+    cdf/=np.max(cdf)
+    pick =np.random.RandomState(seed[1]).random_sample(nSamps)
+    interpfunc = interpolate.interp1d(cdf,phi, kind='linear')
+    phi=interpfunc(pick)+np.deg2rad(fm_pa)
+    
+    
     # Find the thickness of the disk at the radius of each cloud
     if isinstance(diskThick, (list, tuple, np.ndarray)):
         interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
