@@ -46,7 +46,7 @@ bpa             None                    # bpa
 type            'linedisk'                  # model type
 xypos           [356.539321,12.8220179445]      # [degree/degree] (IRCS)
 z               2.21                    # optical convention
-pa              -30.0                   # [degree] north up / counterclockwise
+pa              -10.0                   # [degree] north up / counterclockwise
 inc             52.0                    # [degree] inclination
 
 #   emissivity/kinematics
@@ -126,8 +126,8 @@ bpa             None                    # bpa
 type            'type@co76'             # model type
 xypos           'xypos@co76'            # [degree/degree]
 z               'z@co76'                # optical convention
-pa              'pa@co76'               # [degree] north up / counterclockwise
-inc             'inc@co76'              # [degree] inclination
+pa              0               # [degree] north up / counterclockwise
+inc             0              # [degree] inclination
 
 #   emissivity/kinematics
 restfreq        752.03314               # GHz
@@ -135,9 +135,12 @@ vsys            'vsys@co76'             # [km/s] [optical convetion]
 radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
-sbser           [0.12,1.]                     # exp profile : scale-length
+sbser           [0.5,1.]                     # exp profile : scale-length
 diskthick            'diskthick@co76'
 vdis            'vdis@co76'
+fm_m            3
+fm_frac         1.0
+fm_pa           20
 
 #   modeling algorithm
 method          'kinmspy'               # underline algorithm

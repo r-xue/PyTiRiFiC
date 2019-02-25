@@ -93,44 +93,8 @@ def gmake_model_disk2d(header,ra,dec,
     return model
 
 
-def gmake_model_kinmspy_inclouds_ndsampling(pdf,pdf_sort=False,pdf_interp=True,nsamps=100000):
-    """
-    provide random sampling variables approxnimately following an arbitrary high-dimension discrete PDF 
-    without expensive MC
-    
-    An over-sampled PDF (with pdf_sort/pdf_interp=True) is preferred for accuracy.
-    output:
-        nx*ny PDF is in (ny,nx) shape (matching in the FITS convention)
-        xpos=sample[0,:]
-        ypos=sample[1,:]
-        ...
-        in 0-based pixel index units.
-    """
 
-    pdf_shape=pdf.shape
-    pdf_flat=pdf.ravel()
     
-    if  sort_pdf==True:
-        sortindex=np.argsort(pdf, axis=None)
-        pdf_flat=pdf_flat[sortindex]
-    cdf=np.cumsum(pdf_flat)
-    
-    choice = np.random.uniform(high=cdf[-1],size=nsamps)
-    index = np.searchsorted(cdf, choice)
-
-    if  sort_pdf==True:
-        index=sortindex[index]
-    
-    index = np.vstack(np.unravel_index(index,pdf_shape))
-
-    if  interp_pdf==True:
-        sample=np.flip(index,axis=0)-0.5+np.random.uniform(size=index.shape)
-    else:
-        sample=np.flip(index,axis=0)
-
-    return sample
-    
-
 def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     """
     replace the cloudlet generator in KinMSpy(); replacement for kinms_sampleFromArbDist_oneSided()
@@ -187,35 +151,25 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
         diskThick=obj['diskthick']
     
     #Randomly generate the radii of clouds based on the distribution given by the brightness profile
-    px=scipy.integrate.cumtrapz(sbProf*2.*np.pi*abs(sbRad),abs(sbRad),initial=0.)
-    px /= max(px)           
-    rng1 = np.random.RandomState(seed[0])            
-    pick = rng1.random_sample(nSamps)  
-    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
-    r_flat = interpfunc(pick)
-    
+    pdf_x=abs(sbRad)
+    pdf_y=sbProf*2.*np.pi*abs(sbRad)
+    r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0])
+
     #Generates a random phase around the galaxy's axis for each cloud (with the Fourier Models)
-    #rng2 = np.random.RandomState(seed[1])        
-    #phi = rng2.random_sample(nSamps) * 2 * np.pi
-    nres=1000   # good enough
-    fm_m=2
-    if  'fm_m' in obj:
-        fm_m=obj['fm_m']
-    fm_frac=0.0
-    if  'fm_frac' in obj:
-        fm_frac=obj['fm_frac']    
-    fm_pa=0.0
-    if  'fm_pa' in obj:
-        fm_frac=obj['fm_pa']        
-    phi=np.arange(nres+1)/nres*2.0*np.pi-np.pi
-    cdf=fm_frac*np.sin(fm_m*phi)/fm_m+phi
-    cdf=cdf-cdf[0]
-    cdf/=np.max(cdf)
-    pick =np.random.RandomState(seed[1]).random_sample(nSamps)
-    interpfunc = interpolate.interp1d(cdf,phi, kind='linear')
-    phi=interpfunc(pick)+np.deg2rad(fm_pa)
-    
-    
+    fm_m = 2 if ('fm_m' not in obj) else obj['fm_m']
+    fm_frac = 0. if ('fm_frac' not in obj) else obj['fm_frac']
+    fm_pa = 0. if ('fm_pa' not in obj) else obj['fm_pa']
+    print(fm_m,fm_frac,fm_pa)
+    # in this case, cdf can be analystically written out easily
+    if  fm_frac!=0.0:
+        nres=10000.   # good enough
+        cdf_x=np.arange(nres+1)/nres*2.0*np.pi-np.pi
+        cdf_y=fm_frac*np.sin(fm_m*cdf_x)/fm_m+cdf_x
+        phi=cdf2rv(cdf_x,cdf_y,size=nSamps,seed=seed[1])+np.deg2rad(fm_pa)
+    else:
+        rng2=np.random.RandomState(seed[1])
+        phi = rng2.random_sample(nSamps) * 2 * np.pi
+        
     # Find the thickness of the disk at the radius of each cloud
     if isinstance(diskThick, (list, tuple, np.ndarray)):
         interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')

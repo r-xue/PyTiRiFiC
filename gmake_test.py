@@ -780,7 +780,7 @@ def test_sampling_approx():
     pdf=makekernel(nxy[0],nxy[1],[10,0.2],pa=0,cent=[501,501])
     
     start_time = time.time()
-    sample=gmake_model_kinmspy_inclouds_ndsampling(pdf)
+    sample=pdf2rv_nd(pdf)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('approx random sample ND',time.time()-start_time)) 
 
     xpos=sample[0,:]
@@ -799,7 +799,7 @@ def test_sampling_approx():
     pdf=pdf+makekernel(nxy[0],nxy[1],[100,20],pa=10,cent=[501+300,501])
     
     start_time = time.time()
-    sample=gmake_model_kinmspy_inclouds_ndsampling(pdf)
+    sample=pdf2rv_nd(pdf)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('approx random sample ND',time.time()-start_time)) 
 
     xpos=sample[0,:]
@@ -939,6 +939,56 @@ def test_gmake_model_disk2d():
     plt.savefig('test/test_model_disk2d.eps')
     """
 
+def test_sampling_cos():
+
+    """
+    test random sampling alogrithm for cos function
+    """
+    fig, ax = plt.subplots(1,1)
+    
+    
+    nsamps=10000
+    x=np.arange(1000)/1000*2*np.pi-np.pi
+    
+    #   this is very slow.
+    start_time = time.time()
+    r=scipy.stats.cosine.rvs(size=nsamps) 
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    ax.plot(x, scipy.stats.cosine.pdf(x),
+            'r-', lw=5, alpha=0.6, label='cosine pdf')
+    ax.hist(r, density=True, histtype='stepfilled', alpha=0.2,color='blue')
+    
+    #   use CDF coded in scipy
+    start_time = time.time()
+    cdf=scipy.stats.cosine.cdf(x)
+    cdf=cdf/np.max(cdf)
+    #print(cdf)
+    pick = np.random.uniform(0,1,nsamps)
+    #print(np.min(pick),np.max(pick)) 
+    interpfunc = interpolate.interp1d(cdf,x, kind='linear')
+    r_flat = interpfunc(pick)
+    ax.hist(r_flat, density=True, histtype='stepfilled', alpha=0.2,color='red')
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    #   use explict CDF
+    start_time = time.time()
+    cdf=x+np.sin(x)+np.pi
+    cdf=cdf/np.max(cdf)
+    #print(cdf)
+    pick = np.random.uniform(0,1,nsamps)
+    #print(np.min(pick),np.max(pick)) 
+    interpfunc = interpolate.interp1d(cdf,x, kind='linear')
+    r_flat = interpfunc(pick)
+    ax.hist(r_flat, density=True, histtype='stepfilled', alpha=0.2,color='cyan')
+    print("--- %s seconds ---" % (time.time() - start_time))    
+    
+    #   scheme:
+    #       x;normalize(CDF(x))    ->  transform back
+    
+    fig.savefig('test/test_sampling_cos.pdf')
+    
+    
 if  __name__=="__main__":
     
     #pass
@@ -956,7 +1006,8 @@ if  __name__=="__main__":
     #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
-    models=test_gmake_model_api()
+    #models=test_gmake_model_api()
+    #test_sampling_cos()
     
     #test_gmake_model_kimspy_inclouds()
     #test_sampling_gen()
