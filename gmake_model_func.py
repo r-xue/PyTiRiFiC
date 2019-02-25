@@ -91,6 +91,45 @@ def gmake_model_disk2d(header,ra,dec,
 
     return model
 
+
+def gmake_model_kinmspy_inclouds_ndsampling(pdf,pdf_sort=False,pdf_interp=True,nsamps=100000):
+    """
+    provide random sampling variables approxnimately following an arbitrary high-dimension discrete PDF 
+    without expensive MC
+    
+    An over-sampled PDF (with pdf_sort/pdf_interp=True) is preferred for accuracy.
+    output:
+        nx*ny PDF is in (ny,nx) shape (matching in the FITS convention)
+        xpos=sample[0,:]
+        ypos=sample[1,:]
+        ...
+        in 0-based pixel index units.
+    """
+
+    pdf_shape=pdf.shape
+    pdf_flat=pdf.ravel()
+    
+    if  sort_pdf==True:
+        sortindex=np.argsort(pdf, axis=None)
+        pdf_flat=pdf_flat[sortindex]
+    cdf=np.cumsum(pdf_flat)
+    
+    choice = np.random.uniform(high=cdf[-1],size=nsamps)
+    index = np.searchsorted(cdf, choice)
+
+    if  sort_pdf==True:
+        index=sortindex[index]
+    
+    index = np.vstack(np.unravel_index(index,pdf_shape))
+
+    if  interp_pdf==True:
+        sample=np.flip(index,axis=0)-0.5+np.random.uniform(size=index.shape)
+    else:
+        sample=np.flip(index,axis=0)
+
+    return sample
+    
+
 def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000):
     """
     replace the cloudlet generator in KinMSpy(); replacement for kinms_sampleFromArbDist_oneSided()
@@ -509,6 +548,8 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
 
     beam=[bmaj,bmin] FWHM
     pa=east from north (ccw)deli
+    
+    in pixel-size units
     
     by default: the resulted kernel is always centered around a single pixel, and the application of
         the kernel will lead to zero offset,
