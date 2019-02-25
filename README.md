@@ -92,3 +92,4 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + Consider to add a "bar" or a "hole" / add assymetric cloudlets sampling in kinmspy
 + return radial profile
 + fix WCS header from KinMSpy
++ automatically balance computing expense based on the dynamicalrange/precision requirement

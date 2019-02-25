@@ -14,11 +14,26 @@ from reikna.cluda import dtypes, any_api
 from reikna.core import Annotation, Type, Transformation, Parameter
 import scipy.integrate
 import astropy.units as u
+from tqdm import tqdm as tqdm
+import scipy.stats
 
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
 execfile('gmake_utils.py')
 execfile('gmake_emcee.py')
+
+def test_convol_offset():
+    #   the same as the center method
+    
+    nxy=[13,12]
+    nxy_psf=[10,13]
+    im=makekernel(nxy[0],nxy[1],[6.0,3.0],pa=20)
+    fits.writeto('test/test_convol_offset_im.fits',im,overwrite=True)
+    psf=makekernel(nxy_psf[0],nxy_psf[1],[3.0,3.0],pa=0)
+    fits.writeto('test/test_convol_offset_psf.fits',psf,overwrite=True)
+    cm=convolve_fft(im,psf)
+    fits.writeto('test/test_convol_offset_cm.fits',cm,overwrite=True)
+    
 
 def test_makekernel():
 
@@ -417,103 +432,6 @@ def test_convolve_eff():
     #test=convolve(im,kernel[np.newaxis,0,:,:])
     #print("---{0:^10} : {1:<8.5f} seconds ---".format('convolve_3D',time.time()-start_time))    
 
-def test_gmake_model_disk2d():
-    
-    data,hd=fits.getdata('examples/bx610/bx610.bb1.mfs.iter0.image.fits',header=True,memmap=False)
-    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
-    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
-    #psf=psf[0,100,:,:]
-    
-    start_time = time.time()
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
-                             r_eff=0.2,n=1.0,posang=20,ellip=0.5)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    start_time = time.time()
-    cmodel=gmake_model_simobs(model,hd)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    start_time = time.time()
-    cmodel_psf=gmake_model_simobs(model,hd,psf=psf)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    start_time = time.time()
-    cmodel_beam=gmake_model_simobs(model,hd,beam=[1.0,0.2,-30.])
-    print("--- %s seconds ---" % (time.time() - start_time))    
-    
-    fits.writeto('test/test_model_disk2d_model.fits',model,hd,overwrite=True)
-    fits.writeto('test/test_model_disk2d_cmodel.fits',cmodel,hd,overwrite=True)
-    fits.writeto('test/test_model_disk2d_cmodel_psf.fits',cmodel_psf,hd,overwrite=True)
-    fits.writeto('test/test_model_disk2d_cmodel_beam.fits',cmodel_beam,hd,overwrite=True)
-    
-def test_gmake_model_api():
-    
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-    mod_dct=gmake_inp2mod(inp_dct)
-    #pprint.pprint(mod_dct)
-    start_time = time.time()
-    models=gmake_model_api(mod_dct,dat_dct,verbose=False)
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
-    
-    start_time = time.time()
-    gmake_model_export(models,outdir='./test')
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('export',time.time()-start_time))
-  
-    m3d=SpectralCube.read('test/imod3d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
-    m2d=SpectralCube.read('test/imod2d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
-    m3d_m0=m3d.moment(order=0)
-    m2d_m0=m2d.moment(order=0)
-    m3d_m0=m3d_m0/np.max(m3d_m0.array)
-    m2d_m0=m2d_m0/np.max(m2d_m0.array)
-    m3d_m0.write('test/imod3d_mom0.fits',overwrite=True)
-    m2d_m0.write('test/imod2d_mom0.fits',overwrite=True)
-    
-    #lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-    #                             savemodel='test/test_gmake_model_api')
-
-    return models
-
-def test_gmake_model_kinmspy():
-    
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
-    
-    mod_dct=gmake_inp2mod(inp_dct)
-    obj=mod_dct['co76']
-    
-    start_time = time.time()
-    hd=dat_dct['header@examples/bx610/bx610.bb2.cube.iter0.image.fits']
-    model=gmake_model_kinmspy(hd,obj)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    fits.writeto('test/test_model_kinmspy_model.fits',model,hd,overwrite=True)
-
-def test_gmake_model_disk2d():
-    
-    #data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
-    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
-    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
-    #psf=psf[0,100,:,:]
-    
-    start_time = time.time()
-    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
-                             r_eff=0.2,n=1.0,posang=20,ellip=0.5)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
-    """
-    log_model=np.log(model)
-    plt.figure()
-    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
-           vmin=np.min(log_model), vmax=np.max(log_model))
-    plt.xlabel('x')
-    plt.ylabel('y')
-    cbar = plt.colorbar()
-    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
-    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
-    plt.savefig('test/test_model_disk2d.eps')
-    """
 def test_wcs2pix():
     
     data,header=fits.getdata('examples/bx610/bx610.bb1.cube.iter0.image.fits',header=True,memmap=False)
@@ -788,85 +706,41 @@ def test_cog_precision():
     
     #print(y)
 
-def test_makeclouds_fun2d():
-    
-    pass
 
-def test_make_cloudlet2d_mc():
-    """
-    mcmc
-    https://pymc-devs.github.io/pymc/theory.html?highlight=random%20sample
-    """
-    kernel=makekernel(1024,1024,[100,100],pa=10)
-    
-    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True)
-
-def test_make_cloudlet2d_grid():
-    """
-    fine 2d gridding
-    """
-    kernel=makekernel(1024,1024,[100,100],pa=10)
-    
-    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True)    
-
-def test_make_cloudlet2d_itf():
-    """
-    inverse transforming
-    """
-    kernel=makekernel(1024,1024,[100,300],pa=45)
-    
-    fits.writeto('test/test_makeclouds.fits',kernel,overwrite=True) 
-    
-    cs=kernel.cumsum(axis=1)
-    cs=cs.cumsum(axis=0)
-    
-    fits.writeto('test/test_makeclouds_cs.fits',cs,overwrite=True) 
-    
-#     cx=cx.sum(axis=0)
-#     cx=cx/np.max(cx)
-#     
-#     cy=kernel.cumsum(axis=1)
-#     cy=cy.sum(axis=0)
-#     cy=cy/np.max(cy)
-#     
-#     rng1 = np.random.RandomState(101) 
-#     pick = rng1.random_sample(size=(1024,2))
-#     print(pick.shape)
-#     
-#     
-#     int_cx = interpolate.interp1d(cx,np.arange(1024), kind='linear')
-#     int_cy = interpolate.interp1d(cy,np.arange(1024), kind='linear')
-#     xPos = int_cx(pick[:,0])
-#     yPos = int_cy(pick[:,1])
-#     
-#     plt.clf()
-#     fig,ax=plt.subplots(1,1,sharex=True,figsize=(12,12))
-#     ax.plot(xPos,yPos,'+')
-#     ax.set_xlim(0,1024)
-#     ax.set_ylim(0,1024)
-#     fig.savefig('test/test_make_cloudlet_ift.pdf')
-    
-    #fits.writeto('test/test_makeclouds_csum.fits',csum,overwrite=True) 
 
 def density1(z):
     z = np.reshape(z, [z.shape[0], 2])
     z1, z2 = z[:, 0], z[:, 1]
     norm = np.sqrt(z1 ** 2 + z2 ** 2)
-    exp1 = np.exp(-0.5 * ((z1 - 2) / 0.8) ** 2)
-    exp2 = np.exp(-0.5 * ((z1 + 2) / 0.8) ** 2)
-    u = 0.5 * ((norm - 4) / 0.4) ** 2 - np.log(exp1 + exp2)
+    exp1 = np.exp(-0.5 * ((z1 - 2) / 0.6) ** 2)
+    exp2 = np.exp(-0.5 * ((z1 + 2) / 0.6) ** 2)
+    u = 0.5 * ((norm - 2) / 0.4) ** 2 - np.log(exp1 + exp2)
     return np.exp(-u)
 
-def metropolis_hastings(target_density, size=10000):
-    
-    burnin_size = 1000
+def density2(model,z):
+    z = np.reshape(z, [z.shape[0], 2])
+    z1, z2 = z[:, 0], z[:, 1]
+    den=model(z1,z2)
+    return den
+
+def metropolis_hastings(target_density, size=1000):
+    """
+    although this works for arbitary n-d distribution, it's not that fast....
+    anything looping is not fast...
+    note: https://github.com/abdulfatir/sampling-methods-numpy
+    https://pymc-devs.github.io/pymc/theory.html?highlight=random%20sample
+    """
+    burnin_size = 100
     size += burnin_size
     x0 = np.array([[0, 0]])
     xt = x0
     samples = []
-    for i in range(size):
+    model=Sersic1D(amplitude=1.0,r_eff=0.5,n=1)
+    model=Sersic2D(amplitude=1.0,r_eff=1.0,n=1.0,x_0=0,y_0=0,
+           ellip=0.5,theta=np.deg2rad(10.0+90.0))
+    for i in tqdm(range(size)):
         xt_candidate = np.array([np.random.multivariate_normal(xt[0], np.eye(2))])
-        accept_prob = (target_density(xt_candidate))/(target_density(xt))
+        accept_prob = (target_density(model,xt_candidate))/(target_density(model,xt))
         if np.random.uniform(0, 1) < accept_prob:
             xt = xt_candidate
         samples.append(xt)
@@ -874,19 +748,74 @@ def metropolis_hastings(target_density, size=10000):
     samples = np.reshape(samples, [samples.shape[0], 2])
     return samples
 
-def test_plots():
+def test_sampling_gen():
     
     start_time = time.time()
-    samples = metropolis_hastings(density1)
+    #samples = metropolis_hastings(density1)
+    samples = metropolis_hastings(density2)
     print("---{0:^10} : {1:<8.5f} seconds ---".format('cumtrapz',time.time()-start_time)) 
-    
     fig=plt.figure(figsize=(5,5)) 
     ax= fig.add_subplot(1,1,1)
-    ax.hexbin(samples[:,0], samples[:,1], cmap='rainbow')
+    #ax.hexbin(samples[:,0], samples[:,1], cmap='rainbow')
+    ax.plot(samples[:,0],samples[:,1],linestyle='None',marker='.')
     ax.set_xlim([-3, 3])
     ax.set_ylim([-3, 3])
-    fig.savefig('test/test_mh.pdf')   
+    fig.savefig('test/test_sampling_mc.pdf')
+    
+    nxy=[1024,1024]
+    im=makekernel(nxy[0],nxy[1],[100.0,40.0],pa=20)
 
+    hist_dist=scipy.stats.rv_histogram(hist)
+    
+    
+    
+def test_sampling_approx():
+ 
+    # https://stackoverflow.com/questions/21100716/fast-arbitrary-distribution-random-sampling/21101584#21101584
+    
+    sample_sort=False
+    sample_interp=True
+    
+    nxy=[1001,1001]
+    pdf=makekernel(nxy[0],nxy[1],[10,0.2],pa=0,cent=[501,501])
+    
+    start_time = time.time()
+    sample=gmake_model_kinmspy_inclouds_ndsampling(pdf)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('approx random sample ND',time.time()-start_time)) 
+
+    xpos=sample[0,:]
+    ypos=sample[1,:]
+
+    fig=plt.figure(figsize=(24,11))
+    ax= fig.add_subplot(1,2,1)
+    ax.plot(xpos,ypos,linestyle='None',marker='.')
+    ax.set_xlim([501-2,501+2])
+    ax.set_ylim([501-20,501+20])
+    ax.set_title('verify offset')
+    
+    
+    nxy=[1001,1001]
+    pdf=makekernel(nxy[0],nxy[1],[200,100],pa=10,cent=[501,501])
+    pdf=pdf+makekernel(nxy[0],nxy[1],[100,20],pa=10,cent=[501+300,501])
+    
+    start_time = time.time()
+    sample=gmake_model_kinmspy_inclouds_ndsampling(pdf)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('approx random sample ND',time.time()-start_time)) 
+
+    xpos=sample[0,:]
+    ypos=sample[1,:]
+
+    #fig=plt.figure(figsize=(24,11))
+    ax= fig.add_subplot(1,2,2)
+    ax.plot(xpos,ypos,linestyle='None',marker='.')
+    ax.set_xlim([0,1001])
+    ax.set_ylim([0,1001])
+    ax.set_title('verify axis')    
+    
+    fig.savefig('test/test_sampling_approx.png')
+    
+
+        
 def test_gmake_model_kimspy_inclouds():
     
     obj={}
@@ -909,7 +838,107 @@ def test_gmake_model_kimspy_inclouds():
     ax.set_xlim([-1, 1])
     ax.set_ylim([-1, 1])
     fig.savefig('test/test_gmake_model_kimspy_inclouds.pdf')
+
+
+
+def test_gmake_model_disk2d():
     
+    data,hd=fits.getdata('examples/bx610/bx610.bb1.mfs.iter0.image.fits',header=True,memmap=False)
+    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
+    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
+    #psf=psf[0,100,:,:]
+    
+    start_time = time.time()
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
+                             r_eff=0.2,n=1.0,posang=20,ellip=0.5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    start_time = time.time()
+    cmodel=gmake_model_simobs(model,hd)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    start_time = time.time()
+    cmodel_psf=gmake_model_simobs(model,hd,psf=psf)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    start_time = time.time()
+    cmodel_beam=gmake_model_simobs(model,hd,beam=[1.0,0.2,-30.])
+    print("--- %s seconds ---" % (time.time() - start_time))    
+    
+    fits.writeto('test/test_model_disk2d_model.fits',model,hd,overwrite=True)
+    fits.writeto('test/test_model_disk2d_cmodel.fits',cmodel,hd,overwrite=True)
+    fits.writeto('test/test_model_disk2d_cmodel_psf.fits',cmodel_psf,hd,overwrite=True)
+    fits.writeto('test/test_model_disk2d_cmodel_beam.fits',cmodel_beam,hd,overwrite=True)
+    
+def test_gmake_model_api():
+    
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    mod_dct=gmake_inp2mod(inp_dct)
+    #pprint.pprint(mod_dct)
+    start_time = time.time()
+    models=gmake_model_api(mod_dct,dat_dct,verbose=False)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('apicall',time.time() - start_time))
+    
+    start_time = time.time()
+    gmake_model_export(models,outdir='./test')
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('export',time.time()-start_time))
+  
+    m3d=SpectralCube.read('test/imod3d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
+    m2d=SpectralCube.read('test/imod2d_bx610.bb3.cube64x64.iter0.image.fits',mode='readonly')
+    m3d_m0=m3d.moment(order=0)
+    m2d_m0=m2d.moment(order=0)
+    m3d_m0=m3d_m0/np.max(m3d_m0.array)
+    m2d_m0=m2d_m0/np.max(m2d_m0.array)
+    m3d_m0.write('test/imod3d_mom0.fits',overwrite=True)
+    m2d_m0.write('test/imod2d_mom0.fits',overwrite=True)
+    
+    #lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+    #                             savemodel='test/test_gmake_model_api')
+
+    return models
+
+def test_gmake_model_kinmspy():
+    
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    
+    mod_dct=gmake_inp2mod(inp_dct)
+    obj=mod_dct['co76']
+    
+    start_time = time.time()
+    hd=dat_dct['header@examples/bx610/bx610.bb2.cube.iter0.image.fits']
+    model=gmake_model_kinmspy(hd,obj)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    fits.writeto('test/test_model_kinmspy_model.fits',model,hd,overwrite=True)
+
+def test_gmake_model_disk2d():
+    
+    #data,hd=fits.getdata('examples/bx610/bx610_spw25.mfs.fits',header=True,memmap=False)
+    data,hd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.image.fits',header=True,memmap=False)
+    psf,phd=fits.getdata('examples/bx610/bx610.bb4.cube.iter0.psf.fits',header=True,memmap=False)
+    #psf=psf[0,100,:,:]
+    
+    start_time = time.time()
+    model=gmake_model_disk2d(hd,356.539321,12.8220179445,
+                             r_eff=0.2,n=1.0,posang=20,ellip=0.5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    #fits.writeto('test/test_model_disk2d.fits',model,hd,overwrite=True)
+    """
+    log_model=np.log(model)
+    plt.figure()
+    plt.imshow(np.log(model), origin='lower', interpolation='nearest',
+           vmin=np.min(log_model), vmax=np.max(log_model))
+    plt.xlabel('x')
+    plt.ylabel('y')
+    cbar = plt.colorbar()
+    cbar.set_label('Log Brightness', rotation=270, labelpad=25)
+    cbar.set_ticks([np.min(log_model),np.max(log_model)], update_ticks=True)
+    plt.savefig('test/test_model_disk2d.eps')
+    """
+
 if  __name__=="__main__":
     
     #pass
@@ -927,10 +956,13 @@ if  __name__=="__main__":
     #   %timeit -n 10 "np.empty((100,100,100)"
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
-    #models=test_gmake_model_api()
+    models=test_gmake_model_api()
     
-    test_gmake_model_kimspy_inclouds()
+    #test_gmake_model_kimspy_inclouds()
+    #test_sampling_gen()
+    test_sampling_approx()
     
+    #test_convol_offset()
     #test_sersic1d_sample()
     #test_cog_precision()
     #test_wcs2pix()

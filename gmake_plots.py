@@ -506,44 +506,45 @@ def gmake_plots_radprof(fn):
 
     flist=glob.glob(wd)
     
-    fig=plt.figure(figsize=(8.,4.*len(flist))) 
-    
-    cc=0
-    for fn0 in flist:
-        print(fn0)
-        cc=cc+1
-        ax = fig.add_subplot(len(flist),1,cc)
+    if  len(flist)>0:
         
-        t=Table.read(fn0)
-        ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black')
-        ymin,ymax=ax.get_ylim()
-        
-        cog=scipy.integrate.cumtrapz(t['sbprof'].data[0]*2.*np.pi*t['sbrad'].data[0],t['sbrad'].data[0],initial=0.)
-        cog /= np.max(cog) 
-        ax.plot(t['sbrad'].data[0],cog*ymax,linestyle='--',color='black')
-        
-        ax.set_xlim(np.min(t['sbrad'].data[0]),np.max(t['sbrad'].data[0]))
-        
-        ax.set_title(os.path.basename(fn0))
-        ax.set_ylabel('SB')
-        if  cc==len(flist):
-            ax.set_xlabel('Radius [arcsec]')
-        
-        ax1 = ax.twinx()
-        x1=t['velrad'].data[0]
-        y1=t['velprof'].data[0]
-        ax1.plot(x1,y1,color='blue')
-        ax1.plot(t['velrad_node'].data[0],t['velprof_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
-        y1=t['gassigma'].data[0]
-        ax1.plot(x1,y1,color='red')
-        ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
-        ax1.set_ylabel('Vrot/Vdis [km/s]')
-        
-    odir='gmake_plots_radprof'
-    if not os.path.exists(odir):
-        os.makedirs(odir)   
-        
-    fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf') 
+        fig=plt.figure(figsize=(8.,4.*len(flist))) 
+        cc=0
+        for fn0 in flist:
+            print(fn0)
+            cc=cc+1
+            ax = fig.add_subplot(len(flist),1,cc)
+            
+            t=Table.read(fn0)
+            ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black')
+            ymin,ymax=ax.get_ylim()
+            
+            cog=scipy.integrate.cumtrapz(t['sbprof'].data[0]*2.*np.pi*t['sbrad'].data[0],t['sbrad'].data[0],initial=0.)
+            cog /= np.max(cog) 
+            ax.plot(t['sbrad'].data[0],cog*ymax,linestyle='--',color='black')
+            
+            ax.set_xlim(np.min(t['sbrad'].data[0]),np.max(t['sbrad'].data[0]))
+            
+            ax.set_title(os.path.basename(fn0))
+            ax.set_ylabel('SB')
+            if  cc==len(flist):
+                ax.set_xlabel('Radius [arcsec]')
+            
+            ax1 = ax.twinx()
+            x1=t['velrad'].data[0]
+            y1=t['velprof'].data[0]
+            ax1.plot(x1,y1,color='blue')
+            ax1.plot(t['velrad_node'].data[0],t['velprof_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
+            y1=t['gassigma'].data[0]
+            ax1.plot(x1,y1,color='red')
+            ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
+            ax1.set_ylabel('Vrot/Vdis [km/s]')
+            
+        odir='gmake_plots_radprof'
+        if not os.path.exists(odir):
+            os.makedirs(odir)   
+            
+        fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf') 
 
 if  __name__=="__main__":
     

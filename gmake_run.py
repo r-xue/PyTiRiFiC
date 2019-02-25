@@ -24,7 +24,7 @@ if  __name__=="__main__":
     #"""
     outfolder='bx610xy_cm64_all_emcee'
     
-    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=400,plotcorner=True,
+    fit_tab=gmake_emcee_analyze(outfolder,plotsub=None,burnin=700,plotcorner=True,
                     verbose=True)
     fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()

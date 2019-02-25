@@ -56,6 +56,7 @@ radi            [0,0.12,0.24,0.36,0.48]
 vrot            [0,300,300,300,300]
 intflux         0.93                     # Jy/km/s
 sbser           [0.12,1.]                    # exp profile : scale-length
+diskthick       0.00
 vdis            [50,50,50,50,50]
 
 #   modeling algorithm
@@ -95,6 +96,7 @@ radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
 sbser           [0.12,1.]                     # exp profile : scale-length
+diskthick            'diskthick@co76'
 vdis            'vdis@co76'
 
 #   modeling algorithm
@@ -134,6 +136,7 @@ radi            'radi@co76'
 vrot            'vrot@co76'
 intflux         0.578                     # Jy/km/s
 sbser           [0.12,1.]                     # exp profile : scale-length
+diskthick            'diskthick@co76'
 vdis            'vdis@co76'
 
 #   modeling algorithm

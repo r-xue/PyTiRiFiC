@@ -130,7 +130,7 @@ def gmake_model_kinmspy_inclouds_ndsampling(pdf,pdf_sort=False,pdf_interp=True,n
     return sample
     
 
-def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000):
+def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     """
     replace the cloudlet generator in KinMSpy(); replacement for kinms_sampleFromArbDist_oneSided()
     
@@ -220,7 +220,16 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000):
     inClouds[:,1] = yPos
     inClouds[:,2] = zPos                                                          
     
-    return inClouds
+    
+    #return something could be useful
+    profile={}
+    profile['sbrad']=sbRad
+    profile['sbprof']=sbProf
+    
+    if  returnprof==True:
+        return inClouds,profile
+    else:
+        return inClouds
 
 
 def gmake_model_kinmspy(header,obj,
@@ -282,7 +291,6 @@ def gmake_model_kinmspy(header,obj,
     #   build an oversampled SB vector.
     
     #mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    sbrad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
     #sbprof=mod(sbrad)
     
     #print(sbrad)
@@ -291,9 +299,7 @@ def gmake_model_kinmspy(header,obj,
     #velprof=obj['vrot']
     #gassigma=np.array(obj['vdis'])
     
-    velrad=sbrad.copy()
-    
-    
+    velrad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
     ikind='linear' # stable
     ikind='cubic'  # bad for extraplate
     #ikind='quadratic' #
@@ -317,8 +323,8 @@ def gmake_model_kinmspy(header,obj,
     
     ####################
     
-    xs=np.max(sbrad)*1.0*2.0
-    ys=np.max(sbrad)*1.0*2.0
+    xs=np.max(velrad)*1.0*2.0
+    ys=np.max(velrad)*1.0*2.0
     vs=np.max(velprof*np.abs(np.sin(np.deg2rad(obj['inc'])))+3.0*gassigma)
     vs=vs*1.0*2.
 
@@ -338,7 +344,7 @@ def gmake_model_kinmspy(header,obj,
     #start_time = time.time()
 
     fixseed = np.random.randint(0,100,4)
-    inclouds=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=100000)
+    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=100000)
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
@@ -365,8 +371,9 @@ def gmake_model_kinmspy(header,obj,
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
     
     model_prof={}
-    model_prof['sbrad']=sbrad.copy()
-    #model_prof['sbprof']=sbprof.copy()
+    model_prof['sbrad']=prof1d['sbrad'].copy()
+    model_prof['sbprof']=prof1d['sbprof'].copy()
+    
     model_prof['velrad']=velrad.copy()
     model_prof['velprof']=velprof.copy()
     model_prof['gassigma']=gassigma.copy()
