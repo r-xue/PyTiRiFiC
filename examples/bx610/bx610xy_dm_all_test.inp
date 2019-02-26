@@ -138,8 +138,8 @@ intflux         0.578                     # Jy/km/s
 sbser           [0.5,1.]                     # exp profile : scale-length
 diskthick            'diskthick@co76'
 vdis            'vdis@co76'
-fm_m            3
-fm_frac         1.0
+fm_m            2
+fm_frac         0.4
 fm_pa           20
 
 #   modeling algorithm
