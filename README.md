@@ -93,3 +93,6 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + return radial profile
 + fix WCS header from KinMSpy
 + automatically balance computing expense based on the dynamicalrange/precision requirement
++ refit with an elliptical face-on morplogy 
++ h-alpha ALMA/SINFONI comparison (side-by-side)
++ add CO 4-3 CI 1-0 into the fitting
