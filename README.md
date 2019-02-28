@@ -74,7 +74,7 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + ~~galario xy-uv transfer & efficiency~~
 + plotting: 
 	- ~~1D: data/model spectra~~
-	- 1D: rotation curve
+	- ~~1D: rotation curve~~
 	- 2D: channel map
 	- 2D: face-on distribution
 	- 2D: ~mom0~ mom1 maps
@@ -96,3 +96,5 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + refit with an elliptical face-on morplogy 
 + h-alpha ALMA/SINFONI comparison (side-by-side)
 + add CO 4-3 CI 1-0 into the fitting
++ add A.B.'s VLA C/D-config CO 1-0 data
++ update the manuscript
