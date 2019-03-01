@@ -100,3 +100,4 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + update the manuscript
 + comparison with the "busy" fit
 + Sofia / Model / gen_mask.pro For the different masking creation 
++ merge the amoeba & mpfit code pieces
