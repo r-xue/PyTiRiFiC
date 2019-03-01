@@ -16,17 +16,18 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 ;endfor
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
+repo='/Volumes/D1/projects/hzdyn/2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b/imaging/'
 itype='cube'
 ;itype='mfs'
 
 tag=''
 tag='64x64'
-tag='64x64_ro0'
+;tag='64x64_ro0'
 iter='itern'
 
-input_temp='*bbx*ro0_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
+input_temp='*bbx*ro1_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
 ;input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
-output_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
+output_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
@@ -63,10 +64,10 @@ PRO HZDYN_BX610_SUBREG_2015_MASK
 
 itype='cube'
 tag='64x64'
-tag='64x64_ro0'
+;tag='64x64_ro0'
 iter='iter0'
 iter='itern'
-input_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
+input_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
@@ -87,14 +88,14 @@ PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 
 itype='cube'
 tag='64x64'
-tag='64x64_ro0'
+;tag='64x64_ro0'
 xlimit0=[32.-18,32.+18]
 ylimit0=[32.-18,32.+18]
 iter='itern'
-hexsample_bx610,'bx610.bb1.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb2.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb3.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610.bb4.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610_band4.bb1.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610_band4.bb2.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610_band4.bb3.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610_band4.bb4.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
 
 END
 
