@@ -78,7 +78,7 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 	- 2D: channel map
 	- 2D: face-on distribution
 	- 2D: ~mom0~ mom1 maps
-	- 3D: volume rendering (yt)
+	- 3D: volume rendering (yt) Check ER.s YT exampels
 	- ~~add intrinsic models~~
 	- SB profile along major/minor axes
 + ~~save metadata~~
@@ -95,6 +95,8 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + automatically balance computing expense based on the dynamicalrange/precision requirement
 + refit with an elliptical face-on morplogy 
 + h-alpha ALMA/SINFONI comparison (side-by-side)
-+ add CO 4-3 CI 1-0 into the fitting
++ ~~add CO 4-3 CI 1-0 into the fitting~~
 + add A.B.'s VLA C/D-config CO 1-0 data
 + update the manuscript
++ comparison with the "busy" fit
++ Sofia / Model / gen_mask.pro For the different masking creation 
