@@ -36,6 +36,44 @@ from scipy.interpolate import interpn
 from astropy.convolution import Gaussian2DKernel, interpolate_replace_nans, convolve
 
 
+def imcontsub(imagename,linefile='',contfile='',
+              fitorder=0,   # not implemented yet
+              linechan=None,contchan=None):
+    """
+    linechan / contchan: tuple with [fmin,fmax] in each element 
+    """
+    cube=SpectralCube.read(imagename,mode='readonly')
+    spectral_axis = cube.spectral_axis
+    if  linechan is not None:
+        bad_chans=[(spectral_axis > linechan0[0]) & (spectral_axis < linechan0[1])  for linechan0 in linechan]
+        bad_chans=np.logical_or.reduce(bad_chans)
+        good_chans=~bad_chans
+    if  contchan is not None:
+        good_chans=[(spectral_axis > contchan0[0]) & (spectral_axis < contchan0[1])  for contchan0 in contchan]
+        good_chans=np.logical_or.reduce(good_chans)
+        
+    masked_cube = cube.with_mask(good_chans[:, np.newaxis, np.newaxis])
+    cube_mean = masked_cube.mean(axis=0)  
+    cube_imcontsub=cube-cube_mean
+
+    #cube.write('cube1.fits',overwrite=True)
+    cube_imcontsub.write(linefile,overwrite=True)
+    cube_mean.write(contfile,overwrite=True)
+    
+
+def cr_tanh(r,r_in=0.0,r_out=1.0,theta_out=30.0):
+    """
+    """
+    
+    cdef=0.23
+    A=2*cdef/(np.abs(theta_out)+cdef)-1.00001
+    B=(2.-np.arctanh(A))*r_out/(r_out-r_in)
+
+    tanh_fun=np.tanh(B*(r/r_out-1)+2.)+1.
+    tanh_fun=0.5*tanh_fun
+
+    return tanh_fun
+
 def pdf2rv_nd(pdf,size=100000,
               sort=False,interp=True):
     """
@@ -462,6 +500,7 @@ def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
 if  __name__=="__main__":
     
     pass
+
     #objs=gmake_readinp('examples/bx610/bx610xy.inp',verbose=False)
     
     #print("\n"*2)
