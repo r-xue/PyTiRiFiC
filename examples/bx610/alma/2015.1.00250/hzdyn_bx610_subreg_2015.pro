@@ -17,8 +17,8 @@ repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 repo='/Volumes/D1/projects/hzdyn/2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b/imaging/'
-itype='cube'
-;itype='mfs'
+;itype='cube'
+itype='mfs'
 
 tag=''
 tag='64x64'
@@ -26,7 +26,7 @@ tag='64x64'
 iter='itern'
 
 input_temp='*bbx*ro1_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
-;input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
+input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
 output_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
@@ -67,6 +67,7 @@ tag='64x64'
 ;tag='64x64_ro0'
 iter='iter0'
 iter='itern'
+itype='mfs'
 input_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
@@ -87,6 +88,7 @@ PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
 ;hexsample_bx610,'bx610_spw27',356.53929,12.822,xlimit=[33.-10.,60.+10.],ylimit=[40.-10.,64.+10.]
 
 itype='cube'
+itype='mfs'
 tag='64x64'
 ;tag='64x64_ro0'
 xlimit0=[32.-18,32.+18]

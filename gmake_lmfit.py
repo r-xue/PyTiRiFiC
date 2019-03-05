@@ -1,7 +1,8 @@
 execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 
+from lmfit import minimize, Parameters
 
-def gmake_mpfit_setup(inp_dct,dat_dct):
+def gmake_lmfit_setup(inp_dct,dat_dct):
     
     
     opt_dct=inp_dct['optimize']
@@ -35,6 +36,8 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
                 'mpmaxstep':0,
                 'mpminstep':0,
                 } for i in range(len(fit_dct['p_name']))]
+    
+    params=Parameters()
     for i in range(len(fit_dct['p_name'])):
         parinfo[i]['parname']=fit_dct['p_name'][i]
         parinfo[i]['limited']=[1,1]
@@ -42,6 +45,12 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
         parinfo[i]['step']=fit_dct['p_iscale'][i]
         parinfo[i]['relstep']=fit_dct['p_rscale'][i]
         parinfo[i]['limits']=[fit_dct['p_lo'][i],fit_dct['p_up'][i]]
+        params.add(fit_dct['p_name'][i].replace('@','_at_'),
+                   value=fit_dct['p_start'][i],
+                   vary=True,
+                   min=fit_dct['p_lo'][i],
+                   max=fit_dct['p_up'][i])
+        
 
     gmake_pformat(fit_dct)    
     
@@ -49,6 +58,7 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
     fit_dct['nthreads']=1
     fit_dct['outfolder']=opt_dct['outdir']
     fit_dct['p_info']=parinfo
+    fit_dct['p_lmfit_params']=params
     
     if  not os.path.exists(fit_dct['outfolder']):
         os.makedirs(fit_dct['outfolder'])
@@ -70,21 +80,28 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
     
     return fit_dct
 
-def gmake_mpfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
+def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     """
     calling amoeba
     """
 
-    pprint.pprint(fit_dct['p_info'])
-    p_mpfit=mpfit(gmake_model_mpfit_wdev,fit_dct['p_start'],
-                  parinfo=fit_dct['p_info'],
-                  gtol=1e-10,xtol=1e-10,ftol=1e-10,damp=0.0,
-                  functkw={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
-                  maxiter=nstep)
-    print(fit_dct['p_start'])
-    print(p_mpfit)
+#     pprint.pprint(fit_dct['p_info'])
+#     p_mpfit=mpfit(gmake_model_wdev,fit_dct['p_start'],
+#                   parinfo=fit_dct['p_info'],
+#                   gtol=1e-10,xtol=1e-10,ftol=1e-10,damp=0.0,
+#                   functkw={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
+#                   maxiter=nstep)
+#     print(fit_dct['p_start'])
+#     print(p_mpfit)
 
-    fit_dct['p_mpfit']=p_mpfit
+    #"""
+    out = minimize(gmake_model_lmfit_wdev,fit_dct['p_lmfit_params'],
+                   kws={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},calc_covar=True,
+                   #method='leastsq'
+                   method='nelder',options={'maxiter':10,'disp':True})
+    pprint.pprint(out)
+    #fit_dct['p_m']=p_mpfit
     
-    np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
+    #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
     #gmake_dct2fits(p_amoeba,outname=fit_dct['outfolder']+'/mpfit_chain')
+    #"""

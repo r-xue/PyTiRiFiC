@@ -169,7 +169,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     the likelihood function
     """
     
-    blobs={'lnprob':0.0,'chisq':0.0,'ndata':0.0,'npar':len(theta)}
+    blobs={'lnprob':0.0,'chisq':0.0,'ndata':0.0,'npar':len(theta),'wdev':np.array([])}
      
     inp_dct0=deepcopy(inp_dct)
     for ind in range(len(fit_dct['p_name'])):
@@ -246,10 +246,12 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         lnl1=np.sum( (imtmp)**2/sigma2 )
         lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
         lnl=-0.5*(lnl1+lnl2)
+        wdev=imtmp/np.sqrt(sigma2)
         
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
         blobs['ndata']+=(np.shape(sp))[0]
+        blobs['wdev']=np.append(blobs['wdev'],wdev)
         
     if  savemodel!='':
         print('export set:')
@@ -341,6 +343,116 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
     
     return lp+lnl,blobs        
 
+
+def gmake_model_chisq(theta,
+                      fit_dct=None,inp_dct=None,dat_dct=None,
+                      savemodel='',
+                      verbose=False):
+    """
+    this is the evaluating function for amoeba 
+    """
+
+    if  verbose==True:
+        start_time = time.time()
+        
+    lp = gmake_model_lnprior(theta,fit_dct)
+    if  lp!=0:
+        lp=+np.inf
+    if  not np.isfinite(lp):
+        blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+        #return +np.inf,blobs
+        return +np.inf
+    
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    
+    if  verbose==True:
+        print("try ->",theta)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+    
+    chisq=blobs['chisq'].copy()
+    #return lp+chisq,blobs
+    return lp+chisq       
+
+
+def gmake_model_mpfit_wdev(theta,
+                     fjac=None, x=None, y=None, err=None,
+                     fit_dct=None,inp_dct=None,dat_dct=None,
+                     savemodel='',
+                     verbose=False):
+    """
+    this is the evaluating function for mpfit
+    return weighted deviations:
+        http://cars9.uchicago.edu/software/python/mpfit.html
+        or
+        from mgefit
+    """
+
+    status=0
+    if  verbose==True:
+        start_time = time.time()
+        
+    lp = gmake_model_lnprior(theta,fit_dct)
+    if  lp!=0:
+        lp=+np.inf
+#     if  not np.isfinite(lp):
+#         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+#         #return +np.inf,blobs
+#         return +np.inf
+    
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    
+    if  verbose==True:
+        print("try ->",theta)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+    
+    wdev=blobs['wdev'].flatten().copy()
+    #print(np.sum(wdev**2.0),len(wdev))
+    #print(type(wdev[0]))
+    #print(wdev)
+    #print(wdev)
+    return wdev       
+
+
+def gmake_model_lmfit_wdev(params,
+                     fjac=None, x=None, y=None, err=None,
+                     fit_dct=None,inp_dct=None,dat_dct=None,
+                     savemodel='',
+                     verbose=False):
+    """
+    this is the evaluating function for mpfit
+    return weighted deviations:
+        http://cars9.uchicago.edu/software/python/mpfit.html
+        or
+        from mgefit
+    """
+    theta=np.array([])
+    for key in params:
+        theta=np.append(theta,params[key].value)
+    #print(theta)
+    status=0
+    if  verbose==True:
+        start_time = time.time()
+        
+    lp = gmake_model_lnprior(theta,fit_dct)
+    if  lp!=0:
+        lp=+np.inf
+#     if  not np.isfinite(lp):
+#         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+#         #return +np.inf,blobs
+#         return +np.inf
+    
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    
+    if  verbose==True:
+        print("try ->",theta)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+    
+    wdev=blobs['wdev'].flatten().copy()
+    print(np.sum(wdev**2.0),len(wdev))
+    #print(type(wdev[0]))
+    #print(wdev)
+    #print(wdev)
+    return wdev       
 
 if  __name__=="__main__":
     

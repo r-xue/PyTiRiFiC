@@ -42,105 +42,66 @@ execfile('/Users/Rui/Dropbox/Worklib/projects/rx-recipe/nrao/alma_imager.py')
 #plotuv_freqtime_amp(vis='uid___A001_X12b_X23c_target.ms',spw=['0','1','2','3'])
 #plotuv_freqtime_amp(vis='uid___A001_X12b_X23c_target.ms',spw=['0','1','2','3'],xaxis='time')
 
-"""
-
+#"""
 niter_list=[0,10000]
 imsize=[1280,1280]
 
 
-threshold_list=list(np.array([0.,2.])*2.94183e-05)
-imagename_list=['bx610.bb1_msc_ro1_pm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='0:249.188425~251.0087375GHz',field='BX610',datacolumn='data',
-            imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
-            start='',width='',nchan=-1,
-            deconvolver='mtmfs',specmode='mfs',scales=[0,5],
-            weighting='briggs',robust=1.0,
-            threshold=threshold_list,usemask='pb',pbmask=0.2,niter=niter_list,
-            runexport=True)
-# 
-threshold_list=list(np.array([0.,2.])*3.27551e-05)
-imagename_list=['bx610.bb2_msc_ro1_pm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',field='BX610',datacolumn='data',
-            imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
-            start='',width='',nchan=-1,
-            deconvolver='mtmfs',specmode='mfs',scales=[0,5],
-            weighting='briggs',robust=1.0,
-            threshold=threshold_list,usemask='pb',pbmask=0.2,niter=niter_list,
-            runexport=True)
- 
-threshold_list=list(np.array([0.,2.])*2.64528e-05)
-imagename_list=['bx610.bb3_msc_ro1_pm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='2:233.2859375~233.722GHz;234.538~235.10625GHz',field='BX610',datacolumn='data',
-            imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
-            start='',width='',nchan=-1,
-            deconvolver='mtmfs',specmode='mfs',scales=[0,5],
-            weighting='briggs',robust=1.0,
-            threshold=threshold_list,usemask='pb',pbmask=0.2,niter=niter_list,
-            runexport=True)
- 
-threshold_list=list(np.array([0.,2.])*2.47293e-05)
-imagename_list=['bx610.bb4_msc_ro1_pm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='3:234.9859375~236.80625GHz',field='BX610',datacolumn='data',
-            imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
-            start='',width='',nchan=-1,
-            deconvolver='mtmfs',specmode='mfs',scales=[0,5],
-            weighting='briggs',robust=1.0,
-            threshold=threshold_list,usemask='pb',pbmask=0.2,niter=niter_list,
-            runexport=True)
-"""
-
-"""
-threshold_list=list(np.array([0.,2.])*2.94183e-05)
-imagename_list=['bx610.bb1_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='0:249.188425~251.0087375GHz',field='BX610',datacolumn='data',
+threshold_list=list(np.array([0.,2.])*2.4e-05)
+imagename_list=['bx610_band4.bb1_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
+#imagename_list=imagename_list[0]
+alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
+            spw='0:152.373278~153.069GHz;153.522~154.373278GHz',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='',width='',nchan=-1,
             deconvolver='mtmfs',specmode='mfs',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*3.27551e-05)
-imagename_list=['bx610.bb2_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',field='BX610',datacolumn='data',
+threshold_list=list(np.array([0.,2.])*2.2e-05)
+imagename_list=['bx610_band4.bb2_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
+#imagename_list=imagename_list[0]
+alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
+            spw='1',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='',width='',nchan=-1,
             deconvolver='mtmfs',specmode='mfs',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*2.64528e-05)
-imagename_list=['bx610.bb3_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='2:233.2859375~233.722GHz;234.538~235.10625GHz',field='BX610',datacolumn='data',
+threshold_list=list(np.array([0.,2.])*2.3e-05)
+imagename_list=['bx610_band4.bb3_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
+#imagename_list=imagename_list[0]
+alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
+            spw='2:142.202~143.359GHz;143.835~144.202GHz',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='',width='',nchan=-1,
             deconvolver='mtmfs',specmode='mfs',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
 
-threshold_list=list(np.array([0.,2.])*2.47293e-05)
-imagename_list=['bx610.bb4_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
-alma_imager(vis='uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
-            spw='3:234.9859375~236.80625GHz',field='BX610',datacolumn='data',
+threshold_list=list(np.array([0.,2.])*2.0e-05)
+imagename_list=['bx610_band4.bb4_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
+#imagename_list=imagename_list[0]
+alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagename_list,
+            spw='3',field='BX610',datacolumn='data',
             imsize=imsize,cell='0.04arcsec',phasecenter='ICRS 23:46:09.4400 +012.49.19.300',pblimit=-0.10,
             start='',width='',nchan=-1,
             deconvolver='mtmfs',specmode='mfs',scales=[0,5],
             weighting='briggs',robust=1.0,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
+            reuse=[True,False],
             runexport=True)
-"""
-
-
 #"""
+
+
+"""
 niter_list=[0,10000]
 imsize=[1280,1280]
 
@@ -211,4 +172,4 @@ alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagena
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
-#"""            
+"""            
