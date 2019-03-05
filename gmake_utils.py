@@ -35,9 +35,28 @@ from scipy.interpolate import Rbf
 from scipy.interpolate import interpn
 from astropy.convolution import Gaussian2DKernel, interpolate_replace_nans, convolve
 
+def moments(imagename,outname='test',
+            maskname='',linechan=None):
+        
+    cube=SpectralCube.read(imagename,mode='readonly')
+            
+    if  linechan is not None:
+        subcube=cube.spectral_slab(linechan[0],linechan[1])
+    else:
+        subcube=cube
+    
+    moment_0 = subcube.moment(order=0)  
+    moment_1 = subcube.moment(order=1)  
+    moment_2 = subcube.moment(order=2)  
+    
+    moment_0.write(outname+'_mom0.fits',overwrite=True)
+    moment_1.write(outname+'_mom1.fits',overwrite=True)
+    moment_2.write(outname+'_mom2.fits',overwrite=True)
+        
 
 def imcontsub(imagename,linefile='',contfile='',
               fitorder=0,   # not implemented yet
+              verbose=False,
               linechan=None,contchan=None):
     """
     linechan / contchan: tuple with [fmin,fmax] in each element 
@@ -45,10 +64,14 @@ def imcontsub(imagename,linefile='',contfile='',
     cube=SpectralCube.read(imagename,mode='readonly')
     spectral_axis = cube.spectral_axis
     if  linechan is not None:
+        if  isinstance(linechan,tuple):
+            linechan=[linechan]
         bad_chans=[(spectral_axis > linechan0[0]) & (spectral_axis < linechan0[1])  for linechan0 in linechan]
         bad_chans=np.logical_or.reduce(bad_chans)
         good_chans=~bad_chans
     if  contchan is not None:
+        if  isinstance(contchan,tuple):
+            contchan=[contchan]        
         good_chans=[(spectral_axis > contchan0[0]) & (spectral_axis < contchan0[1])  for contchan0 in contchan]
         good_chans=np.logical_or.reduce(good_chans)
         
@@ -56,7 +79,6 @@ def imcontsub(imagename,linefile='',contfile='',
     cube_mean = masked_cube.mean(axis=0)  
     cube_imcontsub=cube-cube_mean
 
-    #cube.write('cube1.fits',overwrite=True)
     cube_imcontsub.write(linefile,overwrite=True)
     cube_mean.write(contfile,overwrite=True)
     
