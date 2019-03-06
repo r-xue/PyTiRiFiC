@@ -20,6 +20,7 @@ from yt.frontends.fits.misc import PlotWindowWCS
 from astropy.coordinates import SkyCoord
 import copy
 #from __builtin__ import False
+from astropy.stats import sigma_clipped_stats
 
 mpl.rcParams['xtick.direction'] = 'in'
 mpl.rcParams['ytick.direction'] = 'in'
@@ -330,6 +331,12 @@ def gmake_plots_mom0xy(fn):
     imodel=SpectralCube.read(fn.replace('data_','imodel_'),mode='readonly')
     imod3d=SpectralCube.read(fn.replace('data_','imod3d_'),mode='readonly')
     
+    plane0=imodel.unmasked_data[0,:,:].value
+    tmp0=np.where(plane0==np.max(plane0))
+    cxy=((list(zip(*tmp0)))[0])[::-1]
+    nxy=(plane0.shape)[::-1]
+
+    
     if  (mod3d.sum()).value==0.0:
         isline=False
     else:
@@ -337,10 +344,8 @@ def gmake_plots_mom0xy(fn):
 
     ker3d=SpectralCube.read(fn.replace('data_','kernel_'),mode='readonly')
     
-
-    
     data_m0=data.moment(order=0)
-    #data_m0.write('data_mom0.fits',overwrite=True)  
+    #data_m0.write(fn.replace('.fits','mom0test.fits'),overwrite=True)  
     
     model_m0=model.moment(order=0)
     imodel_m0=imodel.moment(order=0)
@@ -363,21 +368,25 @@ def gmake_plots_mom0xy(fn):
         
     fig=plt.figure(figsize=figsize)
     
+    w=WCS(header).celestial
+    
+    
     tmp=data_m0.array
     dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
+    rms=sigma_clipped_stats(tmp, sigma=3, maxiters=5)
+    rms=rms[2]
+    dlevels=rms*np.arange(-2-2*10,2+2*10,4)
+
+     
     vmin=np.min(tmp)
     vmax=np.max(tmp)
-    #print(vmin,vmax)
-    
-    w=WCS(header).celestial
     ax1 = fig.add_subplot(ny,nx,1, projection=w)
     ax1.imshow(tmp, interpolation='nearest',
            vmin=vmin, vmax=vmax)
     ax1.coords['ra'].set_axislabel('Right Ascension')
     ax1.coords['dec'].set_axislabel('Declination')
     cs1=ax1.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
-    #print(header['BMAJ'], header['BMIN'],header['BPA'])
-    
+    ax1.contour(tmp,levels=0,colors='gray', alpha=0.5)
     wx,wy=w.wcs_pix2world(header['NAXIS1']/8.0,header['NAXIS2']/8.0,0)
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
@@ -385,6 +394,8 @@ def gmake_plots_mom0xy(fn):
     ax1.add_patch(bshape)
     fn_basename=os.path.basename(fn)
     ax1.set_title(fn_basename)
+    ax1.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+    ax1.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
     
     tmp=model_m0.array
     ax2 = fig.add_subplot(ny,nx,2, projection=w)
@@ -392,12 +403,14 @@ def gmake_plots_mom0xy(fn):
            vmin=vmin, vmax=vmax)
     ax2.coords['dec'].set_ticklabel_visible(False)
     ax2.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+    ax2.contour(tmp,levels=0,colors='gray', alpha=0.5)
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax2.get_transform('icrs'))    
     ax2.add_patch(bshape)
     ax2.set_title('Model')
-    
+    ax2.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+    ax2.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
     
     tmp=data_m0.array-model_m0.array
     ax3 = fig.add_subplot(ny,nx,3, projection=w)
@@ -405,11 +418,14 @@ def gmake_plots_mom0xy(fn):
            vmin=vmin, vmax=vmax)
     ax3.coords['dec'].set_ticklabel_visible(False)
     ax3.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+    ax3.contour(tmp,levels=0,colors='gray', alpha=0.5)
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax3.get_transform('icrs'))            
     ax3.add_patch(bshape)
     ax3.set_title('Residual')
+    ax3.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+    ax3.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
 
     tmp_psf=ker3d_m0.array
     dlevels_psf=np.linspace(np.min(tmp_psf),np.max(tmp_psf),12)
@@ -421,27 +437,33 @@ def gmake_plots_mom0xy(fn):
     ax4.coords['dec'].set_ticklabel_visible(False)
     ax4.contour(tmp_psf,levels=dlevels_psf,colors='white', alpha=0.5)
     ax4.contour(tmp_psf,levels=[0.5],colors='yellow', alpha=0.5)
+    ax4.contour(tmp_psf,levels=0,colors='gray', alpha=0.5)
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax4.get_transform('icrs'))                          
     ax4.add_patch(bshape)
     ax4.set_title('Kernel')
     
+    
     tmp=imodel_m0.array
-    dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
+    #imodel_m0.write(fn.replace('.fits','mom0test.fits'),overwrite=True)  
     vmin=np.min(tmp)
     vmax=np.max(tmp)
+    vmax=np.partition(tmp.flatten(), -2)[-2]
+    dlevels=np.linspace(vmin,vmax,6)
     ax5 = fig.add_subplot(ny,nx,5, projection=w)
     ax5.imshow(tmp, interpolation='nearest',
            vmin=vmin, vmax=vmax)
     ax5.coords['dec'].set_ticklabel_visible(False)
     ax5.contour(tmp,levels=dlevels,colors='white', alpha=0.5,origin='image')
-    ax5.contour(tmp,levels=[np.max(tmp)*0.1,np.max(tmp)*0.5],colors='yellow', alpha=0.5,origin='image')
+    ax5.contour(tmp,levels=[vmax*0.1,vmax*0.5],colors='yellow', alpha=0.5,origin='image')
     bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax5.get_transform('icrs'))                          
     ax5.add_patch(bshape)
-    ax5.set_title('iModel')    
+    ax5.set_title('iModel')
+    ax5.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+    ax5.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")    
 
     tmp=data_m0.array-mod2d_m0.array
     dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
@@ -488,7 +510,7 @@ def gmake_plots_mom0xy(fn):
     
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.98,top=0.95)
     
-    odir='gmake_plots_mom0xy'
+    odir=os.path.dirname(fn)+'/gmake_plots_mom0xy'
     if not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+'.pdf')   
@@ -551,22 +573,28 @@ if  __name__=="__main__":
     #"""
     cen1='icrs; circle(356.53932576899575,12.822017913507711,1.00") # text={cen1}'
     cen2='icrs; circle(356.53932576899575,12.822017913507711,0.05") # text={cen2}'
-    slice1='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",135) # text={slice1}'
-    slice2='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",45)  # text={slice2}'
+    #pa=-40 for the disk
+    slice1='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",140) # text={slice1}'
+    slice2='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",40)  # text={slice2}'
     rois=[cen1,cen2,slice1,slice2]
     
     bbs=['bb1','bb2','bb3','bb4']
-    #bbs=['bb2']
+    bbs=['bb1','bb4']
 
-    fn_name_tmp='./data_bx610.bbx.cube64x64.iterx.image.fits'
+    #fn_name_tmp='./data_bx610.bbx.cube128x128_ro0.iterx.image.fits'
+    fn_name_tmp='bx610xy_nas_nc_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
+    fn_name_tmp='bx610xy_nas_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
+    fn_name_tmp='bx610xy_nas_nc_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    fn_name_tmp='bx610xy_nas_nc_cm128mfs_bb14_amoeba/p_best/data_bx610.bbx.mfs128x128.itern.image.fits'
+    #fn_name_tmp='bx610xy_nas_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
     
     for bb in bbs:
-        fn_name=fn_name_tmp.replace('bbx',bb).replace('iterx','itern')
+        fn_name=fn_name_tmp.replace('bbx',bb)
         
         #"""
         for roi in rois:
             print('plots_spec1d: ',fn_name)
-            gmake_plots_spec1d(fn_name,roi=roi)
+            #gmake_plots_spec1d(fn_name,roi=roi)
         #"""
         
         #"""
@@ -575,12 +603,12 @@ if  __name__=="__main__":
         #"""
 
         #"""
-        gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
-        gmake_plots_slice(fn_name,i=1)
-        gmake_plots_slice(fn_name,i=2)        
+        #gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
+        #gmake_plots_slice(fn_name,i=1)
+        #gmake_plots_slice(fn_name,i=2)        
         #"""
         #"""
-        gmake_plots_radprof(fn_name)
+        #gmake_plots_radprof(fn_name)
         #"""
 
     
