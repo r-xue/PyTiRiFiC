@@ -91,9 +91,13 @@ def gmake_model_api(mod_dct,dat_dct,
             
             if  'disk2d' in obj['method'].lower():
                 #test_time = time.time()
+                pintflux=0.0
+                if  'pintflux' in obj:
+                    pintflux=obj['pintflux'].copy()
                 imodel=gmake_model_disk2d(models['header@'+image],obj['xypos'][0],obj['xypos'][1],
                                          r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
+                                         pintflux=pintflux,
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
                 #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
                 #print(imodel.shape)
@@ -169,7 +173,13 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     the likelihood function
     """
     
-    blobs={'lnprob':0.0,'chisq':0.0,'ndata':0.0,'npar':len(theta),'wdev':np.array([])}
+    blobs={'lnprob':0.0,
+           'chisq':0.0,
+           'ndata':0.0,
+           'ndata_all':0.0,
+           'npar':len(theta),
+           'wdev':np.array([]),
+           'wdev_all':np.array([])}
      
     inp_dct0=deepcopy(inp_dct)
     for ind in range(len(fit_dct['p_name'])):
@@ -247,11 +257,14 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
         lnl=-0.5*(lnl1+lnl2)
         wdev=imtmp/np.sqrt(sigma2)
+        wdev_all=(im-mo)/em
         
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
         blobs['ndata']+=(np.shape(sp))[0]
         blobs['wdev']=np.append(blobs['wdev'],wdev)
+        blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
+        blobs['ndata_all']+=len(wdev_all)
         
     if  savemodel!='':
         print('export set:')
@@ -370,6 +383,8 @@ def gmake_model_chisq(theta,
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
     chisq=blobs['chisq'].copy()
+    chisq=np.sum((blobs['wdev_all'])**2)
+    
     #return lp+chisq,blobs
     return lp+chisq       
 
