@@ -87,7 +87,7 @@ def gmake_amoeba_analyze(outfolder,
     p_lo=fit_dct['p_lo']
     p_up=fit_dct['p_up']
     p_start=fit_dct['p_start']
-    
+    p_format=fit_dct['p_format']
     
     chi2=t['chi2'].data[0]
     pars=t['pars'].data[0]
@@ -95,6 +95,16 @@ def gmake_amoeba_analyze(outfolder,
     
     ndim=(pars.shape)[0]
     niter=(pars.shape)[1]
+    
+    
+    #####################
+    
+    
+    for index  in range(len(p_name)):
+        
+        print((p_name[index]+" = {0:"+p_format[index]+"}").\
+              format( p_best[index]))        
+    
     
     
     #   PLOT PARAMETERS

@@ -22,6 +22,14 @@ import copy
 #from __builtin__ import False
 from astropy.stats import sigma_clipped_stats
 
+execfile('gmake_model_func.py')
+execfile('gmake_model.py')
+execfile('gmake_utils.py')
+execfile('gmake_emcee.py')
+execfile('gmake_amoeba.py')
+execfile('gmake_mpfit.py')
+execfile('gmake_lmfit.py')
+
 mpl.rcParams['xtick.direction'] = 'in'
 mpl.rcParams['ytick.direction'] = 'in'
 mpl.rcParams.update({'font.size': 12})
@@ -139,7 +147,7 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     vname=''
     if  'text={' in roi:
         vname='_'+(roi.split("text={"))[1].replace("}",'')
-    odir='gmake_plots_spec1d'
+    odir=os.path.dirname(fn)+'/gmake_plots_spec1d'
     if not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf')    
@@ -188,34 +196,37 @@ def gmake_plots_yt3d(fn,roi='icrs; circle(356.5393156, 12.8220309, 1")'):
     """
     
     
-def gmake_plots_makeslice(fn,width=1.0,length=2.5,pa=-45):
+def gmake_plots_makeslice(fn,
+                          radec=[356.53932576899575,12.822017913507711],
+                          linechan=None,
+                          width=1.0,length=2.5,pa=-45):
     
      #path1 = Path([(0., 0.), (62., 62.)],width=10.0)
      #slice1 = extract_pv_slice(array, path1) 
-     
-     radec=[356.53932576899575,12.822017913507711]
+
 
      pa=-45
-     
      radec=SkyCoord(radec[0],radec[1],unit="deg",frame='icrs')
-     cube = SpectralCube.read(fn)
+     data = SpectralCube.read(fn)
      mod2d=SpectralCube.read(fn.replace('data_','cmod2d_'),mode='readonly')
      mod3d=SpectralCube.read(fn.replace('data_','cmod3d_'),mode='readonly')
      model=SpectralCube.read(fn.replace('data_','cmodel_'),mode='readonly')
      imodel=SpectralCube.read(fn.replace('data_','imodel_'),mode='readonly')
      imod3d=SpectralCube.read(fn.replace('data_','imod3d_'),mode='readonly')
-     cube_contsub=cube-mod2d
+     if  linechan is not None:
+         data_line = SpectralCube.read(fn.replace('data_','data_line_'),mode='readonly')
      
      for i in [1,2]:
          path = PathFromCenter(center=radec,
                             length=length*u.arcsec,
                             angle=(pa+float(i-1)*90.) * u.deg,
                             width=width*u.arcsec)
-         slice = extract_pv_slice(cube, path)
+         slice = extract_pv_slice(data, path)
          slice.writeto(fn.replace('data_','data_slice'+str(i)+'_'),overwrite=True)
 
-         slice = extract_pv_slice(cube_contsub, path)
-         slice.writeto(fn.replace('data_','data_contsub_slice'+str(i)+'_'),overwrite=True)
+         if  linechan is not None:
+             slice = extract_pv_slice(data_line, path)
+             slice.writeto(fn.replace('data_','data_line_slice'+str(i)+'_'),overwrite=True)
          
          slice = extract_pv_slice(mod3d, path)
          slice.writeto(fn.replace('data_','cmod3d_slice'+str(i)+'_'),overwrite=True)
@@ -287,7 +298,7 @@ def gmake_plots_slice(fn,i=1):
     
     if  isline==True:
         ax5 = fig.add_subplot(ny,nx,5)
-        data5,header=fits.getdata(fn.replace('data_','data_contsub_slice'+str(i)+'_'),header=True,memmap=False) 
+        data5,header=fits.getdata(fn.replace('data_','data_line_slice'+str(i)+'_'),header=True,memmap=False) 
         ax5.imshow(data5, interpolation='nearest',
                    vmin=np.min(data1), vmax=np.max(data1),aspect=0.25)
         ax5.set_title('Data/Line')
@@ -312,15 +323,19 @@ def gmake_plots_slice(fn,i=1):
     out_basename=os.path.basename(fn.replace('data_','data_slice'+str(i)+'_'))
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.95,top=0.95)
 
-    odir='gmake_plots_slice'
+    odir=os.path.dirname(fn)+'/gmake_plots_slice'
     if not os.path.exists(odir):
         os.makedirs(odir)          
     fig.savefig(odir+'/'+out_basename.replace('.fits','')+'.pdf')   
     plt.close() 
 
     
-def gmake_plots_mom0xy(fn):
+def gmake_plots_mom0xy(fn,linechan=None):
 
+
+    dirname=os.path.dirname(fn)
+    #mod_dct=np.load(dirname+'/mod_dct.npy').item()
+    #print(mod_dct.keys())
     header=fits.getheader(fn)
     ppbeam=calc_ppbeam(header)
     
@@ -329,6 +344,7 @@ def gmake_plots_mom0xy(fn):
     mod2d=SpectralCube.read(fn.replace('data_','cmod2d_'),mode='readonly')
     mod3d=SpectralCube.read(fn.replace('data_','cmod3d_'),mode='readonly')
     imodel=SpectralCube.read(fn.replace('data_','imodel_'),mode='readonly')
+    imod2d=SpectralCube.read(fn.replace('data_','imod2d_'),mode='readonly')
     imod3d=SpectralCube.read(fn.replace('data_','imod3d_'),mode='readonly')
     
     plane0=imodel.unmasked_data[0,:,:].value
@@ -358,12 +374,12 @@ def gmake_plots_mom0xy(fn):
 
     plt.clf()
     if  isline==True:
-        figsize=(20,8)
-        nx=5
-        ny=2
+        figsize=(24,12)
+        nx=6
+        ny=3
     else:
-        figsize=(20,4)
-        nx=5
+        figsize=(24,4)
+        nx=6
         ny=1
         
     fig=plt.figure(figsize=figsize)
@@ -375,7 +391,7 @@ def gmake_plots_mom0xy(fn):
     dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
     rms=sigma_clipped_stats(tmp, sigma=3, maxiters=5)
     rms=rms[2]
-    dlevels=rms*np.arange(-2-2*10,2+2*10,4)
+    dlevels=rms*np.arange(-3-3*10,3+3*10,6)
 
      
     vmin=np.min(tmp)
@@ -472,38 +488,161 @@ def gmake_plots_mom0xy(fn):
     
     if  isline==True:
         
-        ax4 = fig.add_subplot(ny,nx,6, projection=w)
+        imcontsub(fn,
+                  linefile=fn.replace('data_','data_line_'),
+                  contfile=fn.replace('data_','data_cont_'),
+                  linechan=linechan)
+        data_line=SpectralCube.read(fn.replace('data_','data_line_'),mode='readonly')
+        data_line_m0=data_line.moment(order=0)
+        tmp=data_line_m0.array
+        dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
+        vmin=np.min(tmp)
+        vmax=np.max(tmp)
+        
+        ### LINE
+        
+        dlevels=rms*np.arange(-3-3*10,3+3*10,6)
+        ax4 = fig.add_subplot(ny,nx,1+6, projection=w)
         ax4.imshow(tmp, interpolation='nearest',
                vmin=vmin, vmax=vmax)
         ax4.coords['dec'].set_ticklabel_visible(False)
         ax4.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax4.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax4.get_transform('icrs'))                          
+        ax4.add_patch(bshape)        
         ax4.set_title('Data/Line')
+        ax4.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax4.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")           
+        
         
         tmp=model_m0.array-mod2d_m0.array
-        ax5 = fig.add_subplot(ny,nx,7, projection=w)
+        ax5 = fig.add_subplot(ny,nx,2+6, projection=w)
         ax5.imshow(tmp, interpolation='nearest',
                vmin=vmin, vmax=vmax)
         ax5.coords['dec'].set_ticklabel_visible(False)
         ax5.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax5.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax5.get_transform('icrs'))                          
+        ax5.add_patch(bshape)
         ax5.set_title('Model/Line')
+        ax5.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax5.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
+            
         
-        tmp=data_m0.array-mod2d_m0.array-(model_m0.array-mod2d_m0.array)
-        ax6 = fig.add_subplot(ny,nx,8, projection=w)
+        tmp=data_line_m0.array-(model_m0.array-mod2d_m0.array)
+        ax6 = fig.add_subplot(ny,nx,3+6, projection=w)
         ax6.imshow(tmp, interpolation='nearest',
                vmin=vmin, vmax=vmax)
         ax6.coords['dec'].set_ticklabel_visible(False)
         ax6.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax6.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax6.get_transform('icrs'))                          
+        ax6.add_patch(bshape)        
         ax6.set_title('Residual')
+        ax6.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax6.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
         
         tmp=imod3d_m0.array
-        dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
-        ax10 = fig.add_subplot(ny,nx,10, projection=w)
+        vmin=np.min(tmp)
+        vmax=np.max(tmp)
+        vmax=np.partition(tmp.flatten(), -2)[-2]
+    
+        dlevels=np.linspace(vmin,vmax,6)
+        ax10 = fig.add_subplot(ny,nx,5+6, projection=w)
         ax10.imshow(tmp, interpolation='nearest',
-               vmin=np.min(tmp), vmax=np.max(tmp))
+               vmin=vmin, vmax=vmax)
         ax10.coords['dec'].set_ticklabel_visible(False)
         ax10.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
-        ax10.contour(tmp,levels=[np.max(tmp)*0.1,np.max(tmp)*0.5],colors='yellow', alpha=0.5)
-        ax10.set_title('Model/Line')    
+        ax10.contour(tmp,levels=[vmax*0.1,vmax*0.5],colors='yellow', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax10.get_transform('icrs'))                          
+        ax10.add_patch(bshape)
+        ax10.set_title('Model/Line') 
+        ax10.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax10.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
+        
+        
+        ### CONT
+        
+        data_cont=fits.getdata(fn.replace('data_','data_cont_'))
+        tmp=data_cont.copy()
+        dlevels=np.linspace(np.min(tmp),np.max(tmp),12)
+        vmin=np.min(tmp)
+        vmax=np.max(tmp)
+        
+        dlevels=rms*np.arange(-3-3*10,3+3*10,6)
+        ax11 = fig.add_subplot(ny,nx,1+12, projection=w)
+        ax11.imshow(tmp, interpolation='nearest',
+               vmin=vmin, vmax=vmax)
+        ax11.coords['dec'].set_ticklabel_visible(False)
+        ax11.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax11.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax11.get_transform('icrs'))                          
+        ax11.add_patch(bshape)        
+        ax11.set_title('Data/Line')
+        ax11.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax11.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")           
+        
+        
+        tmp=(mod2d.mean(axis=0)).array
+        ax12 = fig.add_subplot(ny,nx,2+12, projection=w)
+        ax12.imshow(tmp, interpolation='nearest',
+               vmin=vmin, vmax=vmax)
+        ax12.coords['dec'].set_ticklabel_visible(False)
+        ax12.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax12.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax12.get_transform('icrs'))                          
+        ax12.add_patch(bshape)
+        ax12.set_title('Model/Line')
+        ax12.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax12.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
+            
+        
+        tmp=data_cont-tmp
+        ax13 = fig.add_subplot(ny,nx,3+12, projection=w)
+        ax13.imshow(tmp, interpolation='nearest',
+               vmin=vmin, vmax=vmax)
+        ax13.coords['dec'].set_ticklabel_visible(False)
+        ax13.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax13.contour(tmp,levels=0,colors='gray', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax13.get_transform('icrs'))                          
+        ax13.add_patch(bshape)        
+        ax13.set_title('Residual')
+        ax13.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax13.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
+        
+        tmp=(imod2d.mean(axis=0)).array
+        vmin=np.min(tmp)
+        vmax=np.max(tmp)
+        vmax=np.partition(tmp.flatten(), -2)[-2]
+    
+        dlevels=np.linspace(vmin,vmax,6)
+        ax14 = fig.add_subplot(ny,nx,5+12, projection=w)
+        ax14.imshow(tmp, interpolation='nearest',
+               vmin=vmin, vmax=vmax)
+        ax14.coords['dec'].set_ticklabel_visible(False)
+        ax14.contour(tmp,levels=dlevels,colors='white', alpha=0.5)
+        ax14.contour(tmp,levels=[vmax*0.1,vmax*0.5],colors='yellow', alpha=0.5)
+        bshape=mpl.patches.Ellipse((wx,wy), header['BMIN'], header['BMAJ'], angle=-header['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax14.get_transform('icrs'))                          
+        ax14.add_patch(bshape)
+        ax14.set_title('Model/Line') 
+        ax14.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
+        ax14.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")                              
 
     #fig.tight_layout()
     
@@ -562,7 +701,7 @@ def gmake_plots_radprof(fn):
             ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
             ax1.set_ylabel('Vrot/Vdis [km/s]')
             
-        odir='gmake_plots_radprof'
+        odir=os.path.dirname(fn)+'/gmake_plots_radprof'
         if not os.path.exists(odir):
             os.makedirs(odir)   
             
@@ -571,44 +710,73 @@ def gmake_plots_radprof(fn):
 if  __name__=="__main__":
     
     #"""
-    cen1='icrs; circle(356.53932576899575,12.822017913507711,1.00") # text={cen1}'
-    cen2='icrs; circle(356.53932576899575,12.822017913507711,0.05") # text={cen2}'
+    cen1='icrs; circle( 356.5393256478768,12.82201783168984,1.00") # text={cen1}'
+    cen2='icrs; circle( 356.5393256478768,12.82201783168984,0.20") # text={cen2}'
     #pa=-40 for the disk
-    slice1='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",140) # text={slice1}'
-    slice2='icrs; box(356.53932576899575,12.822017913507711,0.20",0.75",40)  # text={slice2}'
+    pa=-52
+    slice1='icrs; box( 356.5393256478768,12.82201783168984,0.20",0.75",128) # text={slice1}'
+    slice2='icrs; box( 356.5393256478768,12.82201783168984,0.20",0.75",38)  # text={slice2}'
     rois=[cen1,cen2,slice1,slice2]
     
     bbs=['bb1','bb2','bb3','bb4']
     bbs=['bb1','bb4']
 
     #fn_name_tmp='./data_bx610.bbx.cube128x128_ro0.iterx.image.fits'
-    fn_name_tmp='bx610xy_nas_nc_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_nc_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
     fn_name_tmp='bx610xy_nas_nc_cm128mfs_bb14_amoeba/p_best/data_bx610.bbx.mfs128x128.itern.image.fits'
-    #fn_name_tmp='bx610xy_nas_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    fn_name_tmp='bx610xy_nas_nc_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
+    fn_name_tmp='bx610xy_nas_nc_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    
+    
+    fn_name_tmp='bx610xy_nas_cm128mfs_bb14_amoeba/p_best/data_bx610.bbx.mfs128x128.itern.image.fits'
+    fn_name_tmp='bx610xy_nas_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
+    fn_name_tmp='bx610xy_nas_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    
+    #bbs=['bb1','bb4']
+    #fn_name_tmp='bx610xy_nas_dm128_b1234_amoeba/p_best/data_bx610.bbx.mfs128x128.iter0.image.fits'
+    bbs=['bb2','bb3']
+    fn_name_tmp='bx610xy_nas_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    
+    #bbs=['bb1','bb3']
+    #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'    
+    #bbs=['bb1','bb3']
+    #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
     
     for bb in bbs:
+        
         fn_name=fn_name_tmp.replace('bbx',bb)
+        linechan=None
+        if  bb=='bb2' and 'band4' not in fn_name:
+            linechan=[(250.964*u.GHz,251.448*u.GHz),(251.847*u.GHz,252.246*u.GHz)]
+        if  bb=='bb3' and 'band4' not in fn_name:
+            linechan=(233.918*u.GHz,234.379*u.GHz)       
+            
+        if  bb=='bb1' and 'band4' in fn_name:
+            linechan=(153.069*u.GHz,153.522*u.GHz)
+        if  bb=='bb3' and 'band4' in fn_name:
+            linechan=(143.359*u.GHz,143.835*u.GHz)
+                                
         
         #"""
         for roi in rois:
             print('plots_spec1d: ',fn_name)
-            #gmake_plots_spec1d(fn_name,roi=roi)
+            gmake_plots_spec1d(fn_name,roi=roi)
         #"""
         
         #"""
         print('plots_mom0xy: ',fn_name)
-        gmake_plots_mom0xy(fn_name)
+        gmake_plots_mom0xy(fn_name,linechan=linechan)
         #"""
 
-        #"""
-        #gmake_plots_makeslice(fn_name,width=2.0,pa=-45)
-        #gmake_plots_slice(fn_name,i=1)
+        #"""        
+        gmake_plots_makeslice(fn_name,
+                              radec=[356.5393256478768,12.82201783168984],
+                              width=0.5,length=2.5,pa=-52,linechan=linechan)
+        gmake_plots_slice(fn_name,i=1)
         #gmake_plots_slice(fn_name,i=2)        
         #"""
+        
         #"""
-        #gmake_plots_radprof(fn_name)
+        gmake_plots_radprof(fn_name)
         #"""
 
     

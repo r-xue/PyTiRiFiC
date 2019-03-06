@@ -45,7 +45,7 @@ def gmake_model_api(mod_dct,dat_dct,
         after splitting line & cont models:
             --- apicall   : 0.84662  seconds ---
     """
-    models={}
+    models={'mod_dct':mod_dct.copy()}
     
     if  verbose==True:
         start_time = time.time()
@@ -93,7 +93,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 #test_time = time.time()
                 pintflux=0.0
                 if  'pintflux' in obj:
-                    pintflux=obj['pintflux'].copy()
+                    pintflux=obj['pintflux']
                 imodel=gmake_model_disk2d(models['header@'+image],obj['xypos'][0],obj['xypos'][1],
                                          r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
@@ -201,7 +201,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                            decomp=False,verbose=False)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
-     
+    
     
     for key in models.keys(): 
         
@@ -320,7 +320,7 @@ def gmake_model_export(models,outdir='./'):
                 outname=outname.replace('@','_')
                 gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
 
-
+    np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
 
 def gmake_model_lnprior(theta,fit_dct):
     """
