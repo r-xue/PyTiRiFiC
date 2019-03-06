@@ -473,7 +473,7 @@ def gmake_read_data(inp_dct,verbose=False,
                 dat_dct['psf@'+im_list[ind]]=data
                 if  verbose==True:
                     print('loading: '+pf_list[ind]+' to ')
-                    print('mask@'+im_list[ind])                    
+                    print('psf@'+im_list[ind])                    
                         
     if  fill_mask==True or fill_error==True:
 
