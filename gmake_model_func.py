@@ -20,6 +20,7 @@ import scipy.stats
 
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
+                       pintflux=0.0,pra=None,pdec=None,
                        intflux=1.,restfreq=235.0,alpha=3.0):
     """
     
@@ -36,6 +37,8 @@ def gmake_model_disk2d(header,ra,dec,
         intflux:   Jy
         restfreq:  GHz
         alpha:     
+        
+        co-centeral point souce: pintflux=0.0
         
         the header is assumed to be ra-dec-freq-stokes
     
@@ -80,11 +83,18 @@ def gmake_model_disk2d(header,ra,dec,
     
     #start_time = time.time()
     intflux_z=(wz/1e9/restfreq)**alpha*intflux
+    if  pintflux!=0.0:
+        pintflux_z=(wz/1e9/restfreq)**alpha*pintflux
     #start_time = time.time()
     model=np.empty((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     #model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
     for i in range(header['NAXIS3']):
         model[0,i,:,:]=intflux_z[i]*model2d
+        #print(int(np.round(py)))
+        #print(int(np.round(px)))
+        #print(round(py),round(px[0]))
+        if  pintflux!=0.0:
+            model[0,i,int(np.round(py)),int(np.round(px))]+=pintflux_z[i]
     #print("--- %s seconds ---" % (time.time() - start_time))    
     #model_test=np.array([ map(lambda v : v*model2d, range(header['NAXIS3'])) ])
     #print("--- %s seconds ---" % (time.time() - start_time))
@@ -150,16 +160,16 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     if  'diskthick' in obj:
         diskThick=obj['diskthick']
     
-    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    # Randomly generate the radii of clouds based on the distribution given by the brightness profile
     pdf_x=abs(sbRad)
     pdf_y=sbProf*2.*np.pi*abs(sbRad)
     r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0])
 
-    #Generates a random phase around the galaxy's axis for each cloud (with the Fourier Models)
-    fm_m = 2 if ('fm_m' not in obj) else obj['fm_m']
-    fm_frac = 0. if ('fm_frac' not in obj) else obj['fm_frac']
-    fm_pa = 0. if ('fm_pa' not in obj) else obj['fm_pa']
-    print(fm_m,fm_frac,fm_pa)
+    # Generates a random phase around the galaxy's axis for each cloud 
+    # with the Fourier Models (not the same as the xy-transform in galfit)
+    fm_m=2. if ('fm_m' not in obj) else obj['fm_m']
+    fm_frac=0. if ('fm_frac' not in obj) else obj['fm_frac']
+    fm_pa=0. if ('fm_pa' not in obj) else obj['fm_pa']
     # in this case, cdf can be analystically written out easily
     if  fm_frac!=0.0:
         nres=10000.   # good enough
@@ -170,8 +180,32 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
         rng2=np.random.RandomState(seed[1])
         phi = rng2.random_sample(nSamps) * 2 * np.pi
         
+    # Generate the GE effect
+    ge_pa=0. if ('ge_pa' not in obj) else obj['ge_pa']
+    ge_q=0. if ('ge_q' not in obj) else obj['ge_q']
+
+    if  ge_q!=0.:
+        phi=phi-np.deg2rad(ge_pa)
+        r_flat=r_flat*np.sqrt((np.cos(phi)**2.+np.sin(phi)**2.0/ge_q**2.0))
+        phi=np.arctan2(np.sin(phi)/ge_q,np.cos(phi))+np.deg2rad(ge_pa)
+    
+    """
+    # CoordRot - Hyperbolic
+    #phi_out=1.0
+    #phi=
+    #cr_alpha=0.0
+    #r_in=1.0
+    #r_out=2.0
+    #theta_out=200.0
+    
+    #phi_offset=theta_out*cr_tanh(r_flat,r_in=r_in,r_out=r_out,theta_out=theta_out)\
+    #           *(0.5*(r_flat/r_out+1.))**cr_alpha
+    #phi=np.deg2rad(phi_offset)+phi
+    """
+
+        
     # Find the thickness of the disk at the radius of each cloud
-    if isinstance(diskThick, (list, tuple, np.ndarray)):
+    if  isinstance(diskThick, (list, tuple, np.ndarray)):
         interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
         diskThick_here = interpfunc2(r_flat)
     else:
@@ -187,11 +221,17 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
     yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
     
+    
+    #transform transform
+ 
+    
     #Generates the output array
     inClouds = np.empty((nSamps,3))
     inClouds[:,0] = xPos
     inClouds[:,1] = yPos
-    inClouds[:,2] = zPos                                                          
+    inClouds[:,2] = zPos
+    
+                                                              
     
     
     #return something could be useful
