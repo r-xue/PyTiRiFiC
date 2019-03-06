@@ -1,33 +1,37 @@
-PRO HZDYN_BX610_SUBREG_2015
+PRO HZDYN_BX610_SUBREG_2015_ALL
+
 
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
+repo='/Volumes/D1/projects/hzdyn/2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b/imaging/'
+itype='cube'
+;itype='mfs'
+iter='itern'
+iter='iter0'
+tag='64x64'
+nxy=64
+HZDYN_BX610_SUBREG_2015,repo,itype,iter,tag,nxy
+HZDYN_BX610_SUBREG_2015_MASK,itype,iter,tag
+HZDYN_BX610_SUBREG_2015_HEXSAMPLE,itype,iter,tag
 
+END
 
-;input=[ 'uid___A001_X2fe_X20f.BX610_sci.spw25.cube.I.pbcor.fits',$
-;        'uid___A001_X2fe_X20f.BX610_sci.spw27.cube.I.pbcor.fits',$
-;        'uid___A001_X2fe_X20f.BX610_sci.spw29.cube.I.pbcor.fits',$
-;        'uid___A001_X2fe_X20f.BX610_sci.spw31.cube.I.pbcor.fits']
-;output_tag=['spw25','spw27','spw29','spw31']
-;
+PRO HZDYN_BX610_SUBREG_2015,repo,itype,iter,tag,nxy
+
+;repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 ;for i=0,n_elements(input)-1 do begin
 ;    im=readfits(export_dir+input[i],hd)
 ;    hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.53929,12.822]
 ;    writefits,'bx610_'+output_tag[i]+'.fits',subim,subhd
 ;endfor
 
-repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
-repo='/Volumes/D1/projects/hzdyn/2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b/imaging/'
-;itype='cube'
-itype='mfs'
 
-tag=''
-tag='64x64'
-;tag='64x64_ro0'
-iter='itern'
-
-input_temp='*bbx*ro1_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
-input_temp='*bbx*nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
-output_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
+if  itype eq 'cube' then begin
+    input_temp='*bbx*ro1_nm.'+itype+'/bx610.'+iter+'.image.fits.gz'
+endif
+if  itype eq 'mfs' then begin
+    input_temp='*bbx*ro1_nm.'+itype+'/bx610.'+iter+'.image.tt0.fits.gz'
+endif
+output_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
@@ -35,7 +39,7 @@ for i=0,3 do begin
     
     ;hextractx,im,hd,subim,subhd,[-1.,1.]*2.0,[-1.,1.]*2.0,radec=[356.5393354,12.8220249]
     adxy,hd,356.5393354,12.8220249,xc,yc
-    hextract3d,im,hd,subim,subhd,[xc-32,xc+31,yc-32,yc+31]
+    hextract3d,im,hd,subim,subhd,[xc-nxy/2,xc+nxy/2-1,yc-nxy/2,yc+nxy/2-1]
    
     output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
     writefits,output,subim,subhd
@@ -51,7 +55,7 @@ for i=0,3 do begin
     ind = ARRAY_INDICES(im, loc)
     ;hsize=52
     ;hextract3d,im,hd,subim,subhd,[ind[0]-hsize,ind[0]+hsize,ind[1]-hsize,ind[1]+hsize]
-    hextract3d,im,hd,subim,subhd,[ind[0]-32,ind[0]+31,ind[1]-32,ind[1]+31]
+    hextract3d,im,hd,subim,subhd,[ind[0]-nxy/2,ind[0]+nxy/2-1,ind[1]-nxy/2,ind[1]+nxy/2-1]
     
     output=repstr(output_temp,'bbx','bb'+strtrim(i+1,2))
     output=repstr(output,'.image.','.psf.')
@@ -60,21 +64,17 @@ endfor
 
 END
 
-PRO HZDYN_BX610_SUBREG_2015_MASK
+PRO HZDYN_BX610_SUBREG_2015_MASK,itype,iter,tag
 
-itype='cube'
-tag='64x64'
-;tag='64x64_ro0'
-iter='iter0'
-iter='itern'
-itype='mfs'
-input_temp='bx610_band4.bbx.'+itype+tag+'.'+iter+'.image.fits'
+
+input_temp='bx610.bbx.'+itype+tag+'.'+iter+'.image.fits'
 
 for i=0,3 do begin
     input=repstr(input_temp,'bbx','bb'+strtrim(i+1,2))
     im=readfits(input,hd)
     mk=im*0.0
-    mk[(32-16):(32+16),(32-16):(32+16),*]=1.0
+    ;mk[(64-32):(64+32),(64-32):(64+32),*]=1.0
+    mk[*,*,*]=1.0
     writefits,repstr(input,'.image','.mask'),mk,hd
     unc=im*0.0
     unc=unc+robust_sigma(im)
@@ -83,21 +83,19 @@ endfor
 
 END
 
-PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE
+PRO HZDYN_BX610_SUBREG_2015_HEXSAMPLE,itype,iter,tag
 
 ;hexsample_bx610,'bx610_spw27',356.53929,12.822,xlimit=[33.-10.,60.+10.],ylimit=[40.-10.,64.+10.]
 
-itype='cube'
-itype='mfs'
-tag='64x64'
-;tag='64x64_ro0'
-xlimit0=[32.-18,32.+18]
-ylimit0=[32.-18,32.+18]
-iter='itern'
-hexsample_bx610,'bx610_band4.bb1.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610_band4.bb2.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610_band4.bb3.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
-hexsample_bx610,'bx610_band4.bb4.'+itype+tag+'.'+iter,356.5393354,12.8220249,xlimit=xlimit0,ylimit=ylimit0
+;tag='128x128'
+;tag='128x128_ro0'
+;xlimit0=[32.-18,32.+18]
+;ylimit0=[32.-18,32.+18]
+
+hexsample_bx610,'bx610.bb1.'+itype+tag+'.'+iter,356.5393354,12.8220249;,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb2.'+itype+tag+'.'+iter,356.5393354,12.8220249;,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb3.'+itype+tag+'.'+iter,356.5393354,12.8220249;,xlimit=xlimit0,ylimit=ylimit0
+hexsample_bx610,'bx610.bb4.'+itype+tag+'.'+iter,356.5393354,12.8220249;,xlimit=xlimit0,ylimit=ylimit0
 
 END
 
@@ -164,5 +162,71 @@ endfor
 print,'npix:',total(imhex)
 
 writefits,prefix+'.hex_im.fits',imhex,hd
+
+END
+
+PRO HZDYN_BX610_SUBREG_2015_MOM0
+
+;   working in alma/band4 dir
+pickband='band4'
+nline=2
+;   working in alma/band6 dir
+;pickband='band6'
+;nline=3
+;   band 4 
+
+for ind=0,nline-1 do begin
+
+if  pickband eq 'band4' and ind eq 0 then begin
+filename='bb1_line.fits'
+errname='bx610.bb1.cube64x64.itern.unc.fits'
+basename='ci10'
+smopar0=0.5
+vrange=[153.069*1e6,153.522*1e6]
+endif
+
+if  pickband eq 'band4' and ind eq 0 then begin
+filename='bb3_line.fits'
+errname='bx610.bb3.cube64x64.itern.unc.fits'
+basename='co43'
+smopar0=0.5
+vrange=[143.359*1e6,143.835*1e6]
+endif
+
+;   band 6
+
+if  pickband eq 'band6' and ind eq 0 then begin
+filename='bb2_line.fits'
+errname='bx610.bb2.cube64x64.itern.unc.fits'
+basename='co76'
+smopar0=0.3
+vrange=[250.964*1e6,251.448*1e6]
+endif
+
+if  pickband eq 'band6' and ind eq 1 then begin
+filename='bb2_line.fits'
+errname='bx610.bb2.cube64x64.itern.unc.fits'
+basename='ci21'
+smopar0=0.3
+vrange=[251.847*1e6,252.246*1e6]
+endif
+
+if  pickband eq 'band6' and ind eq 2 then begin
+filename='bb3_line.fits'
+errname='bx610.bb3.cube64x64.itern.unc.fits'
+basename='h2o'
+smopar0=0.4
+vrange=[233.918*1e6,234.379*1e6]
+endif
+
+makemom,filename,$
+    errfile=errname,$
+    ;maskfile=repstr(filename,'.image','.pbmask0p12'),$
+    ;xyrange=[194,360,168,345],$
+    baseroot='moms/'+basename,smopar=[smopar0,7800.0*0.0],$
+    thresh=4.0,edge=2.0,/pvmom0,/dorms,vrange=vrange
+pltmom_pv,'moms/'+basename,label={tl:basename},pratio=0.5
+
+endfor
 
 END
