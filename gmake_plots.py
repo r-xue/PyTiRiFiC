@@ -77,6 +77,7 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     imodel=SpectralCube.read(fn.replace('data_','imodel_'),mode='readonly')
     mod2d=SpectralCube.read(fn.replace('data_','cmod2d_'),mode='readonly')
 
+    
     subdata=data.subcube_from_ds9region(roi) 
     subdata_1d=subdata.sum(axis=(1,2))
     data_1d=data.sum(axis=(1,2))
@@ -94,6 +95,8 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     mod2d_1d=mod2d.sum(axis=(1,2))    
     
     freq=(data.spectral_axis/1e9).value
+    if  len(freq)==1:
+        return 
     
     plt.clf()
     hratio=2.00
@@ -147,14 +150,15 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     vname=''
     if  'text={' in roi:
         vname='_'+(roi.split("text={"))[1].replace("}",'')
-    odir=os.path.dirname(fn)+'/gmake_plots_spec1d'
+    odir=os.path.dirname(fn)+'/pls_spec1d'
     if not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf')    
 
     plt.close()
     
-    
+    return 
+
 def gmake_plots_yt3d(fn,roi='icrs; circle(356.5393156, 12.8220309, 1")'):
     
     ds=yt.load(fn)
@@ -249,6 +253,9 @@ def gmake_plots_slice(fn,i=1):
 
     fn_basename=os.path.basename(fn)
     header=fits.getheader(fn.replace('data_','data_slice'+str(i)+'_'))
+    if  header['NAXIS2']==1:
+        return
+
     
     data3d=fits.getdata(fn.replace('data_','cmod3d_slice'+str(i)+'_'))
     if  data3d.sum()==0:
@@ -323,11 +330,13 @@ def gmake_plots_slice(fn,i=1):
     out_basename=os.path.basename(fn.replace('data_','data_slice'+str(i)+'_'))
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.95,top=0.95)
 
-    odir=os.path.dirname(fn)+'/gmake_plots_slice'
+    odir=os.path.dirname(fn)+'/pls_slice'
     if not os.path.exists(odir):
         os.makedirs(odir)          
     fig.savefig(odir+'/'+out_basename.replace('.fits','')+'.pdf')   
     plt.close() 
+    
+    return
 
     
 def gmake_plots_mom0xy(fn,linechan=None):
@@ -649,7 +658,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
     
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.98,top=0.95)
     
-    odir=os.path.dirname(fn)+'/gmake_plots_mom0xy'
+    odir=os.path.dirname(fn)+'/pls_mom0xy'
     if not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+'.pdf')   
@@ -701,7 +710,7 @@ def gmake_plots_radprof(fn):
             ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
             ax1.set_ylabel('Vrot/Vdis [km/s]')
             
-        odir=os.path.dirname(fn)+'/gmake_plots_radprof'
+        odir=os.path.dirname(fn)+'/pls_radprof'
         if not os.path.exists(odir):
             os.makedirs(odir)   
             
@@ -738,21 +747,22 @@ if  __name__=="__main__":
     
     #bbs=['bb1','bb3']
     #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'    
-    #bbs=['bb1','bb3']
-    #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
+    bbs=['bb1','bb2','bb3','bb4']
+    bbs=['bb3']
+    fn_name_tmp='bx610xy_b4_dm128_amoeba/p_fits/data_bbx.fits'
     
     for bb in bbs:
         
         fn_name=fn_name_tmp.replace('bbx',bb)
         linechan=None
-        if  bb=='bb2' and 'band4' not in fn_name:
+        if  bb=='bb2' and 'b4' not in fn_name:
             linechan=[(250.964*u.GHz,251.448*u.GHz),(251.847*u.GHz,252.246*u.GHz)]
-        if  bb=='bb3' and 'band4' not in fn_name:
+        if  bb=='bb3' and 'b4' not in fn_name:
             linechan=(233.918*u.GHz,234.379*u.GHz)       
             
-        if  bb=='bb1' and 'band4' in fn_name:
+        if  bb=='bb1' and 'b4' in fn_name:
             linechan=(153.069*u.GHz,153.522*u.GHz)
-        if  bb=='bb3' and 'band4' in fn_name:
+        if  bb=='bb3' and 'b4' in fn_name:
             linechan=(143.359*u.GHz,143.835*u.GHz)
                                 
         
