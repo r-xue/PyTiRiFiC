@@ -104,3 +104,5 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + add options for sherpa
 + plot band4->band8 cont flux model
 + verify the flux units Jy*km/s
++ generate intrinsic face-on / sky-on mom0/mom1/mom2 maps
++ build the code around a "gmake" class

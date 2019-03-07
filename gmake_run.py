@@ -6,6 +6,7 @@ execfile('gmake_emcee.py')
 execfile('gmake_amoeba.py')
 execfile('gmake_mpfit.py')
 execfile('gmake_lmfit.py')
+execfile('gmake_gravity.py')
 execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
 
 if  __name__=="__main__":
@@ -24,11 +25,14 @@ if  __name__=="__main__":
     version='bx610xy_nas_dm128_b1234_amoeba'
     version='bx610xy_band4_dm64_b1234_amoeba'
     
-    version=outfolder='bx610xy_b4_dm128_amoeba'
+    version='xyb4dm128ab'
+    version='xyb6dm128ab'
+    version='xyb4dm128ab_rc'
     inp_dct=gmake_read_inp('examples/bx610/'+version+'.inp',verbose=False)
-    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
-    #fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
-    #gmake_fit_iterate(fit_dct,sampler,nstep=500)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
+    gmake_fit_iterate(fit_dct,sampler,nstep=500)
+    outfolder='examples/bx610/models/'+version
     gmake_fit_analyze(outfolder,burnin=350)  
        
 

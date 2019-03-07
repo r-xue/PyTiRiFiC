@@ -36,11 +36,11 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
     fit_dct['nthreads']=1   #multiprocessing.cpu_count()
-    fit_dct['nwalkers']=opt_dct['nwalkers']
+    #fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=opt_dct['outdir']
     
-    print('nwalkers:',fit_dct['nwalkers'])
-    print('nthreads:',fit_dct['nthreads'])
+    #print('nwalkers:',fit_dct['nwalkers'])
+    #print('nthreads:',fit_dct['nthreads'])
     print('ndim:    ',fit_dct['ndim'])    
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)

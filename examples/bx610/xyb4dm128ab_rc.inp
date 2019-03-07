@@ -1,0 +1,197 @@
+################################################################################
+@changelog
+################################################################################
+
+this part will not be skipped by gmake_readpars()
+
+################################################################################
+@comments
+################################################################################
+
+this part will not be skipped by gmake_readpars()
+tips:
+    keyword values need to be in the Python syntax, i.e. put quote around the 
+    variable you would like to let the program to interpret.
+    
+################################################################################
+@ignore
+################################################################################
+
+this part will not be skipped by gmake_readpars()
+tips:
+    keyword values need to be in the Python syntax, i.e. put quote around the 
+    variable you would like to let the program to interpret.    
+
+################################################################################
+@co43                                   # object id (per feature per component)
+################################################################################
+
+name            'bx610-co43'            # something meaningful to you
+note            'co43 of BX610 in BB2'
+
+#   data description
+image           'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.image.fits'       # data cube
+error           'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.unc.fits'   # error cube
+#mask           'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.mask.fits'  # mask cube (value=1 for chi^2)
+mask            'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_im.fits'  # mask cube (value=1 for chi^2)
+sample          'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_tb.fits'
+psf             'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits'  
+                                        # FITS table (sample.sp_index: indices of sampling)
+samp            None                    # sampling index table
+bmaj            None                    # bmaj
+bmin            None                    # bmin
+bpa             None                    # bpa
+
+#   model geometry
+type            'linedisk'                  # model type
+xypos           [356.53932000434867,12.82202169962633]      # [degree/degree] (IRCS)
+z               2.21                    # optical convention
+pa              -62.0                   # [degree] north up / counterclockwise
+inc             40.0                    # [degree] inclination
+
+#   emissivity/kinematics
+restfreq        461.0407682               # GHz
+vsys            102.0                     # [km/s] [optical convention]
+radi            [0,0.12,0.24,0.36,0.48]
+vrot            [0.,220.,220.,220.,220.]
+intflux          1.4170                      # Jy/km/s
+sbser           [0.1599,1.]                    # exp profile : scale-length
+vdis            20
+ge_pa           90.0
+ge_q             2.0
+
+#   modeling algorithm
+method          'kinmspy'                   # underline algorithm
+
+################################################################################
+@ci10                                   # object id (per feature per component)
+################################################################################
+
+name            'bx610-ci10'            # something meaningful to you
+note            'CI21 of BX610 in BB2'
+
+#   data description
+image           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.image.fits'       # data cube
+error           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.unc.fits'   # error cube
+#mask           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.mask.fits'  # mask cube (value=1 for chi^2)
+mask            'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_im.fits'  # mask cube (value=1 for chi^2)
+sample          'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_tb.fits'
+psf             'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.psf.fits'
+                                        # FITS table (sample.sp_index: indices of sampling)
+samp            None                    # sampling index table
+bmaj            None                    # bmaj
+bmin            None                    # bmin
+bpa             None                    # bpa
+
+#   model geometry
+type            'type@co43'             # model type
+xypos           'xypos@co43'            # [degree/degree]
+z               'z@co43'                # optical convention
+pa              'pa@co43'               # [degree] north up / counterclockwise
+inc             'inc@co43'              # [degree] inclination
+ge_pa           'ge_pa@co43'
+ge_q             2.0
+
+#   emissivity/kinematics
+restfreq        492.160651                # GHz
+vsys            'vsys@co43'             # [km/s] [optical convetion]
+radi            'radi@co43'
+vrot            'vrot@co43'
+intflux         0.3956                     # Jy/km/s
+sbser           [ 0.1594,1.]                     # exp profile : scale-length
+vdis            'vdis@co43'
+
+#   modeling algorithm
+method          'kinmspy'               # underline algorithm
+
+################################################################################
+@cont                                   # object id (per feature per component)
+################################################################################
+
+name            'bx610-cont'            # something meaningful to you
+note            'submm cont of BX610 in BB1/2/3/4'
+
+#   data description
+image           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.image.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.image.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.image.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.image.fits'
+error           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.unc.fits'
+mask            'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.hex_im.fits'
+sample          'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.hex_tb.fits'
+psf             'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.psf.fits' 
+ 
+                                        # psf file (otherwise using header info)
+bmaj            None                    # bmaj
+bmin            None                    # bmin
+bpa             None                    # bpa
+
+#   model geometry
+type            'contdisk'              # model type
+xypos           'xypos@co43'            # [degree/degree]
+z               'z@co43'                # optical convention
+pa              10               # [degree] north up / counterclockwise
+inc             20              # [degree] inclination
+
+#   emissivity/kinematics
+#   the continuum model is described by a reference frequency / intensity / slope
+#   in the rest frame.
+intflux         1.76e-4                  # Jy
+sbser           [0.12,1.0]               # sersic profile
+restfreq        147.0                   # GHz
+alpha           3.60                     # spectral index s_nu ~ nu^alpha
+
+#   modeling algorithm
+method          'disk2d'               # underline algorithm
+
+################################################################################
+@rc                                   # object id (per feature per component)
+#   used to generate the physically-motivated RC
+#   this will overwrite 
+################################################################################
+
+disk_sd         5e8                 #  msun/kpc^2.0
+disk_rs         1.2                 #  kpc 
+#halo_ms         5e10                #  msun
+#halo_a          100.0                #  kpc
+#halo_conv         4.0                #  
+halo_mvir         0.1                # 10.^12 msun
+
+
+################################################################################
+@optimize								# optimization setup
+#	key/min/max, etc.
+################################################################################
+
+xypos[0]@co43	  356.539321-3./3600.  356.539321+3./3600.     1./3600./100.0
+xypos[1]@co43	  12.8220179445-1./3600.  12.8220179445+1./3600.     1./3600./100.0
+vsys@co43		    -120.		            +280.               20.
+# note: we tie vrot[1:4] as a single free parameter here; vrot[0] is fixed to 0 still.
+#vrot[1:5]@co43	0.		              +800.               10.
+
+vdis@co43	    0.		              +800.               10.
+
+pa@co43         -61.-80                -61.+80                4.
+inc@co43        5.                    85.                4.
+
+intflux@co43   0.1                  200.0              0.1
+sbser[0]@co43     0.01                   1.0              0.01
+ge_pa@co43           90.0-90.0           90.0+90.0           89.
+ge_q@co43            1.0                 10.0                5
+
+intflux@ci10   0.1                  200.0              0.1
+sbser[0]@ci10     0.01                   1.0              0.01
+#ge_pa@ci10           90.0-90.0           90.0+90.0           89.
+ge_q@ci10            1.0                 10.0                5
+
+
+intflux@cont    0.1e-4                100.e-3             0.1e-3
+sbser[0]@cont     0.01                   1.0              0.01
+alpha@cont        -1.0                  6.0               0.10 
+pa@cont         8-60                 8+60                50
+inc@cont        0                    45.                 30
+
+disk_sd@rc      1e5                 1e10                1e9
+disk_rs@rc      0.4                 5                   5
+halo_mvir@rc    0.01                100                 10
+
+method          'amoeba'
+shortname       ['bx610.','cube128x128.','iter0.','mfs128x128.','image.']
+outdir         'examples/bx610/models/xyb4dm128ab_bc'

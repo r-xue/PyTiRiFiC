@@ -163,7 +163,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     # Randomly generate the radii of clouds based on the distribution given by the brightness profile
     pdf_x=abs(sbRad)
     pdf_y=sbProf*2.*np.pi*abs(sbRad)
-    r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0])
+    r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0],size=int(nSamps))
 
     # Generates a random phase around the galaxy's axis for each cloud 
     # with the Fourier Models (not the same as the xy-transform in galfit)
@@ -181,10 +181,11 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
         phi = rng2.random_sample(nSamps) * 2 * np.pi
         
     # Generate the GE effect
+    # GE: q=maj/min
     ge_pa=0. if ('ge_pa' not in obj) else obj['ge_pa']
-    ge_q=0. if ('ge_q' not in obj) else obj['ge_q']
+    ge_q=1. if ('ge_q' not in obj) else obj['ge_q']
 
-    if  ge_q!=0.:
+    if  ge_q>1.:
         phi=phi-np.deg2rad(ge_pa)
         r_flat=r_flat*np.sqrt((np.cos(phi)**2.+np.sin(phi)**2.0/ge_q**2.0))
         phi=np.arctan2(np.sin(phi)/ge_q,np.cos(phi))+np.deg2rad(ge_pa)
@@ -246,6 +247,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
 
 
 def gmake_model_kinmspy(header,obj,
+                        nsamps=100000,
                         decomp=False,
                         verbose=False):
     """
@@ -317,11 +319,11 @@ def gmake_model_kinmspy(header,obj,
     ikind='cubic'  # bad for extraplate
     #ikind='quadratic' #
 
-    if_vrot=interp1d(np.array(obj['radi']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
-    if_vdis=interp1d(np.array(obj['radi']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
+    if_vrot=interp1d(np.array(obj['velrad']),np.array(obj['velprof']),kind=ikind,bounds_error=False,fill_value=(obj['velprof'][0],obj['velprof'][-1]))
+    #if_vdis=interp1d(np.array(obj['velrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
     velprof=if_vrot(velrad)
-    gassigma=if_vdis(velrad)    
-    
+    #gassigma=if_vdis(velrad)    
+    gassigma=obj['vdis']
     """
     #   same as above
     if_vrot=interpolate.UnivariateSpline(np.array(obj['radi']),np.array(obj['vrot']),s=1.0,ext=3)
@@ -336,10 +338,10 @@ def gmake_model_kinmspy(header,obj,
     
     ####################
     
-    xs=np.max(velrad)*1.0*2.0
-    ys=np.max(velrad)*1.0*2.0
+    xs=np.max(velrad)*1.2*2.0
+    ys=np.max(velrad)*1.2*2.0
     vs=np.max(velprof*np.abs(np.sin(np.deg2rad(obj['inc'])))+3.0*gassigma)
-    vs=vs*1.0*2.
+    vs=vs*1.2*2.
 
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     
@@ -357,7 +359,7 @@ def gmake_model_kinmspy(header,obj,
     #start_time = time.time()
 
     fixseed = np.random.randint(0,100,4)
-    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=100000)
+    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=nsamps)
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
@@ -366,9 +368,10 @@ def gmake_model_kinmspy(header,obj,
                #sbProf=sbprof,sbRad=sbrad,
                inClouds=inclouds,
                velRad=velrad,velProf=velprof,
-               ra=obj['xypos'][0],dec=obj['xypos'][1],
+               #ra=obj['xypos'][0],dec=obj['xypos'][1],
                restFreq=obj['restfreq'],vSys=obj['vsys'],
                phaseCen=phasecen,vOffset=voffset,
+               #phaseCen=[0,0],vOffset=0,
                fixSeed=False,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
@@ -389,13 +392,13 @@ def gmake_model_kinmspy(header,obj,
     
     model_prof['velrad']=velrad.copy()
     model_prof['velprof']=velprof.copy()
-    model_prof['gassigma']=gassigma.copy()
+    model_prof['gassigma']=gassigma
     
-    model_prof['sbrad_node']=obj['radi'].copy()
+    #model_prof['sbrad_node']=obj['radi'].copy()
     #model_prof['sbprof_node']=obj['radi'].copy()
-    model_prof['velrad_node']=obj['radi'].copy()
-    model_prof['velprof_node']=obj['vrot'].copy()
-    model_prof['gassigma_node']=obj['vdis'].copy()    
+    model_prof['velrad_node']=obj['velrad'].copy()
+    model_prof['velprof_node']=obj['velprof'].copy()
+    model_prof['gassigma_node']=obj['velprof']*0.0+obj['vdis']    
     
     return model,model_prof
 

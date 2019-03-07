@@ -16,11 +16,76 @@ import scipy.integrate
 import astropy.units as u
 from tqdm import tqdm as tqdm
 import scipy.stats
+from spectral_cube import SpectralCube
+
+import gala.integrate as gi
+import gala.dynamics as gd
+import gala.potential as gp
+from gala.units import galactic
+from gala.potential.scf import compute_coeffs, compute_coeffs_discrete
+
+execfile('gmake_gravity.py')
+
+def density_func_flat(x, y, z):
+    
+    r=np.sqrt(x**2 + y**2)
+    den=1.0*np.exp(-r/5.0)*np.exp(-(z/1.0)**2.0)
+    return den
+
+def gmake_gravity():
+
+    plt.clf()
+    fig,(ax,ax1)=plt.subplots(1,2,figsize=(8,4))
+    
+    rad=np.arange(0,40,0.1)
+    xyz=np.array([rad,np.zeros(len(rad)),np.zeros(len(rad))])
+    
+    pot_nfw = gp.NFWPotential.from_circular_velocity(v_c=200*u.km/u.s,
+                                            r_s=10.*u.kpc,
+                                            units=galactic)
+    pot_pt = gp.KeplerPotential(m=1e10*u.Msun, units=galactic)
+    
+    q=0.6
+    (S_flat, Serr_flat), _ = compute_coeffs(density_func_flat,
+                                        nmax=4, lmax=6,
+                                        M=1e14, r_s=1, S_only=True,
+                                        skip_m=True, progress=True)
+    pot_flat = gp.SCFPotential(m=1e14, r_s=10, Snlm=S_flat,units=galactic)
+    
+    
+    vrot_nfw=pot_nfw.circular_velocity((xyz*u.kpc))
+    vrot_pt=pot_pt.circular_velocity((xyz*u.kpc))
+    vrot_flat=pot_flat.circular_velocity((xyz*u.kpc))
+    
+    ax.plot(rad,vrot_nfw.value)
+    ax.plot(rad,vrot_pt.value)
+    ax.plot(rad,vrot_flat.value)
+    ax.set_xlabel('Radius [kpc]')
+    ax.set_ylabel('Vcirc [km/s]')
+    
+    cmass_nfw=pot_nfw.mass_enclosed((xyz*u.kpc))
+    cmass_pt=pot_pt.mass_enclosed((xyz*u.kpc))
+    cmass_flat=pot_flat.mass_enclosed((xyz*u.kpc))
+    
+    ax1.loglog(rad,cmass_nfw.value)
+    ax1.loglog(rad,cmass_pt.value)
+    ax1.loglog(rad,cmass_flat.value)
+    ax1.set_xlabel('M [msun]')
+    ax1.set_ylabel('Vcirc [km/s]')    
+    
+    
+    fig.savefig('test.pdf')
+    plt.close()
+
 
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
 execfile('gmake_utils.py')
 execfile('gmake_emcee.py')
+execfile('gmake_amoeba.py')
+execfile('gmake_mpfit.py')
+execfile('gmake_lmfit.py')
+execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
 
 def test_convol_offset():
     #   the same as the center method
@@ -440,31 +505,8 @@ def test_wcs2pix():
     print(xypos)
     print(px,py)
 
-def test_mcspeed():
-    
-    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
-    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
 
-
-def test_imcontsub(fn):
-    
-    cube=SpectralCube.read(fn,mode='readonly')
-    spectral_axis = cube.spectral_axis
-    good_channels=  ((spectral_axis > 250.000*u.GHz) & (spectral_axis < 250.964*u.GHz)) | \
-                    ((spectral_axis > 251.448*u.GHz) & (spectral_axis < 251.847*u.GHz)) | \
-                    ((spectral_axis > 252.246*u.GHz) & (spectral_axis < 253.000*u.GHz))
-    masked_cube = cube.with_mask(good_channels[:, np.newaxis, np.newaxis])
-    med = masked_cube.median(axis=0)
-    cube_mean = masked_cube.mean(axis=0)  
-    cube_submean=cube-cube_mean
-    cube.write('test/test_cube.fits',overwrite=True)
-    cube_submean.write('test/test_cube_submean.fits',overwrite=True)
-    cube_mean.write('test/test_cube_mean_mom0.fits',overwrite=True)
-    m0=cube_submean.moment(order=0)
-    m0.write('test/test_cube_submean_mom0.fits',overwrite=True)
-    
+        
 def test_sersic1d_sample():
     
 
@@ -988,12 +1030,132 @@ def test_sampling_cos():
     
     fig.savefig('test/test_sampling_cos.pdf')
     
+def test_cr_tanh():
+    
+    r=np.arange(0,2.,0.01)
+    tanh=cr_tanh(r,r_in=0.5,r_out=1.0,theta_out=10.0)
+    
+    fig, ax = plt.subplots(1,1,figsize=(5,5))
+    
+    ax.plot(r,tanh)
+    fig.savefig('test/test_cr_tanh.pdf')
+    print(tanh)
+
+def test_imcontsub_a(fn,choice='bb2',outdir='./'):
+    
+    cube=SpectralCube.read(fn,mode='readonly')
+    spectral_axis = cube.spectral_axis
+    if  choice=='bb2':
+        good_channels=  ((spectral_axis > 250.000*u.GHz) & (spectral_axis < 250.964*u.GHz)) | \
+                        ((spectral_axis > 251.448*u.GHz) & (spectral_axis < 251.847*u.GHz)) | \
+                        ((spectral_axis > 252.246*u.GHz) & (spectral_axis < 253.000*u.GHz))
+    if  choice=='bb3':
+        good_channels=  ((spectral_axis > 230.000*u.GHz) & (spectral_axis < 233.918*u.GHz)) | \
+                        ((spectral_axis > 234.379*u.GHz) & (spectral_axis < 238.847*u.GHz))   
+    masked_cube = cube.with_mask(good_channels[:, np.newaxis, np.newaxis])
+    med = masked_cube.median(axis=0)
+    
+    cube_mean = masked_cube.mean(axis=0)  
+    cube_submean=cube-cube_mean
+    
+    cube.write('examples/bx610/hst/'+choice+'_cube.fits',overwrite=True)
+    cube_submean.write('examples/bx610/hst/'+choice+'_line.fits',overwrite=True)
+    cube_mean.write('examples/bx610/hst/'+choice+'_cont.fits',overwrite=True)
+    
+    if  choice=='bb2':
+        sub1=cube_submean.spectral_slab(250.964*u.GHz,251.448*u.GHz)
+        m0=sub1.moment(order=0)
+        m0.write(outdir+choice+'_line_co76_mom0.fits',overwrite=True)
+        sub1=cube_submean.spectral_slab(251.847*u.GHz,252.246*u.GHz)
+        m0=sub1.moment(order=0)
+        m0.write(outdir+choice+'_line_ci21_mom0.fits',overwrite=True)
+
+    if  choice=='bb3':
+        sub1=cube_submean.spectral_slab(233.918*u.GHz,234.379*u.GHz)
+        m0=sub1.moment(order=0)
+        m0.write(outdir+choice+'_line_h2o_mom0.fits',overwrite=True)
+
+  
+def test_casa_imconstub():
+    
+    rmtables('line1.im')
+    rmtables('cont1.im')
+    imcontsub(imagename='examples/bx610/alma/bx610.bb2.cube64x64.itern.image.fits',
+              linefile='line1.im',contfile='cont1.im',
+              fitorder=1,
+              chans=('range=[250.000GHz,250.964GHz],\
+                      range=[251.448GHz,251.847GHz],\
+                      range=[252.246GHz,253.000GHz]'))
+    exportfits('line1.im','line1.fits',overwrite=True)
+    exportfits('cont1.im','cont1.fits',overwrite=True)
+    
+
+def test_mcspeed():
+    
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
+
+def test_mpfit():
+    
+    #"""
+    inp_dct=gmake_readinp('examples/bx610/bx610xy_nas_cm64_all_mpfit.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    fit_dct=gmake_mpfit_setup(inp_dct,dat_dct)
+    gmake_mpfit_iterate(fit_dct,inp_dct,dat_dct,nstep=100)
+    #"""
+    
+    """
+    outfolder='bx610xy_dm_all_emcee_test'
+    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
+    #fit_tab=Table.read(outfolder+'/'+'emcee_chain_analyzed.fits')
+    theta=fit_dct['p_amoeba']['p0']
+    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
+    print('pstart:    ',lnl,blobs)     
+    theta=fit_dct['p_amoeba']['p_best']
+    lnl,blobs=gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_best')
+    print('p_best: ',lnl,blobs)    
+    """
+def test_cloud_lineprofile():
+    
+    outfolder='bx610xy_b4_dm128_amoeba/'
+    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
+    mod_dct=np.load(outfolder+'/p_fits/mod_dct.npy').item()
+    
+    
+    #mod_dct['co43']['ge_q']=1.0
+    #pprint.pprint(mod_dct)
+    #mod_dct['co43']['vrot']=np.array([0,400,400,400,400])
+    #mod_dct['co43']['inc']=80
+    models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
+    
+    gmake_model_export(models,outdir='test_cloud',shortname=inp_dct['optimize']['shortname'])
+    
+def test_pot2rc():
+    
+    inp_dct=gmake_read_inp('examples/bx610/xyb4dm128ab_rc.inp',verbose=False)
+    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    
+    mod_dct=gmake_inp2mod(inp_dct)
+    gmake_gravity_galpy(mod_dct,plotrc=True)
+    
+    models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
+    gmake_model_export(models,outdir='test_cloud',shortname=inp_dct['optimize']['shortname'])    
     
 if  __name__=="__main__":
-    
-    #pass
 
-    #test_imcontsub('examples/bx610/bx610.bb2.cube64x64.itern.image.fits')
+    #test_cloud_lineprofile()
+    test_pot2rc()
+    pass
+
+    #test_imcontsub()
+    #test_imcontsub('examples/bx610/alma/bx610.bb3.cube64x64.itern.image.fits',choice='bb3')
+    #test_casa_imconstub()
     #test_sersic1d_sample()
     #test_gmake_model_api()
     
@@ -1007,11 +1169,16 @@ if  __name__=="__main__":
     #test_gmake_model_disk2d()
     #test_gmake_model_kinmspy()
     #models=test_gmake_model_api()
+    
+    #test_gal_flat()
+    
+    #test_cr_tanh()
+    
     #test_sampling_cos()
     
     #test_gmake_model_kimspy_inclouds()
     #test_sampling_gen()
-    test_sampling_approx()
+    #test_sampling_approx()
     
     #test_convol_offset()
     #test_sersic1d_sample()
@@ -1021,14 +1188,8 @@ if  __name__=="__main__":
     
     
     #test_mcspeed()
-
-    
-
-
-
+    #test_amoeba()
+    #test_mpfit()
+    #test_lmfit()
 
 
-
-
-
-    

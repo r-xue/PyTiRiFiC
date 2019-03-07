@@ -24,6 +24,7 @@ import mkl_fft
 #import reikna.fft
 
 def gmake_model_api(mod_dct,dat_dct,
+                    nsamps=100000,
                       decomp=False,
                       verbose=False):
     """
@@ -106,8 +107,10 @@ def gmake_model_api(mod_dct,dat_dct,
                 
 
             if  'kinmspy' in obj['method'].lower():
-                #test_time = time.time()                
-                imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj)
+                #test_time = time.time()              
+                
+                
+                imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj,nsamps=nsamps)
                 #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
                 #print(imodel.shape)
                 models['imod3d@'+image]+=imodel
@@ -193,12 +196,16 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     #gmake_listpars(inp_dct0)
     #tic0=time.time()
     mod_dct=gmake_inp2mod(inp_dct0)
+    gmake_gravity_galpy(mod_dct,plotrc=False)
     #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
     #tic0=time.time()
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
+    nsamps=100000
+    if  savemodel!='':
+        nsamps=nsamps*100
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
-                           decomp=False,verbose=False)
+                           decomp=False,verbose=False,nsamps=nsamps)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
     
@@ -266,12 +273,11 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
         blobs['ndata_all']+=len(wdev_all)
     
-    shortname=None
-    #print(inp_dct['optimize'].keys())
-    if  'shortname' in inp_dct['optimize'].keys():
-        shortname=inp_dct['optimize']['shortname']
-    #print(shortname)
     if  savemodel!='':
+        #   remove certain words from long file names 
+        shortname=None
+        if  'shortname' in inp_dct['optimize'].keys():
+            shortname=inp_dct['optimize']['shortname']
         print('export set:')
         start_time = time.time()
         gmake_model_export(models,outdir=savemodel,shortname=shortname)

@@ -553,7 +553,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax6.get_transform('icrs'))                          
         ax6.add_patch(bshape)        
-        ax6.set_title('Residual')
+        ax6.set_title('Residual/LINE')
         ax6.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
         ax6.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
         
@@ -597,7 +597,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax11.get_transform('icrs'))                          
         ax11.add_patch(bshape)        
-        ax11.set_title('Data/Line')
+        ax11.set_title('Data/CONT')
         ax11.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
         ax11.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")           
         
@@ -613,7 +613,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax12.get_transform('icrs'))                          
         ax12.add_patch(bshape)
-        ax12.set_title('Model/Line')
+        ax12.set_title('Model/CONT')
         ax12.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
         ax12.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
             
@@ -629,7 +629,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
                                edgecolor='cyan', facecolor='cyan',
                                transform=ax13.get_transform('icrs'))                          
         ax13.add_patch(bshape)        
-        ax13.set_title('Residual')
+        ax13.set_title('Residual/CONT')
         ax13.plot([cxy[0]+10,cxy[0]+25],[cxy[1],cxy[1]],color="yellow")
         ax13.plot([cxy[0],cxy[0]],[cxy[1]+10,cxy[1]+25],color="yellow")
         
@@ -705,9 +705,9 @@ def gmake_plots_radprof(fn):
             y1=t['velprof'].data[0]
             ax1.plot(x1,y1,color='blue')
             ax1.plot(t['velrad_node'].data[0],t['velprof_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
-            y1=t['gassigma'].data[0]
+            #y1=t['gassigma'].data[0]
             ax1.plot(x1,y1,color='red')
-            ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
+            #ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
             ax1.set_ylabel('Vrot/Vdis [km/s]')
             
         odir=os.path.dirname(fn)+'/pls_radprof'
@@ -748,8 +748,9 @@ if  __name__=="__main__":
     #bbs=['bb1','bb3']
     #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'    
     bbs=['bb1','bb2','bb3','bb4']
-    bbs=['bb3']
-    fn_name_tmp='bx610xy_b4_dm128_amoeba/p_fits/data_bbx.fits'
+    fn_name_tmp='examples/bx610/models/xyb4dm128ab/p_fits/data_bbx.fits'
+    fn_name_tmp='examples/bx610/models/xyb6dm128ab/p_fits/data_bbx.fits'
+    fn_name_tmp='b4cloud/data_bbx.fits'
     
     for bb in bbs:
         

@@ -248,10 +248,10 @@ def gmake_listpars(objs,showcontent=True):
 
 def gmake_inp2mod(objs):
     """
-    get ready for model constructions:
-        add the default values
-        fill optional keywords
-        fill the "tied" values
+    get ready for model constructions, including:
+        + add the default values
+        + fill optional keywords
+        + fill the "tied" values
     """
 
     for tag in objs.keys():
@@ -316,7 +316,7 @@ def make_slice(expr):
         s=int(expr.strip())
     return s
 
-def gmake_readpar(mod_dct,par_name):
+def gmake_readpar(inp_dct,par_name):
     """
     read parameter values
         key:    par_str[ind_str]@obj_str
@@ -326,14 +326,14 @@ def gmake_readpar(mod_dct,par_name):
     if  len(i_key)==0:
         p_key=po_key[0]
         o_key=po_key[1]
-        return mod_dct[o_key][p_key]
+        return inp_dct[o_key][p_key]
     else:
         p_key=(po_key[0].split("["))[0]
         o_key=po_key[1]
         i_key=i_key[0]
-        return mod_dct[o_key][p_key][make_slice(i_key)]
+        return inp_dct[o_key][p_key][make_slice(i_key)]
     
-def gmake_writepar(mod_dct,par_name,par_value):
+def gmake_writepar(inp_dct,par_name,par_value):
     """
     write parameter values
         key:    par_str[ind_str]@obj_str
@@ -355,15 +355,15 @@ def gmake_writepar(mod_dct,par_name,par_value):
     if  len(i_key)==0:
         p_key=po_key[0]
         o_key=po_key[1]
-        mod_dct[o_key][p_key]=par_value
+        inp_dct[o_key][p_key]=par_value
     else:
         p_key=(po_key[0].split("["))[0]
         o_key=po_key[1]
         i_key=i_key[0]
-        if  isinstance(mod_dct[o_key][p_key][make_slice(i_key)],list) and \
+        if  isinstance(inp_dct[o_key][p_key][make_slice(i_key)],list) and \
             not isinstance(par_value,list):
-            par_value=[par_value]*len(mod_dct[o_key][p_key][make_slice(i_key)])
-        mod_dct[o_key][p_key][make_slice(i_key)]=par_value
+            par_value=[par_value]*len(inp_dct[o_key][p_key][make_slice(i_key)])
+        inp_dct[o_key][p_key][make_slice(i_key)]=par_value
     
 def gmake_pformat(fit_dct,verbose=True):
     """
@@ -434,7 +434,7 @@ def gmake_read_data(inp_dct,verbose=False,
     if  verbose==True:
         print("+"*80)
     for tag in inp_dct.keys():
-        if  tag=='optimize':
+        if  'image' not in inp_dct[tag].keys():
             continue
         obj=inp_dct[tag]
         
