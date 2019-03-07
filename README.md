@@ -107,3 +107,5 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + generate intrinsic face-on / sky-on mom0/mom1/mom2 maps
 + build the code around a "gmake" class
 + improve the halo/disk model calculation
++ evaluate halotools
++ evaluate documentation tools
