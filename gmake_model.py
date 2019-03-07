@@ -265,11 +265,16 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         blobs['wdev']=np.append(blobs['wdev'],wdev)
         blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
         blobs['ndata_all']+=len(wdev_all)
-        
+    
+    shortname=None
+    #print(inp_dct['optimize'].keys())
+    if  'shortname' in inp_dct['optimize'].keys():
+        shortname=inp_dct['optimize']['shortname']
+    #print(shortname)
     if  savemodel!='':
         print('export set:')
         start_time = time.time()
-        gmake_model_export(models,outdir=savemodel)
+        gmake_model_export(models,outdir=savemodel,shortname=shortname)
         print("---{0:^50} : {1:<8.5f} seconds ---".format('export '+savemodel,time.time()-start_time))
 
         #"""
@@ -279,9 +284,10 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     return lnl,blobs
 
 
-def gmake_model_export(models,outdir='./'):
+def gmake_model_export(models,outdir='./',shortname=None):
     """
         export model into FITS
+        shortname:    a string list to get rid of from the original data image name
     """
     for key in list(models.keys()): 
         
@@ -290,6 +296,11 @@ def gmake_model_export(models,outdir='./'):
         
         basename=key.replace('data@','')
         basename=os.path.basename(basename)
+        if  shortname is not None:
+            for shortname0 in shortname:
+                basename=basename.replace(shortname0,'')
+        print(basename)
+        
         if  not os.path.exists(outdir):
             os.makedirs(outdir)
         versions=['data','imodel','cmodel','error','mask','kernel','psf','residual',
