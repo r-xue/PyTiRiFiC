@@ -103,3 +103,4 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + ~~merge the amoeba & mpfit & lmfit code pieces~~
 + add options for sherpa
 + plot band4->band8 cont flux model
++ verify the flux units Jy*km/s
