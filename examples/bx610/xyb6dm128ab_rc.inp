@@ -56,7 +56,7 @@ vrad            [0,0.12,0.24,0.36,0.48]
 vrot            [0.,220.,220.,220.,220.]
 intflux         1.0278                     # Jy/km/s
 sbser           [0.1599,1.]                    # exp profile : scale-length
-vdis            [20,20,20,20,20]
+vdis            20.0
 ge_pa           90.0
 ge_q             2.0
 
@@ -190,6 +190,18 @@ alpha           3.78                     # spectral index s_nu ~ nu^alpha
 #   modeling algorithm
 method          'disk2d'               # underline algorithm
 
+################################################################################
+@rc                                   # object id (per feature per component)
+#   used to generate the physically-motivated RC
+#   this will overwrite 
+################################################################################
+
+disk_sd         5e8                 #  msun/kpc^2.0
+disk_rs         1.2                 #  kpc 
+#halo_ms         5e10                #  msun
+#halo_a          100.0                #  kpc
+#halo_conv         4.0                #  
+halo_mvir         0.1                # 10.^12 msun
 
 ################################################################################
 @optimize								# optimization setup
@@ -199,8 +211,9 @@ method          'disk2d'               # underline algorithm
 
 vsys@co76		    -120.		            +280.               100.
 # note: we tie vrot[1:4] as a single free parameter here; vrot[0] is fixed to 0 still.
-vrot[1:5]@co76	0.		              +800.               300.
-vdis[0:5]@co76	0.		              +800.               80.
+#vrot[1:5]@co76	0.		              +800.               300.
+#vdis[0:5]@co76	0.		              +800.               80.
+vdis@co76	0.		              +800.               80.
 
 pa@co76         -61.-80                -61.+80                80.
 inc@co76        5.                    85.                45.
@@ -238,6 +251,11 @@ alpha@cont        3                  4.5               1.00
 pa@cont         8-60                 8+60                50
 inc@cont        0                    45.                 30
 
+disk_sd@rc      1e5                 1e10                1e9
+disk_rs@rc      0.4                 5                   5
+halo_mvir@rc    0.01                100                 10
+
+
 method          'amoeba'
 shortname       ['bx610.','cube128x128.','iter0.','mfs128x128.','image.']
-outdir         'examples/bx610/models/xyb6dm128ab'
+outdir         'examples/bx610/models/xyb6dm128ab_rc'

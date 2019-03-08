@@ -52,7 +52,7 @@ inc             40.0                    # [degree] inclination
 #   emissivity/kinematics
 restfreq        461.0407682               # GHz
 vsys            102.0                     # [km/s] [optical convention]
-radi            [0,0.12,0.24,0.36,0.48]
+vrad            [0,0.12,0.24,0.36,0.48]
 vrot            [0.,220.,220.,220.,220.]
 intflux          1.4170                      # Jy/km/s
 sbser           [0.1599,1.]                    # exp profile : scale-length
@@ -95,7 +95,7 @@ ge_q             2.0
 #   emissivity/kinematics
 restfreq        492.160651                # GHz
 vsys            'vsys@co43'             # [km/s] [optical convetion]
-radi            'radi@co43'
+vrad            'vrad@co43'
 vrot            'vrot@co43'
 intflux         0.3956                     # Jy/km/s
 sbser           [ 0.1594,1.]                     # exp profile : scale-length
@@ -194,4 +194,4 @@ halo_mvir@rc    0.01                100                 10
 
 method          'amoeba'
 shortname       ['bx610.','cube128x128.','iter0.','mfs128x128.','image.']
-outdir         'examples/bx610/models/xyb4dm128ab_bc'
+outdir         'examples/bx610/models/xyb4dm128ab_rc'

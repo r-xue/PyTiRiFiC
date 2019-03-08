@@ -49,14 +49,20 @@ z               2.21                    # optical convention
 pa              -62.0                   # [degree] north up / counterclockwise
 inc             40.0                    # [degree] inclination
 
-#   emissivity/kinematics
+#   kinematics
 restfreq        461.0407682               # GHz
 vsys            102.0                     # [km/s] [optical convention]
-radi            [0,0.12,0.24,0.36,0.48]
+
+vrad            [0,0.12,0.24,0.36,0.48]
 vrot            [0.,220.,220.,220.,220.]
+vdis            [20,20,20,20,20]
+
+#   emissivity
 intflux          1.4170                      # Jy/km/s
 sbser           [0.1599,1.]                    # exp profile : scale-length
-vdis            [20,20,20,20,20]
+sbrad_min       0.0                            # trim sb for rad<min
+sbrad_max       0.2*6                          # trim sb for rad>max (default to sbserc[0]*5.0)
+
 ge_pa           90.0
 ge_q             2.0
 
@@ -95,11 +101,15 @@ ge_q             2.0
 #   emissivity/kinematics
 restfreq        492.160651                # GHz
 vsys            'vsys@co43'             # [km/s] [optical convetion]
-radi            'radi@co43'
+
+vrad            'vrad@co43'
 vrot            'vrot@co43'
+vdis            'vdis@co43'
+
 intflux         0.3956                     # Jy/km/s
 sbser           [ 0.1594,1.]                     # exp profile : scale-length
-vdis            'vdis@co43'
+sbrad_min       'sbrad_min@co43'           # trim sb for rad<min
+sbrad_max       'sbrad_max@co43'           # trim sb for rad>max (default to sbserc[0]*5.0)
 
 #   modeling algorithm
 method          'kinmspy'               # underline algorithm
