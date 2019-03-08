@@ -1109,19 +1109,19 @@ def test_cloud_lineprofile():
 def test_pot2rc():
     
     inp_dct=gmake_read_inp('examples/bx610/xyb4dm128ab_rc.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    #dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     
     mod_dct=gmake_inp2mod(inp_dct)
-    gmake_gravity_galpy(mod_dct)
+    gmake_gravity_galpy(mod_dct,plotrc=True)
     
-    models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
-    gmake_model_export(models,outdir='b4cloud',shortname=inp_dct['optimize']['shortname'])    
+    #models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
+    #gmake_model_export(models,outdir='b4cloud',shortname=inp_dct['optimize']['shortname'])    
     
 if  __name__=="__main__":
 
     #test_cloud_lineprofile()
     test_pot2rc()
-    execfile('gmake_plots.py')
+    #execfile('gmake_plots.py')
     pass
 
     #test_imcontsub()

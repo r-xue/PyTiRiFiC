@@ -28,28 +28,29 @@ mpl.rcParams['ytick.direction'] = 'in'
 mpl.rcParams.update({'font.size': 12})
 mpl.rcParams["font.family"] = "serif"
 mpl.rcParams["image.origin"]="lower"
-
+mpl.rc('text', usetex=True)
 
 ra=356.5393232281125
 dec=12.822016207663106
 
-pa=-30
+pa=-53
 inc=30
 inc=45
 inc=60
+inc=0
 
 
-flist=['stack_f814w_drc_sci_cutout.fits',
-       'stack_f438w_drc_sci_cutout.fits',
-       'stack_f110w_drz_sci_cutout.fits',
-       'stack_f140w_drz_sci_cutout.fits',
-       'stack_f160w_drz_sci_cutout.fits',
-       'test_cube_submean_mom0.fits']
+flist=['examples/bx610/hst/stack_f814w_drc_sci_cutout.fits',
+       'examples/bx610/hst/stack_f438w_drc_sci_cutout.fits',
+       'examples/bx610/hst/stack_f110w_drz_sci_cutout.fits',
+       'examples/bx610/hst/stack_f140w_drz_sci_cutout.fits',
+       'examples/bx610/hst/stack_f160w_drz_sci_cutout.fits',
+       'examples/bx610/hst/test_cube_submean_mom0.fits']
 fname=['F814W','F438W','F110W','F140W','F160W','BB2/Line']
 
 data,header=fits.getdata(flist[0],header=True)       
-fig=plt.figure(figsize=(24,14))
-ax=fig.add_subplot(3,5,1, projection=WCS(header))
+fig=plt.figure(figsize=(24,18))
+ax=fig.add_subplot(4,5,1, projection=WCS(header))
 cx,cy=WCS(header).celestial.wcs_world2pix(ra,dec,0)
 if  inc!=0:
     data=gal_flat(data,-20.,inc,cen=(cx,cy),interp=True)
@@ -88,7 +89,7 @@ ax.add_patch(bshape)
 for i in range(1,5):
 
     data1,header1=fits.getdata(flist[i],header=True)
-    ax1=fig.add_subplot(3,5,i+1, projection=WCS(header1))
+    ax1=fig.add_subplot(4,5,i+1, projection=WCS(header1))
     cx,cy=WCS(header1).celestial.wcs_world2pix(ra,dec,0)
     if  inc!=0:
         data1=gal_flat(data1,-20.,inc,cen=(cx,cy),interp=True)    
@@ -124,17 +125,21 @@ for i in range(1,5):
                            edgecolor='yellow', facecolor='none',
                            transform=ax1.get_transform('icrs'))
     ax1.add_patch(bshape)      
+    
+    
+  
 
-flist=['bb2_line_co76_mom0.fits',
-       'bb2_line_ci21_mom0.fits',
-       'bb3_line_h2o_mom0.fits',
-       'test_cube_submean_mom0.fits']
-fname=['co76','ci21','h2o']
+flist=['examples/bx610/alma/band6/bb2_co76_mom0.fits',
+       'examples/bx610/alma/band6/bb2_ci21_mom0.fits',
+       'examples/bx610/alma/band6/bb3_h2o_mom0.fits',
+       'examples/bx610/alma/band4/bb3_co43_mom0.fits',
+       'examples/bx610/alma/band4/bb1_ci10_mom0.fits']
+fname=['CO 7-6','CI 2-1','H$_2$O','CO 4-3','CI 1-0']
 
-for i in range(3):
+for i in range(5):
 
     data1,header1=fits.getdata(flist[i],header=True)
-    ax1=fig.add_subplot(3,5,i+6, projection=WCS(header1).celestial)
+    ax1=fig.add_subplot(4,5,i+6, projection=WCS(header1).celestial)
     
     cx,cy=WCS(header1).celestial.wcs_world2pix(ra,dec,0)
     if  inc!=0:
@@ -172,18 +177,25 @@ for i in range(3):
     ax1.set_ylim(ylim1)
     ax1.set_title(fname[i]+' dp='+str(inc)+'deg'+' pa='+str(pa)+'deg')
     
+    
+    wx,wy=w1.wcs_pix2world(xlim1[0]+(xlim1[1]-xlim1[0])*0.1,ylim1[0]+(ylim1[1]-ylim1[0])*0.1,0)
+    bshape=mpl.patches.Ellipse((wx,wy), header1['BMIN'], header1['BMAJ'], angle=-header1['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax1.get_transform('icrs'))
+    ax1.add_patch(bshape)      
+    
 
-flist=['../bx610.bb3.mfs64x64.itern.image.fits',
-       '../bx610.bb4.mfs64x64.itern.image.fits',
-       '../bx610.bb1.mfs64x64.itern.image.fits',
-       '../bx610.bb2.mfs64x64.itern.image.fits']
+flist=['examples/bx610/alma/band6/bx610.bb3.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band6/bx610.bb4.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band6/bx610.bb1.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band6/bx610.bb2.mfs64x64.itern.image.fits']
 fname=['BB3','BB4','BB1','BB2']
 
 for i in range(4):
 
     data1,header1=fits.getdata(flist[i],header=True)
     data1=data1[0,0,:,:]
-    ax1=fig.add_subplot(3,5,i+6+5, projection=WCS(header1).celestial)
+    ax1=fig.add_subplot(4,5,i+6+5, projection=WCS(header1).celestial)
     cx,cy=WCS(header1).celestial.wcs_world2pix(ra,dec,0)
     if  inc!=0:
         data1=gal_flat(data1,-20.,inc,cen=(cx,cy),interp=True)    
@@ -221,7 +233,66 @@ for i in range(4):
     ax1.set_ylim(ylim1)
     ax1.set_title(fname[i]+' dp='+str(inc)+'deg'+' pa='+str(pa)+'deg')
     
+    wx,wy=w1.wcs_pix2world(xlim1[0]+(xlim1[1]-xlim1[0])*0.1,ylim1[0]+(ylim1[1]-ylim1[0])*0.1,0)
+    bshape=mpl.patches.Ellipse((wx,wy), header1['BMIN'], header1['BMAJ'], angle=-header1['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax1.get_transform('icrs'))
+    ax1.add_patch(bshape)    
     
+    
+flist=['examples/bx610/alma/band4/bx610.bb4.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band4/bx610.bb3.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band4/bx610.bb1.mfs64x64.itern.image.fits',
+       'examples/bx610/alma/band4/bx610.bb2.mfs64x64.itern.image.fits']
+fname=['BB4','BB3','BB1','BB2']
+
+for i in range(4):
+
+    data1,header1=fits.getdata(flist[i],header=True)
+    data1=data1[0,0,:,:]
+    ax1=fig.add_subplot(4,5,i+6+5+5, projection=WCS(header1).celestial)
+    cx,cy=WCS(header1).celestial.wcs_world2pix(ra,dec,0)
+    if  inc!=0:
+        data1=gal_flat(data1,-20.,inc,cen=(cx,cy),interp=True)    
+    
+    ax1.imshow(data1, interpolation='nearest',
+               vmin=np.nanmin(data1), vmax=np.nanmax(data1))
+    dlevels1=np.linspace(np.nanmin(data1),np.nanmax(data1),7)           
+    cs=ax1.contour(data1,levels=dlevels1,colors='white', alpha=0.5)
+    #cs=ax_last.contour(data1_last,levels=dlevels_last,colors='yellow', alpha=0.5)    
+    #ax1.coords.grid(color='white', ls='solid')
+
+
+    circ = mpl.patches.Circle((ra, dec), 0.5/60./60.,edgecolor='cyan', facecolor='none',
+              transform=ax1.get_transform('icrs'))
+    ax1.add_patch(circ)
+    
+    bshape=mpl.patches.Ellipse((ra,dec), 0.01/60/60, 2.0/60/60, angle=-pa, 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax1.get_transform('icrs'))
+    ax1.add_patch(bshape)
+
+    bshape=mpl.patches.Ellipse((ra,dec), 1.0/3600.0, 1.0/3600./np.cos(np.deg2rad(inc)), angle=-pa+90., 
+                               edgecolor='yellow', facecolor='none',
+                               transform=ax1.get_transform('icrs'))
+    ax1.add_patch(bshape)    
+    
+    ax1.coords[0].set_axislabel('Right Ascension (J2000)')
+    ax1.coords[1].set_axislabel('Declination (J2000)')
+    ax1.coords[0].set_major_formatter('hh:mm:ss.s')
+    ax1.coords[1].set_major_formatter('dd:mm:ss')    
+    
+    w1=WCS(header1).celestial
+    xlim1,ylim1=w1.wcs_world2pix(wxlim,wylim,0)
+    ax1.set_xlim(xlim1)
+    ax1.set_ylim(ylim1)
+    ax1.set_title(fname[i]+' dp='+str(inc)+'deg'+' pa='+str(pa)+'deg')
+    
+    wx,wy=w1.wcs_pix2world(xlim1[0]+(xlim1[1]-xlim1[0])*0.1,ylim1[0]+(ylim1[1]-ylim1[0])*0.1,0)
+    bshape=mpl.patches.Ellipse((wx,wy), header1['BMIN'], header1['BMAJ'], angle=-header1['BPA'], 
+                               edgecolor='cyan', facecolor='cyan',
+                               transform=ax1.get_transform('icrs'))
+    ax1.add_patch(bshape)            
 
 fig.subplots_adjust(left=0.08,bottom=0.08,right=0.97,top=0.97)
 #fig.tight_layout()

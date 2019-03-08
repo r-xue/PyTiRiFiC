@@ -1,55 +1,6 @@
-import glob
-from spectral_cube import SpectralCube
-from radio_beam import beam, Beam
-import matplotlib.pyplot as plt
-import matplotlib.ticker as plticker
-import matplotlib as mpl
-import numpy as np
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.table import Table
-from astropy.table import Column
-import scipy.integrate
 
-from spectral_cube import SpectralCube
-from yt.mods import ColorTransferFunction, write_bitmap
-import yt
-import astropy.units as u
-from yt.frontends.fits.misc import PlotWindowWCS
-#yt.toggle_interactivity()
-from astropy.coordinates import SkyCoord
-import copy
-#from __builtin__ import False
-from astropy.stats import sigma_clipped_stats
 
-execfile('gmake_model_func.py')
-execfile('gmake_model.py')
-execfile('gmake_utils.py')
-execfile('gmake_emcee.py')
-execfile('gmake_amoeba.py')
-execfile('gmake_mpfit.py')
-execfile('gmake_lmfit.py')
-
-mpl.rcParams['xtick.direction'] = 'in'
-mpl.rcParams['ytick.direction'] = 'in'
-mpl.rcParams.update({'font.size': 12})
-mpl.rcParams["font.family"] = "serif"
-mpl.rcParams["image.origin"]="lower"
-
-#mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-#mpl.rc('font',**{'family':'serif','serif':['Palatino']})
-#mpl.rc('text',usetex=True)
-
-import warnings
-from spectral_cube.utils import SpectralCubeWarning
-warnings.filterwarnings(action='ignore', category=SpectralCubeWarning,append=True)
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore")
-
-import aplpy
-from pvextractor import Path
-from pvextractor import extract_pv_slice
-from pvextractor import PathFromCenter
+execfile('gmake_init.py')
 
 def calc_ppbeam(header):
 
@@ -753,8 +704,12 @@ if  __name__=="__main__":
     bbs=['bb1','bb2','bb3','bb4']
     fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
     fn_name_tmp='examples/bx610/models/xyb6dm128ab/p_fits/data_bbx.fits'
+    
+    fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
+    #fn_name_tmp='examples/bx610/models/xyb4dm128ab/p_fits/data_bbx.fits'
+    
     #fn_name_tmp='b4cloud/data_bbx.fits'
-    #fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_start/data_bbx.fits'
+
     
     for bb in bbs:
         

@@ -473,6 +473,40 @@ def gmake_model_lmfit_wdev(params,
     #print(wdev)
     return wdev       
 
+
+def gmake_fit_iterate(fit_dct,sampler,nstep=100):
+    
+    if  'amoeba' in inp_dct['optimize']['method']:
+        gmake_amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+    if  'emcee' in inp_dct['optimize']['method']:
+        gmake_emcee_iterate(sampler,fit_dct,nstep=nstep)
+    if  'lmfit' in inp_dct['optimize']['method']:
+        gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)       
+
+def gmake_fit_analyze(outfolder,burnin=250):
+    
+    
+    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
+    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
+    
+    if  'amoeba' in inp_dct['optimize']['method']:
+        gmake_amoeba_analyze(outfolder,burnin=burnin)
+        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+        theta_start=fit_dct['p_amoeba']['p0']
+        theta_end=fit_dct['p_amoeba']['p_best']
+    if  'emcee' in inp_dct['optimize']['method']:
+        gmake_emcee_analyze(outfolder,burnin=burnin)
+        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+        theta_start=fit_dct['p_start']
+        theta_end=fit_dct['p_median']
+            
+    lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
+    print('p_start:    ')
+    pprint.pprint(blobs)
+    lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
+    print('p_fits: ')
+    pprint.pprint(blobs)
+
 if  __name__=="__main__":
     
     pass

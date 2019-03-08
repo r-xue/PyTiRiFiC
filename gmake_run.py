@@ -20,9 +20,9 @@ if  __name__=="__main__":
     version='bx610xy_band4_dm64_b1234_amoeba'
     
     version='xyb4dm128ab'
-    version='xyb6dm128ab'
     version='xyb4dm128ab_rc'
-    version='xyb6dm128ab_rc'
+    #version='xyb6dm128ab'
+    #version='xyb6dm128ab_rc'
     inp_dct=gmake_read_inp('examples/bx610/'+version+'.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)

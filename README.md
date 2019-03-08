@@ -88,20 +88,20 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + import MS natively
 + Add more panel models
 + fitting on ~~the robust=0 dataset~~
-+ use random process to avoid undersamping pixelization
++ ~~use random process to avoid undersamping pixelization~~
 + ~~Consider to add a "bar" or a "hole" / add assymetric cloudlets sampling in kinmspy~~
 + ~~return radial profile~~
-+ fix WCS header from KinMSpy
-+ automatically balance computing expense based on the dynamicalrange/precision requirement
++ ~~fix WCS header from KinMSpy (don't really care for our implementation)~~
++ ~~automatically balance computing expense based on the dynamicalrange/precision requirement~~
 + refit with an elliptical face-on morplogy 
-+ h-alpha ALMA/SINFONI comparison (side-by-side)
++ ~~h-alpha ALMA/SINFONI comparison (side-by-side)~~
 + ~~add CO 4-3 CI 1-0 into the fitting~~
 + add A.B.'s VLA C/D-config CO 1-0 data
 + update the manuscript
 + comparison with the "busy" fit
 + ~~Sofia / Model / gen_mask.pro For the different masking creation~~
 + ~~merge the amoeba & mpfit & lmfit code pieces~~
-+ add options for sherpa
++ ~~add options for sherpa~~
 + plot band4->band8 cont flux model
 + verify the flux units Jy*km/s
 + generate intrinsic face-on / sky-on mom0/mom1/mom2 maps
