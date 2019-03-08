@@ -160,11 +160,12 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     blobs={'lnprob':0.0,
            'chisq':0.0,
+           'chisq_all':0.0,
            'ndata':0.0,
            'ndata_all':0.0,
-           'npar':len(theta),
            'wdev':np.array([]),
-           'wdev_all':np.array([])}
+           'wdev_all':np.array([]),
+           'npar':len(theta)}
      
     inp_dct0=deepcopy(inp_dct)
     for ind in range(len(fit_dct['p_name'])):
@@ -185,7 +186,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
     nsamps=100000
     if  savemodel!='':
-        nsamps=nsamps*1
+        nsamps=nsamps*10
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
                            decomp=False,verbose=False,nsamps=nsamps)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
@@ -250,20 +251,25 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
+        blobs['chisq_all']+=np.sum(wdev_all**2.0)
         blobs['ndata']+=(np.shape(sp))[0]
+        blobs['ndata_all']+=wdev_all.size
         blobs['wdev']=np.append(blobs['wdev'],wdev)
         blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
-        blobs['ndata_all']+=len(wdev_all)
+        
     
     if  savemodel!='':
         #   remove certain words from long file names 
         shortname=None
         if  'shortname' in inp_dct['optimize'].keys():
             shortname=inp_dct['optimize']['shortname']
-        print('export set:')
+        print('+'*80)
+        print('export set: {0:^50}'.format(savemodel))
         start_time = time.time()
+        print('+'*80)
         gmake_model_export(models,outdir=savemodel,shortname=shortname)
-        print("---{0:^50} : {1:<8.5f} seconds ---".format('export '+savemodel,time.time()-start_time))
+        print('-'*80)
+        print("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
 
         #"""
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
@@ -287,7 +293,7 @@ def gmake_model_export(models,outdir='./',shortname=None):
         if  shortname is not None:
             for shortname0 in shortname:
                 basename=basename.replace(shortname0,'')
-        print(basename)
+        print('-->','data_'+basename)
         
         if  not os.path.exists(outdir):
             os.makedirs(outdir)
@@ -381,8 +387,7 @@ def gmake_model_chisq(theta,
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
-    chisq=blobs['chisq'].copy()
-    chisq=np.sum((blobs['wdev_all'])**2)
+    chisq=blobs['chisq_all'].copy()
     
     #return lp+chisq,blobs
     return lp+chisq       
@@ -462,7 +467,7 @@ def gmake_model_lmfit_wdev(params,
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
     wdev=blobs['wdev'].flatten().copy()
-    print(np.sum(wdev**2.0),len(wdev))
+    print(np.sum(wdev**2.0),wdev.size)
     #print(type(wdev[0]))
     #print(wdev)
     #print(wdev)

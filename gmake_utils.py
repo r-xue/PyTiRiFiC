@@ -533,10 +533,12 @@ def gmake_fit_analyze(outfolder,burnin=250):
         theta_end=fit_dct['p_median']
             
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
-    print('p_start:    ',lnl,blobs)
+    print('p_start:    ')
+    pprint.pprint(blobs)
     lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
-    print('p_fits: ',lnl,blobs)    
-            
+    print('p_fits: ')
+    pprint.pprint(blobs)
+    
     #if  'lmfit' in inp_dct['optimize']['method']:
     #    gmake_lmfit_analyze(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
 

@@ -676,7 +676,7 @@ def gmake_plots_radprof(fn):
     
     if  len(flist)>0:
         
-        fig=plt.figure(figsize=(8.,4.*len(flist))) 
+        fig=plt.figure(figsize=(8.,5.*len(flist))) 
         cc=0
         for fn0 in flist:
             print(fn0)
@@ -684,30 +684,35 @@ def gmake_plots_radprof(fn):
             ax = fig.add_subplot(len(flist),1,cc)
             
             t=Table.read(fn0)
-            ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black')
+            ax.plot(t['sbrad'].data[0],t['sbprof'].data[0],color='black',label='S.B. (diff)')
             ymin,ymax=ax.get_ylim()
             
             cog=scipy.integrate.cumtrapz(t['sbprof'].data[0]*2.*np.pi*t['sbrad'].data[0],t['sbrad'].data[0],initial=0.)
             cog /= np.max(cog) 
-            ax.plot(t['sbrad'].data[0],cog*ymax,linestyle='--',color='black')
+            ax.plot(t['sbrad'].data[0],cog*ymax,linestyle='--',color='black',label='S.B. (cog)')
             
             ax.set_xlim(np.min(t['sbrad'].data[0]),np.max(t['sbrad'].data[0]))
             
             ax.set_title(os.path.basename(fn0))
             ax.set_ylabel('SB')
+            
+            ax.legend(loc="upper right")
+            
             if  cc==len(flist):
                 ax.set_xlabel('Radius [arcsec]')
             
             ax1 = ax.twinx()
             x1=t['vrad'].data[0]
             y1=t['vrot'].data[0]
-            ax1.plot(x1,y1,color='blue')
-            ax1.plot(t['vrad_node'].data[0],t['vrot_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
-            #y1=t['gassigma'].data[0]
-            ax1.plot(x1,y1,color='red')
-            #ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
+            ax1.plot(x1,y1,color='blue',label='Vrot')
+            ax1.plot(t['vrad_node'].data[0],t['vrot_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none',label='Vrot-N')
+            y1=t['vdis'].data[0]
+            ax1.plot(x1,y1,color='red',label='Vdist')
+            ax1.plot(t['vrad_node'].data[0],t['vdis_node'].data[0],marker='o',linestyle='none',color='red',mfc='none',label='Vdist-N')
             ax1.set_ylabel('Vrot/Vdis [km/s]')
-            
+        
+            ax1.legend(loc="lower right")
+        
         odir=os.path.dirname(fn)+'/pls_radprof'
         if not os.path.exists(odir):
             os.makedirs(odir)   
@@ -746,10 +751,10 @@ if  __name__=="__main__":
     #bbs=['bb1','bb3']
     #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'    
     bbs=['bb1','bb2','bb3','bb4']
-    fn_name_tmp='examples/bx610/models/xyb4dm128ab/p_fits/data_bbx.fits'
+    fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
     fn_name_tmp='examples/bx610/models/xyb6dm128ab/p_fits/data_bbx.fits'
-    fn_name_tmp='b4cloud/data_bbx.fits'
-    #fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
+    #fn_name_tmp='b4cloud/data_bbx.fits'
+    #fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_start/data_bbx.fits'
     
     for bb in bbs:
         
@@ -777,13 +782,13 @@ if  __name__=="__main__":
         gmake_plots_mom0xy(fn_name,linechan=linechan)
         #"""
 
-        #"""        
+        """        
         gmake_plots_makeslice(fn_name,
                               radec=[356.5393256478768,12.82201783168984],
                               width=0.5,length=2.5,pa=-52,linechan=linechan)
         gmake_plots_slice(fn_name,i=1)
-        #gmake_plots_slice(fn_name,i=2)        
-        #"""
+        gmake_plots_slice(fn_name,i=2)        
+        """
         
         #"""
         gmake_plots_radprof(fn_name)

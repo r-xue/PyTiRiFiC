@@ -110,7 +110,7 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + evaluate halotools
 + evaluate documentation tools
 + add other fitting examples: MUSE-type cube; batch fitting stacking replacement (for extracting population average property; shared keywords)
-+ test sb_min/sb_max
++ ~~test sb_min/sb_max~~
 + test varying sersic n
-+ check rad vector
++ ~~check rad vector~~
 + galfit replacement ()

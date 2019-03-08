@@ -97,12 +97,12 @@ def gmake_amoeba_analyze(outfolder,
     
     #####################
     
-    
+    print("+"*80)
     for index  in range(len(p_name)):
         
-        print((p_name[index]+" = {0:"+p_format[index]+"}").\
-              format( p_best[index]))        
-    
+        print((p_name[index]+" = {0:"+p_format[index]+"} <<-- {1:"+p_format[index]+"}").\
+              format( p_best[index],p_start[index]))        
+    print("-"*80)
     
     
     #   PLOT PARAMETERS

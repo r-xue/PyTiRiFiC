@@ -146,7 +146,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     if  'sbrad_min' in obj:
         sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
     if  'sbrad_max' in obj:
-        sbProf[np.where(sbRad<obj['sbrad_max'])]=0.0        
+        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0        
 
     
     # Randomly generate the radii of clouds based on the distribution given by the brightness profile
@@ -311,11 +311,12 @@ def gmake_model_kinmspy(header,obj,
 
     if_vrot=interp1d(np.array(obj['vrad']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
     velprof=if_vrot(rad)
+    
     if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
         if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
         gassigma=if_vdis(rad)
     else:
-        gassigma=velprof+obj['vdis']
+        gassigma=rad*0.0+obj['vdis']
         obj['vdis']=np.array(obj['vrad'])*0.0+obj['vdis']
     """
     #   same as above
@@ -391,7 +392,7 @@ def gmake_model_kinmspy(header,obj,
     #model_prof['sbprof_node']=obj['radi'].copy()
     model_prof['vrad_node']=np.array(obj['vrad'])
     model_prof['vrot_node']=np.array(obj['vrot'])
-    model_prof['vdis_node']=np.array(obj['vrad'])*0.0+np.array(obj['vdis'])
+    model_prof['vdis_node']=np.array(obj['vdis'])
     
     return model,model_prof
 
