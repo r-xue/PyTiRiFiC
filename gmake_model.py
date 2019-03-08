@@ -1,27 +1,3 @@
-from __future__ import print_function
-from past.builtins import map
-
-import numpy as np
-from astropy.modeling.models import Sersic2D
-import matplotlib.pyplot as plt
-from astropy.wcs import WCS
-from astropy.io import fits
-from astropy.convolution import convolve_fft
-from astropy.convolution import convolve
-from astropy.convolution import discretize_model
-import pprint
-
-#   FFT related
-import scipy.fftpack 
-import pyfftw #pyfftw3 doesn't work
-#pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
-#pyfftw.interfaces.cache.enable()
-import mkl_fft
-# turn off THREADS
-#export OMP_NUM_THREADS=8
-#export MKL_NUM_THREADS=8
-
-#import reikna.fft
 
 def gmake_model_api(mod_dct,dat_dct,
                     nsamps=100000,
@@ -58,10 +34,12 @@ def gmake_model_api(mod_dct,dat_dct,
         #   skip if no "method" or the item is not a physical model
         
         obj=mod_dct[tag]
-        if  tag=='optimize':
-            continue        
+      
         if  'method' not in obj.keys():
             continue    
+        if  tag=='optimize':
+            continue        
+        
         if  verbose==True:
             print("+"*40); print('@',tag); print('method:',obj['method']) ; print("-"*40)
 
@@ -174,6 +152,10 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                          verbose=False):
     """
     the likelihood function
+    
+        step:    + fill the varying parameter into inp_dct
+                 + convert inp_dct to mod_dct
+                 + use mod_dct to regenerate RC
     """
     
     blobs={'lnprob':0.0,
@@ -203,7 +185,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
     nsamps=100000
     if  savemodel!='':
-        nsamps=nsamps*100
+        nsamps=nsamps*1
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
                            decomp=False,verbose=False,nsamps=nsamps)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
@@ -334,7 +316,7 @@ def gmake_model_export(models,outdir='./',shortname=None):
             if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
 
                 outname=prof.replace(key.replace('data@',''),'')
-                outname=outname.replace('@','_')
+                outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
                 gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
 
     np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])

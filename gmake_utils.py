@@ -1,39 +1,3 @@
-from __future__ import print_function
-
-import time
-import os
-import numpy as np
-from astropy.io import fits
-import emcee
-import uuid
-import random
-#import cPickle as pickle
-from reproject import reproject_interp
-
-import matplotlib
-#from astropy.io.fits.diff import indent
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
-import subprocess
-import corner
-from copy import deepcopy
-from astropy.io import ascii
-import fnmatch
-import pprint
-import fitsio
-import shutil
-#import commands
-import multiprocessing
-import numpy as np
-import copy
-import sys
-#import FITS_tools
-
-
-from scipy.interpolate import Rbf
-from scipy.interpolate import interpn
-from astropy.convolution import Gaussian2DKernel, interpolate_replace_nans, convolve
 
 def moments(imagename,outname='test',
             maskname='',linechan=None):

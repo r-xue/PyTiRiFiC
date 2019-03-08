@@ -51,8 +51,6 @@ from pvextractor import Path
 from pvextractor import extract_pv_slice
 from pvextractor import PathFromCenter
 
-
-
 def calc_ppbeam(header):
 
     beam_area = np.abs(header['BMAJ']*header['BMIN']*3600.**2.0)*2.*np.pi/(8.*np.log(2.))
@@ -672,7 +670,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
 
 def gmake_plots_radprof(fn):
 
-    wd=fn.replace('data','imod3d_prof*')
+    wd=fn.replace('data','imodrp*')
 
     flist=glob.glob(wd)
     
@@ -701,10 +699,10 @@ def gmake_plots_radprof(fn):
                 ax.set_xlabel('Radius [arcsec]')
             
             ax1 = ax.twinx()
-            x1=t['velrad'].data[0]
-            y1=t['velprof'].data[0]
+            x1=t['vrad'].data[0]
+            y1=t['vrot'].data[0]
             ax1.plot(x1,y1,color='blue')
-            ax1.plot(t['velrad_node'].data[0],t['velprof_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
+            ax1.plot(t['vrad_node'].data[0],t['vrot_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none')
             #y1=t['gassigma'].data[0]
             ax1.plot(x1,y1,color='red')
             #ax1.plot(t['velrad_node'].data[0],t['gassigma_node'].data[0],marker='o',linestyle='none',color='red',mfc='none')
@@ -751,6 +749,7 @@ if  __name__=="__main__":
     fn_name_tmp='examples/bx610/models/xyb4dm128ab/p_fits/data_bbx.fits'
     fn_name_tmp='examples/bx610/models/xyb6dm128ab/p_fits/data_bbx.fits'
     fn_name_tmp='b4cloud/data_bbx.fits'
+    #fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
     
     for bb in bbs:
         

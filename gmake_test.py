@@ -2,29 +2,7 @@
     used to test various functions
 """
 
-from past.builtins import execfile
-import numpy as np
-import reikna.cluda as cluda
-from reikna.cluda import any_api
-import reikna.fft as cluda_fft
-#import pyopencl as cl
-#import pyopencl.array as cla
-#import gpyfft.fft as gpyfft_fft
-from reikna.cluda import dtypes, any_api
-from reikna.core import Annotation, Type, Transformation, Parameter
-import scipy.integrate
-import astropy.units as u
-from tqdm import tqdm as tqdm
-import scipy.stats
-from spectral_cube import SpectralCube
-
-import gala.integrate as gi
-import gala.dynamics as gd
-import gala.potential as gp
-from gala.units import galactic
-from gala.potential.scf import compute_coeffs, compute_coeffs_discrete
-
-execfile('gmake_gravity.py')
+execfile('gmake_init.py')
 
 def density_func_flat(x, y, z):
     
@@ -78,14 +56,6 @@ def gmake_gravity():
     plt.close()
 
 
-execfile('gmake_model_func.py')
-execfile('gmake_model.py')
-execfile('gmake_utils.py')
-execfile('gmake_emcee.py')
-execfile('gmake_amoeba.py')
-execfile('gmake_mpfit.py')
-execfile('gmake_lmfit.py')
-execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
 
 def test_convol_offset():
     #   the same as the center method
@@ -1142,15 +1112,16 @@ def test_pot2rc():
     dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     
     mod_dct=gmake_inp2mod(inp_dct)
-    gmake_gravity_galpy(mod_dct,plotrc=True)
+    gmake_gravity_galpy(mod_dct)
     
     models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
-    gmake_model_export(models,outdir='test_cloud',shortname=inp_dct['optimize']['shortname'])    
+    gmake_model_export(models,outdir='b4cloud',shortname=inp_dct['optimize']['shortname'])    
     
 if  __name__=="__main__":
 
     #test_cloud_lineprofile()
     test_pot2rc()
+    execfile('gmake_plots.py')
     pass
 
     #test_imcontsub()

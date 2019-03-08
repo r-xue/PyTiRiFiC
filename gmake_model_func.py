@@ -1,22 +1,3 @@
-from __future__ import print_function
-#from KinMS import KinMS
-execfile('/Users/Rui/Dropbox/Worklib/progs/KinMSpy/KinMS.py')
-
-import numpy as np
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
-from astropy.wcs.utils import skycoord_to_pixel
-import scipy.constants as const
-import time
-from astropy.modeling.models import Sersic2D
-from astropy.modeling.models import Sersic1D
-from astropy.modeling.models import Gaussian2D
-from astropy.coordinates import SkyCoord
-from spectral_cube import SpectralCube
-from scipy.interpolate import interp1d
-from scipy import interpolate
-import scipy.stats 
 
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
@@ -151,6 +132,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
             the x, y, z position of a cloudlet. 
     """
 
+    # get sersic profile
     
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
     
@@ -159,6 +141,13 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     diskThick=0.0
     if  'diskthick' in obj:
         diskThick=obj['diskthick']
+    
+    # truncate the sb profile
+    if  'sbrad_min' in obj:
+        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
+    if  'sbrad_max' in obj:
+        sbProf[np.where(sbRad<obj['sbrad_max'])]=0.0        
+
     
     # Randomly generate the radii of clouds based on the distribution given by the brightness profile
     pdf_x=abs(sbRad)
@@ -314,16 +303,20 @@ def gmake_model_kinmspy(header,obj,
     #velprof=obj['vrot']
     #gassigma=np.array(obj['vdis'])
     
-    velrad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
-    ikind='linear' # stable
-    ikind='cubic'  # bad for extraplate
-    #ikind='quadratic' #
+    #   only extend to this range in vrot/sbprof
+    #   this is the fine radii vector fed to kinmspy
+    rad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    
+    ikind='cubic'  # bad for extraplate but okay for interplate 'linear'/'quadratic'
 
-    if_vrot=interp1d(np.array(obj['velrad']),np.array(obj['velprof']),kind=ikind,bounds_error=False,fill_value=(obj['velprof'][0],obj['velprof'][-1]))
-    #if_vdis=interp1d(np.array(obj['velrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
-    velprof=if_vrot(velrad)
-    #gassigma=if_vdis(velrad)    
-    gassigma=obj['vdis']
+    if_vrot=interp1d(np.array(obj['vrad']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
+    velprof=if_vrot(rad)
+    if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
+        if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
+        gassigma=if_vdis(rad)
+    else:
+        gassigma=velprof+obj['vdis']
+        obj['vdis']=np.array(obj['vrad'])*0.0+obj['vdis']
     """
     #   same as above
     if_vrot=interpolate.UnivariateSpline(np.array(obj['radi']),np.array(obj['vrot']),s=1.0,ext=3)
@@ -338,10 +331,10 @@ def gmake_model_kinmspy(header,obj,
     
     ####################
     
-    xs=np.max(velrad)*1.2*2.0
-    ys=np.max(velrad)*1.2*2.0
+    xs=np.max(rad)*1.0*2.0
+    ys=np.max(rad)*1.0*2.0
     vs=np.max(velprof*np.abs(np.sin(np.deg2rad(obj['inc'])))+3.0*gassigma)
-    vs=vs*1.2*2.
+    vs=vs*1.0*2.
 
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     
@@ -364,10 +357,10 @@ def gmake_model_kinmspy(header,obj,
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
-               inc=obj['inc'],gasSigma=gassigma,
+               inc=obj['inc'],
                #sbProf=sbprof,sbRad=sbrad,
                inClouds=inclouds,
-               velRad=velrad,velProf=velprof,
+               velRad=rad,velProf=velprof,gasSigma=gassigma,
                #ra=obj['xypos'][0],dec=obj['xypos'][1],
                restFreq=obj['restfreq'],vSys=obj['vsys'],
                phaseCen=phasecen,vOffset=voffset,
@@ -390,15 +383,15 @@ def gmake_model_kinmspy(header,obj,
     model_prof['sbrad']=prof1d['sbrad'].copy()
     model_prof['sbprof']=prof1d['sbprof'].copy()
     
-    model_prof['velrad']=velrad.copy()
-    model_prof['velprof']=velprof.copy()
-    model_prof['gassigma']=gassigma
+    model_prof['vrad']=rad.copy()
+    model_prof['vrot']=velprof.copy()
+    model_prof['vdis']=gassigma
     
     #model_prof['sbrad_node']=obj['radi'].copy()
     #model_prof['sbprof_node']=obj['radi'].copy()
-    model_prof['velrad_node']=obj['velrad'].copy()
-    model_prof['velprof_node']=obj['velprof'].copy()
-    model_prof['gassigma_node']=obj['velprof']*0.0+obj['vdis']    
+    model_prof['vrad_node']=np.array(obj['vrad'])
+    model_prof['vrot_node']=np.array(obj['vrot'])
+    model_prof['vdis_node']=np.array(obj['vrad'])*0.0+np.array(obj['vdis'])
     
     return model,model_prof
 
@@ -473,6 +466,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
                          # the optimized radices are 2, 3, 5, 7, and 11.
                          # we will control the imsize when extracting subregion
     convol_complex_dtype=np.complex64   #np.complex128
+    #convol_complex_dtype=np.complex256   #np.complex128
     convol_psf_pad=False # psf_pad=True can avoild edge wrap by padding the original image to naxis1+naxis2 (or twice if square)
                          # since our sampling/masking cube already restrict the inner quarter for chi^2, we don't need to pad further.
     

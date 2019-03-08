@@ -1,13 +1,4 @@
 
-import astropy.units as u
-import matplotlib.pyplot as plt
-import numpy as np
-from galpy.potential import MiyamotoNagaiPotential
-from galpy.potential import KeplerPotential
-from galpy.potential import NFWPotential
-from galpy.potential import RazorThinExponentialDiskPotential
-from astropy.cosmology import Planck13
-
 def gmake_gravity_galpy(inp_dct,plotrc=False):
     
     """
@@ -18,6 +9,8 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
         rc=inp_dct['rc']
 
         for obj in inp_dct.keys():
+            
+            #   we only build RC for the kinmspy model
             
             if  'method' not in inp_dct[obj]:
                 continue
@@ -46,13 +39,13 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
             omega_z=Planck13.Om(z)                                           
             delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
     
-            npot=NFWPotential(conc=c_vir,
+            npot=galpy_pot.NFWPotential(conc=c_vir,
                               mvir=m_vir,
                               H=Planck13.H(z).value,
                               Om=0.3,#dones't matter as wrtcrit=True
                               overdens=delta_c,wrtcrit=True,
                               ro=1,vo=1)
-            dpot=RazorThinExponentialDiskPotential(amp=rc['disk_sd']*u.Msun/u.kpc/u.kpc,
+            dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=rc['disk_sd']*u.Msun/u.kpc/u.kpc,
                                                    hr=rc['disk_rs']*u.kpc,ro=1,vo=1)
         
             rad=np.arange(0,18,0.1)
@@ -67,10 +60,9 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
             vcirc_tt=np.sqrt(vcirc_np.value**2.0+vcirc_dp.value**2.0)
             vcirc_tt[0]=0
             
-            inp_dct[obj]['velrad']=(rad/kps).copy()
-            inp_dct[obj]['velprof']=vcirc_tt.copy()
+            inp_dct[obj]['vrad']=(rad/kps).copy()
+            inp_dct[obj]['vrot']=vcirc_tt.copy()
             
-        
         #print(vcirc_tt)
         #pot=npot+dpot
         #vcirc_ga=pot.vcirc(rad*u.kpc)
@@ -80,6 +72,7 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
         #print(cmass)    
 
     if  plotrc==True:
+        
         plt.clf()
         fig,ax1=plt.subplots(1,1,figsize=(5,3))
         ax1.plot(rad/kps,vcirc_np,color='red')

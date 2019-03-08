@@ -1,5 +1,3 @@
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
-
 
 def gmake_amoeba_setup(inp_dct,dat_dct):
     

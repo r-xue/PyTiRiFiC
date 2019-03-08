@@ -1,47 +1,4 @@
-from __future__ import print_function
-import re
-import time
-import os
-import numpy as np
-from astropy.io import fits
-import emcee
-import uuid
-import random
-#import cPickle as pickle
-import matplotlib.pyplot as pl
-from matplotlib.ticker import MaxNLocator
-import subprocess
-import corner
-from copy import deepcopy
-from astropy.io import ascii
-import fnmatch
-import sys
-import numpy as np 
-import matplotlib.pyplot as plt 
-import corner 
-from astropy.convolution import convolve, Gaussian1DKernel
-from astropy.io import fits 
-from scipy.interpolate import interp1d
-import scipy.integrate as integrate
-from scipy.interpolate import Rbf
-from scipy.interpolate import interpn
-from astropy.convolution import Gaussian2DKernel, interpolate_replace_nans, convolve
-from scipy.ndimage.interpolation import shift
-from scipy import stats
-from astropy.table import Table
-from astropy.table import Column
-from reproject import reproject_interp
-import astropy.convolution as conv
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import pprint
-import shutil
-#import commands
-import multiprocessing
-#import FITS_tools
-from scipy._lib._numpy_compat import suppress_warnings
-np.warnings.filterwarnings('ignore')
+
 
 
 def gmake_emcee_setup(inp_dct,dat_dct):

@@ -1,6 +1,4 @@
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 
-from lmfit import minimize, Parameters
 
 def gmake_lmfit_setup(inp_dct,dat_dct):
     
