@@ -490,22 +490,6 @@ def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
         np.save(outname+'.npy',dct)
 
 
-def gmake_fit_setup(inp_dct,dat_dct):
-    
-    sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
-
-    if  'amoeba' in inp_dct['optimize']['method']:
-        fit_dct=gmake_amoeba_setup(inp_dct,dat_dct)
-    if  'emcee' in inp_dct['optimize']['method']:
-        fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    if  'lmfit' in inp_dct['optimize']['method']:
-        fit_dct=gmake_lmfit_setup(inp_dct,dat_dct)            
-
-    #   for method='emcee': sampler is an emcee object
-    #   for method=others: sampler is a dict
-
-    return fit_dct,sampler
-
 
     
     #if  'lmfit' in inp_dct['optimize']['method']:

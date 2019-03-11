@@ -4,24 +4,18 @@
 #from galpy.potential import KeplerPotential
 from __future__ import print_function
 from past.builtins import execfile
-
 import uuid
 import random
 import copy
 import sys
-
 import numpy as np
-
 from astropy.cosmology import Planck13
-
-
 #import reikna.cluda as cluda
 #from reikna.cluda import any_api
 #import reikna.fft as cluda_fft
 #import pyopencl as cl
 #import pyopencl.array as cla
 #import gpyfft.fft as gpyfft_fft
-
 from reikna.cluda import dtypes, any_api
 from reikna.core import Annotation, Type, Transformation, Parameter
 import scipy.integrate
@@ -29,13 +23,11 @@ import astropy.units as u
 from tqdm import tqdm as tqdm
 import scipy.stats
 from spectral_cube import SpectralCube
-
 #import gala.integrate as gi
 #import gala.dynamics as gd
 #import gala.potential as gp
 #from gala.units import galactic
 #from gala.potential.scf import compute_coeffs, compute_coeffs_discrete
-
 from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
@@ -51,7 +43,6 @@ from scipy import interpolate
 import scipy.stats 
 import os
 import emcee
-
 #import cPickle as pickle
 from reproject import reproject_interp
 import matplotlib
@@ -68,7 +59,6 @@ import fitsio
 import shutil
 #import commands
 import multiprocessing
-
 #import FITS_tools
 from past.builtins import map
 from astropy.convolution import convolve_fft
@@ -77,15 +67,14 @@ from astropy.convolution import discretize_model
 #   FFT related
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
+from matplotlib.colors import LogNorm
 #pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
 #pyfftw.interfaces.cache.enable()
-
 ###
 #   Note:
 #       not sure why?
 #       but I need to run mkl_fft.fft() before import galpy
 #       to get mkl_fft working properly
-###
 import mkl_fft
 rng = np.random.RandomState(42)
 # X_c = rng.rand(16,16, 1).astype(np.complex128)
@@ -98,9 +87,6 @@ X_f = X_c.astype(X_c.dtype, order='F')
 np.abs(np.fft.fft(X_c).max())
 np.abs(mkl_fft.fft(X_c).max())
 np.abs(scipy.fftpack.fft(X_c).max())
-
-
-
 # turn off THREADS
 #export OMP_NUM_THREADS=8
 #export MKL_NUM_THREADS=8
@@ -125,8 +111,7 @@ import astropy.convolution as conv
 import FITS_tools
 from scipy._lib._numpy_compat import suppress_warnings
 np.warnings.filterwarnings('ignore')
-from lmfit import minimize, Parameters
-
+from lmfit import minimize, Parameters, report_fit
 try:
     from numpy.core.multiarray_tests import internal_overlap
 except ImportError:
@@ -134,32 +119,16 @@ except ImportError:
     from numpy.core._multiarray_tests import internal_overlap
     
 import galpy.potential as galpy_pot
-
-
 import glob
-from spectral_cube import SpectralCube
 from radio_beam import beam, Beam
-import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
 import matplotlib as mpl
-import numpy as np
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.table import Table
-from astropy.table import Column
-import scipy.integrate
-
-from spectral_cube import SpectralCube
 from yt.mods import ColorTransferFunction, write_bitmap
 import yt
-import astropy.units as u
 from yt.frontends.fits.misc import PlotWindowWCS
 #yt.toggle_interactivity()
-from astropy.coordinates import SkyCoord
-import copy
 #from __builtin__ import False
 from astropy.stats import sigma_clipped_stats
-
 
 
 mpl.rcParams['xtick.direction'] = 'in'
@@ -187,9 +156,7 @@ from pvextractor import PathFromCenter
 #from KinMS import KinMS
 execfile('/Users/Rui/Dropbox/Worklib/progs/KinMSpy/KinMS.py')
 execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 #execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
-
 execfile('gmake_model_func.py')
 execfile('gmake_model.py')
 execfile('gmake_utils.py')
@@ -198,5 +165,6 @@ execfile('gmake_amoeba.py')
 #execfile('gmake_mpfit.py')
 execfile('gmake_lmfit.py')
 execfile('gmake_gravity.py')
+execfile('gmake_plots.py')
 
 

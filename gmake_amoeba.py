@@ -4,7 +4,7 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     
     opt_dct=inp_dct['optimize']
     
-    fit_dct={}
+    fit_dct={'optimize':opt_dct.copy()}
     fit_dct['p_start']=[]
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
@@ -62,6 +62,8 @@ def gmake_amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
     gmake_dct2fits(p_amoeba,outname=fit_dct['outfolder']+'/amoeba_chain')
+    
+    return
 
 def gmake_amoeba_analyze(outfolder,
                          burnin=50):

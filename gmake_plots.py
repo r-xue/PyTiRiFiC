@@ -1,7 +1,4 @@
 
-
-execfile('gmake_init.py')
-
 def calc_ppbeam(header):
 
     beam_area = np.abs(header['BMAJ']*header['BMIN']*3600.**2.0)*2.*np.pi/(8.*np.log(2.))
@@ -671,82 +668,8 @@ def gmake_plots_radprof(fn):
         fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf') 
 
 if  __name__=="__main__":
-    
-    #"""
-    cen1='icrs; circle( 356.5393256478768,12.82201783168984,1.00") # text={cen1}'
-    cen2='icrs; circle( 356.5393256478768,12.82201783168984,0.20") # text={cen2}'
-    #pa=-40 for the disk
-    pa=-52
-    slice1='icrs; box( 356.5393256478768,12.82201783168984,0.20",0.75",128) # text={slice1}'
-    slice2='icrs; box( 356.5393256478768,12.82201783168984,0.20",0.75",38)  # text={slice2}'
-    rois=[cen1,cen2,slice1,slice2]
-    
-    bbs=['bb1','bb2','bb3','bb4']
-    bbs=['bb1','bb4']
 
-    #fn_name_tmp='./data_bx610.bbx.cube128x128_ro0.iterx.image.fits'
-    fn_name_tmp='bx610xy_nas_nc_cm128mfs_bb14_amoeba/p_best/data_bx610.bbx.mfs128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_nc_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_nc_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
-    
-    
-    fn_name_tmp='bx610xy_nas_cm128mfs_bb14_amoeba/p_best/data_bx610.bbx.mfs128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_cm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.itern.image.fits'
-    fn_name_tmp='bx610xy_nas_dm128_bb14_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
-    
-    #bbs=['bb1','bb4']
-    #fn_name_tmp='bx610xy_nas_dm128_b1234_amoeba/p_best/data_bx610.bbx.mfs128x128.iter0.image.fits'
-    bbs=['bb2','bb3']
-    fn_name_tmp='bx610xy_nas_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'
-    
-    #bbs=['bb1','bb3']
-    #fn_name_tmp='bx610xy_band4_dm128_b1234_amoeba/p_best/data_bx610.bbx.cube128x128.iter0.image.fits'    
-    bbs=['bb1','bb2','bb3','bb4']
-    fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
-    fn_name_tmp='examples/bx610/models/xyb6dm128ab/p_fits/data_bbx.fits'
-    
-    fn_name_tmp='examples/bx610/models/xyb4dm128ab_rc/p_fits/data_bbx.fits'
-    #fn_name_tmp='examples/bx610/models/xyb4dm128ab/p_fits/data_bbx.fits'
-    
-    #fn_name_tmp='b4cloud/data_bbx.fits'
+    pass
 
-    
-    for bb in bbs:
-        
-        fn_name=fn_name_tmp.replace('bbx',bb)
-        linechan=None
-        if  bb=='bb2' and 'b4' not in fn_name:
-            linechan=[(250.964*u.GHz,251.448*u.GHz),(251.847*u.GHz,252.246*u.GHz)]
-        if  bb=='bb3' and 'b4' not in fn_name:
-            linechan=(233.918*u.GHz,234.379*u.GHz)       
-            
-        if  bb=='bb1' and 'b4' in fn_name:
-            linechan=(153.069*u.GHz,153.522*u.GHz)
-        if  bb=='bb3' and 'b4' in fn_name:
-            linechan=(143.359*u.GHz,143.835*u.GHz)
-                                
-        
-        #"""
-        for roi in rois:
-            print('plots_spec1d: ',fn_name)
-            gmake_plots_spec1d(fn_name,roi=roi)
-        #"""
-        
-        #"""
-        print('plots_mom0xy: ',fn_name)
-        gmake_plots_mom0xy(fn_name,linechan=linechan)
-        #"""
-
-        """        
-        gmake_plots_makeslice(fn_name,
-                              radec=[356.5393256478768,12.82201783168984],
-                              width=0.5,length=2.5,pa=-52,linechan=linechan)
-        gmake_plots_slice(fn_name,i=1)
-        gmake_plots_slice(fn_name,i=2)        
-        """
-        
-        #"""
-        gmake_plots_radprof(fn_name)
-        #"""
 
     

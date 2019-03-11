@@ -34,7 +34,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     opt_dct=inp_dct['optimize']
     
-    fit_dct={}
+    fit_dct={'optimize':opt_dct.copy()}
     fit_dct['p_start']=[]
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
@@ -210,6 +210,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
     print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
     #"""
 
+    return
 
 def gmake_emcee_analyze(outfolder,
                        burnin=50,

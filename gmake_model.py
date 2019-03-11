@@ -433,8 +433,9 @@ def gmake_model_mpfit_wdev(theta,
 
 
 def gmake_model_lmfit_wdev(params,
-                     fjac=None, x=None, y=None, err=None,
+                     #fjac=None, x=None, y=None, err=None,
                      fit_dct=None,inp_dct=None,dat_dct=None,
+                     blobs=None,      # save the metadata along / list
                      savemodel='',
                      verbose=False):
     """
@@ -444,10 +445,11 @@ def gmake_model_lmfit_wdev(params,
         or
         from mgefit
     """
-    theta=np.array([])
+    theta=[]
     for key in params:
-        theta=np.append(theta,params[key].value)
-    #print(theta)
+        theta.append(params[key].value)
+    theta=np.array(theta)
+    
     status=0
     if  verbose==True:
         start_time = time.time()
@@ -460,28 +462,54 @@ def gmake_model_lmfit_wdev(params,
 #         #return +np.inf,blobs
 #         return +np.inf
     
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    lnl,blob=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
     
     if  verbose==True:
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+
     
-    wdev=blobs['wdev'].flatten().copy()
+    wdev=blob['wdev_all'].flatten().copy()
+    
+    if  blobs is not None:
+        blobs['pars'].append(theta)
+        blobs['chi2'].append(blob['chisq_all'])
+
+    if  verbose==True:
+        print(theta)
+    print('->',theta)
     print(np.sum(wdev**2.0),wdev.size)
-    #print(type(wdev[0]))
-    #print(wdev)
-    #print(wdev)
     return wdev       
+
+
+def gmake_fit_setup(inp_dct,dat_dct):
+    
+    sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
+
+    if  'amoeba' in inp_dct['optimize']['method']:
+        fit_dct=gmake_amoeba_setup(inp_dct,dat_dct)
+    if  'emcee' in inp_dct['optimize']['method']:
+        fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
+    if  'lmfit' in inp_dct['optimize']['method']:
+        fit_dct=gmake_lmfit_setup(inp_dct,dat_dct)            
+
+    #   for method='emcee': sampler is an emcee object
+    #   for method=others: sampler is a dict
+
+    return fit_dct,sampler
 
 
 def gmake_fit_iterate(fit_dct,sampler,nstep=100):
     
-    if  'amoeba' in inp_dct['optimize']['method']:
+    if  'amoeba' in fit_dct['optimize']['method']:
         gmake_amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
-    if  'emcee' in inp_dct['optimize']['method']:
+        return
+    if  'emcee' in fit_dct['optimize']['method']:
         gmake_emcee_iterate(sampler,fit_dct,nstep=nstep)
-    if  'lmfit' in inp_dct['optimize']['method']:
-        gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)       
+        return
+    if  'lmfit' in fit_dct['optimize']['method']:
+        result=gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+        return
 
 def gmake_fit_analyze(outfolder,burnin=250):
     
@@ -499,6 +527,17 @@ def gmake_fit_analyze(outfolder,burnin=250):
         fit_dct=np.load(outfolder+'/fit_dct.npy').item()
         theta_start=fit_dct['p_start']
         theta_end=fit_dct['p_median']
+    if  'lmfit-nelder' in inp_dct['optimize']['method']:
+        gmake_lmfit_analyze_nelder(outfolder,burnin=burnin)
+        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+        theta_start=fit_dct['p_start']
+        theta_end=np.array(list(fit_dct['p_lmfit_result'].params.valuesdict().values()))  
+    if  'lmfit-brute' in inp_dct['optimize']['method']:
+        gmake_lmfit_analyze_brute(outfolder)
+        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+        theta_start=fit_dct['p_start']
+        theta_end=fit_dct['p_lmfit_result'].brute_x0                
+              
             
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
     print('p_start:    ')

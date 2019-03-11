@@ -114,3 +114,4 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + test varying sersic n
 + ~~check rad vector~~
 + galfit replacement ()
++ ~~bruttle force grid~~
