@@ -196,11 +196,12 @@ method          'disk2d'               # underline algorithm
 #   this will overwrite 
 ################################################################################
 
+
 disk_sd         5e9                 #  msun/kpc^2.0
-disk_rs         1.0                 #  kpc 
+disk_rs         1.0                 #  kpc
 #halo_ms         5e10                #  msun
 #halo_a          100.0                #  kpc
-#halo_conv         4.0                #  
+#halo_conv         4.0                #
 halo_mvir         0.5                # 10.^12 msun
 
 ################################################################################
@@ -258,4 +259,4 @@ halo_mvir@rc    0.01                100                 10
 
 method          'amoeba'
 shortname       ['bx610.','cube128x128.','iter0.','mfs128x128.','image.']
-outdir         'examples/bx610/models/xyb6dm128ab_rc'
+outdir         'examples/bx610/models/xyb6dm128rc_ab'

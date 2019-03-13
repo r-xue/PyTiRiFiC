@@ -10,17 +10,17 @@ this part will not be skipped by gmake_readpars()
 
 this part will not be skipped by gmake_readpars()
 tips:
-    keyword values need to be in the Python syntax, i.e. put quote around the 
+    keyword values need to be in the Python syntax, i.e. put quote around the
     variable you would like to let the program to interpret.
-    
+
 ################################################################################
 @ignore
 ################################################################################
 
 this part will not be skipped by gmake_readpars()
 tips:
-    keyword values need to be in the Python syntax, i.e. put quote around the 
-    variable you would like to let the program to interpret.    
+    keyword values need to be in the Python syntax, i.e. put quote around the
+    variable you would like to let the program to interpret.
 
 ################################################################################
 @co43                                   # object id (per feature per component)
@@ -35,7 +35,7 @@ error           'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.unc.fits'
 #mask           'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.mask.fits'  # mask cube (value=1 for chi^2)
 mask            'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_im.fits'  # mask cube (value=1 for chi^2)
 sample          'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_tb.fits'
-psf             'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits'  
+psf             'examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits'
                                         # FITS table (sample.sp_index: indices of sampling)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj
@@ -116,8 +116,8 @@ image           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.image.fit
 error           'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.unc.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.unc.fits'
 mask            'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_im.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.hex_im.fits'
 sample          'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.hex_tb.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.hex_tb.fits'
-psf             'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.psf.fits' 
- 
+psf             'examples/bx610/alma/band4/bx610.bb1.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb2.mfs128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb3.cube128x128.iter0.psf.fits,examples/bx610/alma/band4/bx610.bb4.mfs128x128.iter0.psf.fits'
+
                                         # psf file (otherwise using header info)
 bmaj            None                    # bmaj
 bmin            None                    # bmin
@@ -144,14 +144,14 @@ method          'disk2d'               # underline algorithm
 ################################################################################
 @rc                                   # object id (per feature per component)
 #   used to generate the physically-motivated RC
-#   this will overwrite 
+#   this will overwrite
 ################################################################################
 
 disk_sd         5e9                 #  msun/kpc^2.0
-disk_rs         1.0                 #  kpc 
+disk_rs         1.0                 #  kpc
 #halo_ms         5e10                #  msun
 #halo_a          100.0                #  kpc
-#halo_conv         4.0                #  
+#halo_conv         4.0                #
 halo_mvir         0.5                # 10.^12 msun
 
 
@@ -184,7 +184,7 @@ ge_q@ci10            1.0                 10.0                5
 
 intflux@cont    0.1e-4                100.e-3             0.1e-3
 sbser[0]@cont     0.01                   1.0              0.01
-alpha@cont        -1.0                  6.0               0.10 
+alpha@cont        -1.0                  6.0               0.10
 pa@cont         8-60                 8+60                50
 inc@cont        0                    45.                 30
 
@@ -194,4 +194,4 @@ halo_mvir@rc    0.01                100                 10
 
 method          'amoeba'
 shortname       ['bx610.','cube128x128.','iter0.','mfs128x128.','image.']
-outdir         'examples/bx610/models/xyb4dm128ab_rc'
+outdir         'examples/bx610/models/xyb4dm128rc_ab'
