@@ -39,11 +39,17 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     
     #print('nwalkers:',fit_dct['nwalkers'])
     #print('nthreads:',fit_dct['nthreads'])
-    print('ndim:    ',fit_dct['ndim'])    
+    print('ndim:    ',fit_dct['ndim'])
+    print('outdir:  ',fit_dct['outfolder'])    
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
-    np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
+    #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
+    
+    theta_start=fit_dct['p_start']
+    lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/p_start')
+    print('p_start:    ')
+    pprint.pprint(blobs)    
     
     return fit_dct
 
@@ -66,9 +72,9 @@ def gmake_amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     return
 
 def gmake_amoeba_analyze(outfolder,
-                         burnin=50):
+                         burnin=None):
     
-    t=Table.read(outfolder+'/'+'amoeba_chain.fits')
+    
     
     """
     dict['p_best']=pars[:,np.argmin(chi2)]
@@ -89,13 +95,20 @@ def gmake_amoeba_analyze(outfolder,
     p_start=fit_dct['p_start']
     p_format=fit_dct['p_format']
     
-    chi2=t['chi2'].data[0]
-    pars=t['pars'].data[0]
-    p_best=t['p_best'].data[0]
+    #t=Table.read(outfolder+'/'+'amoeba_chain.fits')
+    #chi2=t['chi2'].data[0]
+    #pars=t['pars'].data[0]
+    #p_best=t['p_best'].data[0]
+    
+    chi2=fit_dct['p_amoeba']['chi2']
+    pars=fit_dct['p_amoeba']['pars']
+    p_best=fit_dct['p_amoeba']['p_best']
+                             
     
     ndim=(pars.shape)[0]
     niter=(pars.shape)[1]
-    
+    if  burnin is None:
+        burnin=int(niter*0.8)
     
     #####################
     
@@ -106,14 +119,13 @@ def gmake_amoeba_analyze(outfolder,
               format( p_best[index],p_start[index]))        
     print("-"*80)
     
-    
     #   PLOT PARAMETERS
     
     figsize=(8.*2.0,ndim*2.5)
     pl.clf()
-    ncol=2
+    ncol=3
     nrow=int(np.ceil(ndim*1.0/1))
-    fig, axes = pl.subplots(nrow,ncol,figsize=figsize,squeeze=True)
+    fig, axes = pl.subplots(nrow+1,ncol,figsize=figsize,squeeze=True)
     
     for i in range(ndim):
         
@@ -126,11 +138,12 @@ def gmake_amoeba_analyze(outfolder,
         axes[i,0].axhline(p_start[i],color="b", lw=2,ls='-')
         axes[i,0].set_ylabel(p_name[i])
         axes[i,0].axhline(p_best[i],color="g", lw=3,ls='-')
+        axes[i,0].set_title(("{0:"+p_format[i]+"}").format(p_start[i]),color="b")
         
         if  i==ndim-1:
             axes[i,0].set_xlabel("step number")
 
-        #"""
+        
         axes[i,1].plot(np.arange(burnin,niter),pars[i,burnin:].T, color="gray", alpha=0.4)
         ymin, ymax = axes[i,1].get_ylim()
         axes[i,1].set_ylim(ymin, ymax)
@@ -139,26 +152,34 @@ def gmake_amoeba_analyze(outfolder,
         axes[i,1].axhline(p_up[i], color="r", lw=0.8,ls='-')
         axes[i,1].axhline(p_start[i],color="b", lw=2,ls='-')
         axes[i,1].axhline(p_best[i],color="g", lw=3,ls='-')
-        #"""
+        axes[i,1].set_title(("{0:"+p_format[i]+"}").format(p_best[i]),color="g")
         
         if  i==ndim-1:
             axes[i,1].set_xlabel("step number")
+            
+        
+        ymin=np.nanmin(chi2[burnin:])
+        ymax=np.nanmax(chi2[burnin:])
+        axes[i,2].set_ylim(ymin, ymax)
+        
+        pick_ind=np.where(np.logical_and(chi2 < ymax,chi2 > ymin))
+        axes[i,2].plot(pars[i,pick_ind].T,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
+        
+        axes[i,2].axvline(p_best[i], ls='-', color='g',lw=3)
+        axes[i,2].axvline(p_start[i], ls='-', color='b',lw=3)
+        axes[i,2].set_xlabel(fit_dct['p_name'][i])         
+
+    axes[i+1,0].plot(np.arange(niter),chi2)
+    axes[i+1,1].plot(np.arange(burnin,niter),chi2[burnin:])
+    axes[i+1,1].set_title(("{0}").format(np.nanmin(chi2)),color="g")
+    
+    fig.delaxes(axes[i+1,2])
+    axes[i+1,0].set_ylabel('Goodness Scale')
+                    
                 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/amoeba-iteration.pdf"
+    figname=outfolder+"/iteration.pdf"
     fig.savefig(figname)
     pl.close()       
-    
-    #   PLOT CHISQ
-    
-    figsize=(8.*1.0,1.0*2.5)
-    fig, axes = pl.subplots(1,2,sharex=False,figsize=figsize,squeeze=False)
-    
-    axes[0,0].plot(np.arange(niter),chi2)
-    axes[0,1].plot(np.arange(burnin,niter),chi2[burnin:])
-    
-    fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/amoeba-iteration-chisq.pdf"
-    fig.savefig(figname)
-    pl.close()    
+
     

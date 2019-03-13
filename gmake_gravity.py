@@ -60,8 +60,21 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
             vcirc_tt=np.sqrt(vcirc_np.value**2.0+vcirc_dp.value**2.0)
             vcirc_tt[0]=0
             
+            
+            if  isinstance(inp_dct[obj]['vdis'], (list, tuple, np.ndarray)):
+                if_vdis=interp1d(np.array(inp_dct[obj]['vrad']),np.array(inp_dct[obj]['vdis']),kind=ikind,
+                                 bounds_error=False,fill_value=(inp_dct[obj]['vdis'][0],inp_dct[obj]['vdis'][-1]))
+                inp_dct[obj]['vdis']=if_vdis(rad/kps)
+            else:
+                inp_dct[obj]['vdis']=rad/kps*0.0+inp_dct[obj]['vdis']
+                    
+            #   smooth model
             inp_dct[obj]['vrad']=(rad/kps).copy()
             inp_dct[obj]['vrot']=vcirc_tt.copy()
+            inp_dct[obj]['vrot_halo']=vcirc_np.value.copy()
+            inp_dct[obj]['vrot_disk']=vcirc_dp.value.copy()
+            
+
             
         #print(vcirc_tt)
         #pot=npot+dpot

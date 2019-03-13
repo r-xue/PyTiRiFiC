@@ -202,7 +202,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
         diskThick_here = diskThick    
     
     #Generates a random (uniform) z-position satisfying |z|<disk_here 
-    rng3 = np.random.RandomState(seed[3])       
+    rng3 = np.random.RandomState(seed[2])       
     zPos = diskThick_here * rng3.uniform(-1,1,nSamps)
     
     #Calculate the x & y position of the clouds in the x-y plane of the disk
@@ -238,6 +238,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
 def gmake_model_kinmspy(header,obj,
                         nsamps=100000,
                         decomp=False,
+                        fixseed=False,
                         verbose=False):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
@@ -313,6 +314,8 @@ def gmake_model_kinmspy(header,obj,
     velprof=if_vrot(rad)
     
     if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
+        #print(obj['vrad'])
+        #print(obj['vdis'])
         if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
         gassigma=if_vdis(rad)
     else:
@@ -352,8 +355,16 @@ def gmake_model_kinmspy(header,obj,
 
     #start_time = time.time()
 
-    fixseed = np.random.randint(0,100,4)
-    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,fixseed,nSamps=nsamps)
+    if  fixseed==True:
+        seeds=[100,101,102,103]
+    else:
+        seeds=np.random.randint(0,100,4)
+        # seeds[0] -> rad
+        # seeds[1] -> phi
+        # seeds[2] -> z
+        # seeds[3] -> v_sigma
+        
+    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,seeds,nSamps=nsamps)
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
@@ -366,7 +377,7 @@ def gmake_model_kinmspy(header,obj,
                restFreq=obj['restfreq'],vSys=obj['vsys'],
                phaseCen=phasecen,vOffset=voffset,
                #phaseCen=[0,0],vOffset=0,
-               fixSeed=False,
+               fixSeed=fixseed,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
                intFlux=obj['intflux'])
@@ -393,7 +404,11 @@ def gmake_model_kinmspy(header,obj,
     model_prof['vrad_node']=np.array(obj['vrad'])
     model_prof['vrot_node']=np.array(obj['vrot'])
     model_prof['vdis_node']=np.array(obj['vdis'])
-    
+    if  'vrot_halo' in obj:
+        model_prof['vrot_halo_node']=np.array(obj['vrot_halo'])
+    if  'vrot_disk' in obj:
+        model_prof['vrot_disk_node']=np.array(obj['vrot_disk'])
+            
     return model,model_prof
 
 

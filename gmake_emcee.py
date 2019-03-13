@@ -65,6 +65,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     print('nwalkers:',fit_dct['nwalkers'])
     print('nthreads:',fit_dct['nthreads'])
     print('ndim:    ',fit_dct['ndim'])
+    print('outdir:  ',fit_dct['outfolder'])
     
     np.random.seed(0)
     fit_dct['pos_start'] = \
@@ -213,7 +214,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
     return
 
 def gmake_emcee_analyze(outfolder,
-                       burnin=50,
+                       burnin=None,
                        modebin=10,
                        plotqtile=True,
                        plotlevel=False,
@@ -240,7 +241,10 @@ def gmake_emcee_analyze(outfolder,
     blobs_ndata=t['blobs_ndata'].data[0]
     blobs_npar=t['blobs_npar'].data[0]
     
-    #print('##',chain_array.shape) #nwalker x nstep
+    if  burnin is None:
+        burnin=int((lnprobability.shape)[1]*0.8)
+    
+    #print('##',chain_array.shape) #nwalker x nstep x npar
     #print('##',lnprobability.shape) #nwalker x nstep
     #print('##',blobs_lnprob.shape)  #nstep x nwalker
     #print('##',blobs_chisq.shape)   #nstep x nwalker

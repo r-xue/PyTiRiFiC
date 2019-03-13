@@ -340,7 +340,9 @@ def gmake_pformat(fit_dct,verbose=True):
     
     if  verbose==True:
         print("+"*90)
+        #print("outdir:               ",fit_dct['optimize']['outdir'])
         print("optimizing parameters:")
+        
     
     for ind in range(len(fit_dct['p_name'])):
         

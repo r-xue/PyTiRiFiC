@@ -14,7 +14,7 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     e.g.:
         gmake_plots_spec1d('./data_bx610.bb1.cube64x64.iter0.image.fits')
     """
-    
+
     header=fits.getheader(fn)
     ppbeam=calc_ppbeam(header)
     
@@ -43,6 +43,9 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     freq=(data.spectral_axis/1e9).value
     if  len(freq)==1:
         return 
+    
+    print("plots_spec1d <<<  fn =",fn)
+    print("plots_spec1d <<<  roi=",roi)    
     
     plt.clf()
     hratio=2.00
@@ -97,11 +100,13 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     if  'text={' in roi:
         vname='_'+(roi.split("text={"))[1].replace("}",'')
     odir=os.path.dirname(fn)+'/pls_spec1d'
-    if not os.path.exists(odir):
+
+    if  not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf')    
 
     plt.close()
+    print("plots_spec1d >>> ",odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf\n')
     
     return 
 
@@ -196,12 +201,14 @@ def gmake_plots_slice(fn,i=1):
         contsub version
     """
 
-
+    
+    
     fn_basename=os.path.basename(fn)
     header=fits.getheader(fn.replace('data_','data_slice'+str(i)+'_'))
     if  header['NAXIS2']==1:
         return
 
+    print("plots_slice <<< ",fn,i)
     
     data3d=fits.getdata(fn.replace('data_','cmod3d_slice'+str(i)+'_'))
     if  data3d.sum()==0:
@@ -277,17 +284,20 @@ def gmake_plots_slice(fn,i=1):
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.95,top=0.95)
 
     odir=os.path.dirname(fn)+'/pls_slice'
+
     if not os.path.exists(odir):
         os.makedirs(odir)          
     fig.savefig(odir+'/'+out_basename.replace('.fits','')+'.pdf')   
     plt.close() 
+    print("plots_slice >>> ",odir+'/'+out_basename.replace('.fits','')+'.pdf\n') 
     
     return
 
     
 def gmake_plots_mom0xy(fn,linechan=None):
 
-
+    print("plots_mom0xy <<< ",fn)
+    
     dirname=os.path.dirname(fn)
     #mod_dct=np.load(dirname+'/mod_dct.npy').item()
     #print(mod_dct.keys())
@@ -605,10 +615,12 @@ def gmake_plots_mom0xy(fn,linechan=None):
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.98,top=0.95)
     
     odir=os.path.dirname(fn)+'/pls_mom0xy'
+
     if not os.path.exists(odir):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+'.pdf')   
     plt.close()
+    print("plots_mom0xy >>> ",odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
 #     #"""
 #     
 #     f = aplpy.FITSFigure(m0.hdu)  
@@ -619,7 +631,6 @@ def gmake_plots_mom0xy(fn,linechan=None):
 def gmake_plots_radprof(fn):
 
     wd=fn.replace('data','imodrp*')
-
     flist=glob.glob(wd)
     
     if  len(flist)>0:
@@ -627,7 +638,8 @@ def gmake_plots_radprof(fn):
         fig=plt.figure(figsize=(8.,5.*len(flist))) 
         cc=0
         for fn0 in flist:
-            print(fn0)
+            print("plots_radprof <<< ",fn0)
+            
             cc=cc+1
             ax = fig.add_subplot(len(flist),1,cc)
             
@@ -654,9 +666,16 @@ def gmake_plots_radprof(fn):
             y1=t['vrot'].data[0]
             ax1.plot(x1,y1,color='blue',label='Vrot')
             ax1.plot(t['vrad_node'].data[0],t['vrot_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none',label='Vrot-N')
+            if  'vrot_halo_node' in t:
+                ax1.plot(t['vrad_node'].data[0],t['vrot_halo_node'].data[0],marker='v',linestyle='none',color='blue',mfc='none',label='Vrot-Halo-N')
+            if  'vrot_disk_node' in t:
+                ax1.plot(t['vrad_node'].data[0],t['vrot_disk_node'].data[0],marker='^',linestyle='none',color='blue',mfc='none',label='Vrot-Disk-N')
+            
             y1=t['vdis'].data[0]
             ax1.plot(x1,y1,color='red',label='Vdist')
+            
             ax1.plot(t['vrad_node'].data[0],t['vdis_node'].data[0],marker='o',linestyle='none',color='red',mfc='none',label='Vdist-N')
+            
             ax1.set_ylabel('Vrot/Vdis [km/s]')
         
             ax1.legend(loc="lower right")
@@ -665,7 +684,8 @@ def gmake_plots_radprof(fn):
         if not os.path.exists(odir):
             os.makedirs(odir)   
             
-        fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf') 
+        fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf')
+        print("plots_radprof >>> ",odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
 
 if  __name__=="__main__":
 

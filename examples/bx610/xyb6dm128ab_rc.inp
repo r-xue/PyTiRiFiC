@@ -196,12 +196,12 @@ method          'disk2d'               # underline algorithm
 #   this will overwrite 
 ################################################################################
 
-disk_sd         5e8                 #  msun/kpc^2.0
-disk_rs         1.2                 #  kpc 
+disk_sd         5e9                 #  msun/kpc^2.0
+disk_rs         1.0                 #  kpc 
 #halo_ms         5e10                #  msun
 #halo_a          100.0                #  kpc
 #halo_conv         4.0                #  
-halo_mvir         0.1                # 10.^12 msun
+halo_mvir         0.5                # 10.^12 msun
 
 ################################################################################
 @optimize								# optimization setup

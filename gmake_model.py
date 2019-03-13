@@ -88,7 +88,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 #test_time = time.time()              
                 
                 
-                imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj,nsamps=nsamps)
+                imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj,nsamps=nsamps,fixseed=False)
                 #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
                 #print(imodel.shape)
                 models['imod3d@'+image]+=imodel
@@ -260,17 +260,27 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     if  savemodel!='':
         #   remove certain words from long file names 
-        shortname=None
+
+        outname_exclude=None
         if  'shortname' in inp_dct['optimize'].keys():
-            shortname=inp_dct['optimize']['shortname']
+            outname_exclude=inp_dct['optimize']['shortname']
+        if  'outname_exclude' in inp_dct['optimize'].keys():
+            outname_exclude=inp_dct['optimize']['outname_exclude']
+            
+        outname_replace=None
+        if  'outname_replace' in inp_dct['optimize'].keys():
+            outname_replace=inp_dct['optimize']['outname_replace']
+                                
         print('+'*80)
         print('export set: {0:^50}'.format(savemodel))
         start_time = time.time()
         print('+'*80)
-        gmake_model_export(models,outdir=savemodel,shortname=shortname)
+        gmake_model_export(models,outdir=savemodel,
+                           outname_exclude=outname_exclude,
+                           outname_replace=outname_replace)
         print('-'*80)
         print("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
-
+ 
         #"""
         #print('Took {0} second on calculating lnl/blobs'.format(float(time.time()-tic0)),key)
     lnl=blobs['lnprob']
@@ -278,21 +288,27 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     return lnl,blobs
 
 
-def gmake_model_export(models,outdir='./',shortname=None):
+def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=None):
     """
         export model into FITS
         shortname:    a string list to get rid of from the original data image name
     """
+
     for key in list(models.keys()): 
         
         if  'data@' not in key:
             continue
         
         basename=key.replace('data@','')
+        #   name string replacement
+        if  outname_replace is not None:
+            for ostring, rstring in outname_replace:
+                basename=basename.replace(ostring,rstring)
+        #   name string exclusion
+        if  outname_exclude is not None:
+            for ostring in outname_exclude:
+                basename=basename.replace(ostring,'')            
         basename=os.path.basename(basename)
-        if  shortname is not None:
-            for shortname0 in shortname:
-                basename=basename.replace(shortname0,'')
         print('-->','data_'+basename)
         
         if  not os.path.exists(outdir):
@@ -393,51 +409,12 @@ def gmake_model_chisq(theta,
     return lp+chisq       
 
 
-def gmake_model_mpfit_wdev(theta,
-                     fjac=None, x=None, y=None, err=None,
-                     fit_dct=None,inp_dct=None,dat_dct=None,
-                     savemodel='',
-                     verbose=False):
-    """
-    this is the evaluating function for mpfit
-    return weighted deviations:
-        http://cars9.uchicago.edu/software/python/mpfit.html
-        or
-        from mgefit
-    """
-
-    status=0
-    if  verbose==True:
-        start_time = time.time()
-        
-    lp = gmake_model_lnprior(theta,fit_dct)
-    if  lp!=0:
-        lp=+np.inf
-#     if  not np.isfinite(lp):
-#         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
-#         #return +np.inf,blobs
-#         return +np.inf
-    
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
-    
-    if  verbose==True:
-        print("try ->",theta)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
-    
-    wdev=blobs['wdev'].flatten().copy()
-    #print(np.sum(wdev**2.0),len(wdev))
-    #print(type(wdev[0]))
-    #print(wdev)
-    #print(wdev)
-    return wdev       
-
-
 def gmake_model_lmfit_wdev(params,
                      #fjac=None, x=None, y=None, err=None,
                      fit_dct=None,inp_dct=None,dat_dct=None,
                      blobs=None,      # save the metadata along / list
                      savemodel='',
-                     verbose=False):
+                     verbose=True):
     """
     this is the evaluating function for mpfit
     return weighted deviations:
@@ -463,12 +440,7 @@ def gmake_model_lmfit_wdev(params,
 #         return +np.inf
     
     lnl,blob=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
-    
-    if  verbose==True:
-        print("try ->",theta)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
-
-    
+ 
     wdev=blob['wdev_all'].flatten().copy()
     
     if  blobs is not None:
@@ -476,75 +448,17 @@ def gmake_model_lmfit_wdev(params,
         blobs['chi2'].append(blob['chisq_all'])
 
     if  verbose==True:
-        print(theta)
-    print('->',theta)
-    print(np.sum(wdev**2.0),wdev.size)
+        print("")
+        print('ifeva: ',len(blobs['chi2']))
+        print('try:   ',theta)
+        print('chisq: ','{0:>16.2f} {1:>16.2f}'.format(np.sum(wdev**2.0),wdev.size))
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))
+
     return wdev       
 
 
-def gmake_fit_setup(inp_dct,dat_dct):
-    
-    sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
-
-    if  'amoeba' in inp_dct['optimize']['method']:
-        fit_dct=gmake_amoeba_setup(inp_dct,dat_dct)
-    if  'emcee' in inp_dct['optimize']['method']:
-        fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
-    if  'lmfit' in inp_dct['optimize']['method']:
-        fit_dct=gmake_lmfit_setup(inp_dct,dat_dct)            
-
-    #   for method='emcee': sampler is an emcee object
-    #   for method=others: sampler is a dict
-
-    return fit_dct,sampler
 
 
-def gmake_fit_iterate(fit_dct,sampler,nstep=100):
-    
-    if  'amoeba' in fit_dct['optimize']['method']:
-        gmake_amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
-        return
-    if  'emcee' in fit_dct['optimize']['method']:
-        gmake_emcee_iterate(sampler,fit_dct,nstep=nstep)
-        return
-    if  'lmfit' in fit_dct['optimize']['method']:
-        result=gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
-        return
-
-def gmake_fit_analyze(outfolder,burnin=250):
-    
-    
-    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
-    
-    if  'amoeba' in inp_dct['optimize']['method']:
-        gmake_amoeba_analyze(outfolder,burnin=burnin)
-        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-        theta_start=fit_dct['p_amoeba']['p0']
-        theta_end=fit_dct['p_amoeba']['p_best']
-    if  'emcee' in inp_dct['optimize']['method']:
-        gmake_emcee_analyze(outfolder,burnin=burnin)
-        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-        theta_start=fit_dct['p_start']
-        theta_end=fit_dct['p_median']
-    if  'lmfit-nelder' in inp_dct['optimize']['method']:
-        gmake_lmfit_analyze_nelder(outfolder,burnin=burnin)
-        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-        theta_start=fit_dct['p_start']
-        theta_end=np.array(list(fit_dct['p_lmfit_result'].params.valuesdict().values()))  
-    if  'lmfit-brute' in inp_dct['optimize']['method']:
-        gmake_lmfit_analyze_brute(outfolder)
-        fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-        theta_start=fit_dct['p_start']
-        theta_end=fit_dct['p_lmfit_result'].brute_x0                
-              
-            
-    lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
-    print('p_start:    ')
-    pprint.pprint(blobs)
-    lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
-    print('p_fits: ')
-    pprint.pprint(blobs)
 
 if  __name__=="__main__":
     

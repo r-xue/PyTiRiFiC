@@ -166,5 +166,6 @@ execfile('gmake_amoeba.py')
 execfile('gmake_lmfit.py')
 execfile('gmake_gravity.py')
 execfile('gmake_plots.py')
+execfile('gmake_fit.py')
 
 

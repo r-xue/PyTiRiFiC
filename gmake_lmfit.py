@@ -72,7 +72,8 @@ def gmake_lmfit_setup(inp_dct,dat_dct):
     
     #print('nwalkers:',fit_dct['nwalkers'])
     print('nthreads:',fit_dct['nthreads'])
-    print('ndim:    ',fit_dct['ndim'])    
+    print('ndim:    ',fit_dct['ndim'])
+    print('outdir:  ',fit_dct['outfolder'])
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
@@ -109,19 +110,13 @@ def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
                         kws={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct,'blobs':blobs},
                         calc_covar=True,
                         tol=1e-10,
-                        #method='leastsq'
                         method='nelder',
                         options={'maxiter':nstep,
                                 'disp':True})
     if  lmfit_method=='brute':
         result=minimize(gmake_model_lmfit_wdev,fit_dct['p_lmfit_params'],
                         kws={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct,'blobs':blobs},
-                        #calc_covar=True,
-                        method='brute',
-                        #ns=20
-                        #options={'maxiter':nstep,
-                        #        'disp':True}
-                        )
+                        method='brute')
                 
     fit_dct['p_lmfit_result']=result
     report_fit(fit_dct['p_lmfit_result'])
@@ -315,7 +310,7 @@ def gmake_lmfit_analyze_nelder(outfolder,
     pl.clf()
     ncol=3
     nrow=int(np.ceil(ndim*1.0/1))
-    fig, axes = pl.subplots(nrow,ncol,figsize=figsize,squeeze=True)
+    fig, axes = pl.subplots(nrow+1,ncol,figsize=figsize,squeeze=True)
     
     for i in range(ndim):
         
@@ -352,30 +347,29 @@ def gmake_lmfit_analyze_nelder(outfolder,
         
         pick_ind=np.where(np.logical_and(chi2 < ymax,chi2 > ymin))
         axes[i,2].plot(pars[i,pick_ind].T,chi2[pick_ind],'o',color="gray", alpha=0.4,)
-        
-                
-        #subpars=(pars[i,:].T)[]
-        #xmin=np.nanmin(subpars)
-        #xmax=np.nanmax(subpars)
-        
-        #axes[i,2].set_xlim(xmin, xmax)
+
+
+    axes[i+1,0].plot(np.arange(niter),chi2)
+    axes[i+1,1].plot(np.arange(burnin,niter),chi2[burnin:])
+    fig.delaxes(axes[i+1,2])
+    axes[i+1,0].set_ylabel('Goodness Scale')
                 
     fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/lmfit-iteration.pdf"
+    figname=outfolder+"/iteration.pdf"
     fig.savefig(figname)
     pl.close()       
     
     #   PLOT CHISQ
     
-    figsize=(8.*1.0,1.0*2.5)
-    fig, axes = pl.subplots(1,2,sharex=False,figsize=figsize,squeeze=False)
-    
-    axes[0,0].plot(np.arange(niter),chi2)
-    axes[0,1].plot(np.arange(burnin,niter),chi2[burnin:])
-    
-    fig.tight_layout(h_pad=0.0)
-    figname=outfolder+"/lmfit-iteration-chisq.pdf"
-    fig.savefig(figname)
-    pl.close()    
+#     figsize=(8.*1.0,1.0*2.5)
+#     fig, axes = pl.subplots(1,2,sharex=False,figsize=figsize,squeeze=False)
+#     
+#     axes[0,0].plot(np.arange(niter),chi2)
+#     axes[0,1].plot(np.arange(burnin,niter),chi2[burnin:])
+#     
+#     fig.tight_layout(h_pad=0.0)
+#     figname=outfolder+"/lmfit-iteration-chisq.pdf"
+#     fig.savefig(figname)
+#     pl.close()    
     
     
