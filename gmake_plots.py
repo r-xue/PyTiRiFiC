@@ -666,10 +666,10 @@ def gmake_plots_radprof(fn):
             y1=t['vrot'].data[0]
             ax1.plot(x1,y1,color='blue',label='Vrot')
             ax1.plot(t['vrad_node'].data[0],t['vrot_node'].data[0],marker='o',linestyle='none',color='blue',mfc='none',label='Vrot-N')
-            if  'vrot_halo_node' in t:
-                ax1.plot(t['vrad_node'].data[0],t['vrot_halo_node'].data[0],marker='v',linestyle='none',color='blue',mfc='none',label='Vrot-Halo-N')
-            if  'vrot_disk_node' in t:
-                ax1.plot(t['vrad_node'].data[0],t['vrot_disk_node'].data[0],marker='^',linestyle='none',color='blue',mfc='none',label='Vrot-Disk-N')
+            #if  'vrot_halo_node' in t:
+            ax1.plot(t['vrad_node'].data[0],t['vrot_halo_node'].data[0],marker='v',linestyle='none',color='blue',mfc='none',label='Vrot-Halo-N')
+            #if  'vrot_disk_node' in t:
+            ax1.plot(t['vrad_node'].data[0],t['vrot_disk_node'].data[0],marker='^',linestyle='none',color='blue',mfc='none',label='Vrot-Disk-N')
             
             y1=t['vdis'].data[0]
             ax1.plot(x1,y1,color='red',label='Vdist')

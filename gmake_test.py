@@ -1116,6 +1116,9 @@ def test_pot2rc():
     
     #models=gmake_model_api(mod_dct,dat_dct,nsamps=int(1e7))
     #gmake_model_export(models,outdir='b4cloud',shortname=inp_dct['optimize']['shortname'])    
+
+
+def 
     
 if  __name__=="__main__":
 

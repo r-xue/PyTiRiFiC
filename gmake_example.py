@@ -58,7 +58,7 @@ def gmake_example_bx610(version,
     
 
             gmake_plots_mom0xy(fn_name,linechan=linechan)
-            #pa=-52
+            pa=-52
             #gmake_plots_makeslice(fn_name,
             #                      radec=[356.5393256478768,12.82201783168984],
             #                      width=0.5,length=2.5,pa=-52,linechan=linechan)
@@ -86,17 +86,16 @@ if  __name__=="__main__":
               #'xyb6dm128_ab',
               #'xyb6dm128_lmnd',
               'xyb6dm128rc_ab']
-    versions=['xyb46dm128_ab']
-    #versions=['xyb46dm128rc_ab']
+    versions=['xyb46dm128rc_ab']
     for version in versions:
         result=gmake_example_bx610(version,
                                    run_setup=False,
                                    run_fit=False,
                                    run_analysis=True,
-                                   run_plots=False)
+                                   run_plots=True)
   
     
-        ####################################
+    ####################################
     #   EMCEE
     ####################################
     
