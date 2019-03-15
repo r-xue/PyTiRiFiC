@@ -46,7 +46,7 @@ execfile('/Users/Rui/Dropbox/Worklib/projects/rx-recipe/nrao/alma_imager.py')
 niter_list=[0,10000]
 imsize=[1280,1280]
 
-
+"""
 threshold_list=list(np.array([0.,2.])*2.4e-05)
 imagename_list=['bx610_band4.bb1_msc_ro1_nm.mfs/bx610.iter'+str(x) for x in ['0','n']]
 #imagename_list=imagename_list[0]
@@ -98,7 +98,12 @@ alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagena
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
-#"""
+"""
+
+
+
+
+
 
 
 """
@@ -172,4 +177,63 @@ alma_imager(vis='../calibrated/uid___A001_X12b_X23c_target.ms',imagename=imagena
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
-"""            
+"""
+
+msname='bx610_band4.bb1.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='0',outframe='LSRK',regridms=True,
+            mode='frequency',start='152.373278GHz',width='7.812500MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band4.bb2.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='1',outframe='LSRK',regridms=True,
+            mode='frequency',start='154.248278GHz',width='7.8125006MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band4.bb3.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='2',outframe='LSRK',regridms=True,
+            mode='frequency',start='142.3275GHz',width='7.8125006MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band4.bb4.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='3',outframe='LSRK',regridms=True,
+            mode='frequency',start='140.4945GHz',width='7.812500MHz',nchan=238,
+            keepflags=False)
+
+
+msname='bx610_band4.bb1.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='0:152.373278~153.069GHz;153.522~154.373278GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band4.bb2.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='1',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band4.bb3.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='2:142.202~143.359GHz;143.835~144.202GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band4.bb4.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X12b_X23c_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='3',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+            

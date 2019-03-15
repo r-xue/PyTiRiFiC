@@ -18,7 +18,7 @@ mstransform(outputvis='uid___A002_Xb64387_X1f95_target.ms',
 
 
 
-execfile('/Users/Rui/Dropbox/Workspace/projects/alma_g09/scripts/alma_imager.py')
+execfile('/Users/Rui/Dropbox/Worklib/projects/rx-recipe/nrao/alma_imager.py')
 
 #plotuv_freqtime_amp(vis='uid___A001_X2fe_X20f_target.ms',spw=['0','1','2','3'])
 
@@ -118,6 +118,33 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             runexport=True)
 """
 
+msname='bx610_band6.bb1.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='0:249.188425~251.0087375GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band6.bb2.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band6.bb3.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='2:233.2859375~233.722GHz;234.538~235.10625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+msname='bx610_band6.bb4.mfs.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='3:234.9859375~236.80625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
+            keepflags=False)
+
+
+"""
 
 niter_list=[0,10000]
 imsize=[1280,1280]
@@ -185,3 +212,41 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             threshold=threshold_list,usemask='user',pbmask=0.0,niter=niter_list,mask='',
             reuse=[True,False],
             runexport=True)
+
+"""
+
+
+msname='bx610_band6.bb1.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='0',outframe='LSRK',regridms=True,
+            mode='frequency',start='249.147701942GHz',width='7.81215119823MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band6.bb2.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='1',outframe='LSRK',regridms=True,
+            mode='frequency',start='250.752890409GHz',width='7.81215322296MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band6.bb3.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='2',outframe='LSRK',regridms=True,
+            mode='frequency',start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
+            keepflags=False)
+
+msname='bx610_band6.bb4.cube.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            spw='3',outframe='LSRK',regridms=True,
+            mode='frequency',start='234.954234198GHz',width='7.8121332951MHz',nchan=238,
+            keepflags=False)
+
+
+

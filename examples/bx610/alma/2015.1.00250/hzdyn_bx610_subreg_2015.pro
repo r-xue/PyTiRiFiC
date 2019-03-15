@@ -4,11 +4,13 @@ PRO HZDYN_BX610_SUBREG_2015_ALL
 repo='/Volumes/D1/projects/hzdyn/2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f/imaging/'
 repo='/Volumes/D1/projects/hzdyn/2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b/imaging/'
 itype='cube'
-;itype='mfs'
+itype='mfs'
 iter='itern'
 iter='iter0'
 tag='64x64'
 nxy=64
+tag='128x128'
+nxy=128
 HZDYN_BX610_SUBREG_2015,repo,itype,iter,tag,nxy
 HZDYN_BX610_SUBREG_2015_MASK,itype,iter,tag
 HZDYN_BX610_SUBREG_2015_HEXSAMPLE,itype,iter,tag
