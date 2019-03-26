@@ -309,6 +309,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             for ostring in outname_exclude:
                 basename=basename.replace(ostring,'')            
         basename=os.path.basename(basename)
+        
         print('-->','data_'+basename)
         
         if  not os.path.exists(outdir):
