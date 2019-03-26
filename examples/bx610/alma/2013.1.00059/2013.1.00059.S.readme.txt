@@ -1,0 +1,7 @@
+SG ous          uid://A001/X12b/X239          CO(4-3), [CI] 1-0 and continuum setup
+  Group ous     uid://A001/X12b/X23a          
+    Member ous  uid://A001/X12b/X23b          BX610
+      SB        BX610_a_04_TE                 
+      Source    BX610                         
+      Directory 2013.1.00059.S/science_goal.uid___A001_X12b_X239/group.uid___A001_X12b_X23a/member.uid___A001_X12b_X23b
+

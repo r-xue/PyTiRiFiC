@@ -1,0 +1,7 @@
+SG ous          uid://A001/X2fe/X20d          CO(7-6), [CI]2-1 setup
+  Group ous     uid://A001/X2fe/X20e          
+    Member ous  uid://A001/X2fe/X20f          BX610
+      SB        BX610_a_06_TE                 
+      Source    BX610                         
+      Directory 2015.1.00250.S/science_goal.uid___A001_X2fe_X20d/group.uid___A001_X2fe_X20e/member.uid___A001_X2fe_X20f
+

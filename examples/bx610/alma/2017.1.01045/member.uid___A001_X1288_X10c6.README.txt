@@ -1,0 +1,11 @@
+Details about the quality of the data processing are in
+
+    qa/member.uid___A001_X1288_X10c6.qa2_report.pdf (or html)
+
+Details about the processing are in
+
+    qa/*weblog.tgz
+
+Details about the quality of the raw data are in
+
+    qa/*qa0_report.pdf (or html)
