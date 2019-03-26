@@ -149,27 +149,38 @@ def gmake_lmfit_analyze_brute(outfolder):
     
     result=fit_dct['p_lmfit_result']
 
-    ndim=len(result.brute_x0)
+    ndim=result.brute_x0.size
+    bt_grid=result.brute_grid
+    if  ndim==1:
+        bt_grid=result.brute_grid[np.newaxis]
+        bt_x0=result.brute_x0[np.newaxis]
+        
+    else:
+        bt_grid=result.brute_grid
+        bt_x0=result.brute_x0
+    
+    
     figsize=(4.*2.0,ndim*2.5)
     pl.clf()
     ncol=2
     nrow=int(np.ceil(ndim*1.0/1))
     fig, axes = pl.subplots(nrow,ncol,figsize=figsize,squeeze=True)
-    
+    if  ndim==1:
+        axes=axes[np.newaxis,:]
     print(result.brute_Jout.shape)
     print(result.brute_grid.shape)
 
     
     for i in range(ndim):
 
-        pchain=((result.brute_grid)[i,:,:]).ravel()
+        pchain=(bt_grid[i,:]).ravel()
         axes[i,0].plot(np.arange(1,pchain.size+1),pchain, color="gray", alpha=0.4)
         axes[i,0].set_ylabel(fit_dct['p_name'][i])               
                        
         axes[i,1].plot(pchain,
                      result.brute_Jout.ravel(),
                      'o', color="gray", alpha=0.4)
-        axes[i,1].axvline((result.brute_x0)[i], ls='-', color='g',lw=3)
+        axes[i,1].axvline(bt_x0[i], ls='-', color='g',lw=3)
         axes[i,1].set_xlabel(fit_dct['p_name'][i]) 
         
         if  i==ndim-1:

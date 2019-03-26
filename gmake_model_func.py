@@ -520,7 +520,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         print('kernel dim:',kernel.shape)
         start_time = time.time()
 
-    model=np.zeros_like(data)
+    model=np.zeros(data.shape)
     cc=0
     for i in range(dshape[-3]):
 
@@ -578,9 +578,12 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter):
     
     dxy=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
     
+    # create the model container 
+    uvmodel=np.zeros(uvdata[:,:,0].shape,dtype=uvdata.dtype)
+     
     
-    uvmodel=uvdata[:,:,0]*0.0   # just stokes-I
-    
+        
+     
     uvdata_shape=uvdata.shape       #   nrecord x nchan x ncorr
     xymodel_shape=xymodel.shape     #   nstokes x nchan x ny x nx
     
@@ -590,6 +593,7 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter):
     #uvmodel[ = sampleImage(xymodel, dxy, 
     #                  uvw_wv[:,0].copy(order='C'), 
     #                  uvw_wv[:,1].copy(order='C'), dRA=dRA, dDec=dDec, PA=0, check=False)
+    start_time = time.time()
     for i in range(uvdata_shape[1]):
         #print(i)
         #if  np.sum(uvdata[:,i,:])==0.0:
@@ -603,12 +607,14 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter):
         #print((xymodel[0,i,:,:]).shape)
         #print(dxy*3600.0)
         #print((uvw[:,0]/wv).flags)
-        uvmodel[:,i]=sampleImage(xymodel[0,i,:,:],np.deg2rad(dxy),
+        #uvmodel[:,i]
+        tmp=sampleImage(xymodel[0,i,:,:],np.deg2rad(dxy),
                                    #(uvw[:,0]/wv).copy(order='C'),
                                    #(uvw[:,1]/wv).copy(order='C'),
                                    (uvw[:,0]/wv),
                                    (uvw[:,1]/wv),                                   
                                    dRA=dRA,dDec=dDec,PA=0,check=False)
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('fft',time.time() - start_time)) 
         #print("--")
         
     return uvmodel

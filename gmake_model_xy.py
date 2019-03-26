@@ -59,12 +59,13 @@ def gmake_model_api(mod_dct,dat_dct,
                     models['psf@'+image]=dat_dct['psf@'+image]
                 else:
                     models['psf@'+image]=None
-                models['imodel@'+image]=np.zeros_like(models['data@'+image])
-                models['cmodel@'+image]=np.zeros_like(models['data@'+image])
+                naxis=models['data@'+image].shape
+                models['imodel@'+image]=np.zeros(naxis)
+                models['cmodel@'+image]=np.zeros(naxis)
                 #   save 2d objects (even it has been broadcasted to 3D for spectral cube)
                 #   save 3D objects (like spectral line emission from kinmspy/tirific)
-                models['imod2d@'+image]=np.zeros_like(models['data@'+image])
-                models['imod3d@'+image]=np.zeros_like(models['data@'+image])
+                models['imod2d@'+image]=np.zeros(naxis)
+                models['imod3d@'+image]=np.zeros(naxis)
                 #print("---{0:^10} : {1:<8.5f} seconds ---".format('import:'+image,time.time() - test_time))
   
             

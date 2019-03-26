@@ -169,11 +169,11 @@ method          'disk2d'               # underline algorithm
 #	key/min/max, etc.
 ################################################################################
 
-xypos[0]@co76	  356.539321-0.5/3600.  356.539321+0.5/3600.     1./3600./100.0       0.10/3600.0
+#xypos[0]@co76	  356.539321-0.5/3600.  356.539321+0.5/3600.     1./3600./100.0       0.10/3600.0
 #xypos[1]@co76	  12.8220179445-0.5/3600.  12.8220179445+0.5/3600.     1./3600./100.0     0.10/3600.0
-
+vrot[1:5]@co76	30.		              +600.         10      30.
 
 method          'lmfit-brute'
 outname_replace	[('examples/bx610/alma/band6/bx610_band6.','b6_'),('examples/bx610/alma/band6/bx610_band4.','b4_'),('.ms','.fits')]
 outname_exclude ['cube.','mfs.']
-outdir         'examples/bx610/models/uvb6_lmbit'
+outdir         'examples/bx610/models/uvb6_lmbt'

@@ -85,7 +85,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 
                 
             if  'disk2d' in obj['method'].lower():
-                #test_time = time.time()
+                test_time = time.time()
                 pintflux=0.0
                 if  'pintflux' in obj:
                     pintflux=obj['pintflux']
@@ -94,23 +94,32 @@ def gmake_model_api(mod_dct,dat_dct,
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                          pintflux=pintflux,
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
-                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
-                #print(imodel.shape)
+                print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
+                print(imodel.shape)
                 models['imod2d@'+vis]+=imodel
                 models['imodel@'+vis]+=imodel
                 
 
             if  'kinmspy' in obj['method'].lower():
-                #test_time = time.time()              
                 
-                
+                test_time = time.time()              
                 imodel,imodel_prof=gmake_model_kinmspy(models['header@'+vis],obj,nsamps=nsamps,fixseed=False)
-                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
-                #print(imodel.shape)
+                print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
+                print(imodel.shape)
+                
                 models['imod3d@'+vis]+=imodel
                 models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
                 models['imodel@'+vis]+=imodel      
-                
+
+    if  verbose==True:            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('imodel-total',time.time() - start_time))
+    
+    #   SECOND PASS (OPTIONAL): simulate observations VIS BY VIS
+
+
+    if  verbose==True:
+        start_time = time.time()
+                                
     for tag in list(models.keys()):
         
         if  'imodel@' in tag:
@@ -123,6 +132,8 @@ def gmake_model_api(mod_dct,dat_dct,
                                                
             models[tag.replace('imodel@','uvmodel@')]=uvmodel       
             
+    if  verbose==True:            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-total',time.time() - start_time))            
                 
     return models                
 
