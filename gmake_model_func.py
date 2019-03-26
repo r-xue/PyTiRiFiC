@@ -572,6 +572,48 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         return model,kernel
     else:
         return model
+
+
+def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter):
+    
+    dxy=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
+    
+    
+    uvmodel=uvdata[:,:,0]*0.0   # just stokes-I
+    
+    uvdata_shape=uvdata.shape       #   nrecord x nchan x ncorr
+    xymodel_shape=xymodel.shape     #   nstokes x nchan x ny x nx
+    
+    
+    #print(uvdata_shape)
+    #print(xymodel_shape)
+    #uvmodel[ = sampleImage(xymodel, dxy, 
+    #                  uvw_wv[:,0].copy(order='C'), 
+    #                  uvw_wv[:,1].copy(order='C'), dRA=dRA, dDec=dDec, PA=0, check=False)
+    for i in range(uvdata_shape[1]):
+        #print(i)
+        #if  np.sum(uvdata[:,i,:])==0.0:
+        #    continue
+
+        wv=const.c/(header['CDELT3']*i+header['CRVAL3'])
+        # assume that CRPIX1/CRPIX2 is at model image "center"
+        dRA=np.deg2rad(+(header['CRVAL1']-phasecenter[0]))
+        dDec=np.deg2rad(+(header['CRVAL2']-phasecenter[1]))
+        #print("++")
+        #print((xymodel[0,i,:,:]).shape)
+        #print(dxy*3600.0)
+        #print((uvw[:,0]/wv).flags)
+        uvmodel[:,i]=sampleImage(xymodel[0,i,:,:],np.deg2rad(dxy),
+                                   #(uvw[:,0]/wv).copy(order='C'),
+                                   #(uvw[:,1]/wv).copy(order='C'),
+                                   (uvw[:,0]/wv),
+                                   (uvw[:,1]/wv),                                   
+                                   dRA=dRA,dDec=dDec,PA=0,check=False)
+        #print("--")
+        
+    return uvmodel
+
+
     
 def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
                mode=None,
