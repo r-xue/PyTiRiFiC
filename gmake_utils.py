@@ -389,7 +389,9 @@ def gmake_pformat(fit_dct,verbose=True):
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
-
+    
+    
+    
 def gmake_read_data(inp_dct,verbose=False,
                     fill_mask=False,fill_error=False):
     """
@@ -467,6 +469,62 @@ def gmake_read_data(inp_dct,verbose=False,
         print("-"*80)    
     
     return dat_dct
+
+def gmake_read_ms(inp_dct,verbose=False):
+    """
+    read MS into dictionary
+    """
+    dat_dct={}
+    
+    if  verbose==True:
+        print("+"*80)
+    for tag in inp_dct.keys():
+        if  'vis' not in inp_dct[tag].keys():
+            continue
+        obj=inp_dct[tag]
+        
+        vis_list=obj['vis'].split(",")
+        
+        for ind in range(len(vis_list)):
+            
+            if  ('data@'+vis_list[ind] not in dat_dct) and 'vis' in obj:
+                
+                
+                t=ctb.table(vis_list[ind],ack=False)
+                dat_dct['data@'+vis_list[ind]]=t.getcol('DATA')
+                dat_dct['uvw@'+vis_list[ind]]=t.getcol('UVW')
+                dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')                
+
+                ts=ctb.table(vis_list[ind]+'/SPECTRAL_WINDOW',ack=False)
+                dat_dct['chanfreq@'+vis_list[ind]]=ts.getcol('CHAN_FREQ')[-1]
+                dat_dct['chanwidth@'+vis_list[ind]]=ts.getcol('CHAN_WIDTH')[-1]
+
+                tf=ctb.table(vis_list[ind]+'/FIELD',ack=False) 
+                phase_dir=tf.getcol('PHASE_DIR')
+                phase_dir=phase_dir[-1][0]
+                phase_dir=np.rad2deg(phase_dir)
+                if  phase_dir[0]<0:
+                    phase_dir[0]+=360.0
+                dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
+                
+                if  verbose==True:
+                    print('loading: '+vis_list[ind]+' to ')
+                    print('data@'+vis_list[ind],'>>',dat_dct['data@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['data@'+vis_list[ind]])))
+                    print('uvw@'+vis_list[ind],'>>',dat_dct['uvw@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]])))
+                    print('weight@'+vis_list[ind],'>>',dat_dct['weight@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))                
+                    print('chanfreq@'+vis_list[ind],'>> [GHz]',
+                          np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
+                          np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
+                          np.size(dat_dct['chanfreq@'+vis_list[ind]]))
+                    print('chanwidth@'+vis_list[ind],'>> [GHz]',
+                          np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9)                    
+                    print('phasecenter@'+vis_list[ind],'>>',dat_dct['phasecenter@'+vis_list[ind]])
+    
+    if  verbose==True:
+        print("-"*80)    
+    
+    return dat_dct
+                   
     
 def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
     """
@@ -492,6 +550,14 @@ def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
         np.save(outname+'.npy',dct)
 
 
+def convert_size(size_bytes): 
+    if size_bytes == 0: 
+        return "0B" 
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB") 
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    power = math.pow(1024, i) 
+    size = round(size_bytes / power, 2) 
+    return "{} {}".format(size, size_name[i])
 
     
     #if  'lmfit' in inp_dct['optimize']['method']:
