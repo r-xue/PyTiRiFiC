@@ -10,6 +10,10 @@ import copy
 import sys
 import numpy as np
 from astropy.cosmology import Planck13
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
 #import reikna.cluda as cluda
 #from reikna.cluda import any_api
 #import reikna.fft as cluda_fft
@@ -152,13 +156,30 @@ from pvextractor import Path
 from pvextractor import extract_pv_slice
 from pvextractor import PathFromCenter
 
+import casacore.tables as ctb
+from galario.double import get_image_size
+from galario.double import sampleImage
+from galario.double import chi2Image
+from astropy.io import fits
+import numpy as np
+from astropy.wcs import WCS
+from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
+
+from sys import getsizeof
+import math
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.rcParams['agg.path.chunksize'] = 10000
 
 #from KinMS import KinMS
 execfile('/Users/Rui/Dropbox/Worklib/progs/KinMSpy/KinMS.py')
 execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 #execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
 execfile('gmake_model_func.py')
-execfile('gmake_model.py')
+execfile('gmake_model_xy.py')
+execfile('gmake_model_uv.py')
 execfile('gmake_utils.py')
 execfile('gmake_emcee.py')
 execfile('gmake_amoeba.py')
@@ -167,5 +188,6 @@ execfile('gmake_lmfit.py')
 execfile('gmake_gravity.py')
 execfile('gmake_plots.py')
 execfile('gmake_fit.py')
+execfile('gmake_uvamp.py')
 
 
