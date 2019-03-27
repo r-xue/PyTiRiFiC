@@ -65,6 +65,21 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + Analysis
 + Assessment
 
+### Ideas
+
++ grant proposal oppertunity
++ +ALMA GilDAS
+
+
++ tools
++ archiveal pipeline
++ science
++ NFS Ureka
+
+check GalFIT papers
++ parameter format yybp
+
+
 ### To-Do List
 
 + ~~implement hex index~~
@@ -115,6 +130,15 @@ To minimize our effort to achieve the above goals, we implement some existing mo
 + ~~check rad vector~~
 + ~~bruttle force grid~~
 + fill model in CASA: casa.sm / casa.ft
-+ fill model in Galario
-+ python-casacore->pyuvdata~Galario
++ ~~python-casacore->Galario~~
++ write the recipe for sw installation
 + ~~examine UVMUTIFITS https://www.oso.nordic-alma.se/software-tools.php~~
++ plot band by band plots 1D
++ uvplot / uvplot by chan; vis-uvdist 
++ actually this FFT one is faster?
++ add angular size in uvamp
++ UV averging vector vs. scaler
++ MUSE / Stacking Transfer Filtering
++ machine learning object identification
++ check https://photutils.readthedocs.io/en/stable/background.html
++ reduce memory footprint
