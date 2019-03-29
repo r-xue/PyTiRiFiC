@@ -118,30 +118,7 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
             runexport=True)
 """
 
-msname='bx610_band6.bb1.mfs.ms'
-os.system('rm -rf '+msname)
-mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
-            timeaverage=False,timebin='30s',
-            spw='0:249.188425~251.0087375GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
-            keepflags=False)
-msname='bx610_band6.bb2.mfs.ms'
-os.system('rm -rf '+msname)
-mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
-            timeaverage=False,timebin='30s',
-            spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
-            keepflags=False)
-msname='bx610_band6.bb3.mfs.ms'
-os.system('rm -rf '+msname)
-mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
-            timeaverage=False,timebin='30s',
-            spw='2:233.2859375~233.722GHz;234.538~235.10625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
-            keepflags=False)
-msname='bx610_band6.bb4.mfs.ms'
-os.system('rm -rf '+msname)
-mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
-            timeaverage=False,timebin='30s',
-            spw='3:234.9859375~236.80625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
-            keepflags=False)
+
 
 
 """
@@ -216,37 +193,99 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 """
 
 
-msname='bx610_band6.bb1.cube.ms'
+# msname='bx610_band6.bb1.cube.ms'
+# os.system('rm -rf '+msname)
+# mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+#             timeaverage=False,timebin='30s',
+#             spw='0',outframe='LSRK',regridms=True,
+#             mode='frequency',start='249.147701942GHz',width='7.81215119823MHz',nchan=238,
+#             keepflags=False)
+# os.system('rm -rf '+msname.replace('cube','mfs'))
+# mstransform(vis=msname,outputvis=msname.replace('cube','mfs'),datacolumn='data',
+#             chanaverage=True,chanbin=1000,
+#             keepflags=False)
+
+
+# msname='bx610_band6.bb2.cube.ms'
+# os.system('rm -rf '+msname)
+# mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+#             timeaverage=False,timebin='30s',
+#             spw='1',outframe='LSRK',regridms=True,
+#             mode='frequency',start='250.752890409GHz',width='7.81215322296MHz',nchan=238,
+#             keepflags=False)
+# This doesn't work
+# # os.system('rm -rf '+msname.replace('cube','mfs'))
+# # mstransform(vis=msname,outputvis=msname.replace('cube','mfs'),datacolumn='data',
+# #             spw='0:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',
+# #             chanaverage=True,chanbin=1000,regridms=True,combinespws=True,
+# #             keepflags=False)
+
+
+# msname='bx610_band6.bb3.cube.ms'
+# os.system('rm -rf '+msname)
+# mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+#             timeaverage=False,timebin='30s',
+#             spw='2',outframe='LSRK',regridms=True,
+#             mode='frequency',start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
+#             keepflags=False)
+
+
+
+# msname='bx610_band6.bb4.cube.ms'
+# os.system('rm -rf '+msname)
+# mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+#             timeaverage=False,timebin='30s',
+#             spw='3',outframe='LSRK',regridms=True,
+#             mode='frequency',start='234.954234198GHz',width='7.8121332951MHz',nchan=238,
+#             keepflags=False)
+# os.system('rm -rf '+msname.replace('cube','mfs'))
+# mstransform(vis=msname,outputvis=msname.replace('cube','mfs'),datacolumn='data',
+#             chanaverage=True,chanbin=1000,
+#             keepflags=False)
+
+
+# xu.checkchflag(msname.replace('cube','mfs'))
+# statwt(vis=msname.replace('cube','mfs'),preview=True,datacolumn='data',timebin=20,spw='0')
+      
+
+
+
+
+
+
+
+
+
+
+
+"""
+
+The below doesn't work leading to flagged data
+
+msname='bx610_band6.bb1.mfs.ms'
 os.system('rm -rf '+msname)
 mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
             timeaverage=False,timebin='30s',
-            spw='0',outframe='LSRK',regridms=True,
-            mode='frequency',start='249.147701942GHz',width='7.81215119823MHz',nchan=238,
+            spw='0:249.188425~251.0087375GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
             keepflags=False)
-
-msname='bx610_band6.bb2.cube.ms'
+msname='bx610_band6.bb12.mfs.ms'
 os.system('rm -rf '+msname)
 mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
             timeaverage=False,timebin='30s',
-            spw='1',outframe='LSRK',regridms=True,
-            mode='frequency',start='250.752890409GHz',width='7.81215322296MHz',nchan=238,
+            spw='1:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
             keepflags=False)
-
-msname='bx610_band6.bb3.cube.ms'
+msname='bx610_band6.bb3.mfs.ms'
 os.system('rm -rf '+msname)
 mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
             timeaverage=False,timebin='30s',
-            spw='2',outframe='LSRK',regridms=True,
-            mode='frequency',start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
+            spw='2:233.2859375~233.722GHz;234.538~235.10625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
             keepflags=False)
-
-msname='bx610_band6.bb4.cube.ms'
+msname='bx610_band6.bb4.mfs.ms'
 os.system('rm -rf '+msname)
 mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
             timeaverage=False,timebin='30s',
-            spw='3',outframe='LSRK',regridms=True,
-            mode='frequency',start='234.954234198GHz',width='7.8121332951MHz',nchan=238,
+            spw='3:234.9859375~236.80625GHz',chanaverage=True,chanbin=1000,outframe='LSRK',regridms=True,
             keepflags=False)
 
 
-
+"""
