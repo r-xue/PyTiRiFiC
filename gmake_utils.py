@@ -470,7 +470,8 @@ def gmake_read_data(inp_dct,verbose=False,
     
     return dat_dct
 
-def gmake_read_ms(inp_dct,verbose=False):
+#@profile
+def gmake_read_ms(inp_dct,verbose=False,polaverage=True):
     """
     read MS into dictionary
     """
@@ -491,9 +492,24 @@ def gmake_read_ms(inp_dct,verbose=False):
                 
                 
                 t=ctb.table(vis_list[ind],ack=False)
-                dat_dct['data@'+vis_list[ind]]=t.getcol('DATA')
+                
                 dat_dct['uvw@'+vis_list[ind]]=t.getcol('UVW')
-                dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')                
+                
+                # note: 
+                #       DATA column shape in nrecord x nchan x ncorr
+                #       WEIGHT column shape in nrecord x ncorr 
+                #       (so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script
+                #
+                # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
+                # then the data/weight in numpy as nrecord x nchan / nrecord
+                
+                if  polaverage==True:
+                    dat_dct['data@'+vis_list[ind]]=np.mean(t.getcol('DATA'),axis=-1)
+                    dat_dct['weight@'+vis_list[ind]]=np.sum(t.getcol('WEIGHT'),axis=-1)
+                    print()     
+                else:
+                    dat_dct['data@'+vis_list[ind]]=t.getcol('DATA')
+                    dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')            
 
                 ts=ctb.table(vis_list[ind]+'/SPECTRAL_WINDOW',ack=False)
                 dat_dct['chanfreq@'+vis_list[ind]]=ts.getcol('CHAN_FREQ')[-1]
@@ -511,7 +527,9 @@ def gmake_read_ms(inp_dct,verbose=False):
                     print('loading: '+vis_list[ind]+' to ')
                     print('data@'+vis_list[ind],'>>',dat_dct['data@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['data@'+vis_list[ind]])))
                     print('uvw@'+vis_list[ind],'>>',dat_dct['uvw@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]])))
-                    print('weight@'+vis_list[ind],'>>',dat_dct['weight@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))                
+                    print('weight@'+vis_list[ind],'>>',
+                          dat_dct['weight@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])),
+                          np.median(dat_dct['weight@'+vis_list[ind]]))                
                     print('chanfreq@'+vis_list[ind],'>> [GHz]',
                           np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
                           np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9,

@@ -243,14 +243,9 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 #             chanaverage=True,chanbin=1000,
 #             keepflags=False)
 
-
-# xu.checkchflag(msname.replace('cube','mfs'))
-# statwt(vis=msname.replace('cube','mfs'),preview=True,datacolumn='data',timebin=20,spw='0')
-      
-
-
-
-
+plotms(msname.replace('cube','mfs'),yaxis='weight',xaxis='uvdist')            
+xu.checkchflag(msname.replace('cube','mfs'))
+statwt(vis=msname.replace('cube','mfs'),preview=True,datacolumn='data',timebin=20,spw='0')        
 
 
 
