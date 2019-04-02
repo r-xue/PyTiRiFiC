@@ -1,8 +1,8 @@
 
 def gmake_model_api(mod_dct,dat_dct,
                     nsamps=100000,
-                      decomp=False,
-                      verbose=False):
+                    decomp=False,
+                    verbose=False):
     """
     call for the model construction:
     
@@ -79,9 +79,14 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['header@'+vis]=header.copy()
                 
                 naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
-                models['imodel@'+vis]=np.zeros(naxis)
-                models['imod2d@'+vis]=np.zeros(naxis)
-                models['imod3d@'+vis]=np.zeros(naxis)
+                #   uvmodel: np.complex64
+                #   imodel:  np.float32
+                models['imodel@'+vis]=np.zeros(naxis,dtype=np.float32)
+                models['imod2d@'+vis]=np.zeros(naxis,dtype=np.float32)
+                models['imod3d@'+vis]=np.zeros(naxis,dtype=np.float32)
+                models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
+                                                dtype=models['data@'+vis].dtype,
+                                                order='F')
                 
                 
             if  'disk2d' in obj['method'].lower():
@@ -94,8 +99,8 @@ def gmake_model_api(mod_dct,dat_dct,
                                          ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                          pintflux=pintflux,
                                          intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
-                print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
-                print(imodel.shape)
+                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
+                #print(imodel.shape)
                 models['imod2d@'+vis]+=imodel
                 models['imodel@'+vis]+=imodel
                 
@@ -104,15 +109,14 @@ def gmake_model_api(mod_dct,dat_dct,
                 
                 test_time = time.time()              
                 imodel,imodel_prof=gmake_model_kinmspy(models['header@'+vis],obj,nsamps=nsamps,fixseed=False)
-                print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
-                print(imodel.shape)
-                
+                #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
+                #print(imodel.shape)
                 models['imod3d@'+vis]+=imodel
                 models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
                 models['imodel@'+vis]+=imodel      
 
     if  verbose==True:            
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('imodel-total',time.time() - start_time))
+        print("---{0:^10} : {1:<8.5f} seconds ---\n".format('imodel-total',time.time() - start_time))
     
     #   SECOND PASS (OPTIONAL): simulate observations VIS BY VIS
 
@@ -122,16 +126,48 @@ def gmake_model_api(mod_dct,dat_dct,
                                 
     for tag in list(models.keys()):
         
+        """
         if  'imodel@' in tag:
             print(tag)
             uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imodel@','header@')],
                                         models[tag.replace('imodel@','data@')],
                                         models[tag.replace('imodel@','uvw@')],
-                                        models[tag.replace('imodel@','phasecenter@')])
-                                        
-                                               
-            models[tag.replace('imodel@','uvmodel@')]=uvmodel       
+                                        models[tag.replace('imodel@','phasecenter@')],
+                                        uvmodel_in=models[tag.replace('imodel@','uvmodel@')],
+                                        average=False,
+                                        verbose=False)
+            #models[tag.replace('imodel@','uvmodel@')]+=uvmodel       
+        """
+         
+        #"""   
+        if  'imod2d@' in tag:
+            print('>>> '+tag)
+            uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
+                                        models[tag.replace('imod2d@','data@')],
+                                        models[tag.replace('imod2d@','uvw@')],
+                                        models[tag.replace('imod2d@','phasecenter@')],
+                                        uvmodel_in=models[tag.replace('imod2d@','uvmodel@')],
+                                        average=True,
+                                        verbose=True)
+            #models[tag.replace('imod2d@','uvmodel@')]+=uvmodel       
             
+        if  'imod3d@' in tag:
+            print('>>> '+tag)
+            uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
+                                        models[tag.replace('imod3d@','data@')],
+                                        models[tag.replace('imod3d@','uvw@')],
+                                        models[tag.replace('imod3d@','phasecenter@')],
+                                        uvmodel_in=models[tag.replace('imod3d@','uvmodel@')],
+                                        average=False,
+                                        verbose=False)
+             #models[tag.replace('imod3d@','uvmodel@')]+=uvmodel
+        #"""
+        
+        #print(uvmodel.flags)
+        #print("--")
+        #print(models[tag.replace('imod2d@','uvmodel@')].flags)                                      
+        #print(uvmodel is models[tag.replace('imod2d@','uvmodel@')])                               
+        
     if  verbose==True:            
         print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-total',time.time() - start_time))            
                 

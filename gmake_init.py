@@ -157,9 +157,14 @@ from pvextractor import extract_pv_slice
 from pvextractor import PathFromCenter
 
 import casacore.tables as ctb
-from galario.double import get_image_size
-from galario.double import sampleImage
-from galario.double import chi2Image
+
+#from galario.double import get_image_size
+#from galario.double import sampleImage
+#from galario.double import chi2Image
+from galario.single import get_image_size
+from galario.single import sampleImage
+from galario.single import chi2Image
+
 from astropy.io import fits
 import numpy as np
 from astropy.wcs import WCS
@@ -167,6 +172,7 @@ from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 
 from sys import getsizeof
 import math
+from memory_profiler import profile
 
 import numpy as np
 import matplotlib.pyplot as plt

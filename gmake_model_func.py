@@ -573,50 +573,129 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     else:
         return model
 
+#@profile
+def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
+                         uvmodel_in=None,
+                         average=False,
+                         verbose=True):
+    """
+    simulate the observation in the UV-domain
+    input is expected in units of Jy/pix
+    
+    uvdata shape:        nrecord x nchan (less likely: nrecord x nchan x ncorr)
+    xymodel shape:       nstokes x nchan x ny x nx
+    
+    note: when uvmodel_in is provided, a new model will be added into the array without additional memory usage 
+          the return variable is just a reference of mutable uvmodel_in 
+    """
 
-def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter):
+    cell=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
     
-    dxy=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
+    #   
+    # + set order='F' as we want to have quick access to each column.
+    #   i.a. first dimension is consequential in memory 
+    #   this make a big difference in effeciency of fetching each channel
+    # + zeros_like vs. zeros()
+    #   the memory of an array created by zeros() can allocated on-the-fly
+    #   the creation will appear to be faster but the looping+plan initialization may be slightly slower (or comparable?) 
+    #start_time1 = time.time()
+    if  uvmodel_in is not None:
+        uvmodel=uvmodel_in
+    else:
+        uvmodel=np.zeros((uvdata.shape)[0:2],dtype=uvdata.dtype,order='F')
     
-    # create the model container 
-    uvmodel=np.zeros(uvdata[:,:,0].shape,dtype=uvdata.dtype)
-     
+    #print("---{0:^10} : {1:<8.5f} seconds ---".format('create',time.time()-start_time1))
+    #start_time1 = time.time()
     
+    #print("---{0:^10} : {1:<8.5f} seconds ---".format('create',time.time()-start_time1))    
+    
+    uvdata_shape=uvdata.shape
+    
+    if  verbose==True:
+        #print('uvdata  dim:',uvdata.shape)
+        #print('xymodel dim:',xymodel.shape)
+        #print('uvmodel dim:',uvmodel.shape)
+        start_time = time.time()    
+            
+    # assume that CRPIX1/CRPIX2 is at model image "center" floor(naxis/2);
+    # which is true for the mock-up image header 
+    dRA=np.deg2rad(+(header['CRVAL1']-phasecenter[0]))
+    dDec=np.deg2rad(+(header['CRVAL2']-phasecenter[1]))
+    
+    #start_time1 = time.time()
+    
+    if  average==False:
         
-     
-    uvdata_shape=uvdata.shape       #   nrecord x nchan x ncorr
-    xymodel_shape=xymodel.shape     #   nstokes x nchan x ny x nx
+        cc=0
+        # create the array before looping
+        if  uvmodel_in is None:
+            uvmodel=np.zeros_like(uvdata,dtype=uvdata.dtype,order='F')
+        for i in range(uvdata_shape[1]):
+            if  np.sum(xymodel[0,i,:,:])==0.0:
+                continue
+            wv=const.c/(header['CDELT3']*i+header['CRVAL3'])
+            # just like the convolution in the image domain but only fft once vs. fft/iff in convolve_fft
+            #print((uvw[:,0]/wv).flags)            
+            uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
+                                       #(uvw[:,0]/wv).copy(order='C'),
+                                       #(uvw[:,1]/wv).copy(order='C'),
+                                       (uvw[:,0]/wv),
+                                       (uvw[:,1]/wv),                                   
+                                       dRA=dRA,dDec=dDec,PA=0,check=False)
+            cc=cc+1
     
+    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fft',time.time()-start_time1))
     
-    #print(uvdata_shape)
-    #print(xymodel_shape)
-    #uvmodel[ = sampleImage(xymodel, dxy, 
-    #                  uvw_wv[:,0].copy(order='C'), 
-    #                  uvw_wv[:,1].copy(order='C'), dRA=dRA, dDec=dDec, PA=0, check=False)
-    start_time = time.time()
-    for i in range(uvdata_shape[1]):
-        #print(i)
-        #if  np.sum(uvdata[:,i,:])==0.0:
-        #    continue
-
-        wv=const.c/(header['CDELT3']*i+header['CRVAL3'])
-        # assume that CRPIX1/CRPIX2 is at model image "center"
-        dRA=np.deg2rad(+(header['CRVAL1']-phasecenter[0]))
-        dDec=np.deg2rad(+(header['CRVAL2']-phasecenter[1]))
-        #print("++")
-        #print((xymodel[0,i,:,:]).shape)
-        #print(dxy*3600.0)
-        #print((uvw[:,0]/wv).flags)
-        #uvmodel[:,i]
-        tmp=sampleImage(xymodel[0,i,:,:],np.deg2rad(dxy),
+    #start_time1 = time.time()
+    
+    if  average==True:
+        
+        cc=1
+        if  uvmodel_in is None:
+            uvmodel=np.zeros_like(uvdata,dtype=uvdata.dtype,order='F')
+        i0=int(uvdata_shape[1]/2.0)
+        xymodelsum=xymodel.sum(axis=(0,2,3))
+        xymodel_zscale=xymodelsum/xymodelsum[i0]        
+        wv=const.c/(header['CDELT3']*i0+header['CRVAL3'])
+        uvmodel0=sampleImage(xymodel[0,i0,:,:],np.deg2rad(cell),
                                    #(uvw[:,0]/wv).copy(order='C'),
                                    #(uvw[:,1]/wv).copy(order='C'),
                                    (uvw[:,0]/wv),
                                    (uvw[:,1]/wv),                                   
                                    dRA=dRA,dDec=dDec,PA=0,check=False)
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('fft',time.time() - start_time)) 
-        #print("--")
+        #print(uvmodel0.dtype)
+        for i in range(uvdata_shape[1]):
+            uvmodel[:,i]+=uvmodel0*xymodel_zscale[i]
+        #print(uvmodel.dtype)
         
+        # this is x2 fasfter for an array of (489423, 238)
+        #np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
+        #np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
+        #slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
+        #slow: uvmodel_test=uvmodel*xymodel_zscale
+        #uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>loop-fancy',time.time()-start_time1))
+        
+        #print(uvmodel.shape)
+        #"""
+        
+        #"""
+        #start_time1 = time.time()
+        #print(uvmodel.dtype)
+        #print(uvmodel0.dtype)
+        #np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
+        #slow: uvmodel_test=uvmodel*xymodel_zscale            
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-start_time1))
+        #print(uvmodel.shape)        
+        #"""
+        
+    if  verbose==True:
+        
+        print("uvsampling plane counts: ",cc)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+        
+        #print("--")
+    
     return uvmodel
 
 
