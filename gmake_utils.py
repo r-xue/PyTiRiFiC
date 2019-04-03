@@ -471,52 +471,78 @@ def gmake_read_data(inp_dct,verbose=False,
     return dat_dct
 
 #@profile
-def gmake_read_ms(inp_dct,verbose=False,polaverage=True):
+def gmake_read_ms(inp_dct,verbose=False,memorytable=True,
+                  polaverage=True,
+                  dataflag=True,saveflag=False):
     """
     read MS into dictionary
+        + we set data=
+        
+        note: 
+              DATA column shape in nrecord x nchan x ncorr
+              WEIGHT column shape in nrecord x ncorr( supposely this is the "average" value of WEIGHT_SPECTRUM along the channle-axis
+              WEIGHT_SPECTRUM SHAPE in nrecord x nchan x ncorr
+              FLAGS shape in nrecord x nchan x ncorr
+              (so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script
+              
+              data@ms in complex64 (not complex128)
+        
+        For space-saving, we 
+            + set DATA-values=np.nan when flag=True (so there is no a "flag" variable for flagging in dat_dct
+            + when polaverage=True, we only derive stokes-I if both XX/YY (or RR/YY) are Good. If one of them are flagged, Data-Values set to np.nan
+                this follows the principle in the tclean()/stokes parameter 
+                https://casa.nrao.edu/casadocs-devel/stable/global-task-list/task_tclean/parameters
+                http://casacore.github.io/casacore/StokesConverter_8h_source.html
+            + weight doesn't include the channel-axis (assuming the channel-wise weight variable is neligible   
+            
+            XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
     """
     dat_dct={}
     
     if  verbose==True:
         print("+"*80)
+    
     for tag in inp_dct.keys():
+        
         if  'vis' not in inp_dct[tag].keys():
             continue
-        obj=inp_dct[tag]
         
+        obj=inp_dct[tag]
         vis_list=obj['vis'].split(",")
         
         for ind in range(len(vis_list)):
             
             if  ('data@'+vis_list[ind] not in dat_dct) and 'vis' in obj:
-                
-                
-                t=ctb.table(vis_list[ind],ack=False)
-                
-                dat_dct['uvw@'+vis_list[ind]]=t.getcol('UVW')
-                
-                # note: 
-                #       DATA column shape in nrecord x nchan x ncorr
-                #       WEIGHT column shape in nrecord x ncorr 
-                #       (so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script
-                #
-                # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
-                # then the data/weight in numpy as nrecord x nchan / nrecord
-                
+
+                t=ctb.table(vis_list[ind],ack=False,memorytable=memorytable)
+                # set order='F' for the quick access of u/v/w 
+                dat_dct['uvw@'+vis_list[ind]]=(t.getcol('UVW')).astype(np.float32,order='F')
                 if  polaverage==True:
+                    # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
+                    # then the data/weight in numpy as nrecord x nchan / nrecord
                     dat_dct['data@'+vis_list[ind]]=np.mean(t.getcol('DATA'),axis=-1)
                     dat_dct['weight@'+vis_list[ind]]=np.sum(t.getcol('WEIGHT'),axis=-1)
-                    print()     
+                    if  dataflag==True:
+                        dat_dct['data@'+vis_list[ind]][np.where(np.any(t.getcol('FLAG'),axis=-1))]=np.nan
+                    if  saveflag==True:
+                        dat_dct['flag@'+vis_list[ind]]=np.any(t.getcol('FLAG'),axis=-1)         
                 else:
                     dat_dct['data@'+vis_list[ind]]=t.getcol('DATA')
-                    dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')            
-
+                    dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')
+                    if  dataflag==True:
+                        dat_dct['data@'+vis_list[ind]][np.nonzero(t.getcol('FLAG')==True)]=np.nan
+                    if  saveflag==True:
+                        dat_dct['flag@'+vis_list[ind]]=t.getcol('FLAG')
+                t.close()
+                
                 ts=ctb.table(vis_list[ind]+'/SPECTRAL_WINDOW',ack=False)
                 dat_dct['chanfreq@'+vis_list[ind]]=ts.getcol('CHAN_FREQ')[-1]
                 dat_dct['chanwidth@'+vis_list[ind]]=ts.getcol('CHAN_WIDTH')[-1]
-
+                ts.close()
+                
                 tf=ctb.table(vis_list[ind]+'/FIELD',ack=False) 
                 phase_dir=tf.getcol('PHASE_DIR')
+                tf.close()
                 phase_dir=phase_dir[-1][0]
                 phase_dir=np.rad2deg(phase_dir)
                 if  phase_dir[0]<0:
@@ -524,12 +550,16 @@ def gmake_read_ms(inp_dct,verbose=False,polaverage=True):
                 dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
                 
                 if  verbose==True:
-                    print('loading: '+vis_list[ind]+' to ')
+                    print('\nloading: '+vis_list[ind]+'\n')
                     print('data@'+vis_list[ind],'>>',dat_dct['data@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['data@'+vis_list[ind]])))
                     print('uvw@'+vis_list[ind],'>>',dat_dct['uvw@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]])))
                     print('weight@'+vis_list[ind],'>>',
                           dat_dct['weight@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])),
-                          np.median(dat_dct['weight@'+vis_list[ind]]))                
+                          np.median(dat_dct['weight@'+vis_list[ind]]))
+                    if  saveflag==True:
+                        print('flag@'+vis_list[ind],'>>',
+                              dat_dct['flag@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])),
+                              np.median(dat_dct['weight@'+vis_list[ind]]))                                      
                     print('chanfreq@'+vis_list[ind],'>> [GHz]',
                           np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
                           np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
@@ -537,8 +567,10 @@ def gmake_read_ms(inp_dct,verbose=False,polaverage=True):
                     print('chanwidth@'+vis_list[ind],'>> [GHz]',
                           np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9)                    
                     print('phasecenter@'+vis_list[ind],'>>',dat_dct['phasecenter@'+vis_list[ind]])
+                    
     
     if  verbose==True:
+        print("\n")
         print("-"*80)    
     
     return dat_dct
@@ -580,6 +612,20 @@ def convert_size(size_bytes):
     
     #if  'lmfit' in inp_dct['optimize']['method']:
     #    gmake_lmfit_analyze(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+
+
+def add_uvmodel(vis,uvmodel):
+
+    #ctb.removeImagingColumns(vis)
+    ctb.addImagingColumns(vis, ack=True)
+
+    t=ctb.table(vis,ack=False,readonly=False)
+    tmp=t.getcol('DATA')
+    t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    t.removecols('IMAGING_WEIGHT')
+    t.removecols('MODEL_DATA')
+    t.unlock()
+
 
 if  __name__=="__main__":
     

@@ -630,23 +630,51 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
         # create the array before looping
         if  uvmodel_in is None:
             uvmodel=np.zeros_like(uvdata,dtype=uvdata.dtype,order='F')
+        #tic0=time.time()
         for i in range(uvdata_shape[1]):
-            if  np.sum(xymodel[0,i,:,:])==0.0:
-                continue
+            #if  np.sum(xymodel[0,i,:,:])==0.0:
+            #    continue
+            if  ne.evaluate("sum(a)",local_dict={'a':xymodel[0,i,:,:]})==0.0:
+                continue            
+
+            tic0=time.time()
             wv=const.c/(header['CDELT3']*i+header['CRVAL3'])
             # just like the convolution in the image domain but only fft once vs. fft/iff in convolve_fft
             #print((uvw[:,0]/wv).flags)            
+            
+            """
             uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
                                        #(uvw[:,0]/wv).copy(order='C'),
                                        #(uvw[:,1]/wv).copy(order='C'),
                                        (uvw[:,0]/wv),
                                        (uvw[:,1]/wv),                                   
                                        dRA=dRA,dDec=dDec,PA=0,check=False)
-            cc=cc+1
+            
+            """
+            
+            #"""
+            #ne2
+            ne.evaluate("a+b",
+                        local_dict={"a":uvmodel[:,i],
+                                    "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                                    dRA=dRA,dDec=dDec,PA=0,check=False)
+                                    },
+                        casting='same_kind',out=uvmodel[:,i])
+            """
+            #ne3
+            ne.evaluate("out=a+b",
+                        local_dict={"a":uvmodel[:,i],
+                                    "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                                    dRA=dRA,dDec=dDec,PA=0,check=False),
+                                    "out":uvmodel[:,i]
+                                    },
+                        casting='same_kind')            
+            
+            """
+            cc+=1
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-tic0))
     
     #print("---{0:^10} : {1:<8.5f} seconds ---".format('fft',time.time()-start_time1))
-    
-    #start_time1 = time.time()
     
     if  average==True:
         
@@ -663,39 +691,85 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
                                    (uvw[:,0]/wv),
                                    (uvw[:,1]/wv),                                   
                                    dRA=dRA,dDec=dDec,PA=0,check=False)
-        #print(uvmodel0.dtype)
+        
+        #tic0=time.time()
+        
+        #"""
         for i in range(uvdata_shape[1]):
-            uvmodel[:,i]+=uvmodel0*xymodel_zscale[i]
-        #print(uvmodel.dtype)
+            #uvmodel[:,i]+=uvmodel0*xymodel_zscale[i]
+            #ne.evaluate("a+b",
+            #            local_dict={"a":uvmodel[:,i],
+            #                        "b":uvmodel0*xymodel_zscale[i]},
+            #            casting='same_kind',out=uvmodel[:,i])               
+            
+            #ne2
+            ne.evaluate("a+b*c",
+                        local_dict={"a":uvmodel[:,i],
+                                    "b":uvmodel0,
+                                    "c":xymodel_zscale[i]},
+                        casting='same_kind',out=uvmodel[:,i])
+            
+#             ne.evaluate("out=a+b*c",
+#                         local_dict={"a":uvmodel[:,i],
+#                                     "b":uvmodel0,
+#                                     "c":xymodel_zscale[i],
+#                                     "out":uvmodel[:,i]},
+#                         casting='safe')        
         
-        # this is x2 fasfter for an array of (489423, 238)
-        #np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
-        #np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
-        #slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
-        #slow: uvmodel_test=uvmodel*xymodel_zscale
-        #uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
-        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>loop-fancy',time.time()-start_time1))
+        #"""
+
+        #"""
+        #uvmodel+=np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape) #okay
+        #np.add(uvmodel,np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape),out=uvmodel) #same as above
+        #uvmodel[:,:]=ne.evaluate("a+b",local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},casting='same_kind') #slow
         
-        #print(uvmodel.shape)
+        """
+        #ne2
+        ne.evaluate("a+b",
+                    local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},
+                    casting='same_kind',out=uvmodel) #fast
+        """
+        
+        """
+        #ne3
+        ne.evaluate("out=a+b",
+                    local_dict={"a":uvmodel,
+                                "b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape).copy(),
+                                "out":uvmodel},
+                    casting='safe') #fast
+        """
+        
         #"""
         
-        #"""
-        #start_time1 = time.time()
-        #print(uvmodel.dtype)
-        #print(uvmodel0.dtype)
-        #np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
-        #slow: uvmodel_test=uvmodel*xymodel_zscale            
-        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-start_time1))
-        #print(uvmodel.shape)        
-        #"""
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-tic0))
+        
+                
+        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>loop-fancy1',time.time()-start_time1))
+        
+        
+        """"
+         this is x2 fasfter for an array of (489423, 238)
+        np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
+        np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
+        slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
+        slow: uvmodel_test=uvmodel*xymodel_zscale
+        uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
+        print(uvmodel.shape)
+        start_time1 = time.time()
+        print(uvmodel.dtype)
+        print(uvmodel0.dtype)
+        np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
+        slow: uvmodel_test=uvmodel*xymodel_zscale            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-start_time1))
+        print(uvmodel.shape)        
+        """
         
     if  verbose==True:
         
         print("uvsampling plane counts: ",cc)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+        print("out=in+model:",uvmodel is uvmodel_in)
         
-        #print("--")
-    
     return uvmodel
 
 

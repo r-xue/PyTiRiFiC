@@ -142,3 +142,4 @@ check GalFIT papers
 + machine learning object identification
 + check https://photutils.readthedocs.io/en/stable/background.html
 + reduce memory footprint
++ switch to single precsion-float as the data is single

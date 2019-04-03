@@ -1118,12 +1118,44 @@ def test_pot2rc():
     #gmake_model_export(models,outdir='b4cloud',shortname=inp_dct['optimize']['shortname'])    
 
 
-def 
-    
-if  __name__=="__main__":
 
+
+if  __name__=="__main__":
+    
+    #"""
+    inp_dct=None
+    dat_dct=None
+    inp_dct=gmake_read_inp('examples/bx610/uvb6_ab.inp',verbose=False)
+    dat_dct=gmake_read_ms(inp_dct,verbose=True)
+    mod_dct=gmake_inp2mod(inp_dct)
+    gmake_gravity_galpy(mod_dct,plotrc=False)
+    #"""
+    
+    #tic0=time.time()
+    #models=gmake_model_api(mod_dct,dat_dct,verbose=True)
+    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
+
+
+
+
+
+    #"""
+
+    #print('Took {0} second on api'.format(float(time.time()-tic0))) 
+    #"""
+    
+    
+    fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
+    gmake_fit_iterate(fit_dct,sampler,nstep=500)
+    
+    #gmake_lmfit_analyze_brute('examples/bx610/models/uvb6_lmbt')  
+    
+    #theta=fit_dct['p_start']
+    #lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='')
+        
     #test_cloud_lineprofile()
-    test_pot2rc()
+    #test_pot2rc()
+    #dat_dct=test_visfit()
     #execfile('gmake_plots.py')
     pass
 

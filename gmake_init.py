@@ -2,6 +2,10 @@
 #import numpy as np
 #from galpy.potential import MiyamotoNagaiPotential
 #from galpy.potential import KeplerPotential
+
+
+
+
 from __future__ import print_function
 from past.builtins import execfile
 import uuid
@@ -80,6 +84,17 @@ from matplotlib.colors import LogNorm
 #       but I need to run mkl_fft.fft() before import galpy
 #       to get mkl_fft working properly
 import mkl_fft
+import numexpr as ne
+#import numexpr3 as ne
+
+# rebuilt numpy 1.16.2 scipy 1.2.1 to intel-mkl
+#import numpy.distutils.system_info as sysinfo
+#sysinfo.get_info('atlas')
+
+#np.__config__.show()
+#scipy.show_config()
+
+
 rng = np.random.RandomState(42)
 # X_c = rng.rand(16,16, 1).astype(np.complex128)
 # X_f = X_c.astype(X_c.dtype, order='F')
@@ -173,6 +188,7 @@ from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 from sys import getsizeof
 import math
 from memory_profiler import profile
+
 
 import numpy as np
 import matplotlib.pyplot as plt

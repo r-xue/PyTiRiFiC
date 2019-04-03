@@ -30,7 +30,7 @@ def gmake_fit_analyze(outfolder,burnin=None):
     
     
     inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
+    
     
     if  'amoeba' in inp_dct['optimize']['method']:
         gmake_amoeba_analyze(outfolder,burnin=burnin)
@@ -56,10 +56,13 @@ def gmake_fit_analyze(outfolder,burnin=None):
         theta_start=fit_dct['p_start']
         theta_end=fit_dct['p_lmfit_result'].brute_x0                
               
-            
+    
+    #"""
+    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
     print('p_start:    ')
     pprint.pprint(blobs)
     lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
     print('p_fits: ')
     pprint.pprint(blobs)
+    #"""

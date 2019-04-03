@@ -141,18 +141,18 @@ def gmake_model_api(mod_dct,dat_dct,
          
         #"""   
         if  'imod2d@' in tag:
-            print('>>> '+tag)
+            #print('>>> '+tag)
             uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
                                         models[tag.replace('imod2d@','data@')],
                                         models[tag.replace('imod2d@','uvw@')],
                                         models[tag.replace('imod2d@','phasecenter@')],
                                         uvmodel_in=models[tag.replace('imod2d@','uvmodel@')],
                                         average=True,
-                                        verbose=True)
+                                        verbose=False)
             #models[tag.replace('imod2d@','uvmodel@')]+=uvmodel       
             
         if  'imod3d@' in tag:
-            print('>>> '+tag)
+            #print('>>> '+tag)
             uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
                                         models[tag.replace('imod3d@','data@')],
                                         models[tag.replace('imod3d@','uvw@')],
@@ -169,12 +169,12 @@ def gmake_model_api(mod_dct,dat_dct,
         #print(uvmodel is models[tag.replace('imod2d@','uvmodel@')])                               
         
     if  verbose==True:            
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-total',time.time() - start_time))            
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('uvsample-total',time.time() - start_time))            
                 
     return models                
 
 def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
-                         savemodel='',
+                         savemodel='',returnwdev=False,
                          verbose=False):
     """
     the likelihood function
@@ -186,11 +186,8 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     blobs={'lnprob':0.0,
            'chisq':0.0,
-           'chisq_all':0.0,
            'ndata':0.0,
-           'ndata_all':0.0,
            'wdev':np.array([]),
-           'wdev_all':np.array([]),
            'npar':len(theta)}
      
     inp_dct0=deepcopy(inp_dct)
@@ -218,40 +215,56 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
     
+    #tic0=time.time()
+    
     for key in models.keys(): 
         
         if  'data@' not in key:
             continue
-        #print(models[key].shape)
-       
 
+        uvmodel=models[key.replace('data@','uvmodel@')]
+        uvdata=models[key]
+        
+        #
         # averaging different correllation assumed to be RR/LL or XX/YY
         # don't use weight_spectrum here
-        uvmodel=models[key.replace('data@','uvmodel@')]
-        uvdata=np.mean(models[key],axis=-1)                            # nrecord x nchan
-        weight=np.sum(models[key.replace('data@','weight@')],axis=-1)   # nrecord
-        weight=np.broadcast_to(weight[:,np.newaxis],uvmodel.shape)      # nrecord x nchan (just view for memory saving)
+        #        
+        #uvdata=np.mean(models[key],axis=-1)                            # nrecord x nchan
+        #weight=np.sum(models[key.replace('data@','weight@')],axis=-1)   # nrecord
+        #weight=models[key.replace('data@','weight@')]
+        #weight+spectrum=np.broadcast_to(weight[:,np.newaxis],uvmodel.shape)      # nrecord x nchan (just view for memory saving)
+
+        nchan=(uvmodel.shape)[-1]
+
+        weight_sqrt=ne.evaluate("sqrt(a)",
+                           local_dict={"a":models[key.replace('data@','weight@')]})
+        weight_sqrt=np.sqrt(models[key.replace('data@','weight@')])        
+        wdev=ne.evaluate("abs(a-b).real*c",
+                         local_dict={'a':models[key],
+                                     'b':models[key.replace('data@','uvmodel@')],
+                                     'c':np.broadcast_to(weight_sqrt[:,np.newaxis],uvmodel.shape)})
+        """
+        wdev=ne.evaluate("abs(a-b).real*sqrt(c)",
+                         local_dict={'a':models[key],
+                                     'b':models[key.replace('data@','uvmodel@')],
+                                     'c':np.broadcast_to((models[key.replace('data@','weight@')])[:,np.newaxis],uvmodel.shape)})
+        """
+        lnl1=ne.evaluate("sum(wdev**2)")    # speed up for long vectors:  lnl1=np.sum( wdev**2 )
+        lnl2=ne.evaluate("sum(-log(a))",
+                         local_dict={'a':models[key.replace('data@','weight@')]})*nchan + \
+             np.log(2.0*np.pi)*uvdata.size
         
-        #print(key)
-        #print(uvmodel.shape)
-        #print(uvdata.shape)
-        #print(weight.shape)
-        
-        wdev_all=np.abs(uvdata-uvmodel)*np.sqrt(weight)
-        wdev=wdev_all
-        
-        lnl1=np.sum( wdev_all**2 )
-        lnl2=np.sum( np.log(2.0*np.pi/weight) )
         lnl=-0.5*(lnl1+lnl2)        
-        
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
-        blobs['chisq_all']+=lnl1
         blobs['ndata']+=wdev.size
-        blobs['ndata_all']+=wdev_all.size
-        blobs['wdev']=np.append(blobs['wdev'],wdev)
-        blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
+        #print(key,lnl1,wdev.size)
         
+        if  returnwdev==True:
+            blobs['wdev']=np.append(blobs['wdev'],wdev)
+        
+    #print("---{0:^30} : {1:<8.5f} seconds ---\n".format('chisq',time.time() - tic0))
+
     if  savemodel!='':
         #   remove certain words from long file names 
 
@@ -332,6 +345,12 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
                 outname=prof.replace(key.replace('data@',''),'')
                 outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
                 gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
+                
+
+        basename=basename.replace('.fits','.ms')
+        os.system('cp -rf '+key.replace('data@','')+' '+outdir+'/data_'+basename)
+        add_uvmodel(outdir+'/data_'+basename,models[key.replace('data@','uvmodel@')]) 
+        
 
     np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
 
@@ -395,10 +414,10 @@ def gmake_model_chisq(theta,
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
-    chisq=blobs['chisq_all'].copy()
+    #chisq=blobs['chisq_all'].copy()
     
-    #return lp+chisq,blobs
-    return lp+chisq       
+    ##return lp+chisq,blobs
+    return lp+blobs['chisq']       
 
 
 def gmake_model_lmfit_wdev(params,
@@ -433,11 +452,11 @@ def gmake_model_lmfit_wdev(params,
     
     lnl,blob=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
  
-    wdev=blob['wdev_all'].flatten().copy()
+    wdev=blob['wdev'].flatten().copy()
     
     if  blobs is not None:
         blobs['pars'].append(theta)
-        blobs['chi2'].append(blob['chisq_all'])
+        blobs['chi2'].append(blob['chisq'])
 
     if  verbose==True:
         print("")
