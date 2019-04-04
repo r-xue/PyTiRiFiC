@@ -656,8 +656,8 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
             #ne2
             ne.evaluate("a+b",
                         local_dict={"a":uvmodel[:,i],
-                                    "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
-                                                    dRA=dRA,dDec=dDec,PA=0,check=False)
+                                    "b":sampleImage((xymodel[0,i,:,:]),np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                                    dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
                                     },
                         casting='same_kind',out=uvmodel[:,i])
             """
@@ -685,12 +685,14 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
         xymodelsum=xymodel.sum(axis=(0,2,3))
         xymodel_zscale=xymodelsum/xymodelsum[i0]        
         wv=const.c/(header['CDELT3']*i0+header['CRVAL3'])
-        uvmodel0=sampleImage(xymodel[0,i0,:,:],np.deg2rad(cell),
+        # check the pixel index /ra-dec mapping:
+        #       https://mtazzari.github.io/galario/tech-specs.html 
+        uvmodel0=sampleImage((xymodel[0,i0,:,:]),np.deg2rad(cell),
                                    #(uvw[:,0]/wv).copy(order='C'),
                                    #(uvw[:,1]/wv).copy(order='C'),
                                    (uvw[:,0]/wv),
                                    (uvw[:,1]/wv),                                   
-                                   dRA=dRA,dDec=dDec,PA=0,check=False)
+                                   dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
         
         #tic0=time.time()
         

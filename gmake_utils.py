@@ -395,12 +395,36 @@ def gmake_pformat(fit_dct,verbose=True):
 def gmake_read_data(inp_dct,verbose=False,
                     fill_mask=False,fill_error=False):
     """
-    read data into the dictionary
+    read FITS/image or MS/visibilities into the dictionary
+    
+        + we set data=
+        
+        note: 
+              DATA column shape in nrecord x nchan x ncorr
+              WEIGHT column shape in nrecord x ncorr( supposely this is the "average" value of WEIGHT_SPECTRUM along the channle-axis
+              WEIGHT_SPECTRUM SHAPE in nrecord x nchan x ncorr
+              FLAGS shape in nrecord x nchan x ncorr
+              (so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script
+              
+              data@ms in complex64 (not complex128)
+        
+        For space-saving, we 
+            + set DATA-values=np.nan when flag=True (so there is no a "flag" variable for flagging in dat_dct
+            + when polaverage=True, we only derive stokes-I if both XX/YY (or RR/YY) are Good. If one of them are flagged, Data-Values set to np.nan
+                this follows the principle in the tclean()/stokes parameter 
+                https://casa.nrao.edu/casadocs-devel/stable/global-task-list/task_tclean/parameters
+                http://casacore.github.io/casacore/StokesConverter_8h_source.html
+            + weight doesn't include the channel-axis (assuming the channel-wise weight variable is neligible   
+            
+            XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
+                
     """
+    
     dat_dct={}
     
     if  verbose==True:
         print("+"*80)
+    
     for tag in inp_dct.keys():
         if  'image' not in inp_dct[tag].keys():
             continue
@@ -474,29 +498,7 @@ def gmake_read_data(inp_dct,verbose=False,
 def gmake_read_ms(inp_dct,verbose=False,memorytable=True,
                   polaverage=True,
                   dataflag=True,saveflag=False):
-    """
-    read MS into dictionary
-        + we set data=
-        
-        note: 
-              DATA column shape in nrecord x nchan x ncorr
-              WEIGHT column shape in nrecord x ncorr( supposely this is the "average" value of WEIGHT_SPECTRUM along the channle-axis
-              WEIGHT_SPECTRUM SHAPE in nrecord x nchan x ncorr
-              FLAGS shape in nrecord x nchan x ncorr
-              (so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script
-              
-              data@ms in complex64 (not complex128)
-        
-        For space-saving, we 
-            + set DATA-values=np.nan when flag=True (so there is no a "flag" variable for flagging in dat_dct
-            + when polaverage=True, we only derive stokes-I if both XX/YY (or RR/YY) are Good. If one of them are flagged, Data-Values set to np.nan
-                this follows the principle in the tclean()/stokes parameter 
-                https://casa.nrao.edu/casadocs-devel/stable/global-task-list/task_tclean/parameters
-                http://casacore.github.io/casacore/StokesConverter_8h_source.html
-            + weight doesn't include the channel-axis (assuming the channel-wise weight variable is neligible   
-            
-            XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
-    """
+
     dat_dct={}
     
     if  verbose==True:
@@ -614,18 +616,25 @@ def convert_size(size_bytes):
     #    gmake_lmfit_analyze(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
 
 
-def add_uvmodel(vis,uvmodel):
-
+def add_uvmodel(vis,uvmodel,removemodel=True):
+    """
+    + add corrected column to vis
+    + remove model_data column in vis
+    + remove imaging_weight in vis
+    
+    """
+    
+    ctb.addImagingColumns(vis, ack=False)
     #ctb.removeImagingColumns(vis)
-    ctb.addImagingColumns(vis, ack=True)
-
     t=ctb.table(vis,ack=False,readonly=False)
     tmp=t.getcol('DATA')
     t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
     t.removecols('IMAGING_WEIGHT')
-    t.removecols('MODEL_DATA')
+    if  removemodel==True:
+        t.removecols('MODEL_DATA')
     t.unlock()
 
+    return 
 
 if  __name__=="__main__":
     

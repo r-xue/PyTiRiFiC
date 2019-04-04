@@ -292,14 +292,13 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     return lnl,blobs
 
-
+#@profile
 def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=None):
     """
         export model into FITS
         shortname:    a string list to get rid of from the original data image name
         
     """
-
     for key in list(models.keys()): 
         
         if  'data@' not in key:
@@ -323,8 +322,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             
         versions=['data','imodel','cmodel','error','mask','kernel','psf','residual',
                   'imod2d','imod3d','cmod2d','cmod3d']
-        versions=['imodel'
-                  'imod2d','imod3d']        
+        versions=['imodel','imod2d','imod3d']        
         hd=models[key.replace('data@','header@')]
         for version in versions:             
             if  key.replace('data@',version+'@') in models.keys():
@@ -341,15 +339,19 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
         for prof in list(models.keys()):
             
             if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
-
                 outname=prof.replace(key.replace('data@',''),'')
                 outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
                 gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
                 
 
-        basename=basename.replace('.fits','.ms')
-        os.system('cp -rf '+key.replace('data@','')+' '+outdir+'/data_'+basename)
-        add_uvmodel(outdir+'/data_'+basename,models[key.replace('data@','uvmodel@')]) 
+        oldms=key.replace('data@','')
+        newms=outdir+'/data_'+basename.replace('.fits','.ms')
+        
+        print("copy "+oldms+'  to  '+newms)
+        os.system("rm -rf "+newms)
+        os.system('cp -rf '+oldms+' '+newms)
+        
+        add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
         
 
     np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
