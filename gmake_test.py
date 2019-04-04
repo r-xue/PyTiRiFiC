@@ -1126,7 +1126,7 @@ if  __name__=="__main__":
     inp_dct=None
     dat_dct=None
     inp_dct=gmake_read_inp('examples/bx610/uvb6_ab.inp',verbose=False)
-    dat_dct=gmake_read_ms(inp_dct,verbose=True)
+    dat_dct=gmake_read_data(inp_dct,verbose=True)
     mod_dct=gmake_inp2mod(inp_dct)
     gmake_gravity_galpy(mod_dct,plotrc=False)
     #"""

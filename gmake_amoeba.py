@@ -42,7 +42,7 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     print('ndim:    ',fit_dct['ndim'])
     print('outdir:  ',fit_dct['outfolder'])    
     
-    #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
+    np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
     
