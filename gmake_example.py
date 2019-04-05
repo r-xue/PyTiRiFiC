@@ -90,9 +90,9 @@ if  __name__=="__main__":
     versions=['xysf_ab']
     for version in versions:
         result=gmake_example_bx610(version,
-                                   run_setup=True,
+                                   run_setup=False,
                                    run_fit=False,
-                                   run_analysis=False,
+                                   run_analysis=True,
                                    run_plots=False)
   
     

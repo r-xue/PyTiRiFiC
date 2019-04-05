@@ -436,10 +436,13 @@ def gmake_read_data(inp_dct,verbose=False,
             for ind in range(len(vis_list)):
                 
                 if  ('data@'+vis_list[ind] not in dat_dct) and 'vis' in obj:
+                    
     
                     t=ctb.table(vis_list[ind],ack=False,memorytable=memorytable)
                     # set order='F' for the quick access of u/v/w 
                     dat_dct['uvw@'+vis_list[ind]]=(t.getcol('UVW')).astype(np.float32,order='F')
+                    dat_dct['type@'+vis_list[ind]]='vis'
+                    
                     if  polaverage==True:
                         # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
                         # then the data/weight in numpy as nrecord x nchan / nrecord
@@ -514,21 +517,25 @@ def gmake_read_data(inp_dct,verbose=False,
                     data,hd=fits.getdata(im_list[ind],header=True,memmap=False)
                     dat_dct['data@'+im_list[ind]]=data
                     dat_dct['header@'+im_list[ind]]=hd
+                    dat_dct['type@'+im_list[ind]]='image'
                     if  verbose==True:
                         print('loading: '+im_list[ind]+' to ')
                         print('data@'+im_list[ind],'header@'+im_list[ind])
+                        print(data.shape,convert_size(getsizeof(data)))
                 if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
                     data=fits.getdata(em_list[ind],memmap=False)
                     dat_dct['error@'+im_list[ind]]=data
                     if  verbose==True:
                         print('loading: '+em_list[ind]+' to ')
                         print('error@'+im_list[ind])
+                        print(data.shape,convert_size(getsizeof(data)))
                 if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
                     data=fits.getdata(mk_list[ind],memmap=False)                
                     dat_dct['mask@'+im_list[ind]]=data
                     if  verbose==True:
                         print('loading: '+mk_list[ind]+' to ')
                         print('mask@'+im_list[ind])
+                        print(data.shape,convert_size(getsizeof(data)))
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
@@ -536,12 +543,14 @@ def gmake_read_data(inp_dct,verbose=False,
                     if  verbose==True:
                         print('loading: '+sp_list[ind]+' to ')
                         print('sample@'+im_list[ind])
+                        print(data.shape,convert_size(getsizeof(data)))
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     data=fits.getdata(pf_list[ind],memmap=False)                
                     dat_dct['psf@'+im_list[ind]]=data
                     if  verbose==True:
                         print('loading: '+pf_list[ind]+' to ')
                         print('psf@'+im_list[ind])       
+                        print(data.shape,convert_size(getsizeof(data)))
                             
                 tag='data@'+im_list[ind]
                 
