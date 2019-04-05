@@ -1125,8 +1125,9 @@ if  __name__=="__main__":
     #"""
     inp_dct=None
     dat_dct=None
-    inp_dct=gmake_read_inp('examples/bx610/uvb6_ab.inp',verbose=False)
+    inp_dct=gmake_read_inp('examples/bx610/xysf_ab.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=True)
+    
     mod_dct=gmake_inp2mod(inp_dct)
     gmake_gravity_galpy(mod_dct,plotrc=False)
     #"""
@@ -1151,7 +1152,8 @@ if  __name__=="__main__":
     #gmake_lmfit_analyze_brute('examples/bx610/models/uvb6_lmbt')  
     
     #theta=fit_dct['p_start']
-    #lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='')
+    #lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='test/xysf_ab')
+    #print(blobs)
         
     #test_cloud_lineprofile()
     #test_pot2rc()

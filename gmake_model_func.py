@@ -265,22 +265,30 @@ def gmake_model_kinmspy(header,obj,
     #   vector description of the z-axis (data in Hz or m/s; model in km/s)
     #   rfreq=obj['restfreq']/(1.0+obj['z'])            # GHz (obs-frame)
     #   fsys=(1.0-obj['vsys']/(const.c/1000.0))*rfreq   # line systematic frequency (obs-frame)
-        
+    #   follow the convention / units defined in WCS:
+    #   https://arxiv.org/pdf/astro-ph/0207407.pdf
+    #   http://dx.doi.org/10.1051/0004-6361/201015362
+    #   https://www.atnf.csiro.au/people/mcalabre/WCS/wcslib/wcsunits_8h.html#a25ba0f0129e88c6e7c74d4562cf796cd
+    
     w=WCS(header)
     if  'Hz' in header['CUNIT3']:
         wz=obj['restfreq']*1e9/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
         dv=-const.c*header['CDELT3']/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
-    if  'Angstrom' in header['CUNIT3']:
-        wz=obj['restwave']*(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
+    if  'angstrom' in header['CUNIT3']:
+        wz=obj['restwave']*(1.0+obj['z'])*(1.+obj['vsys']*1e3/const.c)/1e10
         dv=const.c*header['CDELT3']/(obj['restwave']*(1.0+obj['z']))/1000.
     if  'm/s' in header['CUNIT3']:
-        wz=obj['vsys']/1000.
+        wz=obj['vsys']*1000.
         dv=header['CDELT3']/1000.        
-
+    #   wz: in hz / m or m.s
+    #   dv: km/s
+    
     #   get 0-based pix-index
-    
-    px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
-    
+    if  w.naxis==4:
+        px,py,pz,ps=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,1,0)
+    if  w.naxis==3:
+        px,py,pz=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],wz,0)
+    #print(">>>>>>",(0,px,py,pz))
     ####
     #   About KinMS:
     #       + cube needs to be transposed to match the fits.data dimension 
@@ -365,6 +373,7 @@ def gmake_model_kinmspy(header,obj,
         # seeds[3] -> v_sigma
         
     inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,seeds,nSamps=nsamps)
+
     
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
@@ -373,23 +382,30 @@ def gmake_model_kinmspy(header,obj,
                #sbProf=sbprof,sbRad=sbrad,
                inClouds=inclouds,
                velRad=rad,velProf=velprof,gasSigma=gassigma,
-               #ra=obj['xypos'][0],dec=obj['xypos'][1],
-               restFreq=obj['restfreq'],vSys=obj['vsys'],
+               #ra=obj['xypos'][0],dec=obj['xypos'][1],restFreq=obj['restfreq'],
+               vSys=obj['vsys'],
                phaseCen=phasecen,vOffset=voffset,
                #phaseCen=[0,0],vOffset=0,
                fixSeed=fixseed,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
                intFlux=obj['intflux'])
+    # cube in units of Jy/pixel * km/s or specifici intensity * km/s
+    if  'angstrom' in header['CUNIT3']:
+        cube=cube*abs(dv)/(header['CDELT3'])
     #print("--- %s seconds ---" % (time.time() - start_time))
     #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
     #   flip z-axis if dv<0
     #print(cube.shape)
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
-    #print('sub:',cube.shape)
-    model=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    if  w.naxis==4:
+        model=np.zeros(w.array_shape)
+    if  w.naxis==3:
+        model=np.zeros((1,)+w.array_shape)
+    #print(model.shape)
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
+
     
     model_prof={}
     model_prof['sbrad']=prof1d['sbrad'].copy()
@@ -535,15 +551,17 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
             kernel_used=kernel
         else:
             kernel_used=kernel[0,i,:,:]
-        
+            
         model[0,i,:,:]=convolve_fft(data[0,i,:,:],kernel_used,
                                     fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
                                     complex_dtype=convol_complex_dtype,
                                     #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
                                     fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
+                                    #nan_treatment='fill',fill_value=0.0,
                                     #fftn=scipy.fftpack.fftn, ifftn=scipy.fftpack.ifftn,
                                     #fftn=pyfftw.interfaces.numpy_fft.fftn, ifftn=pyfftw.interfaces.numpy_fft.ifftn,
                                     normalize_kernel=False)
+
         cc=cc+1
     
     if  average==True:
@@ -553,7 +571,8 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
         data0sum=data[0,i0,:,:].sum()
         
         for i in range(dshape[-3]):
-            model[0,i,:,:]=model0*(data[0,i,:,:]).sum()/data0sum
+            if  data0sum!=0.0:
+                model[0,i,:,:]=model0*(data[0,i,:,:]).sum()/data0sum
     
 
     if  verbose==True:

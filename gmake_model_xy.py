@@ -54,12 +54,18 @@ def gmake_model_api(mod_dct,dat_dct,
                 models['data@'+image]=dat_dct['data@'+image]
                 models['error@'+image]=dat_dct['error@'+image]   
                 models['mask@'+image]=dat_dct['mask@'+image]
-                models['sample@'+image]=dat_dct['sample@'+image]
+                if  'sample@'+image in dat_dct.keys():
+                    models['sample@'+image]=dat_dct['sample@'+image]
+                else:
+                    models['sample@'+image]=None                
+                
                 if  'psf@'+image in dat_dct.keys():
                     models['psf@'+image]=dat_dct['psf@'+image]
                 else:
                     models['psf@'+image]=None
                 naxis=models['data@'+image].shape
+                if  len(naxis)==3:
+                    naxis=(1,)+naxis
                 models['imodel@'+image]=np.zeros(naxis)
                 models['cmodel@'+image]=np.zeros(naxis)
                 #   save 2d objects (even it has been broadcasted to 3D for spectral cube)
@@ -118,21 +124,26 @@ def gmake_model_api(mod_dct,dat_dct,
             models[tag.replace('imodel@','cmodel@')]=cmodel.copy()
             models[tag.replace('imodel@','kernel@')]=kernel.copy()
         """
-
+                
         if  'imod2d@' in tag:
-            #print(tag)
+            #print('-->',tag)
+            fits.writeto('test1.fits',models[tag],header=models[tag.replace('imod2d@','header@')],overwrite=True)
+            fits.writeto('test3.fits',models[tag.replace('imod2d@','psf@')],header=models[tag.replace('imod2d@','header@')],overwrite=True)
             cmodel,kernel=gmake_model_simobs(models[tag],
                                  models[tag.replace('imod2d@','header@')],
                                  psf=models[tag.replace('imod2d@','psf@')],
                                  returnkernel=True,
                                  average=True,
                                  verbose=False)
+            fits.writeto('test2.fits',cmodel,header=models[tag.replace('imod2d@','header@')],overwrite=True)
+                                                                
             models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
-            models[tag.replace('imod2d@','cmodel@')]+=cmodel
+            models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod2d@','kernel@')]=kernel.copy()
+            
 
         if  'imod3d@' in tag:
-            #print(tag)
+            #print('-->',tag)
             cmodel,kernel=gmake_model_simobs(models[tag],
                                  models[tag.replace('imod3d@','header@')],
                                  psf=models[tag.replace('imod3d@','psf@')],
@@ -140,12 +151,12 @@ def gmake_model_api(mod_dct,dat_dct,
                                  average=False,
                                  verbose=False)
             models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
-            models[tag.replace('imod3d@','cmodel@')]+=cmodel
+            models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
             models[tag.replace('imod3d@','kernel@')]=kernel.copy()
-
+            
     if  verbose==True:            
         print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs-total',time.time() - start_time))
-    
+
     return models                
 
 def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
@@ -161,11 +172,11 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     blobs={'lnprob':0.0,
            'chisq':0.0,
-           'chisq_all':0.0,
+           #'chisq_all':0.0,
            'ndata':0.0,
-           'ndata_all':0.0,
+           #'ndata_all':0.0,
            'wdev':np.array([]),
-           'wdev_all':np.array([]),
+           #'wdev_all':np.array([]),
            'npar':len(theta)}
      
     inp_dct0=deepcopy(inp_dct)
@@ -225,38 +236,48 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         #print(sp.shape)
         #print(sp[:,2:0:-1].shape)
         #"""
-        imtmp=np.squeeze(em)
-        nxyz=np.shape(imtmp)
-        if  len(nxyz)==3:
-            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
-                                        imtmp,sp[:,::-1],method='linear')
+
+        if  sp is not None:
+            imtmp=np.squeeze(em)
+            nxyz=np.shape(imtmp)
+            if  len(nxyz)==3:
+                imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                            imtmp,sp[:,::-1],method='linear')
+            else:
+                imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
+                                            imtmp,sp[:,1::-1],method='linear')
+            sigma2=imtmp**2.
+            imtmp=np.squeeze(im-mo)
+            
+            if  len(nxyz)==3:
+                imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
+                                            imtmp,sp[:,::-1],method='linear')
+            else:
+                imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
+                                            imtmp,sp[:,1::-1],method='linear')
         else:
-            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
-                                        imtmp,sp[:,1::-1],method='linear')
-        sigma2=imtmp**2.0
-        imtmp=np.squeeze(im-mo)
-        
-        if  len(nxyz)==3:
-            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1]),np.arange(nxyz[2])),\
-                                        imtmp,sp[:,::-1],method='linear')
-        else:
-            imtmp=interpn((np.arange(nxyz[0]),np.arange(nxyz[1])),\
-                                        imtmp,sp[:,1::-1],method='linear')
+            
+            sigma2=np.ravel(np.squeeze(em)**2.)
+            imtmp=np.ravel(np.squeeze(im-mo))
+            mk=np.ravel(mk)
+            sigma2=sigma2[np.where(mk==0)]
+            imtmp=imtmp[np.where(mk==0)]
         
         #print(sp[:,1::-1])
-        lnl1=np.sum( (imtmp)**2/sigma2 )
-        lnl2=np.sum( np.log(sigma2*2.0*np.pi) )
+
+        lnl1=np.nansum( (imtmp)**2/sigma2 )
+        lnl2=np.nansum( np.log(sigma2*2.0*np.pi) )
         lnl=-0.5*(lnl1+lnl2)
         wdev=imtmp/np.sqrt(sigma2)
-        wdev_all=(im-mo)/em
+  
         
         blobs['lnprob']+=lnl
         blobs['chisq']+=lnl1
-        blobs['chisq_all']+=np.sum(wdev_all**2.0)
-        blobs['ndata']+=(np.shape(sp))[0]
-        blobs['ndata_all']+=wdev_all.size
+        #blobs['chisq_all']+=np.sum(wdev_all**2.0)
+        blobs['ndata']+=wdev.size
+        #blobs['ndata_all']+=wdev_all.size
         blobs['wdev']=np.append(blobs['wdev'],wdev)
-        blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
+        #blobs['wdev_all']=np.append(blobs['wdev_all'],wdev_all)
         
     
     if  savemodel!='':
@@ -340,8 +361,8 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
 
                 outname=prof.replace(key.replace('data@',''),'')
-                outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
-                gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
+                outname=outname.replace('imod3d_prof@','imodel_').replace('@','_')
+                gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits','.rp'))
 
     np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
 
@@ -405,7 +426,7 @@ def gmake_model_chisq(theta,
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
-    chisq=blobs['chisq_all'].copy()
+    chisq=blobs['chisq'].copy()
     
     #return lp+chisq,blobs
     return lp+chisq       
@@ -443,11 +464,11 @@ def gmake_model_lmfit_wdev(params,
     
     lnl,blob=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
  
-    wdev=blob['wdev_all'].flatten().copy()
+    wdev=blob['wdev'].flatten().copy()
     
     if  blobs is not None:
         blobs['pars'].append(theta)
-        blobs['chi2'].append(blob['chisq_all'])
+        blobs['chi2'].append(blob['chisq'])
 
     if  verbose==True:
         print("")

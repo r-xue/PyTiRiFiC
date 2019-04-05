@@ -143,3 +143,4 @@ check GalFIT papers
 + check https://photutils.readthedocs.io/en/stable/background.html
 + reduce memory footprint
 + switch to single precsion-float as the data is single
++ check recent 3D-barolo development

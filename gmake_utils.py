@@ -458,11 +458,13 @@ def gmake_read_data(inp_dct,verbose=False,
                             dat_dct['flag@'+vis_list[ind]]=t.getcol('FLAG')
                     t.close()
                     
+                    #   use the last spw in the SPECTRAL_WINDOW table
                     ts=ctb.table(vis_list[ind]+'/SPECTRAL_WINDOW',ack=False)
                     dat_dct['chanfreq@'+vis_list[ind]]=ts.getcol('CHAN_FREQ')[-1]
                     dat_dct['chanwidth@'+vis_list[ind]]=ts.getcol('CHAN_WIDTH')[-1]
                     ts.close()
                     
+                    #   use the last field phasecenter in the FIELD table
                     tf=ctb.table(vis_list[ind]+'/FIELD',ack=False) 
                     phase_dir=tf.getcol('PHASE_DIR')
                     tf.close()
@@ -488,7 +490,9 @@ def gmake_read_data(inp_dct,verbose=False,
                               np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
                               np.size(dat_dct['chanfreq@'+vis_list[ind]]))
                         print('chanwidth@'+vis_list[ind],'>> [GHz]',
-                              np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9)                    
+                              np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9,
+                              np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9,
+                              np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9)
                         print('phasecenter@'+vis_list[ind],'>>',dat_dct['phasecenter@'+vis_list[ind]])
                         
         if  'image' in inp_dct[tag].keys():
@@ -554,7 +558,7 @@ def gmake_read_data(inp_dct,verbose=False,
                             print('fill '+tag.replace('data@','error@'),np.std(data))                
     
     if  verbose==True:
-        print("\n")
+        print("")
         print("-"*80)    
     
     return dat_dct

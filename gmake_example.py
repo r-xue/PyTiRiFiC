@@ -87,11 +87,12 @@ if  __name__=="__main__":
               'xyb6dm128rc_ab']
     versions=['xyb46dm128rc_ab']
     versions=['uvb6_ab']
+    versions=['xysf_ab']
     for version in versions:
         result=gmake_example_bx610(version,
-                                   run_setup=False,
+                                   run_setup=True,
                                    run_fit=False,
-                                   run_analysis=True,
+                                   run_analysis=False,
                                    run_plots=False)
   
     
