@@ -217,7 +217,8 @@ def gmake_model_api(mod_dct,dat_dct,
          
         #"""   
         if  'imod2d@' in tag:
-            if  tag.replace('imod2d@','type@')=='vis':
+
+            if  models[tag.replace('imod2d@','type@')]=='vis':
                 #print('>>> '+tag)
                 uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
                                             models[tag.replace('imod2d@','data@')],
@@ -227,7 +228,7 @@ def gmake_model_api(mod_dct,dat_dct,
                                             average=True,
                                             verbose=False)
                 #models[tag.replace('imod2d@','uvmodel@')]+=uvmodel 
-            if  tag.replace('imod2d@','type@')=='image':
+            if  models[tag.replace('imod2d@','type@')]=='image':
                 #print('-->',tag)
                 fits.writeto('test1.fits',models[tag],header=models[tag.replace('imod2d@','header@')],overwrite=True)
                 fits.writeto('test3.fits',models[tag.replace('imod2d@','psf@')],header=models[tag.replace('imod2d@','header@')],overwrite=True)
@@ -244,7 +245,8 @@ def gmake_model_api(mod_dct,dat_dct,
                 models[tag.replace('imod2d@','kernel@')]=kernel.copy()                      
             
         if  'imod3d@' in tag:
-            if  tag.replace('imod3d@','type@')=='vis':
+
+            if  models[tag.replace('imod3d@','type@')]=='vis':
             
                 #print('>>> '+tag)
                 uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
@@ -256,7 +258,7 @@ def gmake_model_api(mod_dct,dat_dct,
                                             verbose=False)
                  #models[tag.replace('imod3d@','uvmodel@')]+=uvmodel
              
-            if  tag.replace('imod3d@','type@')=='image':
+            if  models[tag.replace('imod3d@','type@')]=='image':
                               #print('-->',tag)
                 cmodel,kernel=gmake_model_convol(models[tag],
                                      models[tag.replace('imod3d@','header@')],
@@ -330,7 +332,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             continue
 
 
-        if  key.replace('data@','type@')=='vis':
+        if  models[key.replace('data@','type@')]=='vis':
             
             uvmodel=models[key.replace('data@','uvmodel@')]
             uvdata=models[key]
@@ -375,7 +377,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             
         #print("---{0:^30} : {1:<8.5f} seconds ---\n".format('chisq',time.time() - tic0))
 
-        if  key.replace('data@','type@')=='image':
+        if  models[key.replace('data@','type@')]=='image':
             
             im=models[key]
             hd=models[key.replace('data@','header@')]        
@@ -484,8 +486,9 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
         
         if  'data@' not in key:
             continue
+
         
-        if  key.replace('data@','type@')=='image':
+        if  models[key.replace('data@','type@')]=='vis':
         
             basename=key.replace('data@','')
             #   name string replacement
@@ -537,7 +540,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
         
         
-        if  key.replace('data@','type@')=='vis':
+        if  models[key.replace('data@','type@')]=='image':
             
             basename=key.replace('data@','')
             #   name string replacement

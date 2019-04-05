@@ -1132,9 +1132,9 @@ if  __name__=="__main__":
     gmake_gravity_galpy(mod_dct,plotrc=False)
     #"""
     
-    #tic0=time.time()
-    #models=gmake_model_api(mod_dct,dat_dct,verbose=True)
-    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
+    tic0=time.time()
+    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
+    print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
 
 
 
@@ -1147,13 +1147,13 @@ if  __name__=="__main__":
     
     
     fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
-    gmake_fit_iterate(fit_dct,sampler,nstep=500)
+    #gmake_fit_iterate(fit_dct,sampler,nstep=500)
     
     #gmake_lmfit_analyze_brute('examples/bx610/models/uvb6_lmbt')  
     
-    #theta=fit_dct['p_start']
-    #lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='test/xysf_ab')
-    #print(blobs)
+    theta=fit_dct['p_start']
+    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='test/xysf_ab')
+    print(blobs)
         
     #test_cloud_lineprofile()
     #test_pot2rc()

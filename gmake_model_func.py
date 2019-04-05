@@ -428,7 +428,7 @@ def gmake_model_kinmspy(header,obj,
     return model,model_prof
 
 
-def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):
+def gmake_model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):
     """
         simulate the observation in the image-domain
         input is expected in units of Jy/pix
@@ -578,7 +578,7 @@ def gmake_model_simobs(data,header,beam=None,psf=None,returnkernel=False,verbose
     if  verbose==True:
         
         print("convolved plane counts: ",cc)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('convol',time.time()-start_time))
         #start_time = time.time()
         #test1=(data[0,:,:,:])
         #test2=(kernel[np.newaxis,0,100,(52-10):(52+10),(52-10):(52+10)])
@@ -788,7 +788,7 @@ def gmake_model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
     if  verbose==True:
         
         print("uvsampling plane counts: ",cc)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simobs',time.time()-start_time))
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('uvsample',time.time()-start_time))
         print("out=in+model:",uvmodel is uvmodel_in)
         
     return uvmodel
