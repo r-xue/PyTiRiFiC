@@ -30,7 +30,7 @@ name            'bx610-co76'            # something meaningful to you
 note            'CO76 of BX610 in BB2'
 
 #   data description
-vis           'examples/bx610/alma/band6/bx610_band6.bb2.cube.ms'       # vis
+vis           'examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms'       # vis
                                         # FITS table (sample.sp_index: indices of sampling)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj
@@ -66,7 +66,7 @@ name            'bx610-ci21'            # something meaningful to you
 note            'CI21 of BX610 in BB2'
 
 #   data description
-vis           'examples/bx610/alma/band6/bx610_band6.bb2.cube.ms'       # vis
+vis           'examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms'       # vis
                                         # FITS table (sample.sp_index: indices of sampling)
 samp            None                    # sampling index table
 bmaj            None                    # bmaj
@@ -103,7 +103,7 @@ name            'bx610-h2o'            # something meaningful to you
 note            'H2O of BX610 in BB3'
 
 #   data description
-vis           'examples/bx610/alma/band6/bx610_band6.bb3.cube.ms'       # vis
+vis           'examples/bx610/alma/band6/bx610_band6.bb3.cube3.ms'       # vis
 samp            None                    # sampling index table
 bmaj            None                    # bmaj
 bmin            None                    # bmin
@@ -139,7 +139,7 @@ name            'bx610-cont'            # something meaningful to you
 note            'submm cont of BX610 in BB1/2/3/4'
 
 #   data description
-vis             'examples/bx610/alma/band6/bx610_band6.bb1.mfs.ms,examples/bx610/alma/band6/bx610_band6.bb2.cube.ms,examples/bx610/alma/band6/bx610_band6.bb3.cube.ms,examples/bx610/alma/band6/bx610_band6.bb4.mfs.ms'       # vis
+vis             'examples/bx610/alma/band6/bx610_band6.bb1.mfs.ms,examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms,examples/bx610/alma/band6/bx610_band6.bb3.cube3.ms,examples/bx610/alma/band6/bx610_band6.bb4.mfs.ms'       # vis
                                         # psf file (otherwise using header info)
 bmaj            None                    # bmaj
 bmin            None                    # bmin
@@ -214,5 +214,5 @@ inc@cont        0                    45.                 30
 
 method          'amoeba'
 outname_replace	[('examples/bx610/alma/band6/bx610_band6.','b6_'),('examples/bx610/alma/band6/bx610_band4.','b4_'),('.ms','.fits')]
-outname_exclude ['cube.','mfs.']
+outname_exclude ['cube.','mfs.','cube3.']
 outdir         'examples/bx610/models/uvb6_ab'
