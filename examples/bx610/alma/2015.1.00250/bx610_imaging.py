@@ -206,6 +206,10 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 #             keepflags=False)
 
 
+#bin every 3 channels / ~30km/s
+#   we can do it in one shot: average-transform
+#   or two steps: transform-average
+
 # msname='bx610_band6.bb2.cube.ms'
 # os.system('rm -rf '+msname)
 # mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
@@ -213,13 +217,16 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 #             spw='1',outframe='LSRK',regridms=True,
 #             mode='frequency',start='250.752890409GHz',width='7.81215322296MHz',nchan=238,
 #             keepflags=False)
-# This doesn't work
-# # os.system('rm -rf '+msname.replace('cube','mfs'))
-# # mstransform(vis=msname,outputvis=msname.replace('cube','mfs'),datacolumn='data',
-# #             spw='0:250.79375~251.0828125GHz;251.3953125~251.8875GHz;252.16875~252.6140625GHz',
-# #             chanaverage=True,chanbin=1000,regridms=True,combinespws=True,
-# #             keepflags=False)
-
+# msname='bx610_band6.bb2.cube3.ms'
+# os.system('rm -rf '+msname)
+# mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+#             timeaverage=False,timebin='30s',
+#             chanaverage=True,chanbin=3,
+#             spw='1',outframe='LSRK',regridms=True,
+#             mode='channel',start=1,width=1,nchan=79,
+#             #mode='frequency',start='250.752890409GHz',width='7.81215322296MHz',nchan=238, 
+#             # averge happens first, so the mode='channel' is basd on the average-after channel grid
+#             keepflags=False)
 
 # msname='bx610_band6.bb3.cube.ms'
 # os.system('rm -rf '+msname)
@@ -228,7 +235,15 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 #             spw='2',outframe='LSRK',regridms=True,
 #             mode='frequency',start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
 #             keepflags=False)
-
+msname='bx610_band6.bb3.cube3.ms'
+os.system('rm -rf '+msname)
+mstransform(vis='../calibrated/uid___A001_X2fe_X20f_target.ms',outputvis=msname,datacolumn='data',field='BX610',
+            timeaverage=False,timebin='30s',
+            chanaverage=True,chanbin=3,
+            spw='2',outframe='LSRK',regridms=True,
+            mode='channel',start=0,width=1,nchan=79,
+            #mode='frequency',start='233.254378783GHz',width='7.81213115096MHz',nchan=238,
+            keepflags=False)
 
 
 # msname='bx610_band6.bb4.cube.ms'
@@ -243,9 +258,11 @@ alma_imager(vis='uid___A001_X2fe_X20f_target.ms',imagename=imagename_list,
 #             chanaverage=True,chanbin=1000,
 #             keepflags=False)
 
-plotms(msname.replace('cube','mfs'),yaxis='weight',xaxis='uvdist')            
-xu.checkchflag(msname.replace('cube','mfs'))
-statwt(vis=msname.replace('cube','mfs'),preview=True,datacolumn='data',timebin=20,spw='0')        
+
+
+# plotms(msname.replace('cube','mfs'),yaxis='weight',xaxis='uvdist')            
+# xu.checkchflag(msname.replace('cube','mfs'))
+# statwt(vis=msname.replace('cube','mfs'),preview=True,datacolumn='data',timebin=20,spw='0')        
 
 
 

@@ -509,7 +509,9 @@ def gmake_read_data(inp_dct,verbose=False,
             if  'sample' in obj:
                 sp_list=obj['sample'].split(",")
             if  'psf' in obj:
-                pf_list=obj['psf'].split(",")                        
+                pf_list=obj['psf'].split(",")          
+            if  'mprior' in obj:
+                mp_list=obj['mprior'].split(",")                                  
             
             for ind in range(len(im_list)):
                 
@@ -551,6 +553,14 @@ def gmake_read_data(inp_dct,verbose=False,
                         print('loading: '+pf_list[ind]+' to ')
                         print('psf@'+im_list[ind])       
                         print(data.shape,convert_size(getsizeof(data)))
+                        
+                if  ('mprior@'+im_list[ind] not in dat_dct) and 'mprior' in obj:
+                    data=fits.getdata(pf_list[ind],memmap=False)                
+                    dat_dct['mprior@'+im_list[ind]]=data
+                    if  verbose==True:
+                        print('loading: '+pf_list[ind]+' to ')
+                        print('mprior@'+im_list[ind])       
+                        print(data.shape,convert_size(getsizeof(data)))                        
                             
                 tag='data@'+im_list[ind]
                 
