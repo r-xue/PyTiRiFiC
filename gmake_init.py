@@ -76,6 +76,7 @@ from astropy.convolution import discretize_model
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
 from matplotlib.colors import LogNorm
+from skimage import transform
 #pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
 #pyfftw.interfaces.cache.enable()
 ###
@@ -195,7 +196,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
 
-#from KinMS import KinMS
+execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/astro.py')
 execfile('gmake_model_func_kinms.py')
 execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 #execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')

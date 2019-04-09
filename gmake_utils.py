@@ -45,7 +45,51 @@ def imcontsub(imagename,linefile='',contfile='',
 
     cube_imcontsub.write(linefile,overwrite=True)
     cube_mean.write(contfile,overwrite=True)
+
+def gal_flat(im,ang,inc,cen=None,interp=True):
+    """
+    translated from IDL/gal_flat.pro
+    """
+    angr = np.deg2rad(ang+90.)
+    tanang = np.tan(angr)
+    cosang = np.cos(angr)
+    cosinc = np.cos(np.deg2rad(inc))
     
+    dims=im.shape
+
+    if  cen is None:
+        xcen = dims[1]/2.0      
+        ycen = dims[0]/2.0
+    else:
+        xcen = cen[0]
+        ycen = cen[1]
+
+    b=ycen-xcen*tanang
+    
+    gridx = xcen + np.array([ [-1,1], [-1,1] ]) * dims[1]/6.0
+    gridy = ycen + np.array([ [-1,-1], [1,1] ]) * dims[0]/6.0      
+
+    yprime = gridx*tanang + b            
+    r0 = (gridy-yprime)*np.cos(angr)     
+    delr = r0*(1.0-cosinc)               
+    dely = -delr*np.cos(angr)               
+    delx =  delr*np.sin(angr)
+    distx = gridx + delx
+    disty = gridy + dely
+
+    x0 = dims[1]/3.0
+    y0 = dims[0]/3.0
+    dx = x0                            
+    dy = y0
+
+    t=transform.PolynomialTransform()
+    source=np.array((gridx.flatten(),gridy.flatten()))
+    destination=np.array((distx.flatten(),disty.flatten()))
+    t.estimate(source.T,destination.T,1)
+    
+    im_wraped=transform.warp(im, t, order=1, mode='constant',cval=float('nan'))
+
+    return im_wraped    
 
 def cr_tanh(r,r_in=0.0,r_out=1.0,theta_out=30.0):
     """
