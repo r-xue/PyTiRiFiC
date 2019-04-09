@@ -88,7 +88,8 @@ def gmake_model_disk2d(header,ra,dec,
     
 def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     """
-    replace the cloudlet generator in KinMSpy(); replacement for kinms_sampleFromArbDist_oneSided()
+    replace the cloudlet generator in KinMSpy(); 
+    replacement for kinms_sampleFromArbDist_oneSided();
     
     Note from KinMSpy()
         inclouds : np.ndarray of double, optional

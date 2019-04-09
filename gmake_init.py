@@ -196,7 +196,7 @@ import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
 
 #from KinMS import KinMS
-execfile('/Users/Rui/Dropbox/Worklib/progs/KinMSpy/KinMS.py')
+execfile('gmake_model_func_kinms.py')
 execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
 #execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
 execfile('gmake_model_func.py')

@@ -136,7 +136,12 @@ def gmake_model_api(mod_dct,dat_dct,
                     if  'sample@'+image in dat_dct.keys():
                         models['sample@'+image]=dat_dct['sample@'+image]
                     else:
-                        models['sample@'+image]=None                
+                        models['sample@'+image]=None
+                        
+                    if  'pmodel@'+image in dat_dct.keys():
+                        models['pmodel@'+image]=dat_dct['pmodel@'+image]
+                    else:
+                        models['pmodel@'+image]=None                                            
                     
                     if  'psf@'+image in dat_dct.keys():
                         models['psf@'+image]=dat_dct['psf@'+image]
