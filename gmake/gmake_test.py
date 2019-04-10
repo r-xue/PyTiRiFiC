@@ -2,7 +2,8 @@
     used to test various functions
 """
 
-execfile('gmake_init.py')
+execfile('gmake/gmake_init.py')
+
 
 def density_func_flat(x, y, z):
     
@@ -1124,19 +1125,21 @@ def test_pot2rc():
 
 if  __name__=="__main__":
     
+    import gmake
+    importlib.reload(gmake)
     #"""
     inp_dct=None
     dat_dct=None
-    inp_dct=gmake_read_inp('examples/bx610/xysf_k_ab.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True)
+    inp_dct=gmake.gmake_read_inp('examples/bx610/xysf_k_ab.inp',verbose=False)
+    dat_dct=gmake.gmake_read_data(inp_dct,verbose=True)
     
-    mod_dct=gmake_inp2mod(inp_dct)
-    gmake_gravity_galpy(mod_dct,plotrc=False)
+    mod_dct=gmake.gmake_inp2mod(inp_dct)
+    gmake.gmake_gravity_galpy(mod_dct,plotrc=False)
     #"""
     
-    #tic0=time.time()
-    #models=gmake_model_api(mod_dct,dat_dct,verbose=True)
-    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
+    tic0=time.time()
+    models=gmake.gmake_model_api(mod_dct,dat_dct,verbose=True)
+    print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
 
 
     #"""
@@ -1146,8 +1149,9 @@ if  __name__=="__main__":
     #"""
     
     
-    fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
-    gmake_fit_iterate(fit_dct,sampler,nstep=300)
+    #fit_dct,sampler=gmake.gmake_fit_setup(inp_dct,dat_dct)
+    #gmake.gmake_fit_iterate(fit_dct,sampler,nstep=300)
+    
     
     #gmake_lmfit_analyze_brute('examples/bx610/models/uvb6_lmbt')  
     

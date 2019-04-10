@@ -1,5 +1,5 @@
-
-
+from .gmake_init import *
+from .gmake_model import * 
 
 def gmake_emcee_setup(inp_dct,dat_dct):
     """

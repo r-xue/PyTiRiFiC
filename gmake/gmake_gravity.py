@@ -1,3 +1,4 @@
+from .gmake_init import *
 
 def gmake_gravity_galpy(inp_dct,plotrc=False):
     

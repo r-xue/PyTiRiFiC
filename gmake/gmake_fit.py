@@ -1,3 +1,8 @@
+from .gmake_init import *
+from .gmake_amoeba import *
+from .gmake_emcee import *
+from .gmake_lmfit import *
+
 def gmake_fit_setup(inp_dct,dat_dct):
     
     sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}

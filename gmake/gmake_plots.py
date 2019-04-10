@@ -1,3 +1,4 @@
+from .gmake_init import *
 
 def calc_ppbeam(header):
     """

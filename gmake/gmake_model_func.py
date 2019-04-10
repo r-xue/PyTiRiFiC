@@ -1,3 +1,6 @@
+from .gmake_init import *
+from .gmake_utils import *
+from .gmake_model_func_kinms import *
 
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,

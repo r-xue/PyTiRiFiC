@@ -1,3 +1,6 @@
+from .gmake_init import *
+from .gmake_model_func import *
+from .gmake_gravity import *
 
 def gmake_model_api(mod_dct,dat_dct,
                     nsamps=100000,

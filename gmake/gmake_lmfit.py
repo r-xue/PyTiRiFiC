@@ -1,4 +1,4 @@
-
+from .gmake_init import *
 
 def gmake_lmfit_setup(inp_dct,dat_dct):
     

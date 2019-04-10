@@ -1,3 +1,4 @@
+from .gmake_init import *
 
 def moments(imagename,outname='test',
             maskname='',linechan=None):

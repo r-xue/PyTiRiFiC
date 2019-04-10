@@ -1,5 +1,4 @@
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
-
+from .gmake_init import *
 
 def gmake_mpfit_setup(inp_dct,dat_dct):
     

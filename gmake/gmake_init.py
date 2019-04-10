@@ -3,9 +3,6 @@
 #from galpy.potential import MiyamotoNagaiPotential
 #from galpy.potential import KeplerPotential
 
-
-
-
 from __future__ import print_function
 from past.builtins import execfile
 import uuid
@@ -197,20 +194,5 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
 
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/astro.py')
-execfile('gmake_model_func_kinms.py')
-execfile('/Users/Rui/Dropbox/Worklib/projects/xlibpy/xlib/amoeba_sa.py')
-#execfile('/Users/Rui/Library/Python/2.7/lib/python/site-packages/mgefit/cap_mpfit.py')
-execfile('gmake_model_func.py')
-execfile('gmake_model.py')
-execfile('gmake_utils.py')
-execfile('gmake_emcee.py')
-execfile('gmake_amoeba.py')
-#execfile('gmake_mpfit.py')
-execfile('gmake_lmfit.py')
-execfile('gmake_gravity.py')
-execfile('gmake_plots.py')
-execfile('gmake_fit.py')
-execfile('gmake_uvamp.py')
 
 
