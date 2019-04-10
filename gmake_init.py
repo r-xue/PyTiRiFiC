@@ -31,6 +31,7 @@ import astropy.units as u
 from tqdm import tqdm as tqdm
 import scipy.stats
 from spectral_cube import SpectralCube
+from astropy.modeling.models import Rotation2D
 #import gala.integrate as gi
 #import gala.dynamics as gd
 #import gala.potential as gp

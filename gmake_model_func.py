@@ -83,14 +83,54 @@ def gmake_model_disk2d(header,ra,dec,
 
     return model
 
+def gmake_model_kinmspy_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
+    """
+    cloudlet generator with a prior morphological assumption 
+    """
 
+    w=WCS(obj['pheader']).celestial
+    px,py=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],0)
+    
+    cell=np.mean(proj_plane_pixel_scales(w))*3600.0
+    
 
+    pmodel_flat=gal_flat(obj['pmodel'],obj['pa'],obj['inc'],cen=(px,py),fill_value=0.0,align_major=True)
+    fits.writeto('testx.fits',pmodel_flat,overwrite=True)
+    
+    sample=pdf2rv_nd(pmodel_flat,size=nSamps,sort=False,interp=True,seed=seed)
+    shape=sample.shape
+
+    inClouds=np.zeros((shape[1],3))
+    inClouds[:,0]=(sample[0,:]-px)*cell
+    inClouds[:,1]=(sample[1,:]-py)*cell
+    
+    
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    sbProf=mod(sbRad)
+    diskThick=0.0
+    if  'diskthick' in obj:
+        diskThick=obj['diskthick']
+    
+    # truncate the sb profile
+    if  'sbrad_min' in obj:
+        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
+    if  'sbrad_max' in obj:
+        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0      
+            
+    profile={}
+    profile['sbrad']=sbRad
+    profile['sbprof']=sbProf    #<--- just a placeholder
+
+    return inClouds,profile
+    
+    
     
 def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     """
-    replace the cloudlet generator in KinMSpy(); 
-    replacement for kinms_sampleFromArbDist_oneSided();
-    
+    replace the cloudlet generator in KinMSpy.py->kinms_sampleFromArbDist_oneSided();
+
     Note from KinMSpy()
         inclouds : np.ndarray of double, optional
          (Default value = [])
@@ -221,10 +261,7 @@ def gmake_model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
     inClouds[:,0] = xPos
     inClouds[:,1] = yPos
     inClouds[:,2] = zPos
-    
-                                                              
-    
-    
+
     #return something could be useful
     profile={}
     profile['sbrad']=sbRad
@@ -315,7 +352,23 @@ def gmake_model_kinmspy(header,obj,
     
     #   only extend to this range in vrot/sbprof
     #   this is the fine radii vector fed to kinmspy
-    rad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+
+
+    if  fixseed==True:
+        seeds=[100,101,102,103]
+    else:
+        seeds=np.random.randint(0,100,4)
+        # seeds[0] -> rad
+        # seeds[1] -> phi
+        # seeds[2] -> z
+        # seeds[3] -> v_sigma    
+    
+    if  obj['pmodel'] is None:
+        inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,seeds,nSamps=nsamps)
+        rad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    else:
+        inclouds,prof1d=gmake_model_kinmspy_inclouds_pmodel(obj,seeds,nSamps=nsamps)
+        rad=np.arange(0.,np.nanmax(np.sqrt(inclouds[:,0]**2+inclouds[:,1]**2))+obj['sbser'][0]/25.0,obj['sbser'][0]/25.0)
     
     ikind='cubic'  # bad for extraplate but okay for interplate 'linear'/'quadratic'
 
@@ -323,8 +376,6 @@ def gmake_model_kinmspy(header,obj,
     velprof=if_vrot(rad)
     
     if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
-        #print(obj['vrad'])
-        #print(obj['vdis'])
         if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
         gassigma=if_vdis(rad)
     else:
@@ -364,16 +415,7 @@ def gmake_model_kinmspy(header,obj,
 
     #start_time = time.time()
 
-    if  fixseed==True:
-        seeds=[100,101,102,103]
-    else:
-        seeds=np.random.randint(0,100,4)
-        # seeds[0] -> rad
-        # seeds[1] -> phi
-        # seeds[2] -> z
-        # seeds[3] -> v_sigma
         
-    inclouds,prof1d=gmake_model_kinmspy_inclouds(obj,seeds,nSamps=nsamps)
 
     
     cube=KinMS(xs,ys,vs,

@@ -788,7 +788,7 @@ def test_sampling_approx():
     sample_sort=False
     sample_interp=True
     
-    nxy=[1001,1001]
+    nxy=[1001,2001]
     pdf=makekernel(nxy[0],nxy[1],[10,0.2],pa=0,cent=[501,501])
     
     start_time = time.time()
@@ -806,9 +806,11 @@ def test_sampling_approx():
     ax.set_title('verify offset')
     
     
-    nxy=[1001,1001]
+    nxy=[1001,2001]
     pdf=makekernel(nxy[0],nxy[1],[200,100],pa=10,cent=[501,501])
     pdf=pdf+makekernel(nxy[0],nxy[1],[100,20],pa=10,cent=[501+300,501])
+    print(pdf.shape)
+    #pdf (c_row,n_column)
     
     start_time = time.time()
     sample=pdf2rv_nd(pdf)
@@ -820,8 +822,8 @@ def test_sampling_approx():
     #fig=plt.figure(figsize=(24,11))
     ax= fig.add_subplot(1,2,2)
     ax.plot(xpos,ypos,linestyle='None',marker='.')
-    ax.set_xlim([0,1001])
-    ax.set_ylim([0,1001])
+    ax.set_xlim([0,2001])
+    ax.set_ylim([0,2001])
     ax.set_title('verify axis')    
     
     fig.savefig('test/test_sampling_approx.png')
@@ -1125,41 +1127,44 @@ if  __name__=="__main__":
     #"""
     inp_dct=None
     dat_dct=None
-    inp_dct=gmake_read_inp('examples/bx610/xysf_ab.inp',verbose=False)
+    inp_dct=gmake_read_inp('examples/bx610/xysf_k_ab.inp',verbose=False)
     dat_dct=gmake_read_data(inp_dct,verbose=True)
     
     mod_dct=gmake_inp2mod(inp_dct)
     gmake_gravity_galpy(mod_dct,plotrc=False)
     #"""
     
-    tic0=time.time()
-    models=gmake_model_api(mod_dct,dat_dct,verbose=True)
-    print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
-
-
-
+    #tic0=time.time()
+    #models=gmake_model_api(mod_dct,dat_dct,verbose=True)
+    #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
 
 
     #"""
 
+    
     #print('Took {0} second on api'.format(float(time.time()-tic0))) 
     #"""
     
     
     fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
-    #gmake_fit_iterate(fit_dct,sampler,nstep=500)
+    gmake_fit_iterate(fit_dct,sampler,nstep=300)
     
     #gmake_lmfit_analyze_brute('examples/bx610/models/uvb6_lmbt')  
     
-    theta=fit_dct['p_start']
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='test/xysf_ab')
-    print(blobs)
+    #theta=fit_dct['p_start']
+    #lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel='test/xysf_ab')
+    #print(blobs)
+
+    #test_sampling_approx()
         
     #test_cloud_lineprofile()
     #test_pot2rc()
     #dat_dct=test_visfit()
     #execfile('gmake_plots.py')
-    pass
+    
+    
+    
+
 
     #test_imcontsub()
     #test_imcontsub('examples/bx610/alma/bx610.bb3.cube64x64.itern.image.fits',choice='bb3')

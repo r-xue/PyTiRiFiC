@@ -70,7 +70,7 @@ def gmake_example_bx610(version,
     
         if  dataset=='sinfoni':
             
-            fn_name='examples/bx610/models/xysf_ab/p_fits/data_sf.fits'
+            fn_name='examples/bx610/models/xysf_k_ab/p_fits/data_sf.fits'
         
             cen1='icrs; circle( 356.5393256478768,12.82201783168984,1.00") # text={cen1}'
             cen2='icrs; circle( 356.5393256478768,12.82201783168984,0.20") # text={cen2}'
@@ -78,20 +78,20 @@ def gmake_example_bx610(version,
             slice2='icrs; box( 356.5393256478768,12.82201783168984,0.20",0.75",38)  # text={slice2}'
             rois=[cen1,cen2,slice1,slice2]
             for roi in rois:
-                #gmake_plots_spec1d(fn_name,roi=roi)
+                gmake_plots_spec1d(fn_name,roi=roi)
                 continue
                 
             linechan=None
             linechan=(20951*u.angstrom,21220*u.angstrom)
-            #gmake_plots_mom0xy(fn_name,linechan=linechan)
+            gmake_plots_mom0xy(fn_name,linechan=linechan)
             
             pa=-52
-            #gmake_plots_makeslice(fn_name,
-            #                      radec=[356.5391952,12.8219583],
-            #                      width=0.5,length=2.5,pa=-52,linechan=linechan,
-            #                      slicechan=(20900*u.angstrom,21300*u.angstrom))
-            #gmake_plots_slice(fn_name,i=1)
-            #gmake_plots_slice(fn_name,i=2)
+            gmake_plots_makeslice(fn_name,
+                                  radec=[356.5391952,12.8219583],
+                                  width=0.5,length=2.5,pa=-52,linechan=linechan,
+                                  slicechan=(20900*u.angstrom,21300*u.angstrom))
+            gmake_plots_slice(fn_name,i=1)
+            gmake_plots_slice(fn_name,i=2)
             gmake_plots_radprof(fn_name)             
             
     
@@ -117,11 +117,12 @@ if  __name__=="__main__":
     versions=['xyb46dm128rc_ab']
     versions=['uvb6_ab']
     versions=['xysf_ab']
+    versions=['xysf_k_ab']
     for version in versions:
         result=gmake_example_bx610(version,
                                    run_setup=False,
                                    run_fit=False,
-                                   run_analysis=False,
+                                   run_analysis=True,
                                    #dataset='alma',
                                    dataset='sinfoni',
                                    run_plots=True)

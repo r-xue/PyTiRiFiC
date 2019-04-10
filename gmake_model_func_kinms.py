@@ -4,7 +4,8 @@ Change.log
                 see:
                     https://github.com/r-xue/KinMSpy/
                     https://github.com/TimothyADavis/KinMSpy/
-    
+                kinms.py->gmake_model_func_kinms.py
+    20190404:   remove kinms_sampleFromArbDist_oneSided()
 """
 
 
@@ -56,74 +57,6 @@ from astropy.io import fits
 from astropy.convolution import convolve_fft
 from makebeam import makebeam
 
-def kinms_sampleFromArbDist_oneSided(sbRad,sbProf,nSamps,seed,diskThick=0.0):
-    """
-
-    This function takes the input radial distribution and generates the positions of
-    `nsamps` cloudlets from under it. It also accounts for disk thickness
-    if requested. Returns 
-    
-    Parameters
-    ----------
-    sbRad : np.ndarray of double
-            Radius vector (in units of pixels).
-    
-    sbProf : np.ndarray of double
-            Surface brightness profile (arbitrarily scaled).
-    
-    nSamps : int
-            Number of samples to draw from the distribution.
-    
-    seed : list of int
-            List of length 4 containing the seeds for random number generation.
-    
-    diskThick : double or np.ndarray of double
-         (Default value = 0.0)
-            The disc scaleheight. If a single value then this is used at all radii.
-            If a ndarray then it should have the same length as sbrad, and will be 
-            the disc thickness as a function of sbrad. 
-
-    Returns
-    -------
-    inClouds : np.ndarray of double
-            Returns an ndarray of `nsamps` by 3 in size. Each row corresponds to
-            the x, y, z position of a cloudlet. 
-    """
-    #Randomly generate the radii of clouds based on the distribution given by the brightness profile
-    px=scipy.integrate.cumtrapz(sbProf*2.*np.pi*abs(sbRad),abs(sbRad),initial=0.)
-    px /= max(px)           
-    rng1 = np.random.RandomState(seed[0])            
-    pick = rng1.random_sample(nSamps)  
-    interpfunc = interpolate.interp1d(px,sbRad, kind='linear')
-    r_flat = interpfunc(pick)
-    
-    #Generates a random phase around the galaxy's axis for each cloud
-    rng2 = np.random.RandomState(seed[1])        
-    phi = rng2.random_sample(nSamps) * 2 * np.pi    
- 
-    # Find the thickness of the disk at the radius of each cloud
-    if isinstance(diskThick, (list, tuple, np.ndarray)):
-        interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
-        diskThick_here = interpfunc2(r_flat)
-    else:
-        diskThick_here = diskThick    
-    
-    #Generates a random (uniform) z-position satisfying |z|<disk_here 
-    rng3 = np.random.RandomState(seed[3])       
-    zPos = diskThick_here * rng3.uniform(-1,1,nSamps)
-    
-    #Calculate the x & y position of the clouds in the x-y plane of the disk
-    r_3d = np.sqrt((r_flat**2) + (zPos**2))                                                               
-    theta = np.arccos(zPos / r_3d)                                                              
-    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
-    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
-    
-    #Generates the output array
-    inClouds = np.empty((nSamps,3))
-    inClouds[:,0] = xPos
-    inClouds[:,1] = yPos
-    inClouds[:,2] = zPos                                                          
-    return inClouds                                                               
 
 def kinms_create_velField_oneSided(velRad,velProf,r_flat,inc,posAng,gasSigma,seed,xPos,yPos,vPhaseCent=[0.0,0.0],vPosAng=False,vRadial=0.0,posAng_rad=0.0,inc_rad=0.0):
     """

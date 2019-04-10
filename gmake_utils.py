@@ -46,9 +46,13 @@ def imcontsub(imagename,linefile='',contfile='',
     cube_imcontsub.write(linefile,overwrite=True)
     cube_mean.write(contfile,overwrite=True)
 
-def gal_flat(im,ang,inc,cen=None,interp=True):
+def gal_flat(im,ang,inc,cen=None,interp=True,
+             align_major=False,
+             fill_value=None):
     """
     translated from IDL/gal_flat.pro
+    im in (nz,ny,nx)
+    cen is (xc,yc)
     """
     angr = np.deg2rad(ang+90.)
     tanang = np.tan(angr)
@@ -58,16 +62,16 @@ def gal_flat(im,ang,inc,cen=None,interp=True):
     dims=im.shape
 
     if  cen is None:
-        xcen = dims[1]/2.0      
-        ycen = dims[0]/2.0
+        xcen = dims[-1]/2.0      
+        ycen = dims[-2]/2.0
     else:
         xcen = cen[0]
         ycen = cen[1]
 
     b=ycen-xcen*tanang
     
-    gridx = xcen + np.array([ [-1,1], [-1,1] ]) * dims[1]/6.0
-    gridy = ycen + np.array([ [-1,-1], [1,1] ]) * dims[0]/6.0      
+    gridx = xcen + np.array([ [-1,1], [-1,1] ]) * dims[-1]/6.0
+    gridy = ycen + np.array([ [-1,-1], [1,1] ]) * dims[-2]/6.0      
 
     yprime = gridx*tanang + b            
     r0 = (gridy-yprime)*np.cos(angr)     
@@ -87,7 +91,20 @@ def gal_flat(im,ang,inc,cen=None,interp=True):
     destination=np.array((distx.flatten(),disty.flatten()))
     t.estimate(source.T,destination.T,1)
     
-    im_wraped=transform.warp(im, t, order=1, mode='constant',cval=float('nan'))
+    if  fill_value is None:
+        cval=float('nan')
+    else:
+        cval=fill_value
+    im_wraped=transform.warp(im, t, order=1, mode='constant',cval=cval)
+    
+    
+    if  align_major==True:
+        #print('-->',90+ang)
+        # (0,0)  sckit-image is the left-top corner, so the presentation is actually flipped along the x-axis 
+        # counter-clockwise in sckit-image is eqaveulent with clockwise in FITS  
+        im_wraped=transform.rotate(im_wraped,90+ang-180,center=(xcen,ycen),
+                                   resize=False,
+                                   order=1,cval=cval)
 
     return im_wraped    
 
@@ -105,7 +122,7 @@ def cr_tanh(r,r_in=0.0,r_out=1.0,theta_out=30.0):
     return tanh_fun
 
 def pdf2rv_nd(pdf,size=100000,
-              sort=False,interp=True):
+              sort=False,interp=True,seed=None):
     """
     provide random sampling variables approxnimately following an arbitrary nd-dimension discrete PDF 
     without expensive MC
@@ -127,8 +144,9 @@ def pdf2rv_nd(pdf,size=100000,
         sortindex=np.argsort(pdf, axis=None)
         pdf_flat=pdf_flat[sortindex]
     cdf=np.cumsum(pdf_flat)
-    
+
     choice = np.random.uniform(high=cdf[-1],size=size)
+    
     index = np.searchsorted(cdf, choice)
 
     if  sort==True:
@@ -554,8 +572,17 @@ def gmake_read_data(inp_dct,verbose=False,
                 sp_list=obj['sample'].split(",")
             if  'psf' in obj:
                 pf_list=obj['psf'].split(",")          
-            if  'mprior' in obj:
-                mp_list=obj['mprior'].split(",")                                  
+            
+            
+            if  'pmodel' in obj:
+                
+                data,hd=fits.getdata(obj['pmodel'],header=True,memmap=False) 
+                dat_dct['pmodel@'+tag]=data
+                dat_dct['pheader@'+tag]=hd                
+                if  verbose==True:
+                    print('loading: '+obj['pmodel']+' to ')
+                    print('pmodel@'+tag)       
+                    print(data.shape,convert_size(getsizeof(data)))              
             
             for ind in range(len(im_list)):
                 
@@ -598,13 +625,7 @@ def gmake_read_data(inp_dct,verbose=False,
                         print('psf@'+im_list[ind])       
                         print(data.shape,convert_size(getsizeof(data)))
                         
-                if  ('mprior@'+im_list[ind] not in dat_dct) and 'mprior' in obj:
-                    data=fits.getdata(pf_list[ind],memmap=False)                
-                    dat_dct['mprior@'+im_list[ind]]=data
-                    if  verbose==True:
-                        print('loading: '+pf_list[ind]+' to ')
-                        print('mprior@'+im_list[ind])       
-                        print(data.shape,convert_size(getsizeof(data)))                        
+                     
                             
                 tag='data@'+im_list[ind]
                 

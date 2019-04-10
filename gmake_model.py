@@ -33,7 +33,7 @@ def gmake_model_api(mod_dct,dat_dct,
 
         #   skip if no "method" or the item is not a physical model
         
-        obj=mod_dct[tag]
+        obj=mod_dct[tag].copy()
       
         if  'method' not in obj.keys():
             continue    
@@ -123,7 +123,7 @@ def gmake_model_api(mod_dct,dat_dct,
             image_list=mod_dct[tag]['image'].split(",")
             
             for image in image_list:
-                
+                                
                 if  'data@'+image not in models.keys():
                     
                     #test_time = time.time()
@@ -136,12 +136,7 @@ def gmake_model_api(mod_dct,dat_dct,
                     if  'sample@'+image in dat_dct.keys():
                         models['sample@'+image]=dat_dct['sample@'+image]
                     else:
-                        models['sample@'+image]=None
-                        
-                    if  'pmodel@'+image in dat_dct.keys():
-                        models['pmodel@'+image]=dat_dct['pmodel@'+image]
-                    else:
-                        models['pmodel@'+image]=None                                            
+                        models['sample@'+image]=None                                        
                     
                     if  'psf@'+image in dat_dct.keys():
                         models['psf@'+image]=dat_dct['psf@'+image]
@@ -158,6 +153,11 @@ def gmake_model_api(mod_dct,dat_dct,
                     models['imod3d@'+image]=np.zeros(naxis)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('import:'+image,time.time() - test_time))
       
+                obj['pmodel']=None
+                obj['pheader']=None
+                if  'pmodel@'+tag in dat_dct.keys():
+                    obj['pmodel']=dat_dct['pmodel@'+tag]
+                    obj['pheader']=dat_dct['pheader@'+tag]      
                 
                 if  'disk2d' in obj['method'].lower():
                     #test_time = time.time()
@@ -235,15 +235,15 @@ def gmake_model_api(mod_dct,dat_dct,
                 #models[tag.replace('imod2d@','uvmodel@')]+=uvmodel 
             if  models[tag.replace('imod2d@','type@')]=='image':
                 #print('-->',tag)
-                fits.writeto('test1.fits',models[tag],header=models[tag.replace('imod2d@','header@')],overwrite=True)
-                fits.writeto('test3.fits',models[tag.replace('imod2d@','psf@')],header=models[tag.replace('imod2d@','header@')],overwrite=True)
+                #fits.writeto('test1.fits',models[tag],header=models[tag.replace('imod2d@','header@')],overwrite=True)
+                #fits.writeto('test3.fits',models[tag.replace('imod2d@','psf@')],header=models[tag.replace('imod2d@','header@')],overwrite=True)
                 cmodel,kernel=gmake_model_convol(models[tag],
                                      models[tag.replace('imod2d@','header@')],
                                      psf=models[tag.replace('imod2d@','psf@')],
                                      returnkernel=True,
                                      average=True,
                                      verbose=False)
-                fits.writeto('test2.fits',cmodel,header=models[tag.replace('imod2d@','header@')],overwrite=True)
+                #fits.writeto('test2.fits',cmodel,header=models[tag.replace('imod2d@','header@')],overwrite=True)
                                                                     
                 models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
                 models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
