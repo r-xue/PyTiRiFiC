@@ -18,10 +18,27 @@ def gmake_lmfit_setup(inp_dct,dat_dct):
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
-        fit_dct['p_lo']=np.append(fit_dct['p_lo'],opt_dct[p_name][0])
-        fit_dct['p_up']=np.append(fit_dct['p_up'],opt_dct[p_name][1])
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],opt_dct[p_name][2])
-        fit_dct['p_rscale']=np.append(fit_dct['p_rscale'],opt_dct[p_name][3])
+        
+        if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
+            si=1 ; mode=deepcopy(opt_dct[p_name][0])
+        else:
+            si=0 ; mode='a'
+        fit_dct['p_lo']=np.append(fit_dct['p_lo'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+0],
+                                                   mode=mode))
+        fit_dct['p_up']=np.append(fit_dct['p_up'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+1],
+                                                   mode=mode))                                  
+        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+2],
+                                                   mode=mode))        
+        fit_dct['p_rscale']=np.append(fit_dct['p_rscale'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+3],
+                                                   mode=mode))           
         
     parinfo = [{'value':0.,
                 'fixed':0,
@@ -126,7 +143,7 @@ def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     fit_dct['p_lmfit_blobs']=blobs
 
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
-   
+
     return 
 
 def gmake_lmfit_analyze_brute(outfolder):

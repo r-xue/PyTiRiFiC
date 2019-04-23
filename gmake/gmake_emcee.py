@@ -46,9 +46,24 @@ def gmake_emcee_setup(inp_dct,dat_dct):
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
-        fit_dct['p_lo']=np.append(fit_dct['p_lo'],opt_dct[p_name][0])
-        fit_dct['p_up']=np.append(fit_dct['p_up'],opt_dct[p_name][1])
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],opt_dct[p_name][2])
+        
+        if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
+            si=1 ; mode=deepcopy(opt_dct[p_name][0])
+        else:
+            si=0 ; mode='a'
+        fit_dct['p_lo']=np.append(fit_dct['p_lo'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+0],
+                                                   mode=mode))
+        fit_dct['p_up']=np.append(fit_dct['p_up'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+1],
+                                                   mode=mode))                                  
+        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],
+                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                                   delta=opt_dct[p_name][si+2],
+                                                   mode=mode))        
+
 
     gmake_pformat(fit_dct)
     #print(fit_dct['p_name'])
