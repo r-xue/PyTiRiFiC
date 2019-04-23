@@ -1,5 +1,124 @@
 from .gmake_init import *
 
+def gmake_read_range(center=0,delta=0,mode='a'):
+    """
+        modifiy the parameter exploring bounrdary according to the info from opt section
+        
+    """
+    if  mode=='a':
+        return delta
+    if  mode=='o':
+        return center+delta
+    if  mode=='r':
+        return center*delta
+
+def gmake_read_inp(parfile,verbose=False):
+    """
+    read parameters/setups from a .inp file into a dictionary nest:
+        inp_dct[id][keywords]=values.
+        inp_dct['comments']='??'
+        inp_dct['changlog']='??'
+        inp_dct['optimize']='??'
+        
+    keyword value formatting
+        1.remove trailing/prefix space / comments
+        2.split my space
+        3.first element is the key
+        4.the rest elements will be filled into value
+            more than one element : list
+            one element: scaler
+    """
+    
+    inp_dct={}
+    with open(parfile,'r') as f:
+        lines=f.readlines()
+    lines= filter(None, (line.split('#')[0].strip() for line in lines))
+
+    tag='default'
+    for line in lines:
+        if  line.startswith('@'):
+            tag=line.replace('@','',1).strip()
+            #pars={'content':''}
+            pars={}
+            #pars['content']+=line+"\n"
+            if  verbose==True:
+                print("+"*40)
+                print('@',tag)
+                print("-"*40)
+        else:
+            if    'comments' in tag or 'changelog' in tag or 'ignore' in tag:
+                pass
+                #pars['content']+=line+"\n"
+                #inp_dct[tag]=pars
+            elif  'optimize' in tag:
+                #pars['content']+=line+"\n"
+                key=line.split()[0]
+                value=line.replace(key,'',1).split()
+                if  len(value)==1:
+                    pars[key]=eval(value[0])
+                else:
+                    pars[key]=[eval(value0) for value0 in value]
+                #pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
+                inp_dct[tag]=pars
+                if  verbose==True:
+                    print(key," : ",value)
+            else:
+                #pars['content']+=line+"\n"
+                key=line.split()[0]
+                value=line.replace(key,'',1).strip()
+                value=eval(value)
+                pars[key]=value
+                inp_dct[tag]=pars
+                if  verbose==True:
+                    print(key," : ",value)
+    
+    if  'optimize' in inp_dct.keys():
+        if  'outdir' in (inp_dct['optimize']).keys():
+            outdir=inp_dct['optimize']['outdir']
+            if  not os.path.exists(outdir):
+                os.makedirs(outdir)
+            np.save(outdir+'/inp_dct.npy',inp_dct)
+    
+    return inp_dct
+
+
+def gmake_write_inp(inp_dct,inpfile='example.inp',
+                    writepar=None,
+                    overwrite=False):
+    """
+    write out inp files from inp_dct
+    if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name
+    writepar is two-element tuple, first element is the key name to be modified
+                                   second element is the value
+                                   
+    note: py>=3.7 use the ordered dict by default (so the output keyword order is preserved) 
+    """
+    
+    inp_dct0=deepcopy(inp_dct)
+    if  writepar is not None:
+        for ind in range(len(writepar[0])):
+            gmake_writepar(inp_dct0,writepar[0][ind],writepar[1][ind])
+    
+    outname=inpfile
+    
+    ind=0
+    if  overwrite==False:
+        while os.path.isfile(outname):
+            outname=inpfile+'.'+str(ind) 
+            ind+=1
+            
+    f=open(outname,'w')
+    output=''
+    for obj in inp_dct0.keys():
+        output+='#'*80+'\n'
+        output+='@'+obj+'\n'
+        output+='#'*80+'\n\n'
+        for key in inp_dct0[obj].keys():
+            output+='{:20} {}\n'.format(key,repr(inp_dct0[obj][key]))
+        output+='\n'
+    f.write(output)
+    f.close()
+
 def moments(imagename,outname='test',
             maskname='',linechan=None):
         
@@ -197,66 +316,6 @@ def sort_on_runtime(p):
     idx = np.argsort(p[:, 0])[::-1]
     return p[idx], idx
 
-def gmake_read_inp(parfile,verbose=False):
-    """
-    read parameters/setups from a .inp file into a dictionary nest:
-        inp_dct[id][keywords]=values.
-        inp_dct['comments']='??'
-        inp_dct['changlog']='??'
-        inp_dct['optimize']='??'
-    """
-    
-    inp_dct={}
-    with open(parfile,'r') as f:
-        lines=f.readlines()
-    lines= filter(None, (line.split('#')[0].strip() for line in lines))
-
-    tag='default'
-    for line in lines:
-        if  line.startswith('@'):
-            tag=line.replace('@','',1).strip()
-            #pars={'content':''}
-            pars={}
-            #pars['content']+=line+"\n"
-            if  verbose==True:
-                print("+"*40)
-                print('@',tag)
-                print("-"*40)
-        else:
-            if    'comments' in tag or 'changelog' in tag or 'ignore' in tag:
-                pass
-                #pars['content']+=line+"\n"
-                #inp_dct[tag]=pars
-            elif  'optimize' in tag:
-                #pars['content']+=line+"\n"
-                key=line.split()[0]
-                value=line.replace(key,'',1).split()
-                if  len(value)==1:
-                    pars[key]=eval(value[0])
-                else:
-                    pars[key]=[eval(value0) for value0 in value]
-                #pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
-                inp_dct[tag]=pars
-                if  verbose==True:
-                    print(key," : ",value)
-            else:
-                #pars['content']+=line+"\n"
-                key=line.split()[0]
-                value=line.replace(key,'',1).strip()
-                value=eval(value)
-                pars[key]=value
-                inp_dct[tag]=pars
-                if  verbose==True:
-                    print(key," : ",value)
-    
-    if  'optimize' in inp_dct.keys():
-        if  'outdir' in (inp_dct['optimize']).keys():
-            outdir=inp_dct['optimize']['outdir']
-            if  not os.path.exists(outdir):
-                os.makedirs(outdir)
-            np.save(outdir+'/inp_dct.npy',inp_dct)
-    
-    return inp_dct
 
 def gmake_listpars(objs,showcontent=True):
     """
@@ -416,7 +475,7 @@ def gmake_pformat(fit_dct,verbose=True):
         
         smin=len(p_key)
         
-        print("{0:<3} {1} {2} {3} {4}".format(ind,p_key,p_start,p_lo,p_up))
+        print("{0:<3} {1:<20} {2:<20} {3:<20} {4:<20}".format(ind,p_key,p_start,p_lo,p_up))
 
         p_format0='<'+str(max(smin,5))
         p_format0_keys='<'+str(max(smin,5))

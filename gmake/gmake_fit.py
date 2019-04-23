@@ -28,7 +28,7 @@ def gmake_fit_iterate(fit_dct,sampler,nstep=100):
         gmake_emcee_iterate(sampler,fit_dct,nstep=nstep)
         return
     if  'lmfit' in fit_dct['optimize']['method']:
-        result=gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+        gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
 
 def gmake_fit_analyze(outfolder,burnin=None):
@@ -67,7 +67,16 @@ def gmake_fit_analyze(outfolder,burnin=None):
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
     print('p_start:    ')
     pprint.pprint(blobs)
+    
+    gmake_write_inp(inp_dct,inpfile=outfolder+'/p_start.inp',overwrite=True,
+                    writepar=(fit_dct['p_name'],theta_start))
+
     lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
     print('p_fits: ')
     pprint.pprint(blobs)
+    
+    gmake_write_inp(inp_dct,inpfile=outfolder+'/p_fits.inp',overwrite=True,
+                    writepar=(fit_dct['p_name'],theta_end))  
     #"""
+
+           

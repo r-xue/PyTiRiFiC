@@ -1,0 +1,84 @@
+
+
+@objectname							#	mark the beginning of new model object:
+
+#key					type	default		format  #	format is only for presentation
+
+name					str		''			':s'	#	object name (just a note for you, not used for anything)
+
+note					str		''			':s'	#	comments on the object (not implemented yet)
+image					str		''			':s'	# 	data image name (seperated by comma if more than one are supplied)
+error					str		''			':s'	#	error image name (seperated by comma if more than one are supplied)
+mask					str		''			':s'	#	mask image name (seperated by comma if more than one are supplied)
+psf						str		''			':s'	#	psf image name (seperated by comma if more than one are supplied)
+pmodel					str		''			':s'	#	prior image name (seperated by comma if more than one are supplied)
+
+samp					str		''			':s'	#	sampling table
+bmaj					float	None		':f'	#	bmaj, for overriding whatever in the image header 
+bmin					float	None		':f'	#	bmaj, for overriding whatever in the image header
+bpa						float	None		':f'	#	bmaj, for overriding whatever in the image header
+type					str		''			':s'	#	not implemented yet
+xypos					list	[0.0,0.0]	':'		#	[ra,dec] in degree
+z						float	0.0			':f'	#	redshift
+pa						float	0.0			':f'	#	Pa of the receding half major axis of the projected disk plane
+inc						float	0.0			':f'	#	disk plane inclination
+restwave				float	1000.0		':f'	#	line rest wavelength (angstrom)
+restfreq				float	100.0		':f'	#	Ghz line rest frequency
+vsys					float	0.0			':f'	#	km/s galaxy systematic velocity in respective to the redshift
+vrad					list	[0.0,0.1]	':f'	#	radial knots in galactocentric distance (for velocity and dispersion vector)
+vrot					list	[100,100]	':f'	#	rotational velocity radial profile
+vdis					list	[10.0,10.0]	':f'	#	velocity dispersion radial profile
+intflux					float	1.0			':f'	#	Jy x km/s or dataunits * angstrom
+sbser					list	[1.0,1.0]	':f'	#	[half-light-radius, sersic-index]
+method					str		'kinmspy'	':s'	#	underline simulation algorithm
+													#	available options are: disk2d,kinmspy
+													
+
+@optimize				#	mark the beginning of the section for optimization parameters
+
+method					str		#	underline parameter optimization algorithm
+outname_replace     	list	#	list of two-element tuple
+outname_exclude     	list	#	list of string
+outdir					str		#	output dir path
+
+parname@objectname		tuple	#	3-/4-element tuple for a free pameter
+								#	this could be something like:
+								#	('a',-100,100,1.0)	parameter boundary = (-100,100)	(a: "absolute" scaling)
+								#	('o',-100,100,1.0)	parameter boundary = (p_start-100,p_start+100) ("o": "offset" scaling)
+								#	('r',0.2,2.0)		parameter boundary = (p_start*0.2,p_start*2.0) ("r": "relative" scaling)
+								#	(-100,100,1.0)		if no scaling keyword is provided, default to "absolute" scaling
+
+parname[a:b]@obectname	tuple	#	same as above, but a slicing index is applied when the parameter is an iteration object (e.g. vrot)
+								#	then all elements in the scliced parameter set is tied to be same as a single varing parameter
+								#	e.g., vrot[2:5]@co21disk: the rotational velocity of the third,fourth,fifth radial knots with in disk object "co21disk"
+
+
+
+
+@Special Notation
+
+@					#	for denoting the beginning of new section in parameter file (as in this file)
+					#
+					#	for denoting the parent object of a parameter:
+					#		e.g. pa@co21disk means the position angel of the disk object "co21disk"
+					#	for tieing parameter values:
+					
+					#	when a parameter value is a string containing "@" then it means it's tied to that parameter values
+					#	e.g.	if 'vdis@co21disk' is assigned to 'vdis' in the object '@co10disk' parameter section, then the actual used value of 'vdis@co10disk'
+					#			will automatically come from 'vdis@co10disk'.
+
+#					#	this marks the beginning of inline comments or commented line: i.a. anything behind it will not be read by the program					
+
+
+@Additional Note
+
+#	the value in .inp needs to be the string prepresentation of a Python object:
+#		the program read .inp content line by line as "string". After removing comments and leading/trailling space, it will split
+#		each line into a list using 'space'. The first element will be consider as the "key", and the rest elements will be considered as the value content.
+#		The program will use eval() to determine the value type. If more than one elements left, they will be assembled into a list and assigned to the key
+#		In fact, this file itself is written in such syntax.
+
+
+
+
+					
