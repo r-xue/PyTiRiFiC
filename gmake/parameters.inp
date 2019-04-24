@@ -1,84 +1,95 @@
 
 
-@objectname							#	mark the beginning of new model object:
+@ object                #   mark the beginning of new model object:
 
-#key					type	default		format  #	format is only for presentation
+#key                    default     format   type   #   format is only for controlling the decimal point in the log output
+  
+name                    ''          ''     str      #   object name (just a note for you, not used for anything)
+  
+note                    ''          ''     str      #   comments on the object (not implemented yet)
+image                   ''          ''     str      #   data image name (seperated by comma if more than one are supplied)
+error                   ''          ''     str      #   error image name (seperated by comma if more than one are supplied)
+mask                    ''          ''     str      #   mask image name (seperated by comma if more than one are supplied)
+psf                     ''          ''     str      #   psf image name (seperated by comma if more than one are supplied)
+pmodel                  ''          ''     str      #   prior image name (seperated by comma if more than one are supplied)
+  
+samp                    ''          ''     str      #   sampling table
+bmaj                    None        ''     float    #   bmaj, for overriding whatever in the image header 
+bmin                    None        ''     float    #   bmaj, for overriding whatever in the image header
+bpa                     None        ''     float    #   bmaj, for overriding whatever in the image header
+type                    ''          ''     str      #   not implemented yet
+xypos                   [0.0,0.0]   '.7f'      list     #   [ra,dec] in degree
+z                       0.0         '.3f'     float    #   redshift
+pa                      0.0         '.2f'     float    #   Pa of the receding half major axis of the projected disk plane
+inc                     0.0         '.2f'     float    #   disk plane inclination
+restwave                1000.0      ''     float    #   line rest wavelength (angstrom)
+restfreq                100.0       ''     float    #   Ghz line rest frequency
 
-name					str		''			':s'	#	object name (just a note for you, not used for anything)
+vsys                    0.0         '.2f'     float    #   km/s galaxy systematic velocity in respective to the redshift
+vrad                    [0.0,0.1]   '.2f'     list     #   radial knots in galactocentric distance (for velocity and dispersion vector)
+vrot                    [100,100]   '.2f'     list     #   rotational velocity radial profile
+vdis                    [10.0,10.0] '.2f'     list     #   velocity dispersion radial profile
+alpha                   0.0         '.2f'
 
-note					str		''			':s'	#	comments on the object (not implemented yet)
-image					str		''			':s'	# 	data image name (seperated by comma if more than one are supplied)
-error					str		''			':s'	#	error image name (seperated by comma if more than one are supplied)
-mask					str		''			':s'	#	mask image name (seperated by comma if more than one are supplied)
-psf						str		''			':s'	#	psf image name (seperated by comma if more than one are supplied)
-pmodel					str		''			':s'	#	prior image name (seperated by comma if more than one are supplied)
+intflux                 1.0         '.2f'     float    #   Jy x km/s or dataunits * angstrom
+sbser                   [1.0,1.0]   '.2f'     list     #   [half-light-radius, sersic-index]
+method                  'kinmspy'   ''     str      #   underline simulation algorithm
+                                                      #   available options are: disk2d,kinmspy
+                                                    
 
-samp					str		''			':s'	#	sampling table
-bmaj					float	None		':f'	#	bmaj, for overriding whatever in the image header 
-bmin					float	None		':f'	#	bmaj, for overriding whatever in the image header
-bpa						float	None		':f'	#	bmaj, for overriding whatever in the image header
-type					str		''			':s'	#	not implemented yet
-xypos					list	[0.0,0.0]	':'		#	[ra,dec] in degree
-z						float	0.0			':f'	#	redshift
-pa						float	0.0			':f'	#	Pa of the receding half major axis of the projected disk plane
-inc						float	0.0			':f'	#	disk plane inclination
-restwave				float	1000.0		':f'	#	line rest wavelength (angstrom)
-restfreq				float	100.0		':f'	#	Ghz line rest frequency
-vsys					float	0.0			':f'	#	km/s galaxy systematic velocity in respective to the redshift
-vrad					list	[0.0,0.1]	':f'	#	radial knots in galactocentric distance (for velocity and dispersion vector)
-vrot					list	[100,100]	':f'	#	rotational velocity radial profile
-vdis					list	[10.0,10.0]	':f'	#	velocity dispersion radial profile
-intflux					float	1.0			':f'	#	Jy x km/s or dataunits * angstrom
-sbser					list	[1.0,1.0]	':f'	#	[half-light-radius, sersic-index]
-method					str		'kinmspy'	':s'	#	underline simulation algorithm
-													#	available options are: disk2d,kinmspy
-													
+@optimize               #   mark the beginning of the section for optimization parameters
 
-@optimize				#	mark the beginning of the section for optimization parameters
+method                  'amoeba'            str     #   underline parameter optimization algorithm
+outname_replace         []                  list    #   list of two-element tuple
+outname_exclude         []                  list    #   list of string
+outdir                  'testdir'           str     #   output dir path
 
-method					str		#	underline parameter optimization algorithm
-outname_replace     	list	#	list of two-element tuple
-outname_exclude     	list	#	list of string
-outdir					str		#	output dir path
+parname@objectname      ('o',-1,1,0.0)      tuple   #   3-/4-element tuple for a free parameter
+                                                    #   this could be something like:
+                                                    #   ('a',-100,100,1.0)  par-boundary = (-100,100) (a: "absolute" scaling)
+                                                    #   ('o',-100,100,1.0)  par-boundary = (p_start-100,p_start+100) ("o": "offset" scaling)
+                                                    #   ('r',0.2,2.0)       par-boundary = (p_start*0.2,p_start*2.0) ("r": "relative" scaling)
+                                                    #   (-100,100,1.0)      if no scaling keyword is provided, default to "absolute" scaling
 
-parname@objectname		tuple	#	3-/4-element tuple for a free pameter
-								#	this could be something like:
-								#	('a',-100,100,1.0)	parameter boundary = (-100,100)	(a: "absolute" scaling)
-								#	('o',-100,100,1.0)	parameter boundary = (p_start-100,p_start+100) ("o": "offset" scaling)
-								#	('r',0.2,2.0)		parameter boundary = (p_start*0.2,p_start*2.0) ("r": "relative" scaling)
-								#	(-100,100,1.0)		if no scaling keyword is provided, default to "absolute" scaling
-
-parname[a:b]@obectname	tuple	#	same as above, but a slicing index is applied when the parameter is an iteration object (e.g. vrot)
-								#	then all elements in the scliced parameter set is tied to be same as a single varing parameter
-								#	e.g., vrot[2:5]@co21disk: the rotational velocity of the third,fourth,fifth radial knots with in disk object "co21disk"
-
-
-
-
-@Special Notation
-
-@					#	for denoting the beginning of new section in parameter file (as in this file)
-					#
-					#	for denoting the parent object of a parameter:
-					#		e.g. pa@co21disk means the position angel of the disk object "co21disk"
-					#	for tieing parameter values:
-					
-					#	when a parameter value is a string containing "@" then it means it's tied to that parameter values
-					#	e.g.	if 'vdis@co21disk' is assigned to 'vdis' in the object '@co10disk' parameter section, then the actual used value of 'vdis@co10disk'
-					#			will automatically come from 'vdis@co10disk'.
-
-#					#	this marks the beginning of inline comments or commented line: i.a. anything behind it will not be read by the program					
+parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a slicing index is applied when the parameter is an iteration object (e.g. vrot)
+                                                    #   then all elements in the scliced parameter set is tied to be same as a single varing parameter
+                                                    #   e.g., vrot[2:5]@co21disk: the rotational velocity of the third,fourth,fifth radial knots with in disk object "co21disk"
 
 
-@Additional Note
+@ comments
 
-#	the value in .inp needs to be the string prepresentation of a Python object:
-#		the program read .inp content line by line as "string". After removing comments and leading/trailling space, it will split
-#		each line into a list using 'space'. The first element will be consider as the "key", and the rest elements will be considered as the value content.
-#		The program will use eval() to determine the value type. If more than one elements left, they will be assembled into a list and assigned to the key
-#		In fact, this file itself is written in such syntax.
++ The usage of "#":
 
+    "#" marks the beginning of inline comments or commented line: i.a. anything behind it will not be read by the program
 
++ The usages of "@":
 
+    + any line begins with '@' mark the beginning of a new section (as in this file)
+        
+        The section name is created from valid characters (ignoring comments) following  "@", with leading/trialing space removed
+        some section names is reserved for special purpose:
+            + A name containing "comment", "changelog", "ignore" is considered as comments and the content in that section will be discarded by the program
+            + A name containing "optimize" denote the parameter section control the optimization. 
+            + A name not meeting the above standard will be considered as a model component
 
-					
+    + denote the "parent" object of a parameter:
+        e.g. "pa@co21disk" = the position angel of the disk object "co21disk"
+
+    + tie the parameter values:
+        
+        when a parameter value is a string containing "@", it means its value is tied to that parameter values
+        e.g.    if 'vdis@co21disk' is assigned to 'vdis' in the object '@co10disk' parameter section, 
+                then the value of 'vdis@co10disk' is always tied to that of 'vdis@co21disk' in modeling
+
++ keyword-value pair
+
+    Under each section, each line always follow the keyword+value pair syntax, separated by white space
+    The first word is consider as the parameter "keyword", and the rest of the line will be considered as the value content.
+    The "value" part in .inp needs to be the string prepresentation of a Python object, e.g.:
+        'test'      :   a string type with a value of "test"
+        3.0         :   a float type with a value of 3.0
+    The program uses eval() to determine the value content and type (which is actually not a good practice in Python...)
+    
+    note: if the eval() step fails, the program will:
+        do split() -> re-evaluate on each element -> assemble the results into a list -> assign the list to the keyword
+        This feature is only designed to work with the file you're looking at right now.  

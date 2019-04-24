@@ -28,7 +28,7 @@ def gmake_read_inp(parfile,verbose=False):
             more than one element : list
             one element: scaler
     """
-    
+
     inp_dct={}
     with open(parfile,'r') as f:
         lines=f.readlines()
@@ -46,28 +46,23 @@ def gmake_read_inp(parfile,verbose=False):
                 print('@',tag)
                 print("-"*40)
         else:
-            if    'comments' in tag or 'changelog' in tag or 'ignore' in tag:
+            if    'comments' in tag.lower() or 'changelog' in tag.lower() or 'ignore' in tag.lower():
                 pass
                 #pars['content']+=line+"\n"
                 #inp_dct[tag]=pars
-            elif  'optimize' in tag:
-                #pars['content']+=line+"\n"
-                key=line.split()[0]
-                value=line.replace(key,'',1).split()
-                if  len(value)==1:
-                    pars[key]=eval(value[0])
-                else:
-                    pars[key]=[eval(value0) for value0 in value]
-                #pars[key]=[eval(value[0]),eval(value[1]),eval(value[2])]
-                inp_dct[tag]=pars
-                if  verbose==True:
-                    print(key," : ",value)
             else:
                 #pars['content']+=line+"\n"
+                #.split()   split using empty space
+                #.strip()   remove leading/trailing space                
                 key=line.split()[0]
                 value=line.replace(key,'',1).strip()
-                value=eval(value)
-                pars[key]=value
+                try:                #   likely mutiple-elements are provided, 
+                                    #   but be careful of eval() usage here
+                                    #   e.g.:"tuple (1)" will be a valid statement
+                    pars[key]=eval(value)
+                except SyntaxError: #   pack the value content into a list
+                    value=value.split()
+                    pars[key]=[eval(value0) for value0 in value]
                 inp_dct[tag]=pars
                 if  verbose==True:
                     print(key," : ",value)
@@ -75,9 +70,10 @@ def gmake_read_inp(parfile,verbose=False):
     if  'optimize' in inp_dct.keys():
         if  'outdir' in (inp_dct['optimize']).keys():
             outdir=inp_dct['optimize']['outdir']
-            if  not os.path.exists(outdir):
-                os.makedirs(outdir)
-            np.save(outdir+'/inp_dct.npy',inp_dct)
+            if  isinstance(outdir,str):
+                if  not os.path.exists(outdir):
+                    os.makedirs(outdir)
+                np.save(outdir+'/inp_dct.npy',inp_dct)
     
     return inp_dct
 
@@ -459,13 +455,22 @@ def gmake_pformat(fit_dct,verbose=True):
     """
     p_format=[]
     p_format_keys=[]
+    p_format_prec=[]
     
     if  verbose==True:
         print("+"*90)
         #print("outdir:               ",fit_dct['optimize']['outdir'])
-        print("optimizing parameters:")
-        
+        print("optimizing parameters: index / name / start / lo_limit / up_limit")
     
+    scriptdir=os.path.dirname(os.path.abspath(__file__))    
+    par_dct=gmake_read_inp(scriptdir+'/parameters.inp',verbose=False)
+
+    
+    par_dct_obj=par_dct['object']
+    par_dct_opt=par_dct['optimize']
+    
+    
+    maxlen=len(max(fit_dct['p_name'],key=len))
     for ind in range(len(fit_dct['p_name'])):
         
         p_key=fit_dct['p_name'][ind]
@@ -473,44 +478,35 @@ def gmake_pformat(fit_dct,verbose=True):
         p_lo=fit_dct['p_lo'][ind]
         p_up=fit_dct['p_up'][ind]
         
-        smin=len(p_key)
-        
-        print("{0:<3} {1:<20} {2:<20} {3:<20} {4:<20}".format(ind,p_key,p_start,p_lo,p_up))
+        smin=len(p_key)        
+        for keyword in par_dct_obj.keys():
+            if  keyword+'@' in p_key or keyword+'[' in p_key:
+                p_format0_prec=par_dct_obj[keyword][1]
+                p_format0_keys=''+str(max(smin,5))
+                
+        #  same widths for all parameters in one trial
+        textout=' {:{align}{width}} '.format(ind,align='<',width=2)
+        textout+=' {:{align}{width}} '.format(p_key,align='<',width=maxlen)
+        textout+=' {:{align}{width}{prec}} '.format(p_start,align='^',width=13,prec=p_format0_prec)
+        textout+=' ( {:{align}{width}{prec}}, '.format(p_lo,align='^',width=13,prec=p_format0_prec)
+        textout+=' {:{align}{width}{prec}} )'.format(p_up,align='^',width=13,prec=p_format0_prec)
+        print(textout)
 
-        p_format0='<'+str(max(smin,5))
-        p_format0_keys='<'+str(max(smin,5))
-        #   VELOCITY
-        if  fnmatch.fnmatch(p_key,'v*'):
-            p_format0='<'+str(max(smin,5))+'.0f'
-            p_format0_keys='<'+str(max(smin,5))
-        #   SURFACE BRIGHTNESS
-        if  fnmatch.fnmatch(p_key,'sb*'):
-            p_format0='<'+str(max(smin,5))+'.4f'
-            p_format0_keys='<'+str(max(smin,5))
-        if  fnmatch.fnmatch(p_key,'intflux*'):
-            p_format0='<'+str(max(smin,5))+'.4f'
-            p_format0_keys='<'+str(max(smin,5))            
-        #   INC OR PA
-        if  fnmatch.fnmatch(p_key,'inc*') or fnmatch.fnmatch(p_key,'pa*'):
-            p_format0='<'+str(max(smin,3))+'.0f'
-            p_format0_keys='<'+str(max(smin,3))         
-        #   ERRR SCALING
-        if  fnmatch.fnmatch(p_key,'lnf*'):
-            p_format0='<'+str(max(smin,4))+'.4f'
-            p_format0_keys='<'+str(max(smin,4))
-        #   spectral index
-        if  fnmatch.fnmatch(p_key,'alpha*'):
-            p_format0='<'+str(max(smin,5))+'.2f'
-            p_format0_keys='<'+str(max(smin,5))        
-        
+
+        #   used for emcee table output
+        p_format0='<'+str(max(smin,5))+p_format0_prec
+        p_format0_keys='<'+str(max(smin,5))      
         p_format+=[p_format0]
         p_format_keys+=[p_format0_keys]
-    
+        p_format_prec+=[p_format0_prec]
+        
+
     if  verbose==True:
         print("+"*90)
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
+    fit_dct['p_format_prec']=deepcopy(p_format_prec)
     
     
     
