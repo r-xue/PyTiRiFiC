@@ -1,6 +1,7 @@
 
-
+##########################################################################################
 @ object                #   marks the beginning of a new model object:
+##########################################################################################
 
 #key                    default     format   type   #   format is only for controlling the decimal point in the log output
   
@@ -56,7 +57,9 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
                                                     #   e.g., vrot[2:5]@co21disk: the rotational velocity of the third, fourth, fifth radial knots within disk object "co21disk"
 
 
+##########################################################################################
 @ comments
+##########################################################################################
 
 + The usage of "#":
 
