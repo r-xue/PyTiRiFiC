@@ -1,43 +1,43 @@
 
 
-@ object                #   mark the beginning of new model object:
+@ object                #   marks the beginning of a new model object:
 
 #key                    default     format   type   #   format is only for controlling the decimal point in the log output
   
-name                    ''          ''     str      #   object name (just a note for you, not used for anything)
+name                    ''          ''      str     #   object name (just a note for you, not used for anything)
   
-note                    ''          ''     str      #   comments on the object (not implemented yet)
-image                   ''          ''     str      #   data image name (seperated by comma if more than one are supplied)
-error                   ''          ''     str      #   error image name (seperated by comma if more than one are supplied)
-mask                    ''          ''     str      #   mask image name (seperated by comma if more than one are supplied)
-psf                     ''          ''     str      #   psf image name (seperated by comma if more than one are supplied)
-pmodel                  ''          ''     str      #   prior image name (seperated by comma if more than one are supplied)
+note                    ''          ''      str     #   comments on the object (not implemented yet)
+image                   ''          ''      str     #   data image name (separated by a comma if more than one are supplied)
+error                   ''          ''      str     #   error image name (separated by a comma if more than one are supplied)
+mask                    ''          ''      str     #   mask image name (separated by a comma if more than one are supplied)
+psf                     ''          ''      str     #   psf image name (separated by a comma if more than one are supplied)
+pmodel                  ''          ''      str     #   prior image name (separated by a comma if more than one are supplied)
   
-samp                    ''          ''     str      #   sampling table
-bmaj                    None        ''     float    #   bmaj, for overriding whatever in the image header 
-bmin                    None        ''     float    #   bmaj, for overriding whatever in the image header
-bpa                     None        ''     float    #   bmaj, for overriding whatever in the image header
-type                    ''          ''     str      #   not implemented yet
-xypos                   [0.0,0.0]   '.7f'      list     #   [ra,dec] in degree
-z                       0.0         '.3f'     float    #   redshift
-pa                      0.0         '.2f'     float    #   Pa of the receding half major axis of the projected disk plane
-inc                     0.0         '.2f'     float    #   disk plane inclination
-restwave                1000.0      ''     float    #   line rest wavelength (angstrom)
-restfreq                100.0       ''     float    #   Ghz line rest frequency
+samp                    ''          ''      str     #   sampling table
+bmaj                    None        ''      float   #   bmaj, for overriding whatever in the image header 
+bmin                    None        ''      float   #   bmaj, for overriding whatever in the image header
+bpa                     None        ''      float   #   bmaj, for overriding whatever in the image header
+type                    ''          ''      str     #   not implemented yet
+xypos                   [0.0,0.0]   '.7f'   list    #   [ra,dec] in degree
+z                       0.0         '.3f'   float   #   redshift
+pa                      0.0         '.2f'   float   #   Pa of the receding half major axis of the projected disk plane
+inc                     0.0         '.2f'   float   #   disk plane inclination
+restwave                1000.0      ''      float   #   line rest wavelength (angstrom)
+restfreq                100.0       ''      float   #   Ghz line rest frequency
 
-vsys                    0.0         '.2f'     float    #   km/s galaxy systematic velocity in respective to the redshift
-vrad                    [0.0,0.1]   '.2f'     list     #   radial knots in galactocentric distance (for velocity and dispersion vector)
-vrot                    [100,100]   '.2f'     list     #   rotational velocity radial profile
-vdis                    [10.0,10.0] '.2f'     list     #   velocity dispersion radial profile
+vsys                    0.0         '.2f'   float   #   km/s galaxy systematic velocity in respective to the redshift
+vrad                    [0.0,0.1]   '.2f'   list    #   radial knots in galactocentric distance (for velocity and dispersion vector)
+vrot                    [100,100]   '.2f'   list    #   rotational velocity radial profile
+vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radial profile
 alpha                   0.0         '.2f'
 
-intflux                 1.0         '.2f'     float    #   Jy x km/s or dataunits * angstrom
-sbser                   [1.0,1.0]   '.2f'     list     #   [half-light-radius, sersic-index]
-method                  'kinmspy'   ''     str      #   underline simulation algorithm
-                                                      #   available options are: disk2d,kinmspy
+intflux                 1.0         '.2f'   float   #   Jy x km/s or dataunits * angstrom
+sbser                   [1.0,1.0]   '.2f'   list    #   [half-light-radius, sersic-index]
+method                  'kinmspy'   ''      str     #   underline simulation algorithm
+                                                    #   available options are: disk2d,kinmspy
                                                     
 
-@optimize               #   mark the beginning of the section for optimization parameters
+@optimize               #   marks the beginning of the section for optimization parameters
 
 method                  'amoeba'            str     #   underline parameter optimization algorithm
 outname_replace         []                  list    #   list of two-element tuple
@@ -52,8 +52,8 @@ parname@objectname      ('o',-1,1,0.0)      tuple   #   3-/4-element tuple for a
                                                     #   (-100,100,1.0)      if no scaling keyword is provided, default to "absolute" scaling
 
 parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a slicing index is applied when the parameter is an iteration object (e.g. vrot)
-                                                    #   then all elements in the scliced parameter set is tied to be same as a single varing parameter
-                                                    #   e.g., vrot[2:5]@co21disk: the rotational velocity of the third,fourth,fifth radial knots with in disk object "co21disk"
+                                                    #   then all elements in the sliced parameter set is tied to be the same as a single free parameter
+                                                    #   e.g., vrot[2:5]@co21disk: the rotational velocity of the third, fourth, fifth radial knots within disk object "co21disk"
 
 
 @ comments
@@ -66,8 +66,8 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
 
     + any line begins with '@' mark the beginning of a new section (as in this file)
         
-        The section name is created from valid characters (ignoring comments) following  "@", with leading/trialing space removed
-        some section names is reserved for special purpose:
+        The section name is created from valid characters (ignoring comments) following  "@", with leading/trailing space removed
+        some section names are reserved for special purposes:
             + A name containing "comment", "changelog", "ignore" is considered as comments and the content in that section will be discarded by the program
             + A name containing "optimize" denote the parameter section control the optimization. 
             + A name not meeting the above standard will be considered as a model component
@@ -84,8 +84,8 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
 + keyword-value pair
 
     Under each section, each line always follow the keyword+value pair syntax, separated by white space
-    The first word is consider as the parameter "keyword", and the rest of the line will be considered as the value content.
-    The "value" part in .inp needs to be the string prepresentation of a Python object, e.g.:
+    The first word is considered as the parameter "keyword", and the rest of the line will be considered as the value content.
+    The "value" part in .inp needs to be the string representation of a Python object, e.g.:
         'test'      :   a string type with a value of "test"
         3.0         :   a float type with a value of 3.0
     The program uses eval() to determine the value content and type (which is actually not a good practice in Python...)
