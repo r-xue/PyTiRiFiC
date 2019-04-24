@@ -21,6 +21,7 @@ setuptools.setup(name='GMaKE',
                  author_email='rx.astro@gmail.com',
                  license='MIT',
                  packages=setuptools.find_packages(),
+                 include_package_data=True,
                  install_requires=[
                     'astropy',
                     'emcee'],
