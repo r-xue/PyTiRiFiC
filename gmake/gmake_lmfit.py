@@ -312,6 +312,7 @@ def gmake_lmfit_analyze_nelder(outfolder,
     p_up=fit_dct['p_up']
     p_start=fit_dct['p_start']
     p_format=fit_dct['p_format']
+    p_format_prec=fit_dct['p_format_prec']
     
     chi2=fit_dct['p_lmfit_blobs']['chi2']
     pars=fit_dct['p_lmfit_blobs']['pars'].T
@@ -322,14 +323,19 @@ def gmake_lmfit_analyze_nelder(outfolder,
     if  burnin is None:
         burnin=int(niter*0.8)
     
-    #####################
+    #   print out parameter shifting
     
     print("+"*80)
-    for index  in range(len(p_name)):
-        
-        print((p_name[index]+" = {0:"+p_format[index]+"} <<-- {1:"+p_format[index]+"}").\
-              format( p_best[index],p_start[index]))        
-    print("-"*80)
+    maxlen=len(max(fit_dct['p_name'],key=len))
+    for ind  in range(len(p_name)):
+        textout=' {:{align}{width}} '.format(ind,align='<',width=2)
+        textout+=' {:{align}{width}} '.format(p_name[ind],align='<',width=maxlen)
+        textout+=' = {:{align}{width}{prec}} '.format(p_best[ind],align='^',width=13,prec=p_format_prec[ind])
+        textout+=' <- {:{align}{width}{prec}} '.format(p_start[ind],align='^',width=13,prec=p_format_prec[ind])
+        textout+=' ( {:{align}{width}{prec}}, '.format(p_lo[ind],align='^',width=13,prec=p_format_prec[ind])
+        textout+=' {:{align}{width}{prec}} )'.format(p_up[ind],align='^',width=13,prec=p_format_prec[ind])
+        print(textout)    
+    print("-"*80)    
     
     
     #   PLOT PARAMETERS
