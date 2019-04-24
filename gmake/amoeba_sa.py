@@ -35,6 +35,7 @@ def amoeba_sa(func,p0,scale,
               ftol=1e-5,
               maxiter=5000,
               temperature=0.,
+              format_prec='10.0f',
               verbose=False): 
     """
     
@@ -90,7 +91,7 @@ def amoeba_sa(func,p0,scale,
         
         if  verbose==True:
             #print(niter,np.abs(y[ilo]),np.abs(y[ihi]))
-            print('{0:>10d} {1:>16.2f} {2:>16.2f}'
+            print(('{0:>6d} {1:>'+format_prec+'} {2:>'+format_prec+'}')
                   .format(int(niter),np.abs(y[ilo]),np.abs(y[ihi])))
         
         if  d!=0.0:                         # compute fractional change in chi^2
