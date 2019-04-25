@@ -76,13 +76,15 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
             + A name not meeting the above standard will be considered as a model component
 
     + denote the "parent" object of a parameter:
-        e.g. "pa@co21disk" = the position angel of the disk object "co21disk"
+        e.g. "pa@co21disk" = the position angle of the disk object "co21disk"
 
     + tie the parameter values:
         
-        when a parameter value is a string containing "@", it means its value is tied to that parameter values
+        when a parameter value is set to a string containing "@", it means its value is tied to a math expression of some other parameter(s)
         e.g.    if 'vdis@co21disk' is assigned to 'vdis' in the object '@co10disk' parameter section, 
-                then the value of 'vdis@co10disk' is always tied to that of 'vdis@co21disk' in modeling
+                then the value of 'vdis@co10disk' is always tied to that of 'vdis@co21disk' in modeling.
+                if '2.*influx@line1' is assigned to 'intflux' in the object '@line2' parameter section,
+                then the value of 'intflux@line2' is always twice of 'flux@line1'
 
 + keyword-value pair
 
