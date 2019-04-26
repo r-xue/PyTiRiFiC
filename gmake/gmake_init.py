@@ -14,6 +14,7 @@ from astropy.cosmology import Planck13
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
+import yaml
 
 from asteval import Interpreter
 aeval = Interpreter()

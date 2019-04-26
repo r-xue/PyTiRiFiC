@@ -1,6 +1,7 @@
 from .gmake_init import *
 
 
+"""
 import ast, operator
 
 binOps = {
@@ -27,6 +28,17 @@ def arithmeticEval (s):
             raise Exception('Unsupported type {}'.format(node))
 
     return _eval(node.body)
+"""
+
+def gmake_config():
+    """
+    load configuration
+    """
+    scriptdir=os.path.dirname(os.path.abspath(__file__)) 
+    with open(scriptdir+"/config.yaml", 'r') as stream: 
+        cfg=yaml.load(stream)
+    
+    return cfg
 
 def gmake_read_range(center=0,delta=0,mode='a'):
     """
@@ -74,7 +86,8 @@ def gmake_read_inp(parfile,verbose=False):
                 print('@',tag)
                 print("-"*40)
         else:
-            if    'comments' in tag.lower() or 'changelog' in tag.lower() or 'ignore' in tag.lower():
+            
+            if  any(section in tag.lower() for section in cfg['CommentSecs']):
                 pass
                 #pars['content']+=line+"\n"
                 #inp_dct[tag]=pars
@@ -85,7 +98,7 @@ def gmake_read_inp(parfile,verbose=False):
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
                 if  verbose==True:
-                    print(key," : ",value)                
+                    print(':20'.format(key)," : ",value)                
                 try:                #   likely mutiple-elements are provided, 
                                     #   but be careful of eval() usage here
                                     #   e.g.:"tuple (1)" will be a valid statement
@@ -369,6 +382,8 @@ def gmake_inp2mod(objs,verbose=False):
         + fill the "tied" values
     """
     
+    cfg=gmake_config()
+    print(cfg)
     par_list=[]
     for tmp1 in objs.keys():
         for tmp2 in objs[tmp1].keys():
@@ -376,9 +391,9 @@ def gmake_inp2mod(objs,verbose=False):
             
     for tag in objs.keys():
         for key in objs[tag].keys():
-            if    'comments' in tag.lower() or 'changelog' in tag.lower() or 'ignore' in tag.lower():
+            if  any(section in tag.lower() for section in cfg['CommentSecs']):
                 pass
-            elif 'optimize' in tag:
+            elif cfg['OptimizeSec'] in tag.lower():
                 pass
                 #value=objs[tag][key]
                 #for value0 in value:
@@ -395,12 +410,14 @@ def gmake_inp2mod(objs,verbose=False):
                         key_nest=par.split("@")
                         tmp0=objs[key_nest[1]][key_nest[0]]
                         if  isinstance(tmp0, str):  # copy string
-                            print(tmp0,'-->',objs[tag][key])
                             objs[tag][key]=tmp0
+                            #print(tmp0,'-->',objs[tag][key])
                         else:                       # math expression evluation
                             value_expr=value.replace(par,"tmp0")
-                            print(value_expr,'-->',objs[tag][key])
                             objs[tag][key]=ne.evaluate(value_expr).tolist()
+                            #print(value,'-->',objs[tag][key])
+                        if  verbose==True:
+                            print('{:16}'.format(key+'@'+tag),' : ','{:16}'.format(value),'-->',objs[tag][key])
                     """
                     if  '@' in value:
                         key_nest=value.split("@")
