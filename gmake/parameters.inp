@@ -1,46 +1,74 @@
 
 ##########################################################################################
-@ object                #   marks the beginning of a new model object:
+@ object                #   marks the beginning of a new model component
 ##########################################################################################
 
-#key                    default     format   type   #   format is only for controlling the decimal point in the log output
+## keyword              default     format  type    #   format is only for controlling the decimal point in the log output
   
 name                    ''          ''      str     #   object name (just a note for you, not used for anything)
-  
 note                    ''          ''      str     #   comments on the object (not implemented yet)
+
 image                   ''          ''      str     #   data image name (separated by a comma if more than one are supplied)
 error                   ''          ''      str     #   error image name (separated by a comma if more than one are supplied)
 mask                    ''          ''      str     #   mask image name (separated by a comma if more than one are supplied)
 psf                     ''          ''      str     #   psf image name (separated by a comma if more than one are supplied)
-pmodel                  ''          ''      str     #   prior image name (separated by a comma if more than one are supplied)
-  
-samp                    ''          ''      str     #   sampling table
 bmaj                    None        ''      float   #   bmaj, for overriding whatever in the image header 
 bmin                    None        ''      float   #   bmaj, for overriding whatever in the image header
 bpa                     None        ''      float   #   bmaj, for overriding whatever in the image header
+samp                    ''          ''      str     #   sampling table
+
+vis                     ''          ''      str     #   vis-ms name (separated by a comma if more than one are supplied)
+
+pmodel                  ''          ''      str     #   prior image name (separated by a comma if more than one are supplied)
+
 type                    ''          ''      str     #   not implemented yet
 xypos                   [0.0,0.0]   '.7f'   list    #   [ra,dec] in degree
+
 z                       0.0         '.3f'   float   #   redshift
+vsys                    0.0         '.2f'   float   #   km/s galaxy systematic velocity in respective to the redshift
+
 pa                      0.0         '.2f'   float   #   Pa of the receding half major axis of the projected disk plane
 inc                     0.0         '.2f'   float   #   disk plane inclination
+
 restwave                1000.0      ''      float   #   line rest wavelength (angstrom)
 restfreq                100.0       ''      float   #   Ghz line rest frequency
 
-vsys                    0.0         '.2f'   float   #   km/s galaxy systematic velocity in respective to the redshift
-vrad                    [0.0,0.1]   '.2f'   list    #   radial knots in galactocentric distance (for velocity and dispersion vector)
-vrot                    [100,100]   '.2f'   list    #   rotational velocity radial profile
-vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radial profile
-alpha                   0.0         '.2f'
+method                  'kinmspy'   ''      str     #   underline simulation algorithm 
+                                                    #   available options are: disk2d,kinmspy
 
 intflux                 1.0         '.2f'   float   #   Jy x km/s or dataunits * angstrom
 sbser                   [1.0,1.0]   '.2f'   list    #   [half-light-radius, sersic-index]
-method                  'kinmspy'   ''      str     #   underline simulation algorithm
-                                                    #   available options are: disk2d,kinmspy
-                                                    
 
+ge_pa           90.0
+ge_q             2.0
+
+####    method='kinmspy'
+
+vrad                    [0.0,0.1]   '.2f'   list    #   radial knots in galactocentric distance (for velocity and dispersion vector)
+vrot                    [100,100]   '.2f'   list    #   rotational velocity radial profile
+vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radial profile
+
+####    method='disk2d'                                                    
+
+alpha                   0.0         '.2f'   float   #   
+                                                    
+##########################################################################################
+@ dynamics              #   marks the beginning of dynamics-prescription section
+##########################################################################################
+
+disk_sd                 0.0                 float   #   msun/kpc^2.0               
+disk_rs                 1.0                 float   #   kpc
+halo_ms                 5e10                float   #   msun
+halo_a                  100.0               float   #   kpc
+halo_conv               4.0                 float   #
+halo_mvir               0.5                 float   #   10.^12 msun
+
+##########################################################################################
 @optimize               #   marks the beginning of the section for optimization parameters
+##########################################################################################
 
 method                  'amoeba'            str     #   underline parameter optimization algorithm
+                                                    #   options: amoeba,lmfit-nm,lmfit-brute,emcee
 outname_replace         []                  list    #   list of two-element tuple
 outname_exclude         []                  list    #   list of string
 outdir                  'testdir'           str     #   output dir path
