@@ -5,9 +5,9 @@ def gmake_gravity_galpy(inp_dct,plotrc=False):
     """
     generate a RC from the mass-potential model 
     """
-    if  'rc' in inp_dct.keys():
+    if  'dynamics' in inp_dct.keys():
         
-        rc=inp_dct['rc']
+        rc=inp_dct['dynamics']
 
         for obj in inp_dct.keys():
             
