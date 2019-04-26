@@ -1,5 +1,33 @@
 from .gmake_init import *
 
+
+import ast, operator
+
+binOps = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Mod: operator.mod
+}
+
+def arithmeticEval (s):
+    node = ast.parse(s, mode='eval')
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.BinOp):
+            return binOps[type(node.op)](_eval(node.left), _eval(node.right))
+        else:
+            raise Exception('Unsupported type {}'.format(node))
+
+    return _eval(node.body)
+
 def gmake_read_range(center=0,delta=0,mode='a'):
     """
         modifiy the parameter exploring bounrdary according to the info from opt section
@@ -51,21 +79,26 @@ def gmake_read_inp(parfile,verbose=False):
                 #pars['content']+=line+"\n"
                 #inp_dct[tag]=pars
             else:
-                #pars['content']+=line+"\n"
-                #.split()   split using empty space
-                #.strip()   remove leading/trailing space                
+                #pars['content']+=line+"\n"               
+                #   identify the "key"
                 key=line.split()[0]
+                #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
+                if  verbose==True:
+                    print(key," : ",value)                
                 try:                #   likely mutiple-elements are provided, 
                                     #   but be careful of eval() usage here
                                     #   e.g.:"tuple (1)" will be a valid statement
-                    pars[key]=eval(value)
+                    #pars[key]=eval(value)
+                    #pars[key]=ast.literal_eval(value)
+                    pars[key]=aeval(value)
                 except SyntaxError: #   pack the value content into a list
-                    value=value.split()
-                    pars[key]=[eval(value0) for value0 in value]
+                    values=value.split()
+                    #pars[key]=[eval(value0) for value0 in value]
+                    #pars[key]=[ast.literal_eval(value0) for value0 in value]
+                    pars[key]=[aeval(value0) for value0 in values]
                 inp_dct[tag]=pars
-                if  verbose==True:
-                    print(key," : ",value)
+
     
     if  'optimize' in inp_dct.keys():
         if  'outdir' in (inp_dct['optimize']).keys():
@@ -328,17 +361,22 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def gmake_inp2mod(objs):
+def gmake_inp2mod(objs,verbose=False):
     """
     get ready for model constructions, including:
         + add the default values
         + fill optional keywords
         + fill the "tied" values
     """
-
+    
+    par_list=[]
+    for tmp1 in objs.keys():
+        for tmp2 in objs[tmp1].keys():
+            par_list+=[tmp2+'@'+tmp1]
+            
     for tag in objs.keys():
         for key in objs[tag].keys():
-            if  'comments' in tag or 'changelog' in tag:
+            if    'comments' in tag.lower() or 'changelog' in tag.lower() or 'ignore' in tag.lower():
                 pass
             elif 'optimize' in tag:
                 pass
@@ -351,10 +389,24 @@ def gmake_inp2mod(objs):
             else:    
                 value=objs[tag][key]
                 if  isinstance(value, str):
+                    pars=[par for par in par_list if par in value] 
+                    if  pars!=[]:   # a string expression for parameter tie is detected
+                        par=max(pars, key=len) 
+                        key_nest=par.split("@")
+                        tmp0=objs[key_nest[1]][key_nest[0]]
+                        if  isinstance(tmp0, str):  # copy string
+                            print(tmp0,'-->',objs[tag][key])
+                            objs[tag][key]=tmp0
+                        else:                       # math expression evluation
+                            value_expr=value.replace(par,"tmp0")
+                            print(value_expr,'-->',objs[tag][key])
+                            objs[tag][key]=ne.evaluate(value_expr).tolist()
+                    """
                     if  '@' in value:
                         key_nest=value.split("@")
                         objs[tag][key]=objs[key_nest[1]][key_nest[0]]
-    
+                    """
+                    
     return objs
     
 
@@ -463,11 +515,11 @@ def gmake_pformat(fit_dct,verbose=True):
         print("optimizing parameters: index / name / start / lo_limit / up_limit")
     
     scriptdir=os.path.dirname(os.path.abspath(__file__))    
-    par_dct=gmake_read_inp(scriptdir+'/parameters.inp',verbose=False)
+    def_dct=gmake_read_inp(scriptdir+'/parameters.inp',verbose=False)
 
     
-    par_dct_obj=par_dct['object']
-    par_dct_opt=par_dct['optimize']
+    def_dct_obj=def_dct['object']
+    def_dct_opt=def_dct['optimize']
     
     
     maxlen=len(max(fit_dct['p_name'],key=len))
@@ -479,9 +531,9 @@ def gmake_pformat(fit_dct,verbose=True):
         p_up=fit_dct['p_up'][ind]
         
         smin=len(p_key)        
-        for keyword in par_dct_obj.keys():
+        for keyword in def_dct_obj.keys():
             if  keyword+'@' in p_key or keyword+'[' in p_key:
-                p_format0_prec=par_dct_obj[keyword][1]
+                p_format0_prec=def_dct_obj[keyword][1]
                 p_format0_keys=''+str(max(smin,5))
                 
         #  same widths for all parameters in one trial

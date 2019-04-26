@@ -15,6 +15,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
+from asteval import Interpreter
+aeval = Interpreter()
+
 #import reikna.cluda as cluda
 #from reikna.cluda import any_api
 #import reikna.fft as cluda_fft
@@ -73,6 +76,7 @@ from astropy.convolution import discretize_model
 #   FFT related
 import scipy.fftpack 
 import pyfftw #pyfftw3 doesn't work
+import ast
 from matplotlib.colors import LogNorm
 from skimage import transform
 #pyfftw.config.NUM_THREADS = 1#multiprocessing.cpu_count()
