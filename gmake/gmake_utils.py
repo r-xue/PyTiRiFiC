@@ -75,6 +75,8 @@ def gmake_read_inp(parfile,verbose=False):
     lines= filter(None, (line.split('#')[0].strip() for line in lines))
 
     tag='default'
+    cfg=gmake_config()
+    
     for line in lines:
         if  line.startswith('@'):
             tag=line.replace('@','',1).strip()
@@ -98,7 +100,7 @@ def gmake_read_inp(parfile,verbose=False):
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
                 if  verbose==True:
-                    print(':20'.format(key)," : ",value)                
+                    print('{:20}'.format(key)," : ",value)                
                 try:                #   likely mutiple-elements are provided, 
                                     #   but be careful of eval() usage here
                                     #   e.g.:"tuple (1)" will be a valid statement
@@ -374,7 +376,7 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def gmake_inp2mod(objs,verbose=False):
+def gmake_inp2mod(objs,verbose=True):
     """
     get ready for model constructions, including:
         + add the default values
@@ -414,7 +416,10 @@ def gmake_inp2mod(objs,verbose=False):
                             #print(tmp0,'-->',objs[tag][key])
                         else:                       # math expression evluation
                             value_expr=value.replace(par,"tmp0")
-                            objs[tag][key]=ne.evaluate(value_expr).tolist()
+                            aeval.symtable["tmp0"]=objs[key_nest[1]][key_nest[0]]
+                            print(value_expr,value)
+                            #objs[tag][key]=ne.evaluate(value_expr).tolist()
+                            objs[tag][key]=aeval(value_expr)
                             #print(value,'-->',objs[tag][key])
                         if  verbose==True:
                             print('{:16}'.format(key+'@'+tag),' : ','{:16}'.format(value),'-->',objs[tag][key])

@@ -10,7 +10,7 @@ from .gmake_emcee import *
 from .gmake_amoeba import *
 from .gmake_mpfit import *
 from .gmake_lmfit import *
-from .gmake_gravity import *
+from .gmake_model_func_dynamics import *
 from .gmake_plots import *
 from .gmake_fit import *
 from .gmake_uvamp import *

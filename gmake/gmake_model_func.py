@@ -2,6 +2,84 @@ from .gmake_init import *
 from .gmake_utils import *
 from .gmake_model_func_kinms import *
 
+
+def gmake_model_dynamics(obj,dyn,rad_as):
+    
+    """
+    generate a RC from the mass-potential model 
+    """
+    z=obj['z']
+
+    #mpot=MiyamotoNagaiPotential(amp=dyn[''*u.Msun,a=3.*u.kpc,b=300.*u.pc)
+    #kpot=KeplerPotential(amp=5e10*u.Msun)
+    #npot=NFWPotential(amp=dyn['halo_ms']*u.Msun,a=dyn['halo_a']*u.kpc)
+    
+    # c_vir(z,M_vir): concentration, Eq (12) from Klypin+11
+    h=Planck13.h
+    z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
+    c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
+    m0 = np.array([1.5e19,1.5e17,2.5e15,6.8e13,6.3e12,6.6e11]) / h
+    ikind='linear'
+    if_c=interp1d(np.array(z0),np.array(c0),kind=ikind,bounds_error=False,
+                  fill_value=(c0[0],c0[-1]))
+    if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
+                  fill_value=(m0[0],m0[-1]))        
+    m_vir=dyn['halo_mvir']   # 10^12msun
+    c_vir = if_c(z) * (m_vir*h)**(-0.075) * (1+(m_vir*1e12/if_m(z))**0.26)
+                                
+    omega_z=Planck13.Om(z)                                           
+    delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
+
+    npot=galpy_pot.NFWPotential(conc=c_vir,
+                      mvir=m_vir,
+                      H=Planck13.H(z).value,
+                      Om=0.3,#dones't matter as wrtcrit=True
+                      overdens=delta_c,wrtcrit=True,
+                      ro=1,vo=1)
+    dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=dyn['disk_sd']*u.Msun/u.kpc/u.kpc,
+                                           hr=dyn['disk_rs']*u.kpc,ro=1,vo=1)
+
+    kps=Planck13.kpc_proper_per_arcmin(z).value/60.0
+    rad=rad_as*kps
+    #rad=np.arange(0,18,0.1)
+    #vcirc_mp=mpot.vcirc(rad*u.kpc)
+    #vcirc_kp=kpot.vcirc(rad*u.kpc)
+    vcirc_np=npot.vcirc(rad*u.kpc)
+    vcirc_dp=dpot.vcirc(rad*u.kpc)
+
+
+    
+
+    vcirc_tt=np.sqrt(vcirc_np.value**2.0+vcirc_dp.value**2.0)
+    vcirc_tt[0]=0
+    
+    
+    if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
+        if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,
+                         bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
+        obj['vdis']=if_vdis(rad/kps)
+    else:
+        obj['vdis']=rad/kps*0.0+obj['vdis']
+            
+    #   smooth model
+    obj['vrad']=(rad/kps).copy()
+    obj['vrot']=vcirc_tt.copy()
+    obj['vrot_halo']=vcirc_np.value.copy()
+    obj['vrot_disk']=vcirc_dp.value.copy()
+        
+
+        
+    #print(vcirc_tt)
+    #pot=npot+dpot
+    #vcirc_ga=pot.vcirc(rad*u.kpc)
+    #cmass=npot.mass(R=np.array([10,2]))
+    #print(cmass)
+    #cmass=kpot.mass(R=10)
+    #print(cmass)    
+
+        
+    return obj['vrot']
+
 def gmake_model_disk2d(header,ra,dec,
                        r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
                        pintflux=0.0,pra=None,pdec=None,
@@ -280,7 +358,8 @@ def gmake_model_kinmspy(header,obj,
                         nsamps=100000,
                         decomp=False,
                         fixseed=False,
-                        verbose=False):
+                        verbose=False,
+                        mod_dct=None):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
     a dictionary nest
@@ -375,8 +454,23 @@ def gmake_model_kinmspy(header,obj,
     
     ikind='cubic'  # bad for extraplate but okay for interplate 'linear'/'quadratic'
 
-    if_vrot=interp1d(np.array(obj['vrad']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
-    velprof=if_vrot(rad)
+    if  isinstance(obj['vrot'], (list, np.ndarray)):
+        if_vrot=interp1d(np.array(obj['vrad']),np.array(obj['vrot']),kind=ikind,bounds_error=False,fill_value=(obj['vrot'][0],obj['vrot'][-1]))
+        velprof=if_vrot(rad)
+    if  isinstance(obj['vrot'], tuple):
+        if  obj['vrot'][0].lower()=='dynamics':
+            velprof=gmake_model_dynamics(obj,mod_dct[obj['vrot'][1]],rad)
+        elif  obj['vrot'][0].lower()=='arctan':
+            velprof=obj['vrot'][1]*2.0/np.pi*np.arctan(rad/obj['vrot'][2])
+        elif  obj['vrot'][0].lower()=='exp':
+            velprof=obj['vrot'][1]*(1-np.exp(-rad/obj['vrot'][2]))
+        elif  obj['vrot'][0].lower()=='tanh':
+            velprof=obj['vrot'][1]*np.tanh(rad/obj['vrot'][2])
+        else:
+            for ind in range(1,len(obj['vrot'])):
+                aeval.symtable["p"+str(ind)]=obj['vrot'][ind]
+                aeval.symtable["vrad"]=rad
+            velprof=aeval(obj['vrot'][0])
     
     if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
         if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
@@ -384,6 +478,10 @@ def gmake_model_kinmspy(header,obj,
     else:
         gassigma=rad*0.0+obj['vdis']
         obj['vdis']=np.array(obj['vrad'])*0.0+obj['vdis']
+        
+        
+        
+    
     """
     #   same as above
     if_vrot=interpolate.UnivariateSpline(np.array(obj['radi']),np.array(obj['vrot']),s=1.0,ext=3)

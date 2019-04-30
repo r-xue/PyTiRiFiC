@@ -23,6 +23,7 @@ pmodel                  ''          ''      str     #   prior image name (separa
 
 type                    ''          ''      str     #   not implemented yet
 xypos                   [0.0,0.0]   '.7f'   list    #   [ra,dec] in degree
+xypos_kin               [0.0,0.0]   '.7f'   list    #   [ra,dec] in degree for the kinematical center if different from the geometric center
 
 z                       0.0         '.3f'   float   #   redshift
 vsys                    0.0         '.2f'   float   #   km/s galaxy systematic velocity in respective to the redshift
@@ -45,7 +46,31 @@ ge_q             2.0
 ####    method='kinmspy'
 
 vrad                    [0.0,0.1]   '.2f'   list    #   radial knots in galactocentric distance (for velocity and dispersion vector)
+
 vrot                    [100,100]   '.2f'   list    #   rotational velocity radial profile
+                                                    #
+                                                    #   some "advanced" options available:
+                                                    #
+                                                    #   (math_expr/options,p1,p2...)    :   tuple
+                                                    #   one can use math expressions to specify a descriptional RC (numpy supported),
+                                                    #   or select the options of building RC from a mass-potential->dynamical model
+                                                    #
+                                                    #   math expression exmaples:
+                                                    #        +  linear increasing to vmax=200 at 0.2" then flat RC
+                                                    #           vrot <<< ("minimum(vard/p2,1)*p1",200,0.2)                                                    
+                                                    #        +  vrot=2/pi*vmax*arctan(vrad/rt)
+                                                    #           vrot <<< ('p1*2/pi*arctan(vrad/p2)',200,0.2)
+                                                    #                <<< ('arctan',vmax,rt) # built-in shortcut
+                                                    #        +  vrot=vmax*(1-exp(-vrad/rt))
+                                                    #           vrot <<< ('p1*(1-exp(-vrad/p2))',200,0.2)
+                                                    #                <<< ('exp',200,0.2)    # built-in shortcut
+                                                    #        +  vrot=vmax*tanh(vrad/rt)
+                                                    #           vrot <<< ('p1*tanh(vrad/p2)',200,0.2)
+                                                    #                <<< ('tanh',200,0.2)   # built-in shortcut
+                                                    #   dynamical model examples:
+                                                    #        +  using a dynamical model specified from the parameter section 'halodisk'
+                                                    #           vrot <<< ('dynamics','halodisk')
+                                                    
 vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radial profile
 
 ####    method='disk2d'                                                    

@@ -1,6 +1,6 @@
 from .gmake_init import *
 from .gmake_model_func import *
-from .gmake_gravity import *
+from .gmake_model_func_dynamics import *
 
 def gmake_model_api(mod_dct,dat_dct,
                     nsamps=100000,
@@ -114,7 +114,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 if  'kinmspy' in obj['method'].lower():
                     
                     test_time = time.time()              
-                    imodel,imodel_prof=gmake_model_kinmspy(models['header@'+vis],obj,nsamps=nsamps,fixseed=False)
+                    imodel,imodel_prof=gmake_model_kinmspy(models['header@'+vis],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+vis,time.time() - test_time))
                     #print(imodel.shape)
                     models['imod3d@'+vis]+=imodel
@@ -182,7 +182,7 @@ def gmake_model_api(mod_dct,dat_dct,
                     #test_time = time.time()              
                     
                     
-                    imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj,nsamps=nsamps,fixseed=False)
+                    imodel,imodel_prof=gmake_model_kinmspy(models['header@'+image],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('test:'+image,time.time() - test_time))
                     #print(imodel.shape)
                     models['imod3d@'+image]+=imodel
@@ -319,7 +319,7 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     #gmake_listpars(inp_dct0)
     #tic0=time.time()
     mod_dct=gmake_inp2mod(inp_dct0)
-    gmake_gravity_galpy(mod_dct,plotrc=False)
+    gmake_model_func_dynamics(mod_dct,plotrc=False)
     #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
     #tic0=time.time()
