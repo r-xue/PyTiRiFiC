@@ -28,8 +28,25 @@ xypos_kin               [0.0,0.0]   '.7f'   list    #   [ra,dec] in degree for t
 z                       0.0         '.3f'   float   #   redshift
 vsys                    0.0         '.2f'   float   #   km/s galaxy systematic velocity in respective to the redshift
 
+
+sbrp                    [1.0,1.0]   '.2f'   list    #   surface brightness radial profile in the disk plane (method='kinmspy') or sky-plane (method='disk2d')
+                                                    #   if a list is provided:
+                                                    #       a sersic radial profile is provided, and sbrp=[half-light-radius, sersic-index]
+                                                    #   if a tuple is provided:
+                                                    #       (math_expr/options,p1,p2...)    :   tuple
+                                                    #   examples:
+                                                    #       +   a sersic1d profile
+                                                    #           sbrp <<< ('exp(-(r/p1)^(1/p2)=1)',re,n)
+                                                    #                <<< ('sersic',re,n)    # built-in shortcut
+ge_pa                   90.0
+ge_q                    2.0
+                                                                                                        
 pa                      0.0         '.2f'   float   #   Pa of the receding half major axis of the projected disk plane
-inc                     0.0         '.2f'   float   #   disk plane inclination
+inc                     0.0         '.2f'   float   #   disk plane inclination                                                    
+                                                        
+sbser                   [1.0,1.0]   '.2f'   list    #  
+
+intflux                 1.0         '.2f'   float   #   Jy x km/s or dataunits * angstrom
 
 restwave                1000.0      ''      float   #   line rest wavelength (angstrom)
 restfreq                100.0       ''      float   #   Ghz line rest frequency
@@ -37,13 +54,22 @@ restfreq                100.0       ''      float   #   Ghz line rest frequency
 method                  'kinmspy'   ''      str     #   underline simulation algorithm 
                                                     #   available options are: disk2d,kinmspy
 
-intflux                 1.0         '.2f'   float   #   Jy x km/s or dataunits * angstrom
-sbser                   [1.0,1.0]   '.2f'   list    #   [half-light-radius, sersic-index]
 
-ge_pa           90.0
-ge_q             2.0
 
 ####    method='kinmspy'
+
+sbvp                    0.0         '.2f'   float   #   disk surface brightness vertical profile
+                                                    #   thickness characteriztion (default to I(z)=exp(-z^2/hz^2.0))
+                                                    #   when a tuple is provided, expect: sbvp=(math_expr/options,p1,p2...) 
+                                                    #           + a Gaussian profile I(z)=exp(-z^2/2^hz^2)
+                                                    #             sbvp <<< ('exp(-z^2/2/h^2)',hz)
+                                                    #                  <<< ('gaussian',hz)  # built-in shortcut
+                                                    #           + an exponential profile
+                                                    #             sbvp <<< ('exp(-abs(h)/hz',hz)
+                                                    #                  <<< ('exp',hz)       # built-in shortcut
+                                                    #           + an sech^2 profile
+                                                    #             sbvp <<< ('(sech(h/hz))^2',hz)  
+                                                    #                  <<< ('sech',hz)      # built-in shortcut
 
 vrad                    [0.0,0.1]   '.2f'   list    #   radial knots in galactocentric distance (for velocity and dispersion vector)
 
@@ -78,11 +104,14 @@ vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radi
 alpha                   0.0         '.2f'   float   #   
                                                     
 ##########################################################################################
-@ dynamics              #   keywords in the dynamics-prescription section
+@ potential              #   keywords in the dynamics-prescription section
 ##########################################################################################
 
 disk_sd                 0.0                 float   #   msun/kpc^2.0               
 disk_rs                 1.0                 float   #   kpc
+
+disk_sb2sd              ('object',1)        tuple   #   a mass distribution model based on the disk SB and a constant surface brightness-to-mass ratio
+                                                    #   ('object_name',brightness-to-mass ratio)    
 halo_ms                 5e10                float   #   msun
 halo_a                  100.0               float   #   kpc
 halo_conv               4.0                 float   #
