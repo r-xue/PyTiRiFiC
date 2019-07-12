@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+
+"""
 
 import setuptools
 import os
@@ -33,17 +37,17 @@ setuptools.setup(name='GMaKE',
 """
  install local editable
      pip3 install --user -e .
- 
+
  pypi:
      python3 -m pip install --user --upgrade setuptools wheel
      pip3 install --user --upgrade setuptools wheel
      python3 setup.py sdist #bdist_wheel
      twine upload dist/*
      python3 setup.py --help-commands
-     
+
  usage:
- 
+
      >import gmake
      >help(gmake.gmake_read_data)
-     >print(gmake.gmake_read_data()) 
+     >print(gmake.gmake_read_data())
 """

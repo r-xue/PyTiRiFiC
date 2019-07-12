@@ -144,3 +144,8 @@ check GalFIT papers
 + reduce memory footprint
 + switch to single precsion-float as the data is single
 + check recent 3D-barolo development
++ kinmetics / photometry decouple
++ add the mode of using normalization images
++ if you have how resolution 2D image as templates (not that useful pratically, if you have that resolution power, you can just make a vlos map and fit in 2D)
++ incorprate my older IGM transmission / photometric filter code (for Lya blob and Lya stacking test)
+ 
