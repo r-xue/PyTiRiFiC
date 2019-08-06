@@ -2,8 +2,9 @@
 #import numpy as np
 #from galpy.potential import MiyamotoNagaiPotential
 #from galpy.potential import KeplerPotential
+import warnings
+warnings.simplefilter("ignore", DeprecationWarning)
 
-from __future__ import print_function
 from past.builtins import execfile
 import uuid
 import random
@@ -17,14 +18,9 @@ from scipy import stats
 import yaml
 
 
-class FakeWriter(object):
-    def __init__(self):
-        def fake_write(*args):
-            pass
-        self.write = fake_write
-        
+from io import StringIO
 from asteval import Interpreter
-aeval = Interpreter()
+aeval = Interpreter(err_writer=StringIO())
 
 #import reikna.cluda as cluda
 #from reikna.cluda import any_api

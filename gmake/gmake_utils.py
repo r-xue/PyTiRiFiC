@@ -115,6 +115,10 @@ def gmake_read_inp(parfile,verbose=False):
                     #pars[key]=[ast.literal_eval(value0) for value0 in value]
                     pars[key]=[aeval(value0) for value0 in values]
                 """
+                pars[key]=aeval(value)
+                if  len(aeval.error)>0 and pars[key] is None:
+                    values=value.split()
+                    pars[key]=[aeval(value0) for value0 in values]
                 
                 inp_dct[tag]=pars
 
