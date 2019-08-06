@@ -384,7 +384,7 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def gmake_inp2mod(objs,verbose=True):
+def gmake_inp2mod(objs,verbose=False):
     """
     get ready for model constructions, including:
         + add the default values
@@ -393,7 +393,7 @@ def gmake_inp2mod(objs,verbose=True):
     """
     
     cfg=gmake_config()
-    print(cfg)
+    #print(cfg)
     par_list=[]
     for tmp1 in objs.keys():
         for tmp2 in objs[tmp1].keys():
@@ -425,7 +425,7 @@ def gmake_inp2mod(objs,verbose=True):
                         else:                       # math expression evluation
                             value_expr=value.replace(par,"tmp0")
                             aeval.symtable["tmp0"]=objs[key_nest[1]][key_nest[0]]
-                            print(value_expr,value)
+                            #print(value_expr,value)
                             #objs[tag][key]=ne.evaluate(value_expr).tolist()
                             objs[tag][key]=aeval(value_expr)
                             #print(value,'-->',objs[tag][key])
@@ -545,7 +545,7 @@ def gmake_pformat(fit_dct,verbose=True):
         print("optimizing parameters: index / name / start / lo_limit / up_limit")
     
     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
-    def_dct=gmake_read_inp(data_path+'parameter_definition.inp',verbose=True)
+    def_dct=gmake_read_inp(data_path+'parameter_definition.inp',verbose=False)
 
     
     def_dct_obj=def_dct['object']

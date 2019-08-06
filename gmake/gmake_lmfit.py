@@ -147,7 +147,7 @@ def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     return 
 
 def gmake_lmfit_analyze_brute(outfolder):
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
     
     # min position
     # result.brute_x0
@@ -306,7 +306,7 @@ def gmake_lmfit_analyze_nelder(outfolder,
                         burnin=None):
     
     
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
     p_name=fit_dct['p_name']
     p_lo=fit_dct['p_lo']
     p_up=fit_dct['p_up']

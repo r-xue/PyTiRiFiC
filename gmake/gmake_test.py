@@ -1095,10 +1095,10 @@ def test_mpfit():
 def test_cloud_lineprofile():
     
     outfolder='bx610xy_b4_dm128_amoeba/'
-    fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    inp_dct=np.load(outfolder+'/inp_dct.npy').item()
-    dat_dct=np.load(outfolder+'/dat_dct.npy').item()
-    mod_dct=np.load(outfolder+'/p_fits/mod_dct.npy').item()
+    fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
+    inp_dct=np.load(outfolder+'/inp_dct.npy',allow_pickle=True).item()
+    dat_dct=np.load(outfolder+'/dat_dct.npy',allow_pickle=True).item()
+    mod_dct=np.load(outfolder+'/p_fits/mod_dct.npy',allow_pickle=True).item()
     
     
     #mod_dct['co43']['ge_q']=1.0
