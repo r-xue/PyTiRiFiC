@@ -94,7 +94,14 @@ def gmake_model_api(mod_dct,dat_dct,
                     models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
                                                     dtype=models['data@'+vis].dtype,
                                                     order='F')
-                    
+
+
+                obj['pmodel']=None
+                obj['pheader']=None
+                if  'pmodel@'+tag in dat_dct.keys():
+                    obj['pmodel']=dat_dct['pmodel@'+tag]
+                    obj['pheader']=dat_dct['pheader@'+tag]
+                                        
                     
                 if  'disk2d' in obj['method'].lower():
                     test_time = time.time()
