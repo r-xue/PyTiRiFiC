@@ -38,8 +38,8 @@ sbrp                    [1.0,1.0]   '.2f'   list    #   surface brightness radia
                                                     #       +   a sersic1d profile
                                                     #           sbrp <<< ('exp(-(r/p1)^(1/p2)=1)',re,n)
                                                     #                <<< ('sersic',re,n)    # built-in shortcut
-ge_pa                   90.0
-ge_q                    2.0
+ge_pa                   90.0        '.2f'   float   #
+ge_q                    2.0         '.2f'   float   #
                                                                                                         
 pa                      0.0         '.2f'   float   #   Pa of the receding half major axis of the projected disk plane
 inc                     0.0         '.2f'   float   #   disk plane inclination                                                    
@@ -142,6 +142,10 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
 ##########################################################################################
 @ comments
 ##########################################################################################
+
++ Data File Path
+
+    Any specified data path is in relative to the current Python working folder at this moment. Maybe we will switch to the reference path to that of ",inp" file in future.
 
 + The usage of "#":
 

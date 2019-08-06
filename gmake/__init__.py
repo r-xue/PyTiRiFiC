@@ -1,6 +1,7 @@
+
+from .__version__ import __version__
+
 from .gmake_init import *  
-
-
 
 from .gmake_utils import *
 from .gmake_model_func_kinms import *
@@ -18,4 +19,3 @@ from .gmake_uvamp import *
 """
 import cap_mpfit
 """
-

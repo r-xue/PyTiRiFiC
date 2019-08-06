@@ -1,3 +1,16 @@
+PRO HZDYN_BX610_SUBREG_2017
+
+repo='/Volumes/EasyStore/Storage/2017.1.01045.S/science_goal.uid___A001_X1288_X10c4/group.uid___A001_X1288_X10c5/member.uid___A001_X1288_X10c6/product/'
+fitsname='member.uid___A001_X1288_X10c6.BX610_sci.spw25.cube.I.pbcor.fits'
+
+im=readfits(repo+fitsname,hd)
+adxy,hd,356.5393354,12.8220249,xc,yc
+hextract3d,im,hd,subim,subhd,[xc-300,xc+300,yc-300,yc+300]
+
+writefits,'bx610_2017.fits',subim,subhd
+
+END
+
 PRO HZDYN_BX610_SUBREG_2015_ALL
 
 

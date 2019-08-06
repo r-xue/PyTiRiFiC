@@ -100,7 +100,9 @@ def gmake_read_inp(parfile,verbose=False):
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
                 if  verbose==True:
-                    print('{:20}'.format(key)," : ",value)                
+                    print('{:20}'.format(key)," : ",value)
+                
+                """                    
                 try:                #   likely mutiple-elements are provided, 
                                     #   but be careful of eval() usage here
                                     #   e.g.:"tuple (1)" will be a valid statement
@@ -112,6 +114,8 @@ def gmake_read_inp(parfile,verbose=False):
                     #pars[key]=[eval(value0) for value0 in value]
                     #pars[key]=[ast.literal_eval(value0) for value0 in value]
                     pars[key]=[aeval(value0) for value0 in values]
+                """
+                
                 inp_dct[tag]=pars
 
     
@@ -536,8 +540,8 @@ def gmake_pformat(fit_dct,verbose=True):
         #print("outdir:               ",fit_dct['optimize']['outdir'])
         print("optimizing parameters: index / name / start / lo_limit / up_limit")
     
-    scriptdir=os.path.dirname(os.path.abspath(__file__))    
-    def_dct=gmake_read_inp(scriptdir+'/parameters.inp',verbose=False)
+    data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
+    def_dct=gmake_read_inp(data_path+'parameter_definition.inp',verbose=True)
 
     
     def_dct_obj=def_dct['object']
@@ -555,6 +559,7 @@ def gmake_pformat(fit_dct,verbose=True):
         smin=len(p_key)        
         for keyword in def_dct_obj.keys():
             if  keyword+'@' in p_key or keyword+'[' in p_key:
+                print(keyword,def_dct_obj[keyword])
                 p_format0_prec=def_dct_obj[keyword][1]
                 p_format0_keys=''+str(max(smin,5))
                 

@@ -16,6 +16,13 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import yaml
 
+
+class FakeWriter(object):
+    def __init__(self):
+        def fake_write(*args):
+            pass
+        self.write = fake_write
+        
 from asteval import Interpreter
 aeval = Interpreter()
 
@@ -71,8 +78,8 @@ import shutil
 import multiprocessing
 #import FITS_tools
 from past.builtins import map
-from astropy.convolution import convolve_fft
-from astropy.convolution import convolve
+    
+    
 from astropy.convolution import discretize_model
 #   FFT related
 import scipy.fftpack 

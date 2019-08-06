@@ -68,7 +68,8 @@ def gmake_model_api(mod_dct,dat_dct,
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
                     nxy=128
                     
-                    header=fits.Header.fromfile('gmake_image.header',endcard=False,sep='\n',padding=False)
+                    data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'
+                    header=fits.Header.fromfile(data_path+'image_template.header',endcard=False,sep='\n',padding=False)
                     header['NAXIS1']=nxy
                     header['NAXIS2']=nxy
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])

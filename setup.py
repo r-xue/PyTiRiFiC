@@ -2,21 +2,43 @@
 # encoding: utf-8
 """
 
+The module can be installed via one of these commands:
+
+    python setup.py install --user      # from a local copy
+    pip install --user gmake            # or, from PyPI
+    pip install --user -e .             # or, "Editable" install
+    
+ usage:
+
+     >import gmake
+     >help(gmake.gmake_read_data)
+     >print(gmake.gmake_read_data())    
+
 """
 
 import setuptools
 import os
 import sys
+import re
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
+version='unknown'
+with open("gmake/__version__.py", "r") as fh:
+    version_file = fh.read()
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if  version_match:
+        version=version_match.group(1)                              
 
 if  sys.argv[-1] == "publish":
     os.system("python3 setup.py sdist; twine upload dist/*")
     sys.exit()
 
+
 setuptools.setup(name='GMaKE',
-                 version='0.0.1',
+                 version=version,
                  description='Galaxy Morphology and Kinematics Estimator',
                  long_description=long_description,
                  long_description_content_type="text/markdown",
@@ -28,26 +50,16 @@ setuptools.setup(name='GMaKE',
                  include_package_data=True,
                  install_requires=[
                     'astropy',
-                    'emcee'],
-                 #dependency_links=[
-                 #    'http://github.com/user/repo/tarball/master#egg=package-1.0',],
+                    'scikit-image','alpy',
+                    'scipy','reproject','fitsio','FITS_tools','yt','memory_profiler',
+                    'python-casacore','galpy',
+                    'reikna','tqdm',
+                    'asteval','numexpr',
+                    'pvextractor','spectral-cube',
+                    'emcee','corner','lmfit','mkl-fft','Cython',
+                    'pyyaml'],
+                project_urls={'Bug Reports': 'https://github.com/r-xue/gmake/issues',
+                    'Source': 'https://github.com/r-xue/gmake/'},                    
+                #dependency_links=[
+                #    'https://github.com/IntelPython/mkl_fft/archive/v1.0.14.zip',],
                  zip_safe=False)
-
-
-"""
- install local editable
-     pip3 install --user -e .
-
- pypi:
-     python3 -m pip install --user --upgrade setuptools wheel
-     pip3 install --user --upgrade setuptools wheel
-     python3 setup.py sdist #bdist_wheel
-     twine upload dist/*
-     python3 setup.py --help-commands
-
- usage:
-
-     >import gmake
-     >help(gmake.gmake_read_data)
-     >print(gmake.gmake_read_data())
-"""

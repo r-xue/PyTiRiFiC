@@ -1,27 +1,42 @@
+#
+#   Exampels of Fitting Gas Dynamics within High-redshift Galaxies 
+#
 
-execfile('gmake/gmake_init.py')
+# sys.path.insert(1,home+'/Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake/')
+# 
+# execfile('../gmake/gmake_init.py')
+# 
+# execfile('../gmake/gmake_model_func_kinms.py')
+# execfile('../gmake/gmake_model_func.py')
+# execfile('../gmake/gmake_model.py')
+# execfile('../gmake/gmake_utils.py')
+# execfile('../gmake/gmake_emcee.py')
+# execfile('../gmake/gmake_amoeba.py')
+# execfile('../gmake/gmake_lmfit.py')
+# execfile('../gmake/gmake_gravity.py')
+# execfile('../gmake/gmake_plots.py')
+# execfile('../gmake/gmake_fit.py')
+# execfile('../gmake/gmake_uvamp.py')
 
-execfile('gmake/gmake_model_func_kinms.py')
-execfile('gmake/gmake_model_func.py')
-execfile('gmake/gmake_model.py')
-execfile('gmake/gmake_utils.py')
-execfile('gmake/gmake_emcee.py')
-execfile('gmake/gmake_amoeba.py')
-execfile('gmake/gmake_lmfit.py')
-execfile('gmake/gmake_gravity.py')
-execfile('gmake/gmake_plots.py')
-execfile('gmake/gmake_fit.py')
-execfile('gmake/gmake_uvamp.py')
+import os
+import inspect
 
-def gmake_example(source,inpfile,
+example_script = inspect.getframeinfo(inspect.currentframe()).filename
+example_dir = os.path.dirname(os.path.abspath(example_script))
+
+from gmake import gmake_read_inp
+from gmake import gmake_read_data
+from gmake import gmake_fit_setup
+
+def hz_example(source,inpfile,
                   run_setup=True,
                   run_fit=True,
                   run_analysis=True,
                   run_plots=True,
                   dataset='alma'):
-
+    
     if  run_setup==True:
-        inp_dct=gmake_read_inp('examples/'+source+'/'+inpfile+'.inp',verbose=False)
+        inp_dct=gmake_read_inp(example_dir+'/'+source+'/'+inpfile+'.inp',verbose=True)
         dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
         fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
 
@@ -40,7 +55,7 @@ def gmake_example(source,inpfile,
 
         if  dataset=='alma':
 
-            fn_pattern='examples/'+source+'/models/'+inpfile+'/p_fits/data_b?_bb?.fits'
+            fn_pattern=example_dir+'/'+source+'/models/'+inpfile+'/p_fits/data_b?_bb?.fits'
             fn_names=sorted(glob.glob(fn_pattern))
             print("\n")
             print(fn_pattern)
@@ -82,7 +97,7 @@ def gmake_example(source,inpfile,
 
         if  dataset=='sinfoni' and source=='bx610':
 
-            fn_name='examples/bx610/models/xysf_k_ab/p_fits/data_sf.fits'
+            fn_name=example_dir+'/bx610/models/xysf_k_ab/p_fits/data_sf.fits'
 
             cen1='icrs; circle( 356.5393256478768,12.82201783168984,1.00") # text={cen1}'
             cen2='icrs; circle( 356.5393256478768,12.82201783168984,0.20") # text={cen2}'
@@ -134,14 +149,18 @@ if  __name__=="__main__":
     source='w0533'
     inpfiles=['uvb3_ab']
     
+    
+    source='bx610'
+    inpfiles=['uvb6_ab']
+    
     for inpfile in inpfiles:
-        result=gmake_example(source,inpfile,
+        result=hz_example(source,inpfile,
                              run_setup=True,
                              run_fit=False,
                              run_analysis=False,
                              dataset='alma',
                              #dataset='sinfoni',
-                             run_plots=True)
+                             run_plots=False)
 
     ####################################
     #   EMCEE

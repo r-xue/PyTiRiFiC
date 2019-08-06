@@ -671,7 +671,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
     #fig.tight_layout()
     
     
-    fig.subplots_adjust(left=0.07,bottom=0.07,right=0.98,top=0.95)
+    fig.subplots_adjust(left=0.01,bottom=0.01,right=0.99,top=0.99)
     
     odir=os.path.dirname(fn)+'/pls_mom0xy'
 
