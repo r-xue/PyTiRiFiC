@@ -20,6 +20,15 @@
 
 import os
 import inspect
+import glob
+
+# import os
+# filename = os.environ.get('PYTHONSTARTUP')
+# if filename and os.path.isfile(filename):
+#     with open(filename) as fobj:
+#         startup_file = fobj.read()
+#     exec(startup_file)
+
 
 example_script = inspect.getframeinfo(inspect.currentframe()).filename
 example_dir = os.path.dirname(os.path.abspath(example_script))
@@ -27,17 +36,25 @@ example_dir = os.path.dirname(os.path.abspath(example_script))
 from gmake import gmake_read_inp
 from gmake import gmake_read_data
 from gmake import gmake_fit_setup
+from gmake import gmake_fit_iterate
+from gmake import gmake_fit_analyze
+
+import astropy.units as u
+
+from gmake import gmake_plots_spec1d
+from gmake import gmake_casa
 
 def hz_example(source,inpfile,
                   run_setup=True,
                   run_fit=True,
                   run_analysis=True,
+                  run_imaging=True,
                   run_plots=True,
                   dataset='alma'):
     
     if  run_setup==True:
-        inp_dct=gmake_read_inp(example_dir+'/'+source+'/'+inpfile+'.inp',verbose=True)
-        dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+        inp_dct=gmake_read_inp(example_dir+'/'+source+'/'+inpfile+'.inp',verbose=False)
+        dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
         fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
 
     if  run_fit==True:
@@ -46,8 +63,33 @@ def hz_example(source,inpfile,
 
     if  run_analysis==True:
         #inp_dct=gmake_read_inp('examples/bx610/'+inpfile+'.inp',verbose=False)
-        outfolder='examples/'+source+'/models/'+inpfile
+        outfolder=example_dir+'/'+source+'/models/'+inpfile
+        print(outfolder)
         gmake_fit_analyze(outfolder)
+        
+    if  run_imaging==True:
+        
+        input=["vis='../examples/bx610/models/uvb6_ab/p_fits/data_b6_bb2.ms'",
+               "imagename=vis.replace('.ms','').replace('/data_','/cmodel_')",
+               "datacolumn='corrected'"]
+        input=" ; ".join(input)
+        gmake_casa('ms2im',input,verbose=True)
+        input=["vis='../examples/bx610/models/uvb6_ab/p_start/data_b6_bb2.ms'",
+               "imagename=vis.replace('.ms','').replace('/data_','/cmodel_')",
+               "datacolumn='corrected'"]
+        input=" ; ".join(input)
+        gmake_casa('ms2im',input,verbose=True)        
+        
+        input=["vis='../examples/bx610/models/uvb6_ab/p_fits/data_b6_bb2.ms'",
+               "imagename=vis.replace('.ms','').replace('/data_','/data_')",
+               "datacolumn='data'"]
+        input=" ; ".join(input)
+        gmake_casa('ms2im',input,verbose=True)
+        input=["vis='../examples/bx610/models/uvb6_ab/p_start/data_b6_bb2.ms'",
+               "imagename=vis.replace('.ms','').replace('/data_','/data_')",
+               "datacolumn='data'"]
+        input=" ; ".join(input)
+        gmake_casa('ms2im',input,verbose=True)
 
     if  run_plots==True:
 
@@ -155,9 +197,10 @@ if  __name__=="__main__":
     
     for inpfile in inpfiles:
         result=hz_example(source,inpfile,
-                             run_setup=True,
+                             run_setup=False,
                              run_fit=False,
                              run_analysis=False,
+                             run_imaging=True,
                              dataset='alma',
                              #dataset='sinfoni',
                              run_plots=False)

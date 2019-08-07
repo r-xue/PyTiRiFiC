@@ -878,15 +878,36 @@ def gmake_casa(task,input='',
         script_log='./test_casa_ms2im.log'
         gmake_casa(script_name,input=script_para,logs=script_log,verbose=False)
         
+        gmake_casa('../gmake/casa/ms2im.py',input,verbose=True)
+        gmake_casa('ms2im',input,verbose=True)
+        
     example B:
     
         gmake_casa("print('try something within CASA') ; print(cu.version_string())",verbose=True)
-        
+    
+    
+    <input> could be:
+        a .last-like file:          'test_casa_ms2im.last'  
+        a exec statement string:    'x=1 ; y=2'
+        a list of string:           ['x=1','y=2']
+        a dict:                     {'x':1,'y':2}
     """
-
+    
     rcdir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
+    
+    #   you might skip ".py" in the task script name
+    if  '.py' not in task:
+        task=task+'.py'
+    #   look up the task script from the current working folder 
+    if  not os.path.isfile(task):
+        task=rcdir+task
+    #   look up the task script from the built-in folder 
+    if  not os.path.isfile(task):
+        print("task not found!")
+        return
+    
     cmd='casa --rcdir '+rcdir+' --logfile casa.log --log2term --nologger --nogui --nocrashreport -c '
-    cmd=cmd+' "'+task+'" '+input
+    cmd=cmd+' "'+task+'" "'+input+'"'
     
     if  verbose==True:
         print("")
