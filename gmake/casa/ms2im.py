@@ -51,9 +51,7 @@ if  casa_version is not None:
      
     if  __name__=="__main__":
         
-
-        #print(vis)
-        #print(imagename)
+        
         ms2im(vis,imagename)
 
     

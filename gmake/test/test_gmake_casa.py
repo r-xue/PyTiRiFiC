@@ -28,4 +28,4 @@ else:
     
     cu.getrc()
     cu.hostinfo()
-    print("run the script in Python/IPython, not under CASA")
+    print("please run this script in Python/IPython, not under CASA")

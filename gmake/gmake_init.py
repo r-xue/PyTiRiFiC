@@ -4,6 +4,9 @@
 #from galpy.potential import KeplerPotential
 import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
+import warnings
+from astropy.utils.exceptions import AstropyWarning
+warnings.simplefilter("ignore", AstropyWarning)
 
 from past.builtins import execfile
 import uuid

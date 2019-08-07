@@ -1,3 +1,5 @@
 include README.md
 
-include gmake/parameters.inp
+recursive-include gmake/data/ *
+recursive-include gmake/casa/ *
+recursive-include gmake/test/ *
