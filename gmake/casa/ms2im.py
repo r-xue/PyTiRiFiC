@@ -51,8 +51,7 @@ if  casa_version is not None:
      
     if  __name__=="__main__":
         
-        
-        ms2im(vis,imagename)
+        ms2im(vis,imagename,datacolumn=datacolumn)
 
     
     #vis='examples/bx610/models/uvb6_ab/p_fits/data_b6_bb2.ms'
