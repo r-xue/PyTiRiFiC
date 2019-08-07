@@ -7,11 +7,11 @@ def main():
         
         using CLI to run the code:
         
-        run fitting scripts:
+        model fitting:
             gmake path/example.inp
-        run analysis and save results in FITS tables / HDFs? 
+        analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting  
             gmake path/example.inp --analyze
-        run diagnostic plots
+        generate diagnostic plots
             gmake path/example.inp --plots
 
     Level2:    
