@@ -844,6 +844,74 @@ def add_uvmodel(vis,uvmodel,removemodel=True):
 
     return 
 
+
+def gmake_casa(task,input='',
+               logs='gmake_casa.log',verbose=False):
+    """
+    
+    run a CASA job from Python
+        some better (overly complicated?) solutions may exist, e.g.:
+            https://github.com/kaspervd/casanova
+            https://github.com/pkgw/conda-recipes
+            https://github.com/timstaley/drive-casa
+        but the simple naive script-calling approach here just work fine for our purpose.
+    
+    "task" here really means a "workflow" script...    
+    
+    Different options are available to hand parameters over to CASA
+        + sys.argv[>=2]
+        + argparse
+        + a parameter file (*.last)
+    A .last style python file is chosen here.
+    
+    Note: we use the CASA script mode to directly run a CASA script or even an "eval" string
+        the variables are fed through a input file
+     with variables fed through
+    a input file.
+    
+    If  "verbose" is True, "logs" will be ignored
+    
+    example A:
+    
+        script_name='../casa/ms2im.py'
+        script_para='./test_casa_ms2im.last'
+        script_log='./test_casa_ms2im.log'
+        gmake_casa(script_name,input=script_para,logs=script_log,verbose=False)
+        
+    example B:
+    
+        gmake_casa("print('try something within CASA') ; print(cu.version_string())",verbose=True)
+        
+    """
+
+    rcdir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
+    cmd='casa --rcdir '+rcdir+' --logfile casa.log --log2term --nologger --nogui --nocrashreport -c '
+    cmd=cmd+' "'+task+'" '+input
+    
+    if  verbose==True:
+        print("")
+        print(">"*10,"calling CASA in the script mode...")
+        print("")
+        print('task: ',task)
+        print('input:',input)
+        print('logs: ',logs)        
+        stdout=None #subprocess.STDOUT
+        print("\nCL: "+cmd)
+        print("")
+    else:
+        stdout=open(logs,'w')
+
+    status=subprocess.call(cmd,shell=True,stdout=stdout, stderr=stdout)
+    
+    if  verbose==True:
+        print("")
+        print("<"*10,"done!")
+    else:
+        stdout.close()
+
+    os.system("rm -rf casa.log")
+
+
 if  __name__=="__main__":
     
     pass
