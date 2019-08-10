@@ -845,7 +845,8 @@ def add_uvmodel(vis,uvmodel,removemodel=True):
     return 
 
 
-def gmake_casa(task,input='',
+def gmake_casa(task,is_expr=False,
+               input='',
                logs='gmake_casa.log',verbose=False):
     """
     
@@ -895,19 +896,32 @@ def gmake_casa(task,input='',
     
     rcdir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
     
-    #   you might skip ".py" in the task script name
-    if  '.py' not in task:
-        task=task+'.py'
-    #   look up the task script from the current working folder 
-    if  not os.path.isfile(task):
-        task=rcdir+task
-    #   look up the task script from the built-in folder 
-    if  not os.path.isfile(task):
-        print("task not found!")
-        return
+    #   is_expr=False     'task' is the task script name 
+    #   is_expr=True      'task' is a string passed to eval() in the CASA script mode
+     
+    if  is_expr==False:
+        #   you might skip ".py" in the task script name
+        if  '.py' not in task:
+            task=task+'.py'
+        #   look up the task script from the current working folder 
+        if  not os.path.isfile(task):
+            task=rcdir+task
+        #   look up the task script from the built-in folder 
+        if  not os.path.isfile(task):
+            print("task not found!")
+            return
+    else:
+        pass
     
+    if  type(input)==dict:
+        args=' ; '.join([str(k)+'='+repr(v) for k, v in {**input}.items()])
+    if  type(input)==list:
+        args=' ; '.join(input)
+    if  type(input)==str:
+        args=input
+        
     cmd='casa --rcdir '+rcdir+' --logfile casa.log --log2term --nologger --nogui --nocrashreport -c '
-    cmd=cmd+' "'+task+'" "'+input+'"'
+    cmd=cmd+' "'+task+'" "'+args+'"'
     
     if  verbose==True:
         print("")
