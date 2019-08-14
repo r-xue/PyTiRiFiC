@@ -57,7 +57,7 @@ setuptools.setup(name='GMaKE',
                  entry_points={'console_scripts': ['gmake = gmake.gmake_cli:main']},
                  install_requires=[
                     'astropy>=3.0',
-                    'scikit-image','alpy',
+                    'scikit-image','alpy','regions',
                     'scipy','reproject','fitsio','FITS_tools','yt','memory_profiler',
                     'python-casacore>=3.1.1','galpy',
                     'reikna','tqdm',

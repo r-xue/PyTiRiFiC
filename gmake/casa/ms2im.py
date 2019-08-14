@@ -36,8 +36,8 @@ if  casa_version is not None:
                    bitpix=-32, maxpix=-1,minpix=0,
                    overwrite=True, velocity=False, optical=False,
                    stokeslast=True,dropstokes=False)
-        
-        exportfits(imagename=imagename+'.psf',
+        if  'data_' in imagename:
+            exportfits(imagename=imagename+'.psf',
                    fitsimage=imagename.replace('data_','kernel_')+'.fits',
                    bitpix=-32, maxpix=-1,minpix=0,
                    overwrite=True, velocity=False, optical=False,

@@ -123,6 +123,7 @@ halo_mvir               0.5                 float   #   10.^12 msun
 
 method                  'amoeba'            str     #   underline parameter optimization algorithm
                                                     #   options: amoeba,lmfit-nm,lmfit-brute,emcee
+niter                   100                 int     #   max iteration for parameter optimization                                                  
 outname_replace         []                  list    #   list of two-element tuple
 outname_exclude         []                  list    #   list of string
 outdir                  'testdir'           str     #   output dir path
