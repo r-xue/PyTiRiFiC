@@ -837,6 +837,10 @@ def add_uvmodel(vis,uvmodel,removemodel=True):
     t=ctb.table(vis,ack=False,readonly=False)
     tmp=t.getcol('DATA')
     t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    
+    #print('add_uvmodel',vis)
+    #print(np.sum(uvmodel,axis=0))
+    
     t.removecols('IMAGING_WEIGHT')
     if  removemodel==True:
         t.removecols('MODEL_DATA')

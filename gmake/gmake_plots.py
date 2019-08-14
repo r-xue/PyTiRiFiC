@@ -1,4 +1,5 @@
 from .gmake_init import *
+from .gmake_utils import imcontsub
 
 def calc_ppbeam(header):
     """
@@ -347,7 +348,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
     ppbeam=calc_ppbeam(header)
     
     data=SpectralCube.read(fn,mode='readonly')
-    mask=SpectralCube.read(fn.replace('data_','mask_'),mode='readonly')
+   
     
     model=SpectralCube.read(fn.replace('data_','cmodel_'),mode='readonly')
     mod2d=SpectralCube.read(fn.replace('data_','cmod2d_'),mode='readonly')
@@ -356,7 +357,9 @@ def gmake_plots_mom0xy(fn,linechan=None):
     imod2d=SpectralCube.read(fn.replace('data_','imod2d_'),mode='readonly')
     imod3d=SpectralCube.read(fn.replace('data_','imod3d_'),mode='readonly')
 
-    data=data.with_mask(mask.unitless_filled_data[:,:,:]==0)
+    if  os.path.isfile(fn.replace('data_','mask_')):
+        mask=SpectralCube.read(fn.replace('data_','mask_'),mode='readonly')
+        data=data.with_mask(mask.unitless_filled_data[:,:,:]==0)
     
     if  (mod3d.sum()).value==0.0:
         isline=False
