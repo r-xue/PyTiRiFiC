@@ -1,0 +1,134 @@
+################################################################################
+@co76
+################################################################################
+
+name                 'bx610-co76'
+note                 'CO76 of BX610 in BB2'
+vis                  '../examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'linedisk'
+xypos                [356.53932623335686, 12.822018331440471]
+z                    2.21
+pa                   -60.162925988493754
+inc                  39.48595145038168
+restfreq             806.65181
+vsys                 117.69368136375444
+vrad                 [0, 0.12, 0.24, 0.36, 0.48]
+vrot                 [0.0, 233.59673575594047, 233.59673575594047, 233.59673575594047, 233.59673575594047]
+intflux              1.1201936686806921
+sbser                [0.1585127631124204, 1.0]
+vdis                 [45.42813268349357, 45.42813268349357, 45.42813268349357, 45.42813268349357, 45.42813268349357]
+ge_pa                90.05680287377928
+ge_q                 1.8346658078405447
+method               'kinmspy'
+
+################################################################################
+@ci21
+################################################################################
+
+name                 'bx610-ci21'
+note                 'CI21 of BX610 in BB2'
+vis                  '../examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'type@co76'
+xypos                'xypos@co76'
+z                    'z@co76'
+pa                   'pa@co76'
+inc                  'inc@co76'
+restfreq             809.34197
+vsys                 'vsys@co76'
+vrad                 'vrad@co76'
+vrot                 'vrot@co76'
+intflux              0.6493000000000002
+sbser                [0.15792077126995782, 1.0]
+vdis                 'vdis@co76'
+ge_pa                'ge_pa@co76'
+ge_q                 1.8439838566725677
+method               'kinmspy'
+
+################################################################################
+@h2o
+################################################################################
+
+name                 'bx610-h2o'
+note                 'H2O of BX610 in BB3'
+vis                  '../examples/bx610/alma/band6/bx610_band6.bb3.cube3.ms'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'type@co76'
+xypos                'xypos@co76'
+z                    'z@co76'
+pa                   'pa@co76'
+inc                  'inc@co76'
+restfreq             752.03314
+vsys                 'vsys@co76'
+vrad                 'vrad@co76'
+vrot                 'vrot@co76'
+intflux              0.3310218462918195
+sbser                [0.11817649001185146, 1.0]
+vdis                 'vdis@co76'
+ge_pa                'ge_pa@co76'
+ge_q                 2.065901274516345
+method               'kinmspy'
+
+################################################################################
+@cont
+################################################################################
+
+name                 'bx610-cont'
+note                 'submm cont of BX610 in BB1/2/3/4'
+vis                  '../examples/bx610/alma/band6/bx610_band6.bb1.mfs.ms,../examples/bx610/alma/band6/bx610_band6.bb2.cube3.ms,../examples/bx610/alma/band6/bx610_band6.bb3.cube3.ms,../examples/bx610/alma/band6/bx610_band6.bb4.mfs.ms'
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'contdisk'
+xypos                'xypos@co76'
+z                    'z@co76'
+pa                   14.94410539687476
+inc                  29.234434562452574
+intflux              0.0015489323943845097
+sbser                [0.09671549361466028, 1.0]
+restfreq             251.6825177459
+alpha                3.7744188663221894
+method               'disk2d'
+
+################################################################################
+@optimize
+################################################################################
+
+vsys@co76            ('a', -120, 280, 100)
+vrot[1:5]@co76       ('a', 0.0, 800.0, 300)
+vdis[0:5]@co76       ('a', 0.0, 800.0, 80.0)
+pa@co76              ('o', -80, 80, 80)
+inc@co76             ('a', 5.0, 85.0, 45.0)
+xypos[0]@co76        ('o', -0.0002777777777777778, 0.0002777777777777778, 0.0001388888888888889)
+xypos[1]@co76        ('o', -0.0002777777777777778, 0.0002777777777777778, 0.0001388888888888889)
+intflux@co76         ('a', 0.1, 200.0, 10.0)
+sbser[0]@co76        ('a', 0.01, 1.0, 1.0)
+ge_pa@co76           ('o', -90.0, 90.0, 89.0)
+ge_q@co76            ('a', 1.0, 10.0, 5)
+intflux@ci21         ('a', 0.1, 200.0, 0.0)
+sbser[0]@ci21        ('a', 0.01, 1.0, 1.0)
+ge_q@ci21            ('a', 1.0, 10.0, 5)
+intflux@h2o          ('a', 0.1, 200.0, 10.0)
+sbser[0]@h2o         ('a', 0.01, 1.0, 1.0)
+ge_q@h2o             ('a', 1.0, 10.0, 5)
+intflux@cont         ('a', 0.0001, 0.01, 0.01)
+sbser[0]@cont        ('a', 0.01, 0.3, 1.0)
+alpha@cont           ('a', 3, 4.5, 1.0)
+pa@cont              ('o', -60, 60, 50)
+inc@cont             ('a', 0, 45.0, 30)
+method               'amoeba'
+niter                500
+outname_replace      [('../examples/bx610/alma/band6/bx610_band6.', 'b6_'), ('../examples/bx610/alma/band6/bx610_band4.', 'b4_'), ('.ms', '.fits')]
+outname_exclude      ['cube.', 'mfs.', 'cube3.']
+outdir               '../examples/bx610/models/uvb6_ab'
+
