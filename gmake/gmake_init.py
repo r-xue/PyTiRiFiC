@@ -152,9 +152,9 @@ import glob
 from radio_beam import beam, Beam
 import matplotlib.ticker as plticker
 import matplotlib as mpl
-from yt.mods import ColorTransferFunction, write_bitmap
-import yt
-from yt.frontends.fits.misc import PlotWindowWCS
+#from yt.mods import ColorTransferFunction, write_bitmap
+#import yt
+#from yt.frontends.fits.misc import PlotWindowWCS
 #yt.toggle_interactivity()
 #from __builtin__ import False
 from astropy.stats import sigma_clipped_stats
