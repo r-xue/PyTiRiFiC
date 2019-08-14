@@ -213,6 +213,7 @@ pa@cont         ('o',-60,60,50)
 inc@cont        ('a',0,45.,30)
 
 method          'amoeba'
+niter           500
 outname_replace	[('../examples/bx610/alma/band6/bx610_band6.','b6_'),('../examples/bx610/alma/band6/bx610_band4.','b4_'),('.ms','.fits')]
 outname_exclude ['cube.','mfs.','cube3.']
 outdir         '../examples/bx610/models/uvb6_ab'
