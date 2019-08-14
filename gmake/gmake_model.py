@@ -94,7 +94,13 @@ def gmake_model_api(mod_dct,dat_dct,
                     models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
                                                     dtype=models['data@'+vis].dtype,
                                                     order='F')
-
+                    if  decomp==True:
+                        models['uvmod2d@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
+                                                    dtype=models['data@'+vis].dtype,
+                                                    order='F')                        
+                        models['uvmod3d@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
+                                                    dtype=models['data@'+vis].dtype,
+                                                    order='F') 
 
                 obj['pmodel']=None
                 obj['pheader']=None
@@ -236,14 +242,24 @@ def gmake_model_api(mod_dct,dat_dct,
 
             if  models[tag.replace('imod2d@','type@')]=='vis':
                 #print('>>> '+tag)
-                uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
+                if  decomp==True:
+                    uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
+                                            models[tag.replace('imod2d@','data@')],
+                                            models[tag.replace('imod2d@','uvw@')],
+                                            models[tag.replace('imod2d@','phasecenter@')],
+                                            average=True,
+                                            verbose=False)
+                    models[tag.replace('imod2d@','uvmod2d@')]=uvmodel.copy() 
+                    models[tag.replace('imod2d@','uvmodel@')]+=uvmodel.copy() 
+                else:
+                    uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
                                             models[tag.replace('imod2d@','data@')],
                                             models[tag.replace('imod2d@','uvw@')],
                                             models[tag.replace('imod2d@','phasecenter@')],
                                             uvmodel_in=models[tag.replace('imod2d@','uvmodel@')],
                                             average=True,
-                                            verbose=False)
-                #models[tag.replace('imod2d@','uvmodel@')]+=uvmodel 
+                                            verbose=False)                    
+                #
             if  models[tag.replace('imod2d@','type@')]=='image':
                 #print('-->',tag)
                 #fits.writeto('test1.fits',models[tag],header=models[tag.replace('imod2d@','header@')],overwrite=True)
@@ -265,14 +281,24 @@ def gmake_model_api(mod_dct,dat_dct,
             if  models[tag.replace('imod3d@','type@')]=='vis':
             
                 #print('>>> '+tag)
-                uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
-                                            models[tag.replace('imod3d@','data@')],
-                                            models[tag.replace('imod3d@','uvw@')],
-                                            models[tag.replace('imod3d@','phasecenter@')],
-                                            uvmodel_in=models[tag.replace('imod3d@','uvmodel@')],
-                                            average=False,
-                                            verbose=False)
-                 #models[tag.replace('imod3d@','uvmodel@')]+=uvmodel
+                if  decomp==True:
+                    uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
+                                                models[tag.replace('imod3d@','data@')],
+                                                models[tag.replace('imod3d@','uvw@')],
+                                                models[tag.replace('imod3d@','phasecenter@')],
+                                                average=False,
+                                                verbose=False)
+                    models[tag.replace('imod3d@','uvmod3d@')]=uvmodel.copy() 
+                    models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()                     
+                else:
+                    uvmodel=gmake_model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
+                                                models[tag.replace('imod3d@','data@')],
+                                                models[tag.replace('imod3d@','uvw@')],
+                                                models[tag.replace('imod3d@','phasecenter@')],
+                                                uvmodel_in=models[tag.replace('imod3d@','uvmodel@')],
+                                                average=False,
+                                                verbose=False)                
+                 #
              
             if  models[tag.replace('imod3d@','type@')]=='image':
                               #print('-->',tag)
@@ -335,8 +361,11 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     nsamps=100000
     if  savemodel!='':
         nsamps=nsamps*10
+    decomp=False
+    if  savemodel!='':
+        decomp=True
     models=gmake_model_api(mod_dct,dat_dct=dat_dct,
-                           decomp=False,verbose=False,nsamps=nsamps)
+                           decomp=decomp,verbose=False,nsamps=nsamps)
     #print('Took {0} second on one API run'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
     
@@ -555,6 +584,17 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             
             add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
         
+            newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
+            print("copy "+oldms+'  to  '+newms)
+            os.system("rm -rf "+newms)
+            os.system('cp -rf '+oldms+' '+newms)
+            add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
+        
+            newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
+            print("copy "+oldms+'  to  '+newms)
+            os.system("rm -rf "+newms)
+            os.system('cp -rf '+oldms+' '+newms)
+            add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       
         
         if  models[key.replace('data@','type@')]=='image':
             
