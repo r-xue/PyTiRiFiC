@@ -144,10 +144,11 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
 @ comments
 ##########################################################################################
 
-+ Data File Path
-
-    Any specified data path is in relative to the current Python working folder at this moment. Maybe we will switch to the reference path to that of ",inp" file in future.
-
++ Directory Path
+    
+    The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
+    To clear up any confusion, absolute paths can also be used.
+    
 + The usage of "#":
 
     "#" marks the beginning of inline comments or commented line: i.a. anything behind it will not be read by the program
@@ -185,3 +186,24 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
     note: if the eval() step fails, the program will:
         do split() -> re-evaluate on each element -> assemble the results into a list -> assign the list to the keyword
         This feature is only designed to work with the file you're looking at right now.  
+        
+
+
+
+
+
+        Special syntax in parameter input files:
+
+        **"@"**:
+
+        + tag the parameter set associated with a specific object; in short, "A@B" = A of B
+        + tie different parameters across different.
+        A simple math function could be implemented in future, e.g.,
+        *px = 2.0\*(py@objz)*; *px = sqrt(\*(py@objz))*
+
+
+        **"#"**:
+
+        + user comments, not read by the ***gmake_utils/gmake_readpars***
+        + @comments / @changelog can be also used for comments/notes
+        

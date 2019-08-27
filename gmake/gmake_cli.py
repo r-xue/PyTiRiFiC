@@ -1,9 +1,19 @@
+
+"""
+
+    usage:
+        
+        >gmake_cli -a bx610/uvb6_ab.inp -d -l uvb6_ab.log
+
+"""
+
 import os
 import argparse
 import glob
-from configparser import ConfigParser, ExtendedInterpolation
+import logging
+import sys
 
-# gmake -a bx610/uvb6_ab.inp
+from configparser import ConfigParser, ExtendedInterpolation
 
 from gmake import gmake_read_inp
 from gmake import gmake_read_data
@@ -17,6 +27,9 @@ from gmake import gmake_plots_makeslice
 from gmake import gmake_plots_slice
 from gmake import gmake_plots_radprof
 
+from .gmake_utils import *
+
+from .__version__ import __version__
 
 import astropy.units as u
 
@@ -69,9 +82,14 @@ Note:
     
     parser.add_argument('inpfile',type=str,
                         help="""A parameter input file""")
+    
+    parser.add_argument('-l','--logfile',type=str,
+                        dest='logfile',action='store',default='gmake.log',
+                        help="path to log file")
+                        
 
     args = parser.parse_args()
-    
+
     if  args.fit==False and args.analyze==False and args.plot==False:
         args.fit=True
         
@@ -79,58 +97,108 @@ Note:
         print("The inpfile '"+args.inpfile+"' doesn't exist. Aborted!")
         return
     
+    #logging.basicConfig(level=logging.DEBUG,
+    #                    format='%(asctime)s %(name)s %(levelname)s %(message)s',
+    #                    filename=args.logfile)
+    
+    logfile_formatter=MultilineFormatter('%(asctime)s %(name)-6s %(levelname)-6s -- %(message)s')
+    #logfile_formatter=logging.Formatter('%(asctime)s %(name)-6s %(levelname)-6s -- %(message)s')
+    logfile_handler=logging.FileHandler(args.logfile)  
+    logfile_handler.setFormatter(logfile_formatter)
+    
+    logger=logging.getLogger('gmake')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(logfile_handler)
+    
+    """
+    logger.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(name)s %(levelname)s %(message)s',
+                        filename=args.logfile)
+    """    
+    if  args.debug==False:
+        logger.setLevel(logging.INFO)
+    
+    
+    #ch = logging.StreamHandler()
+    #ch.setLevel(logging.DEBUG)
+    #logger.addHandler(ch)
+    
+    #ch
+    
+    
+    """
+    logging levels:
+        logging.debug('This is a debug message')
+        logging.info('This is an info message')
+        logging.warning('This is a warning message')
+        logging.error('This is an error message')
+        logging.critical('This is a critical message')    
+    """
+    
+    logger.info("+"*60)
+    logger.info("GMaKE -- Start")
+    logger.debug("Software version {}".format(__version__))
+    logger.debug("Python version: {}".format(sys.version))
+    logger.info("-"*60)      
+    
     process_inpfile(args)
     
+    logger.info("+"*60)
+    logger.info("GMaKE -- End")
+    logger.info("-"*60)
+
     return
 
 
 def process_inpfile(args):
     
-    if  args.debug==True:
-        print(args.fit)
-        print(args.analyze)
-        print(args.plot)    
-        print(args.debug)
+    logging.debug("process options:")
+    logging.debug("fit:    "+str(args.fit))
+    logging.debug("analyze:"+str(args.analyze))
+    logging.debug("plot:   "+str(args.plot))
+    logging.debug("debug:  "+str(args.debug))
     
     inp_dct=gmake_read_inp(args.inpfile,verbose=args.debug)
     
     if  args.fit==True:
-        #inp_dct=gmake_read_inp(args.inpfile,verbose=args.debug)
+
         dat_dct=gmake_read_data(inp_dct,verbose=args.debug,fill_mask=True,fill_error=True)
         fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
         gmake_fit_iterate(fit_dct,sampler,nstep=inp_dct['optimize']['niter'])
         
         
     if  args.analyze==True:
-        #inp_dct=gmake_read_inp(args.inpfile,verbose=args.debug)
+
         gmake_fit_analyze(inp_dct['optimize']['outdir'])
         #"""
         mslist=glob.glob(inp_dct['optimize']['outdir']+'/p_fits/*bb?*.ms')
         for vis in mslist:
-            print('imaging: ',vis)
+            
+            logging.debug('imaging: '+str(vis))
+            
             input={}
             
             input['vis']=vis
             input['imagename']=vis.replace('.ms','').replace('/data_','/cmodel_')
             input['datacolumn']='corrected'
-            print(input['vis'],'-->',input['imagename'])
+            logging.info('{} --> {}'.format(input['vis'],input['imagename']))
             gmake_casa('ms2im',input=input,verbose=False)
 
             input['vis']=vis+'.contsub'
             input['imagename']=vis.replace('.ms','').replace('/data_','/cmod3d_')
             input['datacolumn']='corrected'
-            print(input['vis'],'-->',input['imagename'])
+            logging.info('{} --> {}'.format(input['vis'],input['imagename']))
             gmake_casa('ms2im',input=input,verbose=False)
                         
             input['vis']=vis+'.cont'
             input['imagename']=vis.replace('.ms','').replace('/data_','/cmod2d_')
             input['datacolumn']='corrected'
-            print(input['vis'],'-->',input['imagename'])
+            logging.info('{} --> {}'.format(input['vis'],input['imagename']))
             gmake_casa('ms2im',input=input,verbose=False)            
             
             input['imagename']=vis.replace('.ms','').replace('/data_','/data_')
             input['datacolumn']='data'
-            print(input['vis'],'-->',input['imagename'])
+            logging.info('{} --> {}'.format(input['vis'],input['imagename']))
             gmake_casa('ms2im',input=input,verbose=False)  
         #"""      
         
@@ -138,18 +206,18 @@ def process_inpfile(args):
         
         fn_pattern=inp_dct['optimize']['outdir']+'/p_fits/data_b?_bb?.fits'
         fn_names=sorted(glob.glob(fn_pattern))
-        print("\n")
-        print(fn_pattern)
-        print('plotting list:')
+        logging.info("\n")
+        logging.info(fn_pattern)
+        logging.info('plotting list:')
         for fn_name in fn_names:
-            print(fn_name)
-        print("\n")
+            logging.info(fn_name)
+        logging.info("\n")
 
         # tmp
         source='bx610'
         for fn_name in fn_names:
 
-            print('#### processing the image set:',fn_name,'\n')
+            logging.info('#### processing the image set: {} \n'.format(fn_name))
             linechan=None
             if  'b6_bb2' in fn_name and source=='bx610':
                 linechan=[(250.964*u.GHz,251.448*u.GHz),(251.847*u.GHz,252.246*u.GHz)]
@@ -168,7 +236,7 @@ def process_inpfile(args):
             for roi in rois:
                 gmake_plots_spec1d(fn_name,roi=roi)
 
-
+            """
             gmake_plots_mom0xy(fn_name,linechan=linechan)
             pa=-52
             gmake_plots_makeslice(fn_name,
@@ -176,5 +244,6 @@ def process_inpfile(args):
                                   width=0.5,length=2.5,pa=-52,linechan=linechan)
             gmake_plots_slice(fn_name,i=1)
             gmake_plots_slice(fn_name,i=2)
+            """
             gmake_plots_radprof(fn_name)        
         

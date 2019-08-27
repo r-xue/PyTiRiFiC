@@ -506,15 +506,15 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         if  'outname_replace' in inp_dct['optimize'].keys():
             outname_replace=inp_dct['optimize']['outname_replace']
                                 
-        print('+'*80)
-        print('export set: {0:^50}'.format(savemodel))
+        logging.info('+'*80)
+        logging.info('export set: {0:^50}'.format(savemodel))
         start_time = time.time()
-        print('+'*80)
+        logging.info('+'*80)
         gmake_model_export(models,outdir=savemodel,
                            outname_exclude=outname_exclude,
                            outname_replace=outname_replace)
-        print('-'*80)
-        print("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))        
+        logging.info('-'*80)
+        logging.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))        
 
     lnl=blobs['lnprob']
     
@@ -578,20 +578,20 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             oldms=key.replace('data@','')
             newms=outdir+'/data_'+basename.replace('.fits','.ms')
             
-            print("copy "+oldms+'  to  '+newms)
+            logging.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             
             add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
         
             newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
-            print("copy "+oldms+'  to  '+newms)
+            logging.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
         
             newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
-            print("copy "+oldms+'  to  '+newms)
+            logging.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       

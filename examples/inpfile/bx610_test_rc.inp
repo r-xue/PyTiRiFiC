@@ -53,7 +53,13 @@ inc             40.0                    # [degree] inclination
 restfreq        461.0407682               # GHz
 vsys            102.0                     # [km/s] [optical convention]
 vrad            [0,0.12,0.24,0.36,0.48]
-vrot            [0.,220.,220.,220.,220.]
+#vrot            ("minimum(vrad/p2,1)*p1",200,0.2)
+#vrot            ("p1*2/pi*arctan(vrad/p2)",200,0.2)
+#vrot            ("p1*(1-exp(-vrad/p2))",200,0.2)
+#vrot            ("p1*tanh(vrad/p2)",200,0.2)
+#vrot            ("tanh",200,0.2)
+vrot            ('dynamics','halodisk')
+
 intflux          1.4170                      # Jy/km/s
 sbser           [0.1599,1.]                    # exp profile : scale-length
 vdis            20
@@ -142,7 +148,7 @@ alpha           3.60                     # spectral index s_nu ~ nu^alpha
 method          'disk2d'               # underline algorithm
 
 ################################################################################
-@rc                                   # object id (per feature per component)
+@halodisk                                   # object id (per feature per component)
 #   used to generate the physically-motivated RC
 #   this will overwrite
 ################################################################################
@@ -156,7 +162,7 @@ halo_mvir         0.5                # 10.^12 msun
 
 
 ################################################################################
-@optimize								# optimization setup
+@optimize-ignore								# optimization setup
 #	key/min/max, etc.
 ################################################################################
 

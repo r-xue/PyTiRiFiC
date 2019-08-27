@@ -1,0 +1,112 @@
+################################################################################
+@ha
+################################################################################
+
+name                 'bx610-halpha'
+note                 'H-alpha in the SINFONI cube'
+image                'examples/bx610/sinfoni/bx610_data.fits'
+error                'examples/bx610/sinfoni/bx610_noise.fits'
+mask                 'examples/bx610/sinfoni/bx610_mask.fits'
+psf                  'examples/bx610/sinfoni/bx610_psf.fits'
+pmodel               'examples/bx610/sinfoni/bx610_data.mom0.deconv.fits'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'linedisk'
+xypos                [356.539182044751, 12.821899121454324]
+z                    2.2107
+pa                   -27.792270791423974
+inc                  30.69752672970708
+restwave             6562.801
+vsys                 70.77928920495461
+vrad                 [0, 0.12, 0.24, 0.36, 0.48]
+vrot                 [0.0, 331.8884153638305, 331.8884153638305, 331.8884153638305, 331.8884153638305]
+intflux              169.14744314108944
+sbser                [0.1599, 1.0]
+vdis                 [115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642]
+ge_pa                90.0
+ge_q                 2.0
+method               'kinmspy'
+
+################################################################################
+@nii6583
+################################################################################
+
+name                 'bx610-nii'
+note                 '[NII] in the SINFONI cube'
+image                'examples/bx610/sinfoni/bx610_data.fits'
+error                'examples/bx610/sinfoni/bx610_noise.fits'
+mask                 'examples/bx610/sinfoni/bx610_mask.fits'
+psf                  'examples/bx610/sinfoni/bx610_psf.fits'
+pmodel               'examples/bx610/sinfoni/bx610_data.mom0.deconv.fits'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'linedisk'
+xypos                [356.539182044751, 12.821899121454324]
+z                    2.2107
+pa                   -27.875318511760383
+inc                  31.23796355254495
+restwave             6583.45
+vsys                 73.65307099569952
+vrad                 [0, 0.12, 0.24, 0.36, 0.48]
+vrot                 [0.0, 331.8884153638305, 331.8884153638305, 331.8884153638305, 331.8884153638305]
+intflux              71.5133576666604
+sbser                [0.1594, 1.0]
+vdis                 [115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642]
+ge_pa                90.0
+ge_q                 2.0
+method               'kinmspy'
+
+################################################################################
+@nii6548
+################################################################################
+
+name                 'bx610-nii'
+note                 '[NII] in the SINFONI cube'
+image                'examples/bx610/sinfoni/bx610_data.fits'
+error                'examples/bx610/sinfoni/bx610_noise.fits'
+mask                 'examples/bx610/sinfoni/bx610_mask.fits'
+psf                  'examples/bx610/sinfoni/bx610_psf.fits'
+pmodel               'examples/bx610/sinfoni/bx610_data.mom0.deconv.fits'
+samp                 None
+bmaj                 None
+bmin                 None
+bpa                  None
+type                 'linedisk'
+xypos                [356.539182044751, 12.821899121454324]
+z                    2.2107
+pa                   -27.875318511760383
+inc                  31.23796355254495
+restwave             6548.05
+vsys                 73.65307099569952
+vrad                 [0, 0.12, 0.24, 0.36, 0.48]
+vrot                 [0.0, 331.8884153638305, 331.8884153638305, 331.8884153638305, 331.8884153638305]
+intflux              24.87746484168611
+sbser                [0.1594, 1.0]
+vdis                 [115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642, 115.67588874564642]
+ge_pa                90.0
+ge_q                 2.0
+method               'kinmspy'
+
+################################################################################
+@optimize
+################################################################################
+
+method               'amoeba'
+outname_replace      [('examples/bx610/sinfoni/bx610_data', 'sf')]
+outname_exclude      []
+outdir               'examples/bx610/models/xysf_k_ab.2'
+vsys@ha              ('a', -100.0, 300.0, 100.0)
+vrot[1:5]@ha         ('a', 200.0, 500.0, 300.0)
+vdis[0:5]@ha         ('a', 20.0, 300.0, 80.0)
+pa@ha                ('a', -80, -10, 80.0)
+inc@ha               ('a', 30.0, 75.0, 45.0)
+xypos[0]@ha          ('o', -0.0002777777777777778, 0.0002777777777777778, 0.0001388888888888889)
+xypos[1]@ha          ('o', -0.0002777777777777778, 0.0002777777777777778, 0.0001388888888888889)
+intflux@ha           ('r', 0.5, 2.0, 10.0)
+intflux@nii6583      ('r', 0.5, 2.0, 10.0)
+intflux@nii6548      ('r', 0.5, 2.0, 10.0)
+

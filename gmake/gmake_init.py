@@ -8,6 +8,12 @@ import warnings
 from astropy.utils.exceptions import AstropyWarning
 warnings.simplefilter("ignore", AstropyWarning)
 
+
+# Stopping the Python rocketship icon
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
 from past.builtins import execfile
 import uuid
 import random
@@ -19,8 +25,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 import yaml
+import logging
 
-
+from pprint import pformat
 from io import StringIO
 from asteval import Interpreter
 aeval = Interpreter(err_writer=StringIO())
@@ -63,8 +70,10 @@ import emcee
 from reproject import reproject_interp
 import matplotlib
 #from astropy.io.fits.diff import indent
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+#matplotlib.use("Agg")
+
+
+
 import subprocess
 import corner
 from copy import deepcopy
@@ -204,6 +213,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
-
+import logging
 
 

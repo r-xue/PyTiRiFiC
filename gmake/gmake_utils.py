@@ -1,6 +1,5 @@
 from .gmake_init import *
 
-
 """
 import ast, operator
 
@@ -69,6 +68,8 @@ def gmake_read_inp(parfile,verbose=False):
             one element: scaler
     """
 
+    #log=logging.getLogger("")
+
     inp_dct={}
     with open(parfile,'r') as f:
         lines=f.readlines()
@@ -83,10 +84,11 @@ def gmake_read_inp(parfile,verbose=False):
             #pars={'content':''}
             pars={}
             #pars['content']+=line+"\n"
+            
             if  verbose==True:
-                print("+"*40)
-                print('@',tag)
-                print("-"*40)
+                logging.info("+"*40)
+                logging.info('@ {}'.format(tag))
+                logging.info("-"*40)
         else:
             
             if  any(section in tag.lower() for section in cfg['CommentSecs']):
@@ -100,7 +102,7 @@ def gmake_read_inp(parfile,verbose=False):
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
                 if  verbose==True:
-                    print('{:20}'.format(key)," : ",value)
+                    logging.info('{:20}'.format(key)+" : "+str(value))
                 
                 """                    
                 try:                #   likely mutiple-elements are provided, 
@@ -374,9 +376,9 @@ def gmake_listpars(objs,showcontent=True):
     print out the parameter dict
     """
     for tag in objs.keys():
-        print("+"*40)
-        print('@',tag)
-        print("-"*40)
+        logging.info("+"*40)
+        logging.info('@'+tag)
+        logging.info("-"*40)
         for key in objs[tag].keys():
             if  key=='content':
                 print(objs[tag][key])
@@ -430,7 +432,7 @@ def gmake_inp2mod(objs,verbose=False):
                             objs[tag][key]=aeval(value_expr)
                             #print(value,'-->',objs[tag][key])
                         if  verbose==True:
-                            print('{:16}'.format(key+'@'+tag),' : ','{:16}'.format(value),'-->',objs[tag][key])
+                            logging.info('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+objs[tag][key])
                     """
                     if  '@' in value:
                         key_nest=value.split("@")
@@ -625,7 +627,7 @@ def gmake_read_data(inp_dct,verbose=False,
     dat_dct={}
     
     if  verbose==True:
-        print("+"*80)
+        logging.debug("+"*80)
     
     for tag in inp_dct.keys():
                                 
@@ -679,25 +681,25 @@ def gmake_read_data(inp_dct,verbose=False,
                     dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
                     
                     if  verbose==True:
-                        print('\nloading: '+vis_list[ind]+'\n')
-                        print('data@'+vis_list[ind],'>>',dat_dct['data@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['data@'+vis_list[ind]])))
-                        print('uvw@'+vis_list[ind],'>>',dat_dct['uvw@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]])))
-                        print('weight@'+vis_list[ind],'>>',
-                              dat_dct['weight@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])),
-                              np.median(dat_dct['weight@'+vis_list[ind]]))
+                        logging.debug('\nloading: '+vis_list[ind]+'\n')
+                        logging.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
+                        logging.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
+                        logging.debug('weight@'+vis_list[ind]+'>>'+\
+                              str(dat_dct['weight@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))+\
+                              str(np.median(dat_dct['weight@'+vis_list[ind]])))
                         if  saveflag==True:
-                            print('flag@'+vis_list[ind],'>>',
-                                  dat_dct['flag@'+vis_list[ind]].shape,convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])),
-                                  np.median(dat_dct['weight@'+vis_list[ind]]))                                      
-                        print('chanfreq@'+vis_list[ind],'>> [GHz]',
-                              np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
-                              np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9,
-                              np.size(dat_dct['chanfreq@'+vis_list[ind]]))
-                        print('chanwidth@'+vis_list[ind],'>> [GHz]',
-                              np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9,
-                              np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9,
-                              np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9)
-                        print('phasecenter@'+vis_list[ind],'>>',dat_dct['phasecenter@'+vis_list[ind]])
+                            logging.debug('flag@'+vis_list[ind]+'>>'+\
+                                  str(dat_dct['flag@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])))+\
+                                  str(np.median(dat_dct['weight@'+vis_list[ind]])))                                      
+                        logging.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
+                              str(np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
+                              str(np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
+                              str(np.size(dat_dct['chanfreq@'+vis_list[ind]])))
+                        logging.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
+                              str(np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
+                              str(np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
+                              str(np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9))
+                        logging.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
                         
         if  'image' in inp_dct[tag].keys():
         
@@ -949,6 +951,29 @@ def gmake_casa(task,is_expr=False,
         stdout.close()
 
     os.system("rm -rf casa.log")
+
+class MultilineFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord):
+        save_msg = record.msg
+        
+        #record.msg.super().format(record)
+        
+        #output = for line in save_msg.splitlines()
+        #"""
+        output = []
+        
+        for line in save_msg.splitlines():
+            record.msg = line
+            output.append(super().format(record))
+            #output += super().format(record) 
+            #if  len(save_msg.splitlines())>1:
+            #    output += "\n"
+        #"""
+        print('-->',output)
+        output='\n'.join(output)
+        record.msg = save_msg
+        record.message = output
+        return output
 
 
 if  __name__=="__main__":

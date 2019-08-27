@@ -65,15 +65,15 @@ def gmake_fit_analyze(outfolder,burnin=None):
     #"""
     dat_dct=np.load(outfolder+'/dat_dct.npy',allow_pickle=True).item()
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
-    print('p_start:    ')
-    pprint.pprint(blobs)
+    logging.debug('p_start:    ')
+    logging.debug(pformat(blobs))
     
     gmake_write_inp(inp_dct,inpfile=outfolder+'/p_start.inp',overwrite=True,
                     writepar=(fit_dct['p_name'],theta_start))
 
     lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
-    print('p_fits: ')
-    pprint.pprint(blobs)
+    logging.debug('p_fits: ')
+    logging.debug(pformat(blobs))
     
     gmake_write_inp(inp_dct,inpfile=outfolder+'/p_fits.inp',overwrite=True,
                     writepar=(fit_dct['p_name'],theta_end))  

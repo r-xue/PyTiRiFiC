@@ -325,7 +325,7 @@ def gmake_lmfit_analyze_nelder(outfolder,
     
     #   print out parameter shifting
     
-    print("+"*80)
+    logging.debug("+"*80)
     maxlen=len(max(fit_dct['p_name'],key=len))
     for ind  in range(len(p_name)):
         textout=' {:{align}{width}} '.format(ind,align='<',width=2)
@@ -334,8 +334,8 @@ def gmake_lmfit_analyze_nelder(outfolder,
         textout+=' <- {:{align}{width}{prec}} '.format(p_start[ind],align='^',width=13,prec=p_format_prec[ind])
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo[ind],align='^',width=13,prec=p_format_prec[ind])
         textout+=' {:{align}{width}{prec}} )'.format(p_up[ind],align='^',width=13,prec=p_format_prec[ind])
-        print(textout)    
-    print("-"*80)    
+        logging.debug(textout)    
+    logging.debug("-"*80)    
     
     
     #   PLOT PARAMETERS

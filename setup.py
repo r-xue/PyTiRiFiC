@@ -6,7 +6,7 @@ The module can be installed via one of these commands:
 
     python setup.py install --user      # from a local copy
     pip install --user gmake            # or, from PyPI
-    pip install --user -e .             # or, "Editable" install
+    pip install --user --editable .     # or, "Editable" install
     
  usage:
 
@@ -54,7 +54,7 @@ setuptools.setup(name='GMaKE',
                  keywords="Galaxy Dynamics",           
                  packages=setuptools.find_packages(),
                  include_package_data=True,
-                 entry_points={'console_scripts': ['gmake = gmake.gmake_cli:main']},
+                 entry_points={'console_scripts': ['gmake_cli = gmake.gmake_cli:main']},
                  install_requires=[
                     'astropy>=3.0',
                     'scikit-image','alpy','regions',

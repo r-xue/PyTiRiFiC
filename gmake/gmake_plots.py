@@ -692,7 +692,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
 
 def gmake_plots_radprof(fn):
 
-    wd=fn.replace('data','imodel*').replace('.fits','.rp.fits')
+    wd=fn.replace('data','imodrp*')
     flist=glob.glob(wd)
 
     if  len(flist)>0:
