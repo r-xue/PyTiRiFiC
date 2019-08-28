@@ -1,4 +1,9 @@
 from .gmake_init import *
+import inspect
+
+logger = logging.getLogger(__name__)
+#   get a logger named after a function name
+#   logger=logging.getLogger(inspect.stack()[0][3])
 
 """
 import ast, operator
@@ -51,7 +56,7 @@ def gmake_read_range(center=0,delta=0,mode='a'):
     if  mode=='r':
         return center*delta
 
-def gmake_read_inp(parfile,verbose=False):
+def read_inp(parfile,verbose=True):
     """
     read parameters/setups from a .inp file into a dictionary nest:
         inp_dct[id][keywords]=values.
@@ -67,8 +72,6 @@ def gmake_read_inp(parfile,verbose=False):
             more than one element : list
             one element: scaler
     """
-
-    #log=logging.getLogger("")
 
     inp_dct={}
     with open(parfile,'r') as f:
@@ -86,9 +89,9 @@ def gmake_read_inp(parfile,verbose=False):
             #pars['content']+=line+"\n"
             
             if  verbose==True:
-                logging.info("+"*40)
-                logging.info('@ {}'.format(tag))
-                logging.info("-"*40)
+                logger.debug("+"*40)
+                logger.debug('@ {}'.format(tag))
+                logger.debug("-"*40)
         else:
             
             if  any(section in tag.lower() for section in cfg['CommentSecs']):
@@ -102,7 +105,7 @@ def gmake_read_inp(parfile,verbose=False):
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
                 if  verbose==True:
-                    logging.info('{:20}'.format(key)+" : "+str(value))
+                    logger.debug('{:20}'.format(key)+" : "+str(value))
                 
                 """                    
                 try:                #   likely mutiple-elements are provided, 
@@ -542,12 +545,12 @@ def gmake_pformat(fit_dct,verbose=True):
     p_format_prec=[]
     
     if  verbose==True:
-        print("+"*90)
+        logger.debug("+"*90)
         #print("outdir:               ",fit_dct['optimize']['outdir'])
-        print("optimizing parameters: index / name / start / lo_limit / up_limit")
+        logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit")
     
     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
-    def_dct=gmake_read_inp(data_path+'parameter_definition.inp',verbose=False)
+    def_dct=read_inp(data_path+'parameter_definition.inp',verbose=False)
 
     
     def_dct_obj=def_dct['object']
@@ -565,7 +568,7 @@ def gmake_pformat(fit_dct,verbose=True):
         smin=len(p_key)        
         for keyword in def_dct_obj.keys():
             if  keyword+'@' in p_key or keyword+'[' in p_key:
-                print(keyword,def_dct_obj[keyword])
+                #print(keyword,def_dct_obj[keyword])
                 p_format0_prec=def_dct_obj[keyword][1]
                 p_format0_keys=''+str(max(smin,5))
                 
@@ -575,7 +578,7 @@ def gmake_pformat(fit_dct,verbose=True):
         textout+=' {:{align}{width}{prec}} '.format(p_start,align='^',width=13,prec=p_format0_prec)
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo,align='^',width=13,prec=p_format0_prec)
         textout+=' {:{align}{width}{prec}} )'.format(p_up,align='^',width=13,prec=p_format0_prec)
-        print(textout)
+        logger.debug(textout)
 
 
         #   used for emcee table output
@@ -587,7 +590,7 @@ def gmake_pformat(fit_dct,verbose=True):
         
 
     if  verbose==True:
-        print("+"*90)
+        logger.debug("+"*90)
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
@@ -595,9 +598,9 @@ def gmake_pformat(fit_dct,verbose=True):
     
     
     
-def gmake_read_data(inp_dct,verbose=False,
-                    fill_mask=False,fill_error=False,                                   # for FITS/image
-                    memorytable=True,polaverage=True,dataflag=True,saveflag=False):     # for MS/visibilities
+def read_data(inp_dct,verbose=True,
+              fill_mask=False,fill_error=False,                                   # for FITS/image
+              memorytable=True,polaverage=True,dataflag=True,saveflag=False):     # for MS/visibilities
     """
     read FITS/image or MS/visibilities into the dictionary
     
@@ -623,11 +626,12 @@ def gmake_read_data(inp_dct,verbose=False,
             XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
                 
     """
+
     
     dat_dct={}
     
     if  verbose==True:
-        logging.debug("+"*80)
+        logger.debug("+"*80)
     
     for tag in inp_dct.keys():
                                 
@@ -681,25 +685,25 @@ def gmake_read_data(inp_dct,verbose=False,
                     dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
                     
                     if  verbose==True:
-                        logging.debug('\nloading: '+vis_list[ind]+'\n')
-                        logging.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
-                        logging.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
-                        logging.debug('weight@'+vis_list[ind]+'>>'+\
+                        logger.debug('\nloading: '+vis_list[ind]+'\n')
+                        logger.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
+                        logger.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
+                        logger.debug('weight@'+vis_list[ind]+'>>'+\
                               str(dat_dct['weight@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))+\
                               str(np.median(dat_dct['weight@'+vis_list[ind]])))
                         if  saveflag==True:
-                            logging.debug('flag@'+vis_list[ind]+'>>'+\
+                            logger.debug('flag@'+vis_list[ind]+'>>'+\
                                   str(dat_dct['flag@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])))+\
                                   str(np.median(dat_dct['weight@'+vis_list[ind]])))                                      
-                        logging.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
+                        logger.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
                               str(np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
                               str(np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
                               str(np.size(dat_dct['chanfreq@'+vis_list[ind]])))
-                        logging.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
+                        logger.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
                               str(np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
                               str(np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
                               str(np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9))
-                        logging.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
+                        logger.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
                         
         if  'image' in inp_dct[tag].keys():
         
@@ -721,9 +725,9 @@ def gmake_read_data(inp_dct,verbose=False,
                 dat_dct['pmodel@'+tag]=data
                 dat_dct['pheader@'+tag]=hd                
                 if  verbose==True:
-                    print('loading: '+obj['pmodel']+' to ')
-                    print('pmodel@'+tag)       
-                    print(data.shape,convert_size(getsizeof(data)))              
+                    logger.debug('loading: '+obj['pmodel']+' to ')
+                    logger.debug('pmodel@'+tag)       
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))              
             
             for ind in range(len(im_list)):
                 
@@ -733,38 +737,38 @@ def gmake_read_data(inp_dct,verbose=False,
                     dat_dct['header@'+im_list[ind]]=hd
                     dat_dct['type@'+im_list[ind]]='image'
                     if  verbose==True:
-                        print('loading: '+im_list[ind]+' to ')
-                        print('data@'+im_list[ind],'header@'+im_list[ind])
-                        print(data.shape,convert_size(getsizeof(data)))
+                        logger.debug('loading: '+im_list[ind]+' to ')
+                        logger.debug('data@'+im_list[ind],'header@'+im_list[ind])
+                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
                     data=fits.getdata(em_list[ind],memmap=False)
                     dat_dct['error@'+im_list[ind]]=data
                     if  verbose==True:
-                        print('loading: '+em_list[ind]+' to ')
-                        print('error@'+im_list[ind])
-                        print(data.shape,convert_size(getsizeof(data)))
+                        logger.debug('loading: '+em_list[ind]+' to ')
+                        logger.debug('error@'+im_list[ind])
+                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
                     data=fits.getdata(mk_list[ind],memmap=False)                
                     dat_dct['mask@'+im_list[ind]]=data
                     if  verbose==True:
-                        print('loading: '+mk_list[ind]+' to ')
-                        print('mask@'+im_list[ind])
-                        print(data.shape,convert_size(getsizeof(data)))
+                        logger.debug('loading: '+mk_list[ind]+' to ')
+                        logger.debug('mask@'+im_list[ind])
+                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
                     dat_dct['sample@'+im_list[ind]]=np.squeeze(data['sp_index'])
                     if  verbose==True:
-                        print('loading: '+sp_list[ind]+' to ')
-                        print('sample@'+im_list[ind])
-                        print(data.shape,convert_size(getsizeof(data)))
+                        logger.debug('loading: '+sp_list[ind]+' to ')
+                        logger.debug('sample@'+im_list[ind])
+                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     data=fits.getdata(pf_list[ind],memmap=False)                
                     dat_dct['psf@'+im_list[ind]]=data
                     if  verbose==True:
-                        print('loading: '+pf_list[ind]+' to ')
-                        print('psf@'+im_list[ind])       
-                        print(data.shape,convert_size(getsizeof(data)))
+                        logger.debug('loading: '+pf_list[ind]+' to ')
+                        logger.debug('psf@'+im_list[ind])       
+                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                         
                      
                             
@@ -775,16 +779,15 @@ def gmake_read_data(inp_dct,verbose=False,
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','mask@')]=data*0.0+1.
                         if  verbose==True:
-                            print('fill '+tag.replace('data@','mask@'),1.0)
+                            logger.debug('fill '+tag.replace('data@','mask@')+str(1.0))
                     if  (tag.replace('data@','error@') not in dat_dct) and fill_error==True:
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
                         if  verbose==True:
-                            print('fill '+tag.replace('data@','error@'),np.std(data))                
+                            logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
     
     if  verbose==True:
-        print("")
-        print("-"*80)    
+        logger.debug("\n"+"-"*80)    
     
     return dat_dct
                
@@ -853,7 +856,7 @@ def add_uvmodel(vis,uvmodel,removemodel=True):
 
 def gmake_casa(task,is_expr=False,
                input='',
-               logs='gmake_casa.log',verbose=False):
+               logs='gmake_casa.log',verbose=True):
     """
     
     run a CASA job from Python
@@ -890,7 +893,7 @@ def gmake_casa(task,is_expr=False,
         
     example B:
     
-        gmake_casa("print('try something within CASA') ; print(cu.version_string())",verbose=True)
+        gmake_casa("print('try something within CASA') ; print(cu.version_string())",is_expr=True,verbose=True)
     
     
     <input> could be:
@@ -914,7 +917,7 @@ def gmake_casa(task,is_expr=False,
             task=rcdir+task
         #   look up the task script from the built-in folder 
         if  not os.path.isfile(task):
-            print("task not found!")
+            logger.debug("task not found!")
             return
     else:
         pass
@@ -930,51 +933,121 @@ def gmake_casa(task,is_expr=False,
     cmd=cmd+' "'+task+'" "'+args+'"'
     
     if  verbose==True:
-        print("")
-        print(">"*10,"calling CASA in the script mode...")
-        print("")
-        print('task: ',task)
-        print('input:',input)
-        print('logs: ',logs)        
+        logger.debug(" ")
+        logger.debug(">"*10+"calling CASA in the script mode...")
+        logger.debug(" ")
+        logger.debug('task: ')
+        logger.debug(task)
+        logger.debug('input:')
+        logger.debug(pformat(input))
+        logger.debug('logs: ')
+        logger.debug(logs)        
         stdout=None #subprocess.STDOUT
-        print("\nCL: "+cmd)
-        print("")
+        logger.debug("\nCL: "+cmd)
+        logger.debug(" ")
     else:
         stdout=open(logs,'w')
 
     status=subprocess.call(cmd,shell=True,stdout=stdout, stderr=stdout)
+
+    """
+    
+    *** subprocess has not been re-directed to logger yet ***
+    
+    #p = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True,universal_newlines=True)
+    cmd_args=shlex.split(cmd)
+    p = subprocess.Popen(cmd_args, stdout=subprocess.PIPE, universal_newlines=True,close_fds=True)
+    for stdout_line in iter(p.stdout.readline, ""):
+        pass
+        #print(stdout_line)
+        #logger.debug(stdout_line)
+    print("??")
+    #p.stdout.close()
+    #return_code = p.wait()
+    #if  return_code:
+    #    raise subprocess.CalledProcessError(return_code, cmd)    
+    
+    #p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=True)
+    #cmd_args=shlex.split(cmd)
+    #p = subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #stdout, stderr = p.communicate()
+
+    while True:
+        output = p.stdout.readline()
+        if  output == '' and p.poll() is not None:
+            break
+        if  output:
+            logger.debug(output.decode("utf-8"))
+    rc = p.poll()    
+    
+    #while True:
+    #    line = p.stdout.readline()
+    #    if  not line:
+    #        break
+    #    #the real code does filtering here
+    #    #print "test:", line.rstrip()
+    #    logger.debug(line)
+    
+    #for line in io.TextIOWrapper(p.stdout, encoding="utf-8"):
+    #    logger.debug(line)
+    #exitCode = p.wait()
+    
+    #with p.stdout:
+    #logger.debug(StringIO(stdout))
+    
+    #print('????')
+    #if  stdout:
+    #    logger.debug(stdout)
+    #if  stderr:
+    #    logger.error(stderr)
+    """
     
     if  verbose==True:
-        print("")
-        print("<"*10,"done!")
+        logger.debug(" ")
+        logger.debug("<"*10+"done!")
     else:
         stdout.close()
 
-    os.system("rm -rf casa.log")
+    #os.system("rm -rf casa.log")
 
 class MultilineFormatter(logging.Formatter):
+    """
+       customized logging formatter
+    """
     def format(self, record: logging.LogRecord):
         save_msg = record.msg
-        
-        #record.msg.super().format(record)
-        
-        #output = for line in save_msg.splitlines()
-        #"""
         output = []
         
         for line in save_msg.splitlines():
             record.msg = line
             output.append(super().format(record))
-            #output += super().format(record) 
-            #if  len(save_msg.splitlines())>1:
-            #    output += "\n"
-        #"""
-        print('-->',output)
+
         output='\n'.join(output)
         record.msg = save_msg
         record.message = output
+
         return output
 
+class CustomFormatter(logging.Formatter):
+    """
+       fancy customized logging formatter
+    """
+    def format(self, record: logging.LogRecord):
+        save_msg = record.msg
+        output = []
+        datefmt='%Y-%m-%d %H:%M:%S'
+        s = "{} :: {:<32} :: {:<8} :: ".format(self.formatTime(record, datefmt),
+                                               record.name+'.'+record.funcName,
+                                               "[" + record.levelname + "]")
+        for line in save_msg.splitlines():
+            record.msg = line
+            output.append(s+line)
+
+        output='\n'.join(output)
+        record.msg = save_msg
+        record.message = output
+
+        return output
 
 if  __name__=="__main__":
     

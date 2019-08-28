@@ -26,6 +26,9 @@ history:
 import numpy as np
 import copy
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 #from scipy.stats.distributions import chi2
 
@@ -91,7 +94,7 @@ def amoeba_sa(func,p0,scale,
         
         if  verbose==True:
             #print(niter,np.abs(y[ilo]),np.abs(y[ihi]))
-            print(('{0:>6d} {1:>'+format_prec+'} {2:>'+format_prec+'}')
+            logger.debug(('{0:>6d} {1:>'+format_prec+'} {2:>'+format_prec+'}')
                   .format(int(niter),np.abs(y[ilo]),np.abs(y[ihi])))
         
         if  d!=0.0:                         # compute fractional change in chi^2

@@ -2,12 +2,9 @@ from .gmake_init import *
 from .gmake_model import * 
 from .amoeba_sa import *
 
+logger = logging.getLogger(__name__)
 
-
-        
-    
-
-def gmake_amoeba_setup(inp_dct,dat_dct):
+def amoeba_setup(inp_dct,dat_dct):
     
     
     opt_dct=inp_dct['optimize']
@@ -61,8 +58,8 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     
     #print('nwalkers:',fit_dct['nwalkers'])
     #print('nthreads:',fit_dct['nthreads'])
-    print('ndim:    ',fit_dct['ndim'])
-    print('outdir:  ',fit_dct['outfolder'])    
+    logger.debug('ndim:    '+str(fit_dct['ndim']))
+    logger.debug('outdir:  '+str(fit_dct['outfolder']))    
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
@@ -70,12 +67,13 @@ def gmake_amoeba_setup(inp_dct,dat_dct):
     
     theta_start=fit_dct['p_start']
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/p_start')
-    print('p_start:    ')
-    pprint.pprint(blobs)    
+    logger.debug('p_start:    ')
+    logger.debug(pformat(blobs))
+    #pprint.pprint(blobs)    
     
     return fit_dct
 
-def gmake_amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
+def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     """
     calling amoeba
     """
@@ -93,7 +91,7 @@ def gmake_amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     
     return
 
-def gmake_amoeba_analyze(outfolder,
+def amoeba_analyze(outfolder,
                          burnin=None):
     
     
@@ -135,7 +133,7 @@ def gmake_amoeba_analyze(outfolder,
     
     #   print out parameter shifting
     
-    logging.debug("+"*80)
+    logger.debug("+"*80)
     maxlen=len(max(fit_dct['p_name'],key=len))
     for ind  in range(len(p_name)):
         textout=' {:{align}{width}} '.format(ind,align='<',width=2)
@@ -144,8 +142,8 @@ def gmake_amoeba_analyze(outfolder,
         textout+=' <- {:{align}{width}{prec}} '.format(p_start[ind],align='^',width=13,prec=p_format_prec[ind])
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo[ind],align='^',width=13,prec=p_format_prec[ind])
         textout+=' {:{align}{width}{prec}} )'.format(p_up[ind],align='^',width=13,prec=p_format_prec[ind])
-        logging.debug(textout)    
-    logging.debug("-"*80)
+        logger.debug(textout)    
+    logger.debug("-"*80)
     
     #   PLOT PARAMETERS
     

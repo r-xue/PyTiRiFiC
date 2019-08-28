@@ -1,6 +1,9 @@
 from .gmake_init import *
 from .gmake_utils import imcontsub
 
+
+logger = logging.getLogger(__name__)
+
 def calc_ppbeam(header):
     """
     For Radio Cubes:        ppbeam=npix/beam
@@ -17,11 +20,11 @@ def calc_ppbeam(header):
     return ppbeam
 
 
-def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.822017913507711 , 1") # text={example}'):
+def plt_spec1d(fn,roi='icrs; circle(356.53932576899575,12.822017913507711 , 1") # text={example}'):
     """
     1D spectrum diagnostic plot
     e.g.:
-        gmake_plots_spec1d('./data_bx610.bb1.cube64x64.iter0.image.fits')
+        plt_spec1d('./data_bx610.bb1.cube64x64.iter0.image.fits')
     """
     
 
@@ -75,8 +78,8 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     if  len(freq)==1:
         return 
     
-    print("plots_spec1d <<<  fn =",fn)
-    print("plots_spec1d <<<  roi=",roi)    
+    logger.debug("plots_spec1d <<<  fn ="+str(fn))
+    logger.debug("plots_spec1d <<<  roi="+str(roi))    
     
     plt.clf()
     hratio=2.00
@@ -136,11 +139,11 @@ def gmake_plots_spec1d(fn,roi='icrs; circle(356.53932576899575,12.82201791350771
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf')    
 
     plt.close()
-    print("plots_spec1d >>> ",odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf\n')
+    logger.debug("plots_spec1d >>> "+odir+'/'+fn_basename.replace('.fits','')+vname+'.pdf\n')
     
     return 
 
-def gmake_plots_yt3d(fn,roi='icrs; circle(356.5393156, 12.8220309, 1")'):
+def plt_yt3d(fn,roi='icrs; circle(356.5393156, 12.8220309, 1")'):
     
     ds=yt.load(fn)
     slc = yt.SlicePlot(ds, "z", ["Intensity"], origin="native")
@@ -181,7 +184,7 @@ def gmake_plots_yt3d(fn,roi='icrs; circle(356.5393156, 12.8220309, 1")'):
     """
     
     
-def gmake_plots_makeslice(fn,
+def plt_makeslice(fn,
                           radec=[356.53932576899575,12.822017913507711],
                           linechan=None,
                           slicechan=None,
@@ -238,7 +241,7 @@ def gmake_plots_makeslice(fn,
          slice = extract_pv_slice(imod3d, path)
          slice.writeto(fn.replace('data_','imod3d_slice'+str(i)+'_'),overwrite=True)                   
 
-def gmake_plots_slice(fn,i=1):
+def plt_slice(fn,i=1):
     """
         data model res
         contsub version
@@ -251,7 +254,7 @@ def gmake_plots_slice(fn,i=1):
     if  header['NAXIS2']==1:
         return
 
-    print("plots_slice <<< ",fn,i)
+    logger.debug("plots_slice <<< "+str(fn)+str(i))
     
     data3d=fits.getdata(fn.replace('data_','cmod3d_slice'+str(i)+'_'))
     if  data3d.sum()==0:
@@ -332,14 +335,14 @@ def gmake_plots_slice(fn,i=1):
         os.makedirs(odir)          
     fig.savefig(odir+'/'+out_basename.replace('.fits','')+'.pdf')   
     plt.close() 
-    print("plots_slice >>> ",odir+'/'+out_basename.replace('.fits','')+'.pdf\n') 
+    logger.debug("plots_slice >>> "+odir+'/'+out_basename.replace('.fits','')+'.pdf\n') 
     
     return
 
     
-def gmake_plots_mom0xy(fn,linechan=None):
+def plt_mom0xy(fn,linechan=None):
 
-    print("plots_mom0xy <<< ",fn)
+    logger.debug("plots_mom0xy <<< "+fn)
     
     dirname=os.path.dirname(fn)
     #mod_dct=np.load(dirname+'/mod_dct.npy').item()
@@ -682,7 +685,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
         os.makedirs(odir)        
     fig.savefig(odir+'/'+fn_basename.replace('.fits','')+'.pdf')   
     plt.close()
-    print("plots_mom0xy >>> ",odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
+    logger.debug("plots_mom0xy >>> "+odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
 #     #"""
 #     
 #     f = aplpy.FITSFigure(m0.hdu)  
@@ -690,7 +693,7 @@ def gmake_plots_mom0xy(fn,linechan=None):
 #     f.save('moment_0.png')
 
 
-def gmake_plots_radprof(fn):
+def plt_radprof(fn):
 
     wd=fn.replace('data','imodrp*')
     flist=glob.glob(wd)
@@ -700,7 +703,7 @@ def gmake_plots_radprof(fn):
         fig=plt.figure(figsize=(8.,5.*len(flist))) 
         cc=0
         for fn0 in flist:
-            print("plots_radprof <<< ",fn0)
+            logger.debug("plots_radprof <<< "+fn0)
             
             cc=cc+1
             ax = fig.add_subplot(len(flist),1,cc)
@@ -748,7 +751,7 @@ def gmake_plots_radprof(fn):
             os.makedirs(odir)   
             
         fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf')
-        print("plots_radprof >>> ",odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
+        logger.debug("plots_radprof >>> "+odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
 
 if  __name__=="__main__":
 

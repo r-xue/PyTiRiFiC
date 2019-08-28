@@ -888,7 +888,7 @@ def test_gmake_model_disk2d():
 def test_gmake_model_api():
     
     inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    dat_dct=read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     mod_dct=gmake_inp2mod(inp_dct)
     #pprint.pprint(mod_dct)
     start_time = time.time()
@@ -916,7 +916,7 @@ def test_gmake_model_api():
 def test_gmake_model_kinmspy():
     
     inp_dct=gmake_readinp('examples/bx610/bx610xy_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
+    dat_dct=read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
     
     mod_dct=gmake_inp2mod(inp_dct)
     obj=mod_dct['co76']
@@ -1066,7 +1066,7 @@ def test_casa_imconstub():
 def test_mcspeed():
     
     inp_dct=gmake_readinp('examples/bx610/bx610xy_dm_all_test.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    dat_dct=read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     gmake_emcee_iterate(sampler,fit_dct,nstep=1,mctest=True)
 
@@ -1074,7 +1074,7 @@ def test_mpfit():
     
     #"""
     inp_dct=gmake_readinp('examples/bx610/bx610xy_nas_cm64_all_mpfit.inp',verbose=False)
-    dat_dct=gmake_read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
+    dat_dct=read_data(inp_dct,verbose=True,fill_mask=True,fill_error=True)
     fit_dct=gmake_mpfit_setup(inp_dct,dat_dct)
     gmake_mpfit_iterate(fit_dct,inp_dct,dat_dct,nstep=100)
     #"""
@@ -1131,7 +1131,7 @@ if  __name__=="__main__":
     inp_dct=None
     dat_dct=None
     inp_dct=gmake.gmake_read_inp('examples/bx610/xysf_k_ab.inp',verbose=False)
-    dat_dct=gmake.gmake_read_data(inp_dct,verbose=True)
+    dat_dct=gmake.read_data(inp_dct,verbose=True)
     
     mod_dct=gmake.gmake_inp2mod(inp_dct)
     gmake.gmake_gravity_galpy(mod_dct,plotrc=False)

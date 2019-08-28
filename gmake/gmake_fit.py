@@ -3,12 +3,14 @@ from .gmake_amoeba import *
 from .gmake_emcee import *
 from .gmake_lmfit import *
 
+logger = logging.getLogger(__name__)
+
 def gmake_fit_setup(inp_dct,dat_dct):
     
     sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
 
     if  'amoeba' in inp_dct['optimize']['method']:
-        fit_dct=gmake_amoeba_setup(inp_dct,dat_dct)
+        fit_dct=amoeba_setup(inp_dct,dat_dct)
     if  'emcee' in inp_dct['optimize']['method']:
         fit_dct,sampler=gmake_emcee_setup(inp_dct,dat_dct)
     if  'lmfit' in inp_dct['optimize']['method']:
@@ -22,7 +24,7 @@ def gmake_fit_setup(inp_dct,dat_dct):
 def gmake_fit_iterate(fit_dct,sampler,nstep=100):
     
     if  'amoeba' in fit_dct['optimize']['method']:
-        gmake_amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+        amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
     if  'emcee' in fit_dct['optimize']['method']:
         gmake_emcee_iterate(sampler,fit_dct,nstep=nstep)
@@ -31,14 +33,14 @@ def gmake_fit_iterate(fit_dct,sampler,nstep=100):
         gmake_lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
 
-def gmake_fit_analyze(outfolder,burnin=None):
+def fit_analyze(outfolder,burnin=None):
     
     
     inp_dct=np.load(outfolder+'/inp_dct.npy',allow_pickle=True).item()
     
     
     if  'amoeba' in inp_dct['optimize']['method']:
-        gmake_amoeba_analyze(outfolder,burnin=burnin)
+        amoeba_analyze(outfolder,burnin=burnin)
         fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
         theta_start=fit_dct['p_amoeba']['p0']
         theta_end=fit_dct['p_amoeba']['p_best']
@@ -65,15 +67,15 @@ def gmake_fit_analyze(outfolder,burnin=None):
     #"""
     dat_dct=np.load(outfolder+'/dat_dct.npy',allow_pickle=True).item()
     lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
-    logging.debug('p_start:    ')
-    logging.debug(pformat(blobs))
+    logger.debug('p_start:    ')
+    logger.debug(pformat(blobs))
     
     gmake_write_inp(inp_dct,inpfile=outfolder+'/p_start.inp',overwrite=True,
                     writepar=(fit_dct['p_name'],theta_start))
 
     lnl,blobs=gmake_model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
-    logging.debug('p_fits: ')
-    logging.debug(pformat(blobs))
+    logger.debug('p_fits: ')
+    logger.debug(pformat(blobs))
     
     gmake_write_inp(inp_dct,inpfile=outfolder+'/p_fits.inp',overwrite=True,
                     writepar=(fit_dct['p_name'],theta_end))  

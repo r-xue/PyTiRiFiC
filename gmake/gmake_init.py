@@ -29,6 +29,7 @@ import logging
 
 from pprint import pformat
 from io import StringIO
+import io
 from asteval import Interpreter
 aeval = Interpreter(err_writer=StringIO())
 
@@ -71,7 +72,7 @@ from reproject import reproject_interp
 import matplotlib
 #from astropy.io.fits.diff import indent
 #matplotlib.use("Agg")
-
+import shlex
 
 
 import subprocess
@@ -213,6 +214,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 10000
+
 import logging
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
 
 

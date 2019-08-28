@@ -2,6 +2,8 @@ from .gmake_init import *
 from .gmake_model_func import *
 from .gmake_model_func_dynamics import *
 
+logger = logging.getLogger(__name__)
+
 def gmake_model_api(mod_dct,dat_dct,
                     nsamps=100000,
                     decomp=False,
@@ -324,7 +326,7 @@ def gmake_model_api(mod_dct,dat_dct,
                 
     return models                
 
-def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
+def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                          savemodel='',returnwdev=False,
                          verbose=False):
     """
@@ -506,22 +508,22 @@ def gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         if  'outname_replace' in inp_dct['optimize'].keys():
             outname_replace=inp_dct['optimize']['outname_replace']
                                 
-        logging.info('+'*80)
-        logging.info('export set: {0:^50}'.format(savemodel))
+        logger.info('+'*80)
+        logger.info('export set: {0:^50}'.format(savemodel))
         start_time = time.time()
-        logging.info('+'*80)
-        gmake_model_export(models,outdir=savemodel,
+        logger.info('+'*80)
+        model_export(models,outdir=savemodel,
                            outname_exclude=outname_exclude,
                            outname_replace=outname_replace)
-        logging.info('-'*80)
-        logging.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))        
+        logger.info('-'*80)
+        logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))        
 
     lnl=blobs['lnprob']
     
     return lnl,blobs
 
 #@profile
-def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=None):
+def model_export(models,outdir='./',outname_exclude=None,outname_replace=None):
     """
         export model into FITS
         shortname:    a string list to get rid of from the original data image name
@@ -545,7 +547,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
                 for ostring in outname_exclude:
                     basename=basename.replace(ostring,'')            
             basename=os.path.basename(basename)
-            print('-->','data_'+basename)
+            logger.debug('-->'+'data_'+basename)
             
             if  not os.path.exists(outdir):
                 os.makedirs(outdir)
@@ -558,7 +560,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             for version in versions:             
                 if  key.replace('data@',version+'@') in models.keys():
                     if  models[key.replace('data@',version+'@')] is not None:
-                        print(key.replace('data@',version+'@'))
+                        logger.debug(key.replace('data@',version+'@'))
                         tmp=(models[key.replace('data@',version+'@')]).copy()
                         if  tmp.ndim==2:
                             tmp=tmp[np.newaxis,np.newaxis,:,:]
@@ -578,20 +580,20 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
             oldms=key.replace('data@','')
             newms=outdir+'/data_'+basename.replace('.fits','.ms')
             
-            logging.debug("copy "+oldms+'  to  '+newms)
+            logger.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             
             add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
         
             newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
-            logging.debug("copy "+oldms+'  to  '+newms)
+            logger.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
         
             newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
-            logging.debug("copy "+oldms+'  to  '+newms)
+            logger.debug("copy "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       
@@ -609,7 +611,7 @@ def gmake_model_export(models,outdir='./',outname_exclude=None,outname_replace=N
                     basename=basename.replace(ostring,'')            
             basename=os.path.basename(basename)
             
-            print('-->','data_'+basename)
+            logger.debug('-->data_'+basename)
             
             if  not os.path.exists(outdir):
                 os.makedirs(outdir)
@@ -670,7 +672,7 @@ def gmake_model_lnprob(theta,fit_dct,inp_dct,dat_dct,
     if  not np.isfinite(lp):
         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
         return -np.inf,blobs
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
     
     if  verbose==True:
         print("try ->",theta)
@@ -698,7 +700,7 @@ def gmake_model_chisq(theta,
         #return +np.inf,blobs
         return +np.inf
     
-    lnl,blobs=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
     
     if  verbose==True:
         print("try ->",theta)
@@ -737,7 +739,7 @@ def gmake_model_lmfit_wdev(params,
 #         #return +np.inf,blobs
 #         return +np.inf
     
-    lnl,blob=gmake_model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    lnl,blob=model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
  
     wdev=blob['wdev'].flatten().copy()
     
@@ -753,9 +755,6 @@ def gmake_model_lmfit_wdev(params,
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))
 
     return wdev       
-
-
-
 
 
 if  __name__=="__main__":
