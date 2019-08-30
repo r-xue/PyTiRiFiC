@@ -132,7 +132,7 @@ def plt_spec1d(fn,roi='icrs; circle(356.53932576899575,12.822017913507711 , 1") 
     vname=''
     if  'text={' in roi:
         vname='_'+(roi.split("text={"))[1].replace("}",'')
-    odir=os.path.dirname(fn)+'/pls_spec1d'
+    odir=os.path.dirname(fn)+'/plt_spec1d'
 
     if  not os.path.exists(odir):
         os.makedirs(odir)        
@@ -329,7 +329,7 @@ def plt_slice(fn,i=1):
     out_basename=os.path.basename(fn.replace('data_','data_slice'+str(i)+'_'))
     fig.subplots_adjust(left=0.07,bottom=0.07,right=0.95,top=0.95)
 
-    odir=os.path.dirname(fn)+'/pls_slice'
+    odir=os.path.dirname(fn)+'/plt_slice'
 
     if not os.path.exists(odir):
         os.makedirs(odir)          
@@ -679,7 +679,7 @@ def plt_mom0xy(fn,linechan=None):
     
     fig.subplots_adjust(left=0.01,bottom=0.01,right=0.99,top=0.99)
     
-    odir=os.path.dirname(fn)+'/pls_mom0xy'
+    odir=os.path.dirname(fn)+'/plt_mom0xy'
 
     if not os.path.exists(odir):
         os.makedirs(odir)        
@@ -746,7 +746,7 @@ def plt_radprof(fn):
         
             ax1.legend(loc="lower right")
         
-        odir=os.path.dirname(fn)+'/pls_radprof'
+        odir=os.path.dirname(fn)+'/plt_radprof'
         if not os.path.exists(odir):
             os.makedirs(odir)   
             
