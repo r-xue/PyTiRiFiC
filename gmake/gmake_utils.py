@@ -828,8 +828,19 @@ def convert_size(size_bytes):
     #if  'lmfit' in inp_dct['optimize']['method']:
     #    gmake_lmfit_analyze(fit_dct,sampler['inp_dct'],sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
 
+def get_dirsize(dir):
+    """
+    get the size of a file or directory
+    """
+    dirsize=sum([os.path.getsize(fp) for fp in (os.path.join(dirpath, f) for dirpath, dirnames, filenames in os.walk(dir) for f in filenames) if not os.path.islink(fp)])
+    
+    return dirsize
+    
 
-def add_uvmodel(vis,uvmodel,removemodel=True):
+def add_uvmodel(vis,uvmodel,
+                datacolumn='corrected',
+                delwt=True,
+                delmod=False,delcal=False):
     """
     + add corrected column to vis
     + remove model_data column in vis
@@ -839,16 +850,27 @@ def add_uvmodel(vis,uvmodel,removemodel=True):
     
     ctb.addImagingColumns(vis, ack=False)
     #ctb.removeImagingColumns(vis)
+    
     t=ctb.table(vis,ack=False,readonly=False)
     tmp=t.getcol('DATA')
-    t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
     
+    if  'corrected' in datacolumn.lower():
+        t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    if  'data' in datacolumn.lower():
+        t.putcol('DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    if  'model' in datacolumn.lower():
+        t.putcol('MODEL_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+                    
     #print('add_uvmodel',vis)
     #print(np.sum(uvmodel,axis=0))
-    
-    t.removecols('IMAGING_WEIGHT')
-    if  removemodel==True:
+    if  delwt==True:
+        t.removecols('IMAGING_WEIGHT')
+    if  delmod==True:
         t.removecols('MODEL_DATA')
+    if  delcal==True:
+        t.removecols('MODEL_DATA')
+        t.removecols('CORRECTED_DATA')
+    
     t.unlock()
 
     return 

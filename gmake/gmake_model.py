@@ -575,29 +575,55 @@ def model_export(models,outdir='./',outname_exclude=None,outname_replace=None):
                     outname=prof.replace(key.replace('data@',''),'')
                     outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
                     gmake_dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits',''))
-                    
-    
+            ###############
+            # data  -> data@outms                          
+            # model -> corrected@outms                   
+            # mod2d -> data@outms.contsub
+            # mod3d -> corrected@outms.contsub
+            ###############
             oldms=key.replace('data@','')
+
             newms=outdir+'/data_'+basename.replace('.fits','.ms')
-            
-            logger.debug("copy "+oldms+'  to  '+newms)
+            logger.debug("copy ms container: "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
+            logger.debug("copy ms column: "+key.replace('data@','uvmodel@')+' to '+'corrected@'+newms)
+            add_uvmodel(newms,models[key.replace('data@','uvmodel@')],
+                        datacolumn='corrected',delmod=True)
             
-            add_uvmodel(newms,models[key.replace('data@','uvmodel@')]) 
-        
-            newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
-            logger.debug("copy "+oldms+'  to  '+newms)
-            os.system("rm -rf "+newms)
-            os.system('cp -rf '+oldms+' '+newms)
-            add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
-        
             newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
-            logger.debug("copy "+oldms+'  to  '+newms)
+            logger.debug("copy ms container: "+oldms+'  to  '+newms)
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
-            add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       
-        
+            logger.debug("copy ms column: "+key.replace('data@','uvmod3d@')+' to '+'corrected@'+newms)
+            add_uvmodel(newms,models[key.replace('data@','uvmod3d@')],
+                        datacolumn='corrected',delmod=False)
+            logger.debug("copy ms column: "+key.replace('data@','uvmod2d@')+' to '+'data@'+newms)
+            add_uvmodel(newms,models[key.replace('data@','uvmod2d@')],
+                        datacolumn='data',delmod=True)
+            
+            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])             
+            
+            
+            #logger.debug("copy "+key.replace('data@','uvmod2d@')+' to '+'model@'+newms)
+            #add_uvmodel(newms,models[key.replace('data@','uvmod2d@')],
+            #            datacolumn='model')
+            #logger.debug("copy "+key.replace('data@','uvmod3d@')+' to '+'corrected@'+newms)
+            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')],
+            #            datacolumn='corrected')            
+            
+            #newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
+            #logger.debug("copy "+oldms+'  to  '+newms)
+            #os.system("rm -rf "+newms)
+            #os.system('cp -rf '+oldms+' '+newms)
+            #add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
+            
+            #newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
+            #logger.debug("copy "+oldms+'  to  '+newms)
+            #os.system("rm -rf "+newms)
+            #os.system('cp -rf '+oldms+' '+newms)
+            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       
+            
         if  models[key.replace('data@','type@')]=='image':
             
             basename=key.replace('data@','')
