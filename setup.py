@@ -25,7 +25,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 version='unknown'
-with open("gmake/__version__.py", "r") as fh:
+with open("gmake/__init__.py", "r") as fh:
     version_file = fh.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)

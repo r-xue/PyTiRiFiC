@@ -29,7 +29,6 @@ from gmake import plt_slice
 from gmake import plt_radprof
 
 from .gmake_utils import *
-from .__version__ import __version__
 
 import astropy.units as u
 
@@ -87,37 +86,7 @@ Note:
         args.fit=True
        
      
-    """
-    logging levels:
-        logging.debug('This is a debug message')
-        logging.info('This is an info message')
-        logging.warning('This is a warning message')
-        logging.error('This is an error message')
-        logging.critical('This is a critical message')
-    default level is "warning"    
-    """
-    logging.getLogger().setLevel(logging.DEBUG)
-    """
-    file logging handler 
-       + customize logfile formatter
-       + add logfile to the RootLogger (messages from all loggers will be propagated to the master logfile)
-    """
-    logfile_handler=logging.FileHandler(args.logfile)
-    #format="%(asctime)s "+"{:<40}".format("%(name)s.%(funcName)s")+" [%(levelname)s] ::: %(message)s"
-    #logfile_formatter=MultilineFormatter(format)
-    logfile_formatter=CustomFormatter()
-    logfile_handler.setFormatter(logfile_formatter)
-    logfile_handler.setLevel(logging.DEBUG)
-    logging.getLogger().addHandler(logfile_handler)
-    """
-    console logging handler
-    """
-    consol_handler = logging.StreamHandler()
-    if  args.debug==False:
-        consol_handler.setLevel(logging.INFO)
-    else:
-        consol_handler.setLevel(logging.DEBUG)
-    logging.getLogger().addHandler(consol_handler)        
+    logging_config(debug=args.debug,logfile=args.logfile)
         
     if  not os.path.isfile(args.inpfile):
         logger.info("The inpfile '"+args.inpfile+"' doesn't exist. Aborted!")
@@ -139,6 +108,55 @@ Note:
     return
 
 
+def logging_config(debug=True,logfile=None,reset=True):
+    """
+    set up a customized root logger
+    
+    note:
+        logging levels:
+            logging.debug('This is a debug message')
+            logging.info('This is an info message')
+            logging.warning('This is a warning message')
+            logging.error('This is an error message')
+            logging.critical('This is a critical message')
+        default level is "warning"
+    Note:
+        If reset=False, redundant handlers may be added to the root logger    
+    """
+    
+    #   check if handlers exist:
+    #       len(logging.getLogger().handlers)!=0:
+    if  reset:
+        logging.getLogger().handlers=[]
+    
+    logging.shutdown()
+    logging.getLogger().setLevel(logging.DEBUG)
+    
+    #file logging handler 
+    #   + customize logfile formatter
+    #   + add logfile to the RootLogger (messages from all loggers will be propagated to the master logfile)
+    
+    if  logfile is not None:
+        logfile_handler=logging.FileHandler(logfile,mode='a')
+        #format="%(asctime)s "+"{:<40}".format("%(name)s.%(funcName)s")+" [%(levelname)s] ::: %(message)s"
+        #logfile_formatter=MultilineFormatter(format)
+        logfile_formatter=CustomFormatter()
+        logfile_handler.setFormatter(logfile_formatter)
+        logfile_handler.setLevel(logging.DEBUG)
+        logging.getLogger().addHandler(logfile_handler)
+    
+    #console logging handler
+    
+    consol_handler = logging.StreamHandler()
+    if  debug==False:
+        consol_handler.setLevel(logging.INFO)
+    else:
+        consol_handler.setLevel(logging.DEBUG)
+    logging.getLogger().addHandler(consol_handler)
+    
+    return     
+
+
 def proc_inpfile(args):
     
     logger.debug("gmake_cli process options:")
@@ -156,9 +174,14 @@ def proc_inpfile(args):
         
     if  args.analyze==True:
 
-        #fit_analyze(inp_dct['optimize']['outdir'])
-        #"""
-        mslist=glob.glob(inp_dct['optimize']['outdir']+'/p_fits/*bb?*.ms')
+        fit_analyze(inp_dct['optimize']['outdir'])
+        
+        ms_names=inp_dct['optimize']['outdir']+'/p_fits/*bb2*.ms'
+        mslist=glob.glob(ms_names)
+        
+        logger.debug("\nlooking up ms: "+ms_names)
+        logger.debug(' '.join(mslist)+'\n')
+        """
         for vis in mslist:
             
             logger.debug(" ")
@@ -168,10 +191,11 @@ def proc_inpfile(args):
             
             input['vis']=vis
             input['imagename']=vis.replace('.ms','').replace('/data_','/cmodel_')
-            input['datacolumn']='corrected'
+            input['datacolumn']='model'
             logger.debug('{} --> {}'.format(input['vis'],input['imagename']))
             gmake_casa('ms2im',input=input)
 
+            
             input['vis']=vis+'.contsub'
             input['imagename']=vis.replace('.ms','').replace('/data_','/cmod3d_')
             input['datacolumn']='corrected'
@@ -187,8 +211,9 @@ def proc_inpfile(args):
             input['imagename']=vis.replace('.ms','').replace('/data_','/data_')
             input['datacolumn']='data'
             logger.debug('{} --> {}'.format(input['vis'],input['imagename']))
-            gmake_casa('ms2im',input=input)  
-        #"""      
+            gmake_casa('ms2im',input=input)
+        
+        """      
         
     if  args.plot==True:
         
@@ -223,7 +248,7 @@ def proc_inpfile(args):
             for roi in rois:
                 plt_spec1d(fn_name,roi=roi)
 
-            """
+            #"""
             plt_mom0xy(fn_name,linechan=linechan)
             pa=-52
             plt_makeslice(fn_name,
@@ -231,6 +256,6 @@ def proc_inpfile(args):
                                   width=0.5,length=2.5,pa=-52,linechan=linechan)
             plt_slice(fn_name,i=1)
             plt_slice(fn_name,i=2)
-            """
+            #"""
             plt_radprof(fn_name)        
         
