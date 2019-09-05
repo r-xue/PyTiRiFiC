@@ -1,3 +1,0 @@
-vis			=	'../../examples/bx610/models/uvb6_ab/p_fits/data_b6_bb2.ms'
-imagename	=	vis.replace('.ms','').replace('/data_','/cmodel_')
-datacolumn  =   'corrected'
