@@ -1,6 +1,7 @@
 from .gmake_init import *
+from .model_utils import * 
 
-def gmake_lmfit_setup(inp_dct,dat_dct):
+def lmfit_setup(inp_dct,dat_dct):
     
     
     opt_dct=inp_dct['optimize']
@@ -94,11 +95,11 @@ def gmake_lmfit_setup(inp_dct,dat_dct):
     
     #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
-    np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
+    #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
     
     return fit_dct
 
-def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
+def lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     """
     call iteration
     """
@@ -146,7 +147,7 @@ def gmake_lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
 
     return 
 
-def gmake_lmfit_analyze_brute(outfolder):
+def lmfit_analyze_brute(outfolder):
     fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
     
     # min position
@@ -302,7 +303,7 @@ def gmake_lmfit_analyze_brute(outfolder):
 
     return
 
-def gmake_lmfit_analyze_nelder(outfolder,
+def lmfit_analyze_nelder(outfolder,
                         burnin=None):
     
     

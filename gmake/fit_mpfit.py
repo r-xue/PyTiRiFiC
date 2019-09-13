@@ -1,4 +1,5 @@
 from .gmake_init import *
+from .model_utils import * 
 
 def gmake_mpfit_setup(inp_dct,dat_dct):
     
@@ -65,7 +66,7 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
-    np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
+    #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
     
     return fit_dct
 

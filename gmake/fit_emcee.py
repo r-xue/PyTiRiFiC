@@ -1,7 +1,9 @@
 from .gmake_init import *
-from .gmake_model import * 
+from .model_utils import * 
 
-def gmake_emcee_setup(inp_dct,dat_dct):
+logger = logging.getLogger(__name__)
+
+def emcee_setup(inp_dct,dat_dct):
     """
     Notes:
         + nthreads
@@ -104,7 +106,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
     
     np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
-    np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
+    #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
 
     sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],gmake_model_lnprob,
                                 args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
@@ -121,7 +123,7 @@ def gmake_emcee_setup(inp_dct,dat_dct):
        
     return fit_dct,sampler
 
-def gmake_emcee_savechain(sampler,fitsname,metadata={}):
+def emcee_savechain(sampler,fitsname,metadata={}):
     """
     save the chains from the emcee sampler
         metadata is a Python dict.
@@ -150,7 +152,7 @@ def gmake_emcee_savechain(sampler,fitsname,metadata={}):
     t.write(fitsname+".fits", overwrite=True)
     
     
-def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
+def emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
     """
         RUN the sampler
     """
@@ -215,7 +217,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
             
             #p_median,p_error1,p_error2=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False)
             
-            fit_tab=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
+            fit_tab=emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
                             verbose=False)
             
             
@@ -228,7 +230,7 @@ def gmake_emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
 
     return
 
-def gmake_emcee_analyze(outfolder,
+def emcee_analyze(outfolder,
                        burnin=None,
                        modebin=10,
                        plotqtile=True,

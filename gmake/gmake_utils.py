@@ -2,8 +2,8 @@ from .gmake_init import *
 import inspect
 
 logger = logging.getLogger(__name__)
-#   get a logger named after a function name
-#   logger=logging.getLogger(inspect.stack()[0][3])
+# get a logger named after a function name
+# logger=logging.getLogger(inspect.stack()[0][3])
 
 """
 import ast, operator
@@ -56,7 +56,7 @@ def gmake_read_range(center=0,delta=0,mode='a'):
     if  mode=='r':
         return center*delta
 
-def read_inp(parfile,verbose=True):
+def read_inp(parfile):
     """
     read parameters/setups from a .inp file into a dictionary nest:
         inp_dct[id][keywords]=values.
@@ -88,10 +88,9 @@ def read_inp(parfile,verbose=True):
             pars={}
             #pars['content']+=line+"\n"
             
-            if  verbose==True:
-                logger.debug("+"*40)
-                logger.debug('@ {}'.format(tag))
-                logger.debug("-"*40)
+            logger.debug("+"*40)
+            logger.debug('@ {}'.format(tag))
+            logger.debug("-"*40)
         else:
             
             if  any(section in tag.lower() for section in cfg['CommentSecs']):
@@ -104,8 +103,7 @@ def read_inp(parfile,verbose=True):
                 key=line.split()[0]
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
-                if  verbose==True:
-                    logger.debug('{:20}'.format(key)+" : "+str(value))
+                logger.debug('{:20}'.format(key)+" : "+str(value))
                 
                 """                    
                 try:                #   likely mutiple-elements are provided, 
@@ -134,14 +132,17 @@ def read_inp(parfile,verbose=True):
             if  isinstance(outdir,str):
                 if  not os.path.exists(outdir):
                     os.makedirs(outdir)
-                np.save(outdir+'/inp_dct.npy',inp_dct)
-    
+                #np.save(outdir+'/inp_dct.npy',inp_dct)
+                write_inp(inp_dct,inpfile=outdir+'/p_start.inp',
+                          overwrite=True)
+                                
+                
     return inp_dct
 
 
-def gmake_write_inp(inp_dct,inpfile='example.inp',
-                    writepar=None,
-                    overwrite=False):
+def write_inp(inp_dct,
+              inpfile='example.inp',writepar=None,
+              overwrite=False):
     """
     write out inp files from inp_dct
     if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name
@@ -197,7 +198,6 @@ def moments(imagename,outname='test',
 
 def imcontsub(imagename,linefile='',contfile='',
               fitorder=0,   # not implemented yet
-              verbose=False,
               linechan=None,contchan=None):
     """
     linechan / contchan: tuple with [fmin,fmax] in each element 
@@ -379,9 +379,9 @@ def gmake_listpars(objs,showcontent=True):
     print out the parameter dict
     """
     for tag in objs.keys():
-        logging.info("+"*40)
-        logging.info('@'+tag)
-        logging.info("-"*40)
+        logger.info("+"*40)
+        logger.info('@'+tag)
+        logger.info("-"*40)
         for key in objs[tag].keys():
             if  key=='content':
                 print(objs[tag][key])
@@ -389,7 +389,7 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def gmake_inp2mod(objs,verbose=False):
+def inp2mod(objs):
     """
     get ready for model constructions, including:
         + add the default values
@@ -434,8 +434,8 @@ def gmake_inp2mod(objs,verbose=False):
                             #objs[tag][key]=ne.evaluate(value_expr).tolist()
                             objs[tag][key]=aeval(value_expr)
                             #print(value,'-->',objs[tag][key])
-                        if  verbose==True:
-                            logging.info('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+objs[tag][key])
+                        
+                        #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
                     """
                     if  '@' in value:
                         key_nest=value.split("@")
@@ -534,7 +534,7 @@ def gmake_writepar(inp_dct,par_name,par_value):
             par_value=[par_value]*len(inp_dct[o_key][p_key][make_slice(i_key)])
         inp_dct[o_key][p_key][make_slice(i_key)]=par_value
     
-def gmake_pformat(fit_dct,verbose=True):
+def gmake_pformat(fit_dct):
     """
     fill..
     p_format            : format for values
@@ -544,13 +544,13 @@ def gmake_pformat(fit_dct,verbose=True):
     p_format_keys=[]
     p_format_prec=[]
     
-    if  verbose==True:
-        logger.debug("+"*90)
-        #print("outdir:               ",fit_dct['optimize']['outdir'])
-        logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit")
+    
+    logger.debug("+"*90)
+    #print("outdir:               ",fit_dct['optimize']['outdir'])
+    logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit")
     
     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
-    def_dct=read_inp(data_path+'parameter_definition.inp',verbose=False)
+    def_dct=read_inp(data_path+'parameter_definition.inp')
 
     
     def_dct_obj=def_dct['object']
@@ -588,9 +588,7 @@ def gmake_pformat(fit_dct,verbose=True):
         p_format_keys+=[p_format0_keys]
         p_format_prec+=[p_format0_prec]
         
-
-    if  verbose==True:
-        logger.debug("+"*90)
+    logger.debug("+"*90)
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
@@ -598,7 +596,7 @@ def gmake_pformat(fit_dct,verbose=True):
     
     
     
-def read_data(inp_dct,verbose=True,
+def read_data(inp_dct,
               fill_mask=False,fill_error=False,                                   # for FITS/image
               memorytable=True,polaverage=True,dataflag=True,saveflag=False):     # for MS/visibilities
     """
@@ -626,13 +624,9 @@ def read_data(inp_dct,verbose=True,
             XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
                 
     """
-
     
     dat_dct={}
-    
-    if  verbose==True:
-        logger.debug("+"*80)
-    
+
     for tag in inp_dct.keys():
                                 
         if  'vis' in inp_dct[tag].keys():
@@ -684,26 +678,26 @@ def read_data(inp_dct,verbose=True,
                         phase_dir[0]+=360.0
                     dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
                     
-                    if  verbose==True:
-                        logger.debug('\nloading: '+vis_list[ind]+'\n')
-                        logger.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
-                        logger.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
-                        logger.debug('weight@'+vis_list[ind]+'>>'+\
-                              str(dat_dct['weight@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))+\
-                              str(np.median(dat_dct['weight@'+vis_list[ind]])))
-                        if  saveflag==True:
-                            logger.debug('flag@'+vis_list[ind]+'>>'+\
-                                  str(dat_dct['flag@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])))+\
-                                  str(np.median(dat_dct['weight@'+vis_list[ind]])))                                      
-                        logger.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
-                              str(np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
-                              str(np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
-                              str(np.size(dat_dct['chanfreq@'+vis_list[ind]])))
-                        logger.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
-                              str(np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
-                              str(np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
-                              str(np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9))
-                        logger.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
+
+                    logger.debug('\nloading: '+vis_list[ind]+'\n')
+                    logger.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
+                    logger.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
+                    logger.debug('weight@'+vis_list[ind]+'>>'+\
+                          str(dat_dct['weight@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))+\
+                          str(np.median(dat_dct['weight@'+vis_list[ind]])))
+                    if  saveflag==True:
+                        logger.debug('flag@'+vis_list[ind]+'>>'+\
+                              str(dat_dct['flag@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])))+\
+                              str(np.median(dat_dct['weight@'+vis_list[ind]])))                                      
+                    logger.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
+                          str(np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
+                          str(np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
+                          str(np.size(dat_dct['chanfreq@'+vis_list[ind]])))
+                    logger.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
+                          str(np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
+                          str(np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
+                          str(np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9))
+                    logger.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
                         
         if  'image' in inp_dct[tag].keys():
         
@@ -724,10 +718,10 @@ def read_data(inp_dct,verbose=True,
                 data,hd=fits.getdata(obj['pmodel'],header=True,memmap=False) 
                 dat_dct['pmodel@'+tag]=data
                 dat_dct['pheader@'+tag]=hd                
-                if  verbose==True:
-                    logger.debug('loading: '+obj['pmodel']+' to ')
-                    logger.debug('pmodel@'+tag)       
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))              
+                
+                logger.debug('loading: '+obj['pmodel']+' to ')
+                logger.debug('pmodel@'+tag)       
+                logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))              
             
             for ind in range(len(im_list)):
                 
@@ -736,39 +730,40 @@ def read_data(inp_dct,verbose=True,
                     dat_dct['data@'+im_list[ind]]=data
                     dat_dct['header@'+im_list[ind]]=hd
                     dat_dct['type@'+im_list[ind]]='image'
-                    if  verbose==True:
-                        logger.debug('loading: '+im_list[ind]+' to ')
-                        logger.debug('data@'+im_list[ind],'header@'+im_list[ind])
-                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
+                    logger.debug('loading: '+im_list[ind]+' to ')
+                    logger.debug('data@'+im_list[ind],'header@'+im_list[ind])
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
                 if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
                     data=fits.getdata(em_list[ind],memmap=False)
                     dat_dct['error@'+im_list[ind]]=data
-                    if  verbose==True:
-                        logger.debug('loading: '+em_list[ind]+' to ')
-                        logger.debug('error@'+im_list[ind])
-                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
+                    logger.debug('loading: '+em_list[ind]+' to ')
+                    logger.debug('error@'+im_list[ind])
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
                 if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
                     data=fits.getdata(mk_list[ind],memmap=False)                
                     dat_dct['mask@'+im_list[ind]]=data
-                    if  verbose==True:
-                        logger.debug('loading: '+mk_list[ind]+' to ')
-                        logger.debug('mask@'+im_list[ind])
-                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
+                    logger.debug('loading: '+mk_list[ind]+' to ')
+                    logger.debug('mask@'+im_list[ind])
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
                     dat_dct['sample@'+im_list[ind]]=np.squeeze(data['sp_index'])
-                    if  verbose==True:
-                        logger.debug('loading: '+sp_list[ind]+' to ')
-                        logger.debug('sample@'+im_list[ind])
-                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    
+                    logger.debug('loading: '+sp_list[ind]+' to ')
+                    logger.debug('sample@'+im_list[ind])
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     data=fits.getdata(pf_list[ind],memmap=False)                
                     dat_dct['psf@'+im_list[ind]]=data
-                    if  verbose==True:
-                        logger.debug('loading: '+pf_list[ind]+' to ')
-                        logger.debug('psf@'+im_list[ind])       
-                        logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug('loading: '+pf_list[ind]+' to ')
+                    logger.debug('psf@'+im_list[ind])       
+                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
                         
                      
                             
@@ -778,32 +773,26 @@ def read_data(inp_dct,verbose=True,
                     if  (tag.replace('data@','mask@') not in dat_dct) and fill_mask==True:
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','mask@')]=data*0.0+1.
-                        if  verbose==True:
-                            logger.debug('fill '+tag.replace('data@','mask@')+str(1.0))
+                        logger.debug('fill '+tag.replace('data@','mask@')+str(1.0))
                     if  (tag.replace('data@','error@') not in dat_dct) and fill_error==True:
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
-                        if  verbose==True:
-                            logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
-    
-    if  verbose==True:
-        logger.debug("\n"+"-"*80)    
+                        logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
+  
     
     return dat_dct
                
-def gmake_dct2fits(dct,outname='dct2fits',save_npy=False,verbose=False):
+def dct2fits(dct,outname='dct2fits',save_npy=False):
     """
         save a non-nested dictionary into a FITS binary table
         note:  not every Python object can be dumped into a FITS column, 
                e.g. a dictionary type can be aded into a column of a astropy/Table, but
                the Table can'be saved into FITS.
         example:
-            gmake_dct2fits(dat_dct,save_npy=True)
+            gmake.dct2fits(dat_dct,save_npy=True)
     """
     
-    if  verbose==True:
-        print('dct2fits->outname',outname)
-        
+
     t=Table()
     
     for key in dct:
@@ -875,51 +864,11 @@ def add_uvmodel(vis,uvmodel,
 
     return 
 
-
-class MultilineFormatter(logging.Formatter):
-    """
-       customized logging formatter
-    """
-    def format(self, record: logging.LogRecord):
-        save_msg = record.msg
-        output = []
-        
-        for line in save_msg.splitlines():
-            record.msg = line
-            output.append(super().format(record))
-
-        output='\n'.join(output)
-        record.msg = save_msg
-        record.message = output
-
-        return output
-
-class CustomFormatter(logging.Formatter):
-    """
-       fancy customized logging formatter
-    """
-    def format(self, record: logging.LogRecord):
-        save_msg = record.msg
-        output = []
-        datefmt='%Y-%m-%d %H:%M:%S'
-        s = "{} :: {:<32} :: {:<8} :: ".format(self.formatTime(record, datefmt),
-                                               record.name+'.'+record.funcName,
-                                               "[" + record.levelname + "]")
-        for line in save_msg.splitlines():
-            record.msg = line
-            output.append(s+line)
-            
-        output='\n'.join(output)
-        record.msg = save_msg
-        record.message = output
-
-        return output
-
 if  __name__=="__main__":
     
     pass
 
-    #objs=gmake_read_inp('examples/bx610/bx610xy.inp',verbose=False)
+    #objs=gmake_read_inp('examples/bx610/bx610xy.inp',=False)
     
     #print("\n"*2)
     #print(objs.keys())
