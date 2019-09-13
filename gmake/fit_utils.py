@@ -56,13 +56,13 @@ def fit_analyze(inpfile,burnin=None):
         theta_end=fit_dct['p_median']
     
     if  'lmfit-nelder' in inp_dct['optimize']['method']:
-        gmake_lmfit_analyze_nelder(outfolder,burnin=burnin)
+        lmfit_analyze_nelder(outfolder,burnin=burnin)
         fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
         theta_start=fit_dct['p_start']
         theta_end=np.array(list(fit_dct['p_lmfit_result'].params.valuesdict().values()))  
     
     if  'lmfit-brute' in inp_dct['optimize']['method']:
-        gmake_lmfit_analyze_brute(outfolder)
+        lmfit_analyze_brute(outfolder)
         fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
         theta_start=fit_dct['p_start']
         theta_end=fit_dct['p_lmfit_result'].brute_x0                

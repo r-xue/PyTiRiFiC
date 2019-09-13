@@ -83,7 +83,7 @@ def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     calling amoeba
     """
 
-    p_amoeba=amoeba_sa(gmake_model_chisq,fit_dct['p_start'],fit_dct['p_iscale'],
+    p_amoeba=amoeba_sa(model_chisq,fit_dct['p_start'],fit_dct['p_iscale'],
                        p_lo=fit_dct['p_lo'],p_up=fit_dct['p_up'],
                        funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
                        ftol=1e-10,temperature=0,
