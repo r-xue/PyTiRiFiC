@@ -69,18 +69,13 @@ def fit_analyze(inpfile,burnin=None):
     
     dat_dct=np.load(outfolder+'/dat_dct.npy',allow_pickle=True).item()
     
-
-    lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_start')
-    logger.debug('p_start:    ')
+    lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_0')
+    logger.debug('model_0: ')
     logger.debug(pformat(blobs))
-    write_inp(inp_dct,inpfile=outfolder+'/p_start.inp',overwrite=True,
-                    writepar=(fit_dct['p_name'],theta_start))
     
-    lnl,blobs=model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/p_fits')
-    logger.debug('p_fits: ')
+    lnl,blobs=model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_1')
+    logger.debug('model_1: ')
     logger.debug(pformat(blobs))
-    write_inp(inp_dct,inpfile=outfolder+'/p_fits.inp',overwrite=True,
-                    writepar=(fit_dct['p_name'],theta_end))  
     
 
            

@@ -23,6 +23,7 @@ from .fit_mpfit import *
 from .fit_lmfit import *
 
 from .ms_utils import *
+from .io_utils import *
 #from casa_proc import casa_script
 from .plt_utils import * 
 

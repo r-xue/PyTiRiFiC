@@ -144,6 +144,7 @@ def proc_inpfile(args):
         
         fit_analyze(args.inpfile)
         
+        """
         casa_script_dir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
         ms2im=casa_script_dir+'/ms2im.py'
         loglevel='DEBUG' if args.debug==True else 'INFO'
@@ -161,12 +162,12 @@ def proc_inpfile(args):
                         vis=vis,
                         imagename=vis.replace('.ms','').replace('data_','cmodel_'),
                         cell=0.04,imsize=64,
-                        datacolumn='corrected',input=ms2im)
+                        datacolumn='corrected',preload=ms2im)
             casa_proc.casa_task('ms2im',
                         vis=vis,
                         imagename=vis.replace('.ms','').replace('data_','data_'),
                         cell=0.04,imsize=64,
-                        datacolumn='data',input=ms2im)         
+                        datacolumn='data',preload=ms2im)         
         
         ms_names=inp_dct['optimize']['outdir']+'/p_*/*.ms.contsub'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
@@ -179,12 +180,13 @@ def proc_inpfile(args):
                         vis=vis,
                         imagename=vis.replace('.ms.contsub','').replace('data_','cmod2d_'),
                         cell=0.04,imsize=64,
-                        datacolumn='data',input=ms2im)
+                        datacolumn='data',preload=ms2im)
             casa_proc.casa_task('ms2im',
                         vis=vis,
                         imagename=vis.replace('.ms.contsub','').replace('data_','cmod3d_'),
                         cell=0.04,imsize=64,
-                        datacolumn='corrected',input=ms2im)   
+                        datacolumn='corrected',preload=ms2im)
+        """   
             
     if  args.plot==True:
         
