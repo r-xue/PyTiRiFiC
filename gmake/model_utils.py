@@ -78,8 +78,10 @@ def model_api(mod_dct,dat_dct,
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])
                     header['CRVAL1']=models['phasecenter@'+vis][0]
                     header['CRVAL2']=models['phasecenter@'+vis][1]
-    
-                    header['CRVAL3']=models['chanfreq@'+vis][0]
+                    crval3=models['chanfreq@'+vis]
+                    if  not np.isscalar(crval3):
+                        crval3=crval3[0]
+                    header['CRVAL3']=crval3
                     header['CDELT1']=-np.rad2deg(dxy)
                     header['CDELT2']=np.rad2deg(dxy)
                     header['CDELT3']=np.mean(dat_dct['chanwidth@'+vis])   
@@ -509,15 +511,11 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         if  'outname_replace' in inp_dct['optimize'].keys():
             outname_replace=inp_dct['optimize']['outname_replace']
                                 
-        logger.info('export the model set: {0:^50}'.format(savemodel)+' (may take some time..)')
-        start_time = time.time()
+
         export_model(models,outdir=savemodel,
                      outname_exclude=outname_exclude,
                      outname_replace=outname_replace)
-        logger.info('-'*80)
-        logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
         
-        logger.info('save the model input parameter: '+savemodel+'/model.inp')
         write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True,
                   writepar=(fit_dct['p_name'],theta))                  
 

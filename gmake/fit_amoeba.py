@@ -65,13 +65,14 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     logger.debug('ndim:    '+str(fit_dct['ndim']))
     logger.debug('outdir:  '+str(fit_dct['outfolder']))    
     
-    np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
+    #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
+    dct2fits(dat_dct,fit_dct['outfolder']+'/data.fits')
     #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
     
     if  initial_model==True:
         theta_start=fit_dct['p_start']
-        lnl,blobs=gmake_model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/p_start')
+        lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/model_0')
         logger.debug('p_start:    ')
         logger.debug(pformat(blobs))
         #pprint.pprint(blobs)    

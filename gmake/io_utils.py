@@ -32,6 +32,8 @@ def read_data(inp_dct,
             XX=I+Q YY=I-Q ; RR=I+V LL=I-V => I=(XX+YY)/2 or (RR+LL)/2
                 
     """
+    logger.info('read data (may take some time..)')
+    start_time = time.time()    
     
     dat_dct={}
 
@@ -187,10 +189,92 @@ def read_data(inp_dct,
                         dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
                         logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
   
-    
+    logger.info('-'*80)
+    logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
+        
     return dat_dct
 
-def dct2fits(dct,outname='dct2fits',save_npy=False):
+def dct2npy(dct,outname='dct2npy'):
+    np.save(outname+'.npy',dct)
+    return
+
+def npy2dtc(npyname):
+    return np.load(npyname,allow_pickle=True).item()
+    
+def dct2hdf(dct,outname='dct2hdf'):
+    """
+    write a Python dictionary object into a HDF5 file.
+    slashes are not allowed in HDF5 object names
+    We repalce any "/" in keys with "|" to avoid a confusion with HDF5 internal structures
+    """
+    
+    
+    dct0=dct.copy()
+    keys=list(dct0.keys())
+    for key in keys:
+        if  '/' in key:
+            dct0[key.replace('/','|')]=dct0.pop(key)
+    outpath=outname
+    if  outname.endswith('.h5') or outname.endswith('.hdf5'):
+        outpath=outname
+    else:
+        outpath=outname+'.h5'
+    hkl.dump(dct0, outpath, mode='w')#,compression='gzip')      
+
+    return
+
+def hdf2dct(hdf):
+    """
+    read a Python dictionary object from a HDF5 file
+    slashes are not allowed in HDF5 object names
+    We repalce any "|" in keys with "/" to recover the potential file directory paths in keysst   
+    """
+    dct=hkl.load(hdf)
+    keys=list(dct.keys())
+    for key in keys:
+        if  '|' in key:
+            dct[key.replace('|','/')]=dct.pop(key)    
+    
+    return dct
+
+    
+def fits2dct(fits):
+    """
+    read a fits table into a none-nested dictionary
+    the fits table must be the "1-row" version from gmake.dct2fits 
+    
+    References
+      + about FITS byteorder: https://github.com/astropy/astropy/issues/4069
+    
+    note: we decide to save dct to HDF5 by default for a couple of reasons from now.
+          FITS is always stored in big-endian byte order, will cause some troubles with casacore/galario
+          I/O performance is worse
+          The "table" approach doesn't support nesting / DatType may changed during the dct2fits->fits2dct process
+          
+    """
+    t=Table()
+    tb=t.read(fits)
+    sys_byteorder = ('>', '<')[sys.byteorder == 'little']
+
+    dct={}
+    for col in tb.colnames:
+        dct[col]=(tb[col][0])
+        try:
+            dorder=dct[col].dtype.byteorder
+            if  dorder not in ('=', sys_byteorder):
+                dct[col]=dct[col].byteswap().newbyteorder(sys_byteorder)        
+        except:
+            pass
+        #try:
+        #    
+        #    #col,type(dct[col].dtype.byteorder),len(dct[col].dtype.byteorder))
+        #
+        #except:
+        #    pass
+    
+    return dct 
+
+def dct2fits(dct,outname='dct2fits'):
     """
         save a non-nested dictionary into a FITS binary table
         note:  not every Python object can be dumped into a FITS column, 
@@ -198,18 +282,28 @@ def dct2fits(dct,outname='dct2fits',save_npy=False):
                the Table can'be saved into FITS.
         example:
             gmake.dct2fits(dat_dct,save_npy=True)
+        for npy np.save(outname.replace('.fits','.npy'),dct)
+        
+    note: we decide to save dct to HDF5 by default for a couple of reasons from now.
+          FITS is always stored in big-endian byte order, will cause some troubles with casacore/galario
+          I/O performance is worse
+          The "table" approach doesn't support nesting / DatType may changed during the dct2fits->fits2dct process        
     """
     
-
     t=Table()
     
     for key in dct:
         #   the value is wrapped into a one-element list
         #   so the saved FITS table will "technically" have one row.
         t.add_column(Column(name=key,data=[dct[key]]))
-    t.write(outname+'.fits',overwrite=True)    
-    if  save_npy==True:
-        np.save(outname+'.npy',dct)
+    if  outname.endswith('.fits'):
+        outname_full=outname
+    else:
+        outname_full=outname+'.fits'
+    t.write(outname_full,overwrite=True)    
+
+    
+    return
 
 def add_uvmodel(vis,uvmodel,
                 datacolumn='corrected',
@@ -231,6 +325,10 @@ def add_uvmodel(vis,uvmodel,
     if  'corrected' in datacolumn.lower():
         t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
     if  'data' in datacolumn.lower():
+        #print(tmp.flags)
+        #print(uvmodel.dtype.byteorder)
+        tmp0=np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape)
+
         t.putcol('DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
     if  'model' in datacolumn.lower():
         t.putcol('MODEL_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
@@ -257,6 +355,9 @@ def export_model(models,outdir='./',
         shortname:    a string list to get rid of from the original data image name
         
     """
+    logger.info('export the model set: {0:^50}'.format(outdir)+' (may take some time..)')
+    start_time = time.time()
+    
     for key in list(models.keys()): 
         
         if  'data@' not in key:
@@ -419,6 +520,9 @@ def export_model(models,outdir='./',
                     outname=prof.replace(key.replace('data@',''),'')
                     outname=outname.replace('imod3d_prof@','imodel_').replace('@','_')
                     dct2fits(models[prof],outname=outdir+'/'+outname+basename.replace('.fits','.rp'))            
-        
+    
+    logger.info('-'*80)
+    logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
 
     np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
+    np.save(outdir+'/'+'models.npy',models)

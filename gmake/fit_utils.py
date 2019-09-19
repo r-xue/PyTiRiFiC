@@ -4,6 +4,7 @@ from .gmake_utils import *
 from .fit_amoeba import *
 from .fit_emcee import *
 from .fit_lmfit import *
+from .io_utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -35,10 +36,7 @@ def fit_iterate(fit_dct,sampler,nstep=100):
         lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
 
-def fit_analyze(inpfile,burnin=None):
-    
-    
-    #inp_dct=np.load(outfolder+'/inp_dct.npy',allow_pickle=True).item()
+def fit_analyze(inpfile,burnin=None,copydata=True):
     
     inp_dct=read_inp(inpfile)
     outfolder=inp_dct['optimize']['outdir']
@@ -67,7 +65,13 @@ def fit_analyze(inpfile,burnin=None):
         theta_start=fit_dct['p_start']
         theta_end=fit_dct['p_lmfit_result'].brute_x0                
     
-    dat_dct=np.load(outfolder+'/dat_dct.npy',allow_pickle=True).item()
+    dat_dct_path=outfolder+'/data.h5'
+    if  os.path.isfile(dat_dct_path):
+        dat_dct=hdf2dct(dat_dct_path)
+    else:
+        dat_dct=read_data(inp_dct,fill_mask=True,fill_error=True)
+        if  copydata==True:
+            dct2hdf(dat_dct,outname=dat_dct_path)
     
     lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_0')
     logger.debug('model_0: ')

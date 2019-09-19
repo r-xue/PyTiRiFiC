@@ -152,6 +152,8 @@ def write_inp(inp_dct,
     note: py>=3.7 use the ordered dict by default (so the output keyword order is preserved) 
     """
     
+    logger.info('save the model input parameter: '+inpfile)    
+    
     inp_dct0=deepcopy(inp_dct)
     if  writepar is not None:
         for ind in range(len(writepar[0])):
