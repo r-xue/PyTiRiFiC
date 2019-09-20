@@ -24,7 +24,6 @@ from astropy.cosmology import Planck13
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-import yaml
 import logging
 
 from pprint import pformat
@@ -204,8 +203,8 @@ from galario.single import threads as galario_threads
 #   export OMP_NUM_THREADS=8
 #   export MKL_NUM_THREADS=8
 # make sure using all threads
-#galario_threads(multiprocessing.cpu_count())
-galario_threads(1)
+galario_threads(multiprocessing.cpu_count())
+#galario_threads(1)
 
 from astropy.io import fits
 import numpy as np
@@ -224,7 +223,7 @@ mpl.rcParams['agg.path.chunksize'] = 10000
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
-
+from pip._vendor import pkg_resources
 
 import hickle as hkl
 

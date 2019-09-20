@@ -1,5 +1,7 @@
 from .gmake_init import *
-import inspect
+#import inspect
+
+from configparser import ConfigParser, ExtendedInterpolation
 
 logger = logging.getLogger(__name__)
 # get a logger named after a function name
@@ -38,10 +40,10 @@ def gmake_config():
     """
     load configuration
     """
-    scriptdir=os.path.dirname(os.path.abspath(__file__)) 
-    with open(scriptdir+"/config.yaml", 'r') as stream: 
-        cfg=yaml.load(stream)
-    
+    package_dir=os.path.dirname(os.path.abspath(__file__))
+    cfg=ConfigParser()
+    cfg.read(package_dir+"/gmake.cfg") 
+
     return cfg
 
 def read_range(center=0,delta=0,mode='a'):
@@ -95,7 +97,7 @@ def read_inp(parfile,log=False):
                 logger.debug("-"*40)
         else:
             
-            if  any(section in tag.lower() for section in cfg['CommentSecs']):
+            if  any(section in tag.lower() for section in cfg['inp.comment']['id'].split(',')):
                 pass
                 #pars['content']+=line+"\n"
                 #inp_dct[tag]=pars
@@ -422,9 +424,9 @@ def inp2mod(objs):
             
     for tag in objs.keys():
         for key in objs[tag].keys():
-            if  any(section in tag.lower() for section in cfg['CommentSecs']):
+            if  any(section in tag.lower() for section in cfg['inp.comment']['id'].split(',')):
                 pass
-            elif cfg['OptimizeSec'] in tag.lower():
+            elif any(section in tag.lower() for section in cfg['inp.optimizer']['id'].split(',')):
                 pass
                 #value=objs[tag][key]
                 #for value0 in value:
@@ -634,7 +636,19 @@ def get_dirsize(dir):
     
     return dirsize
     
+def check_deps(package_name='gmake'):
+    
+    package = pkg_resources.working_set.by_key[package_name]
+    deps = package.requires()
+    for r in deps:
+        name=str(r.name)
+        version_required=str(r.specifier)
+        if  version_required=='':
+            version_required='unspecified'
+        version_installed=pkg_resources.working_set.by_key[name].version
+        logger.debug('{0:<18} {1:<12} {2:<12}'.format(name,version_required,version_installed))
 
+    return
 
 
 if  __name__=="__main__":

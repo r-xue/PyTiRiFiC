@@ -549,7 +549,7 @@ def model_lnprior(theta,fit_dct):
     
 def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
                          savemodel='',
-                         verbose=True):
+                         verbose=False):
     """
     this is the evaluating function for emcee 
     """

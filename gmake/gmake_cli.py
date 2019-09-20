@@ -12,8 +12,6 @@ import glob
 import logging
 import sys
 
-from configparser import ConfigParser, ExtendedInterpolation
-
 from gmake import read_inp
 from gmake import read_data
 from gmake import __version__
@@ -106,6 +104,8 @@ Note:
     logger.info("#"*80+"\n"+"#"*80)
     logger.info("GMaKE "+__version__+" -- Start")
     logger.debug("Python version: {}".format(sys.version))
+    logger.debug("#"*80+"\n")
+    check_deps()
     logger.info("#"*80+"\n"+"#"*80)
     logger.info(" ")      
     

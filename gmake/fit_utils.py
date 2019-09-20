@@ -24,6 +24,7 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
         fit_dct=lmfit_setup(inp_dct,dat_dct)            
     
     if  copydata==True:
+        
         outfolder=inp_dct['optimize']['outdir']
         dat_dct_path=outfolder+'/data.h5'
         dct2hdf(dat_dct,outname=dat_dct_path)    
