@@ -37,6 +37,7 @@ def emcee_setup(inp_dct,dat_dct):
     opt_dct=inp_dct['optimize']
     
     fit_dct={'optimize':opt_dct.copy()}
+    fit_dct={'method':opt_dct['method']}
     fit_dct['p_start']=[]
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
@@ -136,6 +137,7 @@ def emcee_savechain(sampler,fitsname,metadata={}):
     for key in blobs[0][0].keys():
         tmp0=list(map(lambda v: list(map(lambda w: w[key], v)), blobs))
         t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
+        #print(key,(np.array(tmp0)).shape)
         (nstep,nwalker)=(np.array(tmp0)).shape
         
     t.add_column(Column(name='chain', data=[    sampler.chain[:,:nstep,:]    ]))                  # nwalker x nstep x npar
@@ -144,6 +146,7 @@ def emcee_savechain(sampler,fitsname,metadata={}):
         
     if  metadata!={}:
         for key in metadata:
+            #print(key,metadata[key])
             t.add_column(Column(name=key, data=[    metadata[key]    ]))
     
     dir=os.path.dirname(fitsname)

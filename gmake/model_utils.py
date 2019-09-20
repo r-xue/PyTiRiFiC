@@ -345,6 +345,8 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
            'ndata':0.0,
            'wdev':np.array([]),
            'npar':len(theta)}
+    if  returnwdev==False:
+        del blobs['wdev']
      
     inp_dct0=deepcopy(inp_dct)
     for ind in range(len(fit_dct['p_name'])):

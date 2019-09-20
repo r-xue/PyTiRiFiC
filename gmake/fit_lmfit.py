@@ -120,7 +120,7 @@ def lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     blobs={'pars':[],            # matching amoeba_sa.py (ndim+1+niter)
            'chi2':[]}
     
-    lmfit_method=((fit_dct['optimize']['method']).split("-"))[1]
+    lmfit_method=((fit_dct['method']).split("-"))[1]
     print(lmfit_method)
     
     if  lmfit_method=='nelder':

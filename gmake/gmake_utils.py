@@ -565,7 +565,7 @@ def gmake_pformat(fit_dct):
     
     logger.debug("+"*90)
     #print("outdir:               ",fit_dct['optimize']['outdir'])
-    logger.debug("optimizer: "+fit_dct['optimize']['method'])
+    logger.debug("optimizer: "+fit_dct['method'])
     logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit / scale")
     
     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    

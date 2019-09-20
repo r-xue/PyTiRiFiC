@@ -49,13 +49,13 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
 
 def fit_iterate(fit_dct,sampler,nstep=100):
     
-    if  'amoeba' in fit_dct['optimize']['method']:
+    if  'amoeba' in fit_dct['method']:
         amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
-    if  'emcee' in fit_dct['optimize']['method']:
+    if  'emcee' in fit_dct['method']:
         emcee_iterate(sampler,fit_dct,nstep=nstep)
         return
-    if  'lmfit' in fit_dct['optimize']['method']:
+    if  'lmfit' in fit_dct['method']:
         lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
         return
 
