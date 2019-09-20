@@ -44,9 +44,11 @@ def gmake_config():
     
     return cfg
 
-def gmake_read_range(center=0,delta=0,mode='a'):
+def read_range(center=0,delta=0,mode='a'):
     """
         modifiy the parameter exploring bounrdary according to the info from opt section
+        a:    absolute
+        
         
     """
     if  mode=='a':
@@ -56,7 +58,7 @@ def gmake_read_range(center=0,delta=0,mode='a'):
     if  mode=='r':
         return center*delta
 
-def read_inp(parfile):
+def read_inp(parfile,log=False):
     """
     read parameters/setups from a .inp file into a dictionary nest:
         inp_dct[id][keywords]=values.
@@ -87,10 +89,10 @@ def read_inp(parfile):
             #pars={'content':''}
             pars={}
             #pars['content']+=line+"\n"
-            
-            logger.debug("+"*40)
-            logger.debug('@ {}'.format(tag))
-            logger.debug("-"*40)
+            if  log==True:
+                logger.debug("+"*40)
+                logger.debug('@ {}'.format(tag))
+                logger.debug("-"*40)
         else:
             
             if  any(section in tag.lower() for section in cfg['CommentSecs']):
@@ -103,7 +105,8 @@ def read_inp(parfile):
                 key=line.split()[0]
                 #   remove leading/trailing space to get the "value" portion
                 value=line.replace(key,'',1).strip()
-                logger.debug('{:20}'.format(key)+" : "+str(value))
+                if  log==True:
+                    logger.debug('{:20}'.format(key)+" : "+str(value))
                 
                 """                    
                 try:                #   likely mutiple-elements are provided, 
@@ -133,8 +136,8 @@ def read_inp(parfile):
                 if  not os.path.exists(outdir):
                     os.makedirs(outdir)
                 #np.save(outdir+'/inp_dct.npy',inp_dct)
-                write_inp(inp_dct,inpfile=outdir+'/p_start.inp',
-                          overwrite=True)
+                #write_inp(inp_dct,inpfile=outdir+'/p_start.inp',
+                #          overwrite=True)
                                 
                 
     return inp_dct
@@ -157,7 +160,7 @@ def write_inp(inp_dct,
     inp_dct0=deepcopy(inp_dct)
     if  writepar is not None:
         for ind in range(len(writepar[0])):
-            gmake_writepar(inp_dct0,writepar[0][ind],writepar[1][ind])
+            write_par(inp_dct0,writepar[0][ind],writepar[1][ind])
     
     outname=inpfile
     
@@ -397,6 +400,17 @@ def inp2mod(objs):
         + add the default values
         + fill optional keywords
         + fill the "tied" values
+        
+    inp_dct
+    
+    --> write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration) 
+    
+    inp_dct_modified
+    
+    --> inp2mod (fullfill the default value / ties / reject comments <-- more like a formatter) 
+    
+    mod_dct
+    
     """
     
     cfg=gmake_config()
@@ -487,7 +501,7 @@ def make_slice(expr):
         s=int(expr.strip())
     return s
 
-def gmake_readpar(inp_dct,par_name):
+def read_par(inp_dct,par_name):
     """
     read parameter values
         key:    par_str[ind_str]@obj_str
@@ -504,20 +518,20 @@ def gmake_readpar(inp_dct,par_name):
         i_key=i_key[0]
         return inp_dct[o_key][p_key][make_slice(i_key)]
     
-def gmake_writepar(inp_dct,par_name,par_value):
+def write_par(inp_dct,par_name,par_value):
     """
     write parameter values
         key:    par_str[ind_str]@obj_str
         
     example:
-        test=gmake_readpar(inp_dct,'xypos[0]@co76')
+        test=read_par(inp_dct,'xypos[0]@co76')
         print(test)
-        test=gmake_readpar(inp_dct,'vrot@co76')
+        test=read_par(inp_dct,'vrot@co76')
         print(test)
-        test=gmake_readpar(inp_dct,'vrot[0:2]@co76')
+        test=read_par(inp_dct,'vrot[0:2]@co76')
         print(test)    
-        gmake_writepar(inp_dct,'vrot[0:2]@co76',[2,5])
-        test=gmake_readpar(inp_dct,'vrot@co76')
+        write_par(inp_dct,'vrot[0:2]@co76',[2,5])
+        test=read_par(inp_dct,'vrot@co76')
         print(test)
     """
     #print(par_name)
@@ -549,12 +563,11 @@ def gmake_pformat(fit_dct):
     
     logger.debug("+"*90)
     #print("outdir:               ",fit_dct['optimize']['outdir'])
-    logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit")
+    logger.debug("optimizer: "+fit_dct['optimize']['method'])
+    logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit / scale")
     
     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
-    def_dct=read_inp(data_path+'parameter_definition.inp')
-
-    
+    def_dct=read_inp(data_path+'parameter_definition.inp',log=False)
     def_dct_obj=def_dct['object']
     def_dct_opt=def_dct['optimize']
     
@@ -566,6 +579,8 @@ def gmake_pformat(fit_dct):
         p_start=fit_dct['p_start'][ind]
         p_lo=fit_dct['p_lo'][ind]
         p_up=fit_dct['p_up'][ind]
+        p_up=fit_dct['p_up'][ind]
+        p_scale=fit_dct['p_scale'][ind]
         
         smin=len(p_key)        
         for keyword in def_dct_obj.keys():
@@ -580,6 +595,7 @@ def gmake_pformat(fit_dct):
         textout+=' {:{align}{width}{prec}} '.format(p_start,align='^',width=13,prec=p_format0_prec)
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo,align='^',width=13,prec=p_format0_prec)
         textout+=' {:{align}{width}{prec}} )'.format(p_up,align='^',width=13,prec=p_format0_prec)
+        textout+=' {:{align}{width}{prec}} '.format(p_scale,align='^',width=13,prec=p_format0_prec)
         logger.debug(textout)
 
 
@@ -595,10 +611,6 @@ def gmake_pformat(fit_dct):
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
     fit_dct['p_format_prec']=deepcopy(p_format_prec)
-    
-    
-        
-
 
 
 def convert_size(size_bytes): 

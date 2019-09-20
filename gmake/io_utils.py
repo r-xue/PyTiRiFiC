@@ -198,7 +198,7 @@ def dct2npy(dct,outname='dct2npy'):
     np.save(outname+'.npy',dct)
     return
 
-def npy2dtc(npyname):
+def npy2dct(npyname):
     return np.load(npyname,allow_pickle=True).item()
     
 def dct2hdf(dct,outname='dct2hdf'):
@@ -524,5 +524,5 @@ def export_model(models,outdir='./',
     logger.info('-'*80)
     logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
 
-    np.save(outdir+'/'+'mod_dct.npy',models['mod_dct'])
-    np.save(outdir+'/'+'models.npy',models)
+    
+    

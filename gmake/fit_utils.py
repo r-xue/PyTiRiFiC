@@ -8,7 +8,11 @@ from .io_utils import *
 
 logger = logging.getLogger(__name__)
 
-def fit_setup(inp_dct,dat_dct):
+def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
+    """
+    for method='emcee': sampler is an emcee object
+    for method=others: sampler is a dict
+    """
     
     sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
 
@@ -18,9 +22,27 @@ def fit_setup(inp_dct,dat_dct):
         fit_dct,sampler=emcee_setup(inp_dct,dat_dct)
     if  'lmfit' in inp_dct['optimize']['method']:
         fit_dct=lmfit_setup(inp_dct,dat_dct)            
+    
+    if  copydata==True:
+        outfolder=inp_dct['optimize']['outdir']
+        dat_dct_path=outfolder+'/data.h5'
+        dct2hdf(dat_dct,outname=dat_dct_path)    
+    
+    if  initial_model==True:
 
-    #   for method='emcee': sampler is an emcee object
-    #   for method=others: sampler is a dict
+        start_time = time.time()
+        lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                               savemodel='')
+        logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
+        logger.debug('ndata->'+str(blobs['ndata']))
+        logger.debug('chisq->'+str(blobs['chisq']))
+        """
+        lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                               savemodel=fit_dct['outfolder']+'/model_0')
+        logger.debug('p_start:    ')
+        logger.debug(pformat(blobs))
+        """    
+
 
     return fit_dct,sampler
 

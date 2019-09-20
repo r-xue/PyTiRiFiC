@@ -350,10 +350,10 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     for ind in range(len(fit_dct['p_name'])):
         #print("")
         #print('modify par: ',fit_dct['p_name'][ind],theta[ind])
-        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
-        gmake_writepar(inp_dct0,fit_dct['p_name'][ind],theta[ind])
+        #print(read_par(inp_dct0,fit_dct['p_name'][ind]))
+        write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind])
         #print(">>>")
-        #print(gmake_readpar(inp_dct0,fit_dct['p_name'][ind]))
+        #print(read_par(inp_dct0,fit_dct['p_name'][ind]))
         #print("")
     #gmake_listpars(inp_dct0)
     #tic0=time.time()
@@ -516,8 +516,17 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                      outname_exclude=outname_exclude,
                      outname_replace=outname_replace)
         
+        models_keys=list(models.keys())
+        data_keys=list(dat_dct.keys())
+        for key in models_keys:
+            if  key in data_keys:
+                del models[key]
+        dct2hdf(models,savemodel+'/'+'models.h5')
+        
         write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True,
-                  writepar=(fit_dct['p_name'],theta))                  
+                  writepar=(fit_dct['p_name'],theta))             
+        
+        np.save(savemodel+'/'+'mod_dct.npy',models['mod_dct'])     
 
     lnl=blobs['lnprob']
     
@@ -540,7 +549,7 @@ def model_lnprior(theta,fit_dct):
     
 def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
                          savemodel='',
-                         verbose=False):
+                         verbose=True):
     """
     this is the evaluating function for emcee 
     """

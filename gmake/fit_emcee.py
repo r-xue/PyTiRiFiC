@@ -41,30 +41,37 @@ def emcee_setup(inp_dct,dat_dct):
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
-    fit_dct['p_iscale']=[]
+    fit_dct['p_scale']=[]
     
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
+        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
         
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
             si=1 ; mode=deepcopy(opt_dct[p_name][0])
         else:
             si=0 ; mode='a'
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                  read_range(center=fit_dct['p_start'][-1],
                                                    delta=opt_dct[p_name][si+0],
                                                    mode=mode))
         fit_dct['p_up']=np.append(fit_dct['p_up'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
+                                  read_range(center=fit_dct['p_start'][-1],
                                                    delta=opt_dct[p_name][si+1],
                                                    mode=mode))                                  
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+2],
-                                                   mode=mode))        
+        
+        scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
+        if  (si+2)>=len(opt_dct[p_name]):
+            scale=scale_def*0.01
+        else:
+            if  mode=='a' or mode=='o':
+                scale=opt_dct[p_name][si+2]
+            if  mode=='r':
+                scale=abs(fit_dct['p_start'][-1]*opt_dct[p_name][si+2])
+            scale=min(scale_def,scale)
+        fit_dct['p_scale']=np.append(fit_dct['p_scale'],scale)
 
 
     gmake_pformat(fit_dct)
@@ -75,7 +82,7 @@ def emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
-    fit_dct['nthreads']=1   #multiprocessing.cpu_count()
+    fit_dct['nthreads']=1#multiprocessing.cpu_count() #1
     fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=opt_dct['outdir']
     
@@ -86,7 +93,7 @@ def emcee_setup(inp_dct,dat_dct):
     
     np.random.seed(0)
     fit_dct['pos_start'] = \
-    [ np.maximum(np.minimum(fit_dct['p_start']+fit_dct['p_iscale']*np.random.randn(fit_dct['ndim']),fit_dct['p_up']),fit_dct['p_lo']) for i in range(fit_dct['nwalkers']) ]
+    [ np.maximum(np.minimum(fit_dct['p_start']+fit_dct['p_scale']*np.random.randn(fit_dct['ndim']),fit_dct['p_up']),fit_dct['p_lo']) for i in range(fit_dct['nwalkers']) ]
     
     if  not os.path.exists(fit_dct['outfolder']):
         os.makedirs(fit_dct['outfolder'])
@@ -104,22 +111,15 @@ def emcee_setup(inp_dct,dat_dct):
     fit_dct['pos_last']=deepcopy(fit_dct['pos_start'])
     fit_dct['step_last']=0
     
-    np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
-    np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
+    #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
+    #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
 
-    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],gmake_model_lnprob,
+    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],model_lnprob,
                                 args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
                                 #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
 
-    start_time = time.time()
-    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                                 savemodel='')
-    print("---{0:^50} : {1:<8.5f} seconds ---".format('one trail',time.time()-start_time))
-    print('ndata->',blobs['ndata'])
-    print('chisq->',blobs['chisq'])
-    lnl,blobs=gmake_model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                             savemodel=fit_dct['outfolder']+'/p_start')    
+
        
     return fit_dct,sampler
 
@@ -211,7 +211,7 @@ def emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
             #dt+=float(time.time()-tic0)            
             
             #   WRITE NEW-STYLE FITS FILE
-            gmake_emcee_savechain(sampler,fit_dct['outfolder']+"/emcee_chain",metadata=fit_dct)
+            emcee_savechain(sampler,fit_dct['outfolder']+"/emcee_chain",metadata=fit_dct)
             
             np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
             
@@ -271,7 +271,7 @@ def emcee_analyze(outfolder,
     #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
     p_format=list((t['p_format'].data[0]).astype(str))
     p_name=list((t['p_name'].data[0]).astype(str))
-    p_scale=t['p_iscale'].data[0]
+    p_scale=t['p_scale'].data[0]
     p_lo=t['p_lo'].data[0]
     p_up=t['p_up'].data[0]
     p_start=t['p_start'].data[0]

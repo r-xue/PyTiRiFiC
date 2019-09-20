@@ -11,17 +11,17 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
-    fit_dct['p_iscale']=[]
+    fit_dct['p_scale']=[]
     fit_dct['p_rscale']=[]
     
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
+        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],opt_dct[p_name][0])
         fit_dct['p_up']=np.append(fit_dct['p_up'],opt_dct[p_name][1])
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],opt_dct[p_name][2])
+        fit_dct['p_scale']=np.append(fit_dct['p_scale'],opt_dct[p_name][2])
         fit_dct['p_rscale']=np.append(fit_dct['p_rscale'],opt_dct[p_name][3])
         
     parinfo = [{'value':0.,
@@ -39,7 +39,7 @@ def gmake_mpfit_setup(inp_dct,dat_dct):
         parinfo[i]['parname']=fit_dct['p_name'][i]
         parinfo[i]['limited']=[1,1]
         parinfo[i]['value']=fit_dct['p_start'][i]
-        parinfo[i]['step']=fit_dct['p_iscale'][i]
+        parinfo[i]['step']=fit_dct['p_scale'][i]
         parinfo[i]['relstep']=fit_dct['p_rscale'][i]
         parinfo[i]['limits']=[fit_dct['p_lo'][i],fit_dct['p_up'][i]]
 

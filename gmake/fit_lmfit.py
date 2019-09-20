@@ -11,14 +11,14 @@ def lmfit_setup(inp_dct,dat_dct):
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
-    fit_dct['p_iscale']=[]
+    fit_dct['p_scale']=[]
     fit_dct['p_rscale']=[]
     
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
+        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
         
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
             si=1 ; mode=deepcopy(opt_dct[p_name][0])
@@ -32,7 +32,7 @@ def lmfit_setup(inp_dct,dat_dct):
                                   gmake_read_range(center=fit_dct['p_start'][-1],
                                                    delta=opt_dct[p_name][si+1],
                                                    mode=mode))                                  
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],
+        fit_dct['p_scale']=np.append(fit_dct['p_scale'],
                                   gmake_read_range(center=fit_dct['p_start'][-1],
                                                    delta=opt_dct[p_name][si+2],
                                                    mode=mode))        
@@ -58,7 +58,7 @@ def lmfit_setup(inp_dct,dat_dct):
         parinfo[i]['parname']=fit_dct['p_name'][i]
         parinfo[i]['limited']=[1,1]
         parinfo[i]['value']=fit_dct['p_start'][i]
-        parinfo[i]['step']=fit_dct['p_iscale'][i]
+        parinfo[i]['step']=fit_dct['p_scale'][i]
         parinfo[i]['relstep']=fit_dct['p_rscale'][i]
         parinfo[i]['limits']=[fit_dct['p_lo'][i],fit_dct['p_up'][i]]
         params.add('p_'+str(i+1),

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     
-    
     opt_dct=inp_dct['optimize']
     
     fit_dct={'optimize':opt_dct.copy()}
@@ -18,32 +17,39 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
-    fit_dct['p_iscale']=[]
+    fit_dct['p_scale']=[]
     
     
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
         fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(gmake_readpar(inp_dct,p_name)))
+        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
 
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
             si=1 ; mode=deepcopy(opt_dct[p_name][0])
         else:
             si=0 ; mode='a'
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+0],
-                                                   mode=mode))
+                                  read_range(center=fit_dct['p_start'][-1],
+                                             delta=opt_dct[p_name][si+0],
+                                             mode=mode))
         fit_dct['p_up']=np.append(fit_dct['p_up'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+1],
-                                                   mode=mode))                                  
-        fit_dct['p_iscale']=np.append(fit_dct['p_iscale'],
-                                  gmake_read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+2],
-                                                   mode=mode))
-
+                                  read_range(center=fit_dct['p_start'][-1],
+                                             delta=opt_dct[p_name][si+1],
+                                             mode=mode))
+        scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
+        if  (si+2)>=len(opt_dct[p_name]):
+            scale=scale_def
+        else:
+            if  mode=='a' or mode=='o':
+                scale=opt_dct[p_name][si+2]
+            if  mode=='r':
+                scale=abs(fit_dct['p_start'][-1]*opt_dct[p_name][si+2])
+            scale=min(scale_def,scale)
+        fit_dct['p_scale']=np.append(fit_dct['p_scale'],scale)
+        
+    
     gmake_pformat(fit_dct)    
     
     fit_dct['ndim']=len(fit_dct['p_start'])
@@ -66,16 +72,10 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     logger.debug('outdir:  '+str(fit_dct['outfolder']))    
     
     #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
-    dct2fits(dat_dct,fit_dct['outfolder']+'/data.fits')
+    #dct2fits(dat_dct,fit_dct['outfolder']+'/data.fits')
     #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
     
-    if  initial_model==True:
-        theta_start=fit_dct['p_start']
-        lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=fit_dct['outfolder']+'/model_0')
-        logger.debug('p_start:    ')
-        logger.debug(pformat(blobs))
-        #pprint.pprint(blobs)    
     
     return fit_dct
 
@@ -84,7 +84,7 @@ def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
     calling amoeba
     """
 
-    p_amoeba=amoeba_sa(model_chisq,fit_dct['p_start'],fit_dct['p_iscale'],
+    p_amoeba=amoeba_sa(model_chisq,fit_dct['p_start'],fit_dct['p_scale'],
                        p_lo=fit_dct['p_lo'],p_up=fit_dct['p_up'],
                        funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
                        ftol=1e-10,temperature=0,

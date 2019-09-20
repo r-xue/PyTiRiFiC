@@ -53,7 +53,7 @@ def hz_example(source,inpfile,
                   dataset='alma'):
     
     if  run_setup==True:
-        inp_dct=gmake_read_inp(example_dir+'/'+source+'/'+inpfile+'.inp',verbose=False)
+        inp_dct=gmake.read_inp(example_dir+'/'+source+'/'+inpfile+'.inp',verbose=False)
         dat_dct=gmake_read_data(inp_dct,verbose=False,fill_mask=True,fill_error=True)
         fit_dct,sampler=gmake_fit_setup(inp_dct,dat_dct)
 
