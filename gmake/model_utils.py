@@ -550,10 +550,14 @@ def model_lnprior(theta,fit_dct):
 
     
 def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
-                         savemodel='',
-                         verbose=False):
+                savemodel='',packblobs=False,
+                verbose=False):
     """
-    this is the evaluating function for emcee 
+    this is the evaluating function for emcee
+    packblobs=True:
+        lnl,blobs
+    packblobs=False:
+        lnl,lnp,chisq,ndata,npar
     """
 
     if  verbose==True:
@@ -562,15 +566,21 @@ def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
     lp = model_lnprior(theta,fit_dct)
     if  not np.isfinite(lp):
         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
-        return -np.inf,blobs
+        if  packblobs==True:
+            return -np.inf,blobs
+        else:
+            return -np.inf,-np.inf,+np.inf,0.0,len(theta)
     lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
     
     if  verbose==True:
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
-    return lp+lnl,blobs        
-
+    # np.array: to creat a zero-d object array 
+    if  packblobs==True:
+        return lp+lnl,blobs
+    else:
+        return lp+lnl,blobs['lnprob'],blobs['chisq'],blobs['ndata'],blobs['npar']
 
 def model_chisq(theta,
                       fit_dct=None,inp_dct=None,dat_dct=None,

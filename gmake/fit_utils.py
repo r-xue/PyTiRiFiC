@@ -21,7 +21,9 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
     if  'emcee' in inp_dct['optimize']['method']:
         fit_dct,sampler=emcee_setup(inp_dct,dat_dct)
     if  'lmfit' in inp_dct['optimize']['method']:
-        fit_dct=lmfit_setup(inp_dct,dat_dct)            
+        fit_dct=lmfit_setup(inp_dct,dat_dct)
+        
+                
     
     if  copydata==True:
         
@@ -32,18 +34,21 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
     if  initial_model==True:
 
         start_time = time.time()
-        lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                               savemodel='')
+        lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                                                 savemodel='')
+        #lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,packblobs=True,
+        #                       savemodel='')        
         logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
-        logger.debug('ndata->'+str(blobs['ndata']))
-        logger.debug('chisq->'+str(blobs['chisq']))
+        logger.debug('ndata->'+str(ndata))
+        logger.debug('chisq->'+str(chisq))
         """
         lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
                                savemodel=fit_dct['outfolder']+'/model_0')
         logger.debug('p_start:    ')
         logger.debug(pformat(blobs))
         """    
-
+    pprint.pprint(fit_dct)
+    dct2hdf(fit_dct,outname=outfolder+'/fit.h5')
 
     return fit_dct,sampler
 
@@ -72,7 +77,8 @@ def fit_analyze(inpfile,burnin=None,copydata=True):
     
     if  'emcee' in inp_dct['optimize']['method']:
         emcee_analyze(outfolder,burnin=burnin)
-        fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
+        #fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
+        fit_dct=hdf2dct(outfolder+'/fit.h5')
         theta_start=fit_dct['p_start']
         theta_end=fit_dct['p_median']
     
@@ -96,11 +102,11 @@ def fit_analyze(inpfile,burnin=None,copydata=True):
         if  copydata==True:
             dct2hdf(dat_dct,outname=dat_dct_path)
     
-    lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_0')
+    lnl,blobs=model_lnprob(theta_start,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_0',packblobs=True)
     logger.debug('model_0: ')
     logger.debug(pformat(blobs))
     
-    lnl,blobs=model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_1')
+    lnl,blobs=model_lnprob(theta_end,fit_dct,inp_dct,dat_dct,savemodel=outfolder+'/model_1',packblobs=True)
     logger.debug('model_1: ')
     logger.debug(pformat(blobs))
     

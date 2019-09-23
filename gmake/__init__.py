@@ -1,5 +1,8 @@
 import os
 
+# version id: 
+#   https://www.python.org/dev/peps/pep-0440/
+
 __version__ = '0.1.dev3'
 __email__ = 'rx.astro@gmail.com'
 __author__ = 'Rui Xue'

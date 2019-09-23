@@ -30,7 +30,13 @@ def emcee_setup(inp_dct,dat_dct):
                     Took 2.9587043801943462 minutes                  
                 pyfftw/threads=8 emecee-threads=1
                     iteration:  1
-                    Took 2.0195618041356405 minutes                                                            
+                    Took 2.0195618041356405 minutes
+    
+    20190923:
+        update the dependency to emcee>3.0rc2
+        the setup follows the guideline here:
+            https://emcee.readthedocs.io/en/latest/tutorials/monitor/?highlight=sampler.sample
+        
             
     """
     
@@ -47,7 +53,8 @@ def emcee_setup(inp_dct,dat_dct):
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
-        fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
+        #fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
+        fit_dct['p_name'].append(p_name)
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
         
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
@@ -115,47 +122,27 @@ def emcee_setup(inp_dct,dat_dct):
     #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
     #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
     #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
-
-    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],model_lnprob,
-                                args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],runtime_sortingfn=sort_on_runtime)
-                                #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
-
-
+    
+    # setup backend
+    h5name=fit_dct['outfolder']+'/emcee_chain.h5'
+    os.system('rm -rf '+h5name)
+    backend = emcee.backends.HDFBackend(h5name)
+    backend.reset(fit_dct['nwalkers'],fit_dct['ndim'])
+    
+    # initilize the sampler
+    dtype = [("lnprob",float),("chisq",float),("ndata",int),("npar",int)]
+    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+                                    model_lnprob,backend=backend,blobs_dtype=dtype,
+                                    args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],
+                                    runtime_sortingfn=sort_on_runtime)
+                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
+    
        
     return fit_dct,sampler
-
-def emcee_savechain(sampler,fitsname,metadata={}):
-    """
-    save the chains from the emcee sampler
-        metadata is a Python dict.
     
-    """
-    
-    t=Table()
-    
-    blobs=sampler.blobs
-    for key in blobs[0][0].keys():
-        tmp0=list(map(lambda v: list(map(lambda w: w[key], v)), blobs))
-        t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
-        #print(key,(np.array(tmp0)).shape)
-        (nstep,nwalker)=(np.array(tmp0)).shape
-        
-    t.add_column(Column(name='chain', data=[    sampler.chain[:,:nstep,:]    ]))                  # nwalker x nstep x npar
-    t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))    # nwalker
-    t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability[:,:nstep]    ]))    # nwalker x nstep
-        
-    if  metadata!={}:
-        for key in metadata:
-            #print(key,metadata[key])
-            t.add_column(Column(name=key, data=[    metadata[key]    ]))
-    
-    dir=os.path.dirname(fitsname)
-    if  (not os.path.exists(dir)) and os.path.dirname(dir)!='':
-        os.makedirs(dir)
-    t.write(fitsname+".fits", overwrite=True)
-    
-    
-def emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
+def emcee_iterate(sampler,fit_dct,nstep=100,
+                  
+                  mctest=False):
     """
         RUN the sampler
     """
@@ -170,66 +157,35 @@ def emcee_iterate(sampler,fit_dct,nstep=100,mctest=False):
     print(">>"+fit_dct['outfolder']+"/emcee_chain.fits")
     print("")
 
-    for i,(pos_i,lnprob_i,rstat_i,blobs_i) in enumerate(sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'])):
-        """
-        http://emcee.readthedocs.io/en/stable/api.html#emcee.EnsembleSampler.sample
-            pos    (nwalkers,ndim)
-            lnprob (nwalkers,)
-            blobs  (nwalkers,)
-        """
-        fit_dct['step_last']+=1
-        fit_dct['pos_last']=pos_i
+    """
+    emcee v3
+        https://emcee.readthedocs.io/en/latest/tutorials/monitor/
+    """
+    index=0
+    autocorr=np.empty(fit_dct['nstep'])
+    old_tau=np.inf
+    
+    for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
+                                 progress=True,store=True):
         
-        #   WRITE ASCII TABLE
-        tic0=time.time() 
-        f = open(fit_dct['chainfile'], "a")
-        for k in range(pos_i.shape[0]):
-            output='{0:<5}'.format(fit_dct['step_last'])+' '
-            output+='{0:<5}'.format(k)+' '
-            output+=' '.join(('{0:'+fit_dct['p_format'][x]+'}').format(pos_i[k][x]) for x in range(len(pos_i[k])))+' '
-            output+='{0:<10.1f} {1:<8.1f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
-            output+='\n'
-            f.write(output)
-        f.close()
-        dt+=float(time.time()-tic0)
-
-        if  mctest==True:
-            print("iteration: ",i+1)
-            print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+        # Only check convergence every 100 steps
+        if  sampler.iteration % int(fit_dct['nstep']/10.0):
             continue
-            
-        if  (i+1) % int(fit_dct['nstep']/10.0) == 0 :
-            
-            print("")
-            print("Completion: {0:8.1f}%".format(float(i+1)/fit_dct['nstep']*100.0))
-            print("TimeElapse: {0:8.1f}m".format(float(time.time()-tic)/float(60.)))
-            
-            fit_dct['acceptfraction']=deepcopy(sampler.acceptance_fraction)
-            
-        #   WRITE FITS TABLE
+    
+        # Compute the autocorrelation time so far
+        tau=sampler.get_autocorr_time(tol=0)    # (npar.)
+        autocorr[index]=np.mean(tau)
+        index+=1
         
-            tic0=time.time()
-            #astable=ascii.read(fit_dct['chainfile'])
-            #astable.write(fit_dct['fitstable'],format='fits',overwrite=True)
-            #dt+=float(time.time()-tic0)            
-            
-            #   WRITE NEW-STYLE FITS FILE
-            emcee_savechain(sampler,fit_dct['outfolder']+"/emcee_chain",metadata=fit_dct)
-            
-            np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
-            
-            #p_median,p_error1,p_error2=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False)
-            
-            fit_tab=emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
-                            verbose=False)
-            
-            
-            dt+=float(time.time()-tic0)
-        
-        
+        # Check convergence
+        converged = np.all(tau * 100 < sampler.iteration)
+        converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
+        if  converged:
+            break
+        old_tau = tau
+
     print("Done.")
     print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
-    #"""
 
     return
 
@@ -249,46 +205,32 @@ def emcee_analyze(outfolder,
     # vector.
     # This number should be between approximately 0.25 and 0.5 if everything went as planned.
     """
+    h5name=outfolder+'/'+'emcee_chain.h5'
+    reader = emcee.backends.HDFBackend(h5name,read_only=True)
     
-    
-    t=Table.read(outfolder+'/'+'emcee_chain.fits')
-    chain_array=t['chain'].data[0]
-    acceptfraction=t['acceptance_fraction'].data[0]
-    lnprobability=t['lnprobability'].data[0]
-    
-    blobs_lnprob=t['blobs_lnprob'].data[0]
-    blobs_chisq=t['blobs_chisq'].data[0]
-    blobs_ndata=t['blobs_ndata'].data[0]
-    blobs_npar=t['blobs_npar'].data[0]
+    thin=1
+    burnin=2
     
     if  burnin is None:
-        burnin=int((lnprobability.shape)[1]*0.8)
+        burnin=int((lnprobability.shape)[1]*0.5)
     
-    #print('##',chain_array.shape) #nwalker x nstep x npar
-    #print('##',lnprobability.shape) #nwalker x nstep
-    #print('##',blobs_lnprob.shape)  #nstep x nwalker
-    #print('##',blobs_chisq.shape)   #nstep x nwalker
-    #print('##',blobs_ndata.shape)   #nstep x nwalker
-    #print('##',blobs_npar.shape)    #nstep x nwalker
+    fullsamples = reader.get_chain(flat=True,discard=0,thin=thin)
+    samples = reader.get_chain(flat=True,discard=burnin,thin=thin)
+    log_prob_samples = reader.get_log_prob(discard=burnin, flat=True, thin=thin)
+    blobs_samples = reader.get_blobs(discard=0, thin=thin)
     
-    #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
-    p_format=list((t['p_format'].data[0]).astype(str))
-    p_name=list((t['p_name'].data[0]).astype(str))
-    p_scale=t['p_scale'].data[0]
-    p_lo=t['p_lo'].data[0]
-    p_up=t['p_up'].data[0]
-    p_start=t['p_start'].data[0]
+    chain_array=reader.get_chain(flat=False,discard=0,thin=thin)
     
-    if  verbose==True:
-        print("Mean acceptance fraction: ",np.mean(acceptfraction))
+    fit_dct=hdf2dct(outfolder+'/'+'fit.h5')
+    p_format=fit_dct['p_format']
+    p_name=fit_dct['p_name']
+    p_scale=fit_dct['p_scale']
+    p_lo=fit_dct['p_lo']
+    p_up=fit_dct['p_up']
+    p_start=fit_dct['p_start']
     
-    #   DO SOME STATS
     
-    samples = chain_array[:,burnin:,:].reshape((-1, chain_array.shape[2]))
-    fullsamples = chain_array[:,:, :].reshape((-1, chain_array.shape[2]))
-    if  verbose==True:
-        print('sample shape: ',samples.shape)
-        print("MCMC initialize scale / MCMC result:")
+    
     
     p_ptiles=list(map(lambda v: v,zip(*np.percentile(samples,[2.5,16.,50.,84.,97.5],axis=0))))
     p_median=p_error1=p_error2=p_error3=p_error4=p_int1=p_int2=p_mode=np.array([])    
@@ -387,7 +329,9 @@ def emcee_analyze(outfolder,
 
     #   ITERATION METADATA PLOTS
     
-    m_name=['blobs_lnprob','blobs_chisq']
+    m_name=['lnprob','chisq']
+    t=blobs_samples
+    
     figsize=(8.,8.)
     ncol=1
     pl.clf()
@@ -399,9 +343,9 @@ def emcee_analyze(outfolder,
         iy=int(cc % nrow)
         ix=int((cc - iy)/nrow)
         if  plotburnin==False:
-            axes[iy,ix].plot(t[m_name[i]].data[0][burnin:,:], color="k", alpha=0.4)
+            axes[iy,ix].plot(t[m_name[i]][burnin:,:], color="k", alpha=0.4)
         else:
-            axes[iy,ix].plot(t[m_name[i]].data[0][:,:], color="gray", alpha=0.4)
+            axes[iy,ix].plot(t[m_name[i]][:,:], color="gray", alpha=0.4)
             axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
         axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
         ymin, ymax = axes[iy,ix].get_ylim()
@@ -488,37 +432,22 @@ def emcee_analyze(outfolder,
         pl.close()
         if  verbose==True:
             print('Took {0} seconds'.format(float(time.time()-tic)))    
-    
-    #fit_dct['p_median']=p_median
-    #fit_dct['p_error1']=p_error1
-    #fit_dct['p_error2']=p_error2
-    #fit_dct['p_error3']=p_error3
-    #fit_dct['p_error4']=p_error4
-    #fit_dct['p_burnin']=burnin
-    #np.save(outfolder+'/fit_dct_analyzed.npy',fit_dct)
-    
-    t['p_median']=[p_median]
-    t['p_error1']=[p_error1]
-    t['p_error2']=[p_error2]
-    t['p_error3']=[p_error3]
-    t['p_error4']=[p_error4]
-    t['p_burnin']=[burnin]
-    #t.add_column(Column(name='flatchain_samples', data=[  samples  ]),index=0)
-    t['flatchain_samples']=[samples]
-    t['p_ptiles']=[p_ptiles]
-    t['p_mode']=[p_mode]
-    
-    outname=outfolder+"/emcee_chain_analyzed.fits"
-    t.write(outname, overwrite=True)
 
+
+    fit_dct['p_median']=[p_median]
+    fit_dct['p_error1']=[p_error1]
+    fit_dct['p_error2']=[p_error2]
+    fit_dct['p_error3']=[p_error3]
+    fit_dct['p_error4']=[p_error4]
+    fit_dct['p_burnin']=[burnin]
+    #t.add_column(Column(name='flatchain_samples', data=[  samples  ]),index=0)
+    fit_dct['flatchain_samples']=[samples]
+    fit_dct['p_ptiles']=[p_ptiles]
+    fit_dct['p_mode']=[p_mode]
     
-    if  verbose==True:
-        print(samples.shape)   
-        print('File successfully saved as %s'%(outname))
+    dct2hdf(fit_dct,outfolder+'/'+'fit.h5')
     
-    
-    
-    return t
+    return 
     
 if  __name__=="__main__":
     

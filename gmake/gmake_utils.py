@@ -650,7 +650,20 @@ def check_deps(package_name='gmake'):
 
     return
 
+def h5ls_print(name,obj):
+    print(name, dict(obj.attrs))
 
+def h5ls(filename,logfile=None):
+    
+    if  logfile is None:
+        with h5py.File(filename,'r') as hf:
+            hf.visititems(h5ls_print)
+    else:
+        with open(logfile, 'w') as f:
+            with redirect_stdout(f):
+                with h5py.File(filename,'r') as hf:
+                    hf.visititems(h5ls_print)
+    
 if  __name__=="__main__":
     
     pass

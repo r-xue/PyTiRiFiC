@@ -226,5 +226,7 @@ logging.getLogger('matplotlib').setLevel(logging.WARNING)
 from pip._vendor import pkg_resources
 
 import hickle as hkl
+import h5py
 
+from contextlib import redirect_stdout
 
