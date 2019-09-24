@@ -398,6 +398,8 @@ def gmake_listpars(objs,showcontent=True):
 
 def inp2mod(objs):
     """
+    Intereprete Model Properties
+    
     get ready for model constructions, including:
         + add the default values
         + fill optional keywords
@@ -416,54 +418,57 @@ def inp2mod(objs):
     """
     
     cfg=gmake_config()
-    #print(cfg)
+    ids_ignore=cfg['inp.comment']['id'].split(',')+cfg['inp.optimizer']['id'].split(',')
+
     par_list=[]
     for tmp1 in objs.keys():
         for tmp2 in objs[tmp1].keys():
             par_list+=[tmp2+'@'+tmp1]
-            
-    for tag in objs.keys():
+                
+    for tag in list(objs.keys()):
+        
+        #   remove sections not related to model component properties
+                         
+        if  any(section in tag.lower() for section in ids_ignore):            
+            tmp=objs.pop(tag,None)
+            continue
+
         for key in objs[tag].keys():
-            if  any(section in tag.lower() for section in cfg['inp.comment']['id'].split(',')):
-                pass
-            elif any(section in tag.lower() for section in cfg['inp.optimizer']['id'].split(',')):
-                pass
-                #value=objs[tag][key]
-                #for value0 in value:
-                #    if  isinstance(value0,str):
-                #        if  '@' in value:
-                #            key_nest=value0.split("@")
-                #            objs[tag][key]=objs[key_nest[1]][key_nest[0]]
-            else:    
-                value=objs[tag][key]
-                if  isinstance(value, str):
-                    pars=[par for par in par_list if par in value] 
-                    if  pars!=[]:   # a string expression for parameter tie is detected
-                        par=max(pars, key=len) 
-                        key_nest=par.split("@")
-                        tmp0=objs[key_nest[1]][key_nest[0]]
-                        if  isinstance(tmp0, str):  # copy string
-                            objs[tag][key]=tmp0
-                            #print(tmp0,'-->',objs[tag][key])
-                        else:                       # math expression evluation
-                            value_expr=value.replace(par,"tmp0")
-                            aeval.symtable["tmp0"]=objs[key_nest[1]][key_nest[0]]
-                            #print(value_expr,value)
-                            #objs[tag][key]=ne.evaluate(value_expr).tolist()
-                            objs[tag][key]=aeval(value_expr)
-                            #print(value,'-->',objs[tag][key])
-                        
-                        #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
-                    """
-                    if  '@' in value:
-                        key_nest=value.split("@")
-                        objs[tag][key]=objs[key_nest[1]][key_nest[0]]
-                    """
+
+            #value=objs[tag][key]
+            #for value0 in value:
+            #    if  isinstance(value0,str):
+            #        if  '@' in value:
+            #            key_nest=value0.split("@")
+            #            objs[tag][key]=objs[key_nest[1]][key_nest[0]]
+ 
+            value=objs[tag][key]
+            if  isinstance(value, str):
+                pars=[par for par in par_list if par in value] 
+                if  pars!=[]:   # a string expression for parameter tie is detected
+                    par=max(pars, key=len) 
+                    key_nest=par.split("@")
+                    tmp0=objs[key_nest[1]][key_nest[0]]
+                    if  isinstance(tmp0, str):  # copy string
+                        objs[tag][key]=tmp0
+                        #print(tmp0,'-->',objs[tag][key])
+                    else:                       # math expression evluation
+                        value_expr=value.replace(par,"tmp0")
+                        aeval.symtable["tmp0"]=objs[key_nest[1]][key_nest[0]]
+                        #print(value_expr,value)
+                        #objs[tag][key]=ne.evaluate(value_expr).tolist()
+                        objs[tag][key]=aeval(value_expr)
+                        #print(value,'-->',objs[tag][key])
                     
+                    #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
+                """
+                if  '@' in value:
+                    key_nest=value.split("@")
+                    objs[tag][key]=objs[key_nest[1]][key_nest[0]]
+                """
+           
     return objs
     
-
-
 
 def paste_slice(tup):
     """
@@ -520,7 +525,7 @@ def read_par(inp_dct,par_name):
         i_key=i_key[0]
         return inp_dct[o_key][p_key][make_slice(i_key)]
     
-def write_par(inp_dct,par_name,par_value):
+def write_par(inp_dct,par_name,par_value,verbose=False):
     """
     write parameter values
         key:    par_str[ind_str]@obj_str
@@ -537,6 +542,10 @@ def write_par(inp_dct,par_name,par_value):
         print(test)
     """
     #print(par_name)
+    
+    if  verbose==True:
+        print('before: {} : {}'.format(par_name,read_par(inp_dct,par_name)))    
+    
     po_key=par_name.split("@")
     i_key=re.findall("\[(.*?)\]", po_key[0])
     if  len(i_key)==0:
@@ -551,6 +560,9 @@ def write_par(inp_dct,par_name,par_value):
             not isinstance(par_value,list):
             par_value=[par_value]*len(inp_dct[o_key][p_key][make_slice(i_key)])
         inp_dct[o_key][p_key][make_slice(i_key)]=par_value
+        
+    if  verbose==True:
+        print('after: {} : {}'.format(par_name,read_par(inp_dct,par_name)))        
     
 def gmake_pformat(fit_dct):
     """
@@ -649,6 +661,17 @@ def check_deps(package_name='gmake'):
         logger.debug('{0:<18} {1:<12} {2:<12}'.format(name,version_required,version_installed))
 
     return
+
+def check_setup():
+    
+    logger.debug("Python version:   {}".format(sys.version))
+    logger.debug("Host Name:        {}".format(socket.gethostname()))
+    logger.debug("Num of Core:      {}".format(multiprocessing.cpu_count()))
+    mem=virtual_memory()
+    logger.debug("Total Memory:     {}".format(convert_size(mem.total)))
+    logger.debug("Available Memory: {}".format(convert_size(mem.available)))
+    logger.debug("#"*80)
+    check_deps()    
 
 def h5ls_print(name,obj):
     print(name, dict(obj.attrs))

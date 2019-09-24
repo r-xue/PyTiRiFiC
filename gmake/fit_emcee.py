@@ -1,5 +1,5 @@
 from .gmake_init import *
-from .model_utils import * 
+from .model_eval import * 
 
 logger = logging.getLogger(__name__)
 
@@ -94,10 +94,10 @@ def emcee_setup(inp_dct,dat_dct):
     fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=opt_dct['outdir']
     
-    print('nwalkers:',fit_dct['nwalkers'])
-    print('nthreads:',fit_dct['nthreads'])
-    print('ndim:    ',fit_dct['ndim'])
-    print('outdir:  ',fit_dct['outfolder'])
+    logger.debug('nwalkers:'+str(fit_dct['nwalkers']))
+    logger.debug('nthreads:'+str(fit_dct['nthreads']))
+    logger.debug('ndim:    '+str(fit_dct['ndim']))
+    logger.debug('outdir:  '+str(fit_dct['outfolder']))
     
     np.random.seed(0)
     fit_dct['pos_start'] = \
@@ -106,15 +106,7 @@ def emcee_setup(inp_dct,dat_dct):
     if  not os.path.exists(fit_dct['outfolder']):
         os.makedirs(fit_dct['outfolder'])
 
-    fit_dct['chainfile']=fit_dct['outfolder']+'/emcee_chain.dat'
-    f=open(fit_dct['chainfile'], "w")
-    output='{0:<5}'.format('it')+' '
-    output+='{0:<5}'.format('wk')+' '
-    output+=' '.join(('{0:'+fit_dct['p_format_keys'][x]+'}').format(fit_dct['p_name'][x]) for x in range(len(fit_dct['p_name'])))+' '
-    output+='{0:<10} {1:<8}'.format('lnprob','chisq')
-    output+='\n'
-    f.write(output)
-    f.close()
+
     
     fit_dct['pos_last']=deepcopy(fit_dct['pos_start'])
     fit_dct['step_last']=0
@@ -141,7 +133,6 @@ def emcee_setup(inp_dct,dat_dct):
     return fit_dct,sampler
     
 def emcee_iterate(sampler,fit_dct,nstep=100,
-                  
                   mctest=False):
     """
         RUN the sampler
@@ -151,11 +142,10 @@ def emcee_iterate(sampler,fit_dct,nstep=100,
     tic=time.time()
     dt=0.0
     
-    print("")
-    print("Running MCMC...")
-    print(">>"+fit_dct['chainfile'])
-    print(">>"+fit_dct['outfolder']+"/emcee_chain.fits")
-    print("")
+    logger.debug(" ")
+    logger.debug("Running MCMC...")
+    logger.debug(">>"+fit_dct['outfolder']+"/emcee_chain.h5")
+    logger.debug(" ")
 
     """
     emcee v3
@@ -184,8 +174,8 @@ def emcee_iterate(sampler,fit_dct,nstep=100,
             break
         old_tau = tau
 
-    print("Done.")
-    print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+    logger.debug("Done.")
+    logger.debug('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
 
     return
 
@@ -196,7 +186,6 @@ def emcee_analyze(outfolder,
                        plotlevel=False,
                        plotsub=None,
                        plotcorner=True,
-                       verbose=False,
                        plotburnin=True
                        ):
     """
@@ -209,17 +198,19 @@ def emcee_analyze(outfolder,
     reader = emcee.backends.HDFBackend(h5name,read_only=True)
     
     thin=1
-    burnin=2
     
-    if  burnin is None:
-        burnin=int((lnprobability.shape)[1]*0.5)
-    
+    chain_array=reader.get_chain(flat=False,discard=0,thin=thin)
     fullsamples = reader.get_chain(flat=True,discard=0,thin=thin)
+    if  burnin is None:
+        burnin=int((chain_array.shape)[0]*0.5)    
+    
     samples = reader.get_chain(flat=True,discard=burnin,thin=thin)
     log_prob_samples = reader.get_log_prob(discard=burnin, flat=True, thin=thin)
     blobs_samples = reader.get_blobs(discard=0, thin=thin)
     
-    chain_array=reader.get_chain(flat=False,discard=0,thin=thin)
+    
+    #   chain_array # (nstep-discard)/thin x nwalker x npar     when flat==False
+    #   blobs       # (nstep-discard)/thin x nwalker            when flat==False
     
     fit_dct=hdf2dct(outfolder+'/'+'fit.h5')
     p_format=fit_dct['p_format']
@@ -229,14 +220,10 @@ def emcee_analyze(outfolder,
     p_up=fit_dct['p_up']
     p_start=fit_dct['p_start']
     
-    
-    
-    
     p_ptiles=list(map(lambda v: v,zip(*np.percentile(samples,[2.5,16.,50.,84.,97.5],axis=0))))
     p_median=p_error1=p_error2=p_error3=p_error4=p_int1=p_int2=p_mode=np.array([])    
     
-    if  verbose==True:
-        print('+'*90)
+    logger.debug('+'*90)
     
     for index in range(len(p_ptiles)):
         
@@ -254,29 +241,28 @@ def emcee_analyze(outfolder,
         p_int1=np.append(p_int1,p_ptiles[index][3]-p_ptiles[index][1])
         p_int2=np.append(p_int2,p_ptiles[index][4]-p_ptiles[index][0])
         p_ptiles[index]=list(p_ptiles[index])
-        if  verbose==True:
-            print(">>>  "+p_name[index]+":")
-            print((" median(sigma) = {0:"+p_format[index]+"}"+\
-                                 " {1:"+p_format[index]+"}"+\
-                                 " {2:"+p_format[index]+"}"+\
-                                 " {3:"+p_format[index]+"}"+\
-                                 " {4:"+p_format[index]+"}").\
-                  format(     p_median[index],p_error3[index],p_error1[index],p_error2[index],p_error4[index]))
-            print((" median(ptile) = {0:"+p_format[index]+"}"+\
-                                 " {1:"+p_format[index]+"}"+\
-                                 " {2:"+p_format[index]+"}"+\
-                                 " {3:"+p_format[index]+"}"+\
-                                 " {4:"+p_format[index]+"}").\
-                  format(     p_ptiles[index][2],p_ptiles[index][0],p_ptiles[index][1],p_ptiles[index][3],p_ptiles[index][4]))            
-            print((" start(iscale) ="+\
-                                 " {0:"+p_format[index]+"}/{1:"+p_format[index]+"}").\
-                  format(        p_start[index],p_scale[index]))            
-            print((" mode          ="+\
-                                 " {0:"+p_format[index]+"}").\
-                  format(        p_mode[index])) 
+        
+        logger.debug(">>>  "+p_name[index]+":")
+        logger.debug((" median(sigma) = {0:"+p_format[index]+"}"+\
+                             " {1:"+p_format[index]+"}"+\
+                             " {2:"+p_format[index]+"}"+\
+                             " {3:"+p_format[index]+"}"+\
+                             " {4:"+p_format[index]+"}").\
+              format(     p_median[index],p_error3[index],p_error1[index],p_error2[index],p_error4[index]))
+        logger.debug((" median(ptile) = {0:"+p_format[index]+"}"+\
+                             " {1:"+p_format[index]+"}"+\
+                             " {2:"+p_format[index]+"}"+\
+                             " {3:"+p_format[index]+"}"+\
+                             " {4:"+p_format[index]+"}").\
+              format(     p_ptiles[index][2],p_ptiles[index][0],p_ptiles[index][1],p_ptiles[index][3],p_ptiles[index][4]))            
+        logger.debug((" start(iscale) ="+\
+                             " {0:"+p_format[index]+"}/{1:"+p_format[index]+"}").\
+              format(        p_start[index],p_scale[index]))            
+        logger.debug((" mode          ="+\
+                             " {0:"+p_format[index]+"}").\
+              format(        p_mode[index])) 
     
-    if  verbose==True:
-        print('-'*90)    
+    logger.debug('-'*90)    
 
 
     #   ITERATION PARAMETR PLOTS
@@ -292,9 +278,9 @@ def emcee_analyze(outfolder,
         iy=int(cc % nrow)
         ix=int((cc - iy)/nrow)
         if  plotburnin==False:
-            axes[iy,ix].plot(chain_array[:, burnin:, i].T, color="gray", alpha=0.4)
+            axes[iy,ix].plot(chain_array[burin:, :, i], color="gray", alpha=0.4)
         else:
-            axes[iy,ix].plot(chain_array[:, :, i].T, color="gray", alpha=0.4)
+            axes[iy,ix].plot(chain_array[:, :, i], color="gray", alpha=0.4)
             axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
         axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
         ymin, ymax = axes[iy,ix].get_ylim()
@@ -323,9 +309,9 @@ def emcee_analyze(outfolder,
     figname=outfolder+"/emcee-iteration.pdf"
     fig.savefig(figname)
     pl.close()
-    if  verbose==True:
-        print("analyzing outfolder:"+outfolder)
-        print("plotting..."+figname)
+
+    logger.debug("analyzing outfolder:"+outfolder)
+    logger.debug("plotting..."+figname)
 
     #   ITERATION METADATA PLOTS
     
@@ -366,18 +352,16 @@ def emcee_analyze(outfolder,
     figname=outfolder+"/emcee-iteration-blobs.pdf"
     fig.savefig(figname)
     pl.close()
-    if  verbose==True:
-        print("analyzing outfolder:"+outfolder)
-        print("plotting..."+figname)    
+    logger.debug("analyzing outfolder:"+outfolder)
+    logger.debug("plotting..."+figname)    
 
     
     
     #   CORNER PLOTS
     
     if  plotcorner==True:
-        if  verbose==True:
-            print("plotting..."+outfolder+"/line-triangle.pdf")
-            print("input data size:"+str(np.shape(samples)))
+        logger.debug("plotting..."+outfolder+"/line-triangle.pdf")
+        logger.debug("input data size:"+str(np.shape(samples)))
         tic=time.time()
         quantiles=None
         if  plotqtile==True:
@@ -385,7 +369,7 @@ def emcee_analyze(outfolder,
         levels=None
         if  plotlevel==True:
             levels=(1-np.exp(-0.5),)        
-        fig = corner.corner(samples, labels=p_name,truths=p_start,quantiles=quantiles,levels=levels)
+        fig = corner.corner(samples, labels=p_name,truths=p_start,quantiles=quantiles,levels=levels,quiet=True)
         
         ndim=len(p_start)
         axes = np.array(fig.axes).reshape((ndim, ndim))
@@ -411,14 +395,12 @@ def emcee_analyze(outfolder,
         
         fig.savefig(outfolder+"/emcee-corner.pdf")
         pl.close()
-        if  verbose==True:
-            print('Took {0} seconds'.format(float(time.time()-tic)))
+        logger.debug('Took {0} seconds'.format(float(time.time()-tic)))
     
     # Make the triangle plot.
     if  plotsub!=None:
         #plotsub is the parameter index array
-        if  verbose==True:
-            print("plotting..."+outfolder+"/line-triangle-sub.pdf")
+        logger.debug("plotting..."+outfolder+"/line-triangle-sub.pdf")
         subsamples = chain_array[:, burnin:, plotsub].reshape((-1, len(plotsub)))
         tic=time.time()
         quantiles=None
@@ -427,29 +409,26 @@ def emcee_analyze(outfolder,
         levels=None
         if  plotlevel==True:
             levels=(1-np.exp(-0.5),)        
-        fig = corner.corner(subsamples, labels=p_name[plotsub],truths=p_start[plotsub],quantiles=quantiles,levels=levels)
+        fig = corner.corner(subsamples, labels=p_name[plotsub],truths=p_start[plotsub],quantiles=quantiles,levels=levels,quiet=True)
         fig.savefig(outfolder+"/line-triangle-sub.pdf")
         pl.close()
-        if  verbose==True:
-            print('Took {0} seconds'.format(float(time.time()-tic)))    
+        logger.debug('Took {0} seconds'.format(float(time.time()-tic)))    
 
-
-    fit_dct['p_median']=[p_median]
-    fit_dct['p_error1']=[p_error1]
-    fit_dct['p_error2']=[p_error2]
-    fit_dct['p_error3']=[p_error3]
-    fit_dct['p_error4']=[p_error4]
-    fit_dct['p_burnin']=[burnin]
+    
+    
+    fit_dct['p_median']=p_median
+    fit_dct['p_error1']=p_error1
+    fit_dct['p_error2']=p_error2
+    fit_dct['p_error3']=p_error3
+    fit_dct['p_error4']=p_error4
+    fit_dct['p_burnin']=burnin
     #t.add_column(Column(name='flatchain_samples', data=[  samples  ]),index=0)
-    fit_dct['flatchain_samples']=[samples]
-    fit_dct['p_ptiles']=[p_ptiles]
-    fit_dct['p_mode']=[p_mode]
+    fit_dct['flatchain_samples']=samples
+    fit_dct['p_ptiles']=p_ptiles
+    fit_dct['p_mode']=p_mode
     
     dct2hdf(fit_dct,outfolder+'/'+'fit.h5')
     
     return 
-    
-if  __name__=="__main__":
-    
-    pass
+
 

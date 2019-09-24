@@ -103,9 +103,7 @@ Note:
     logger.info(" ")
     logger.info("#"*80+"\n"+"#"*80)
     logger.info("GMaKE "+__version__+" -- Start")
-    logger.debug("Python version: {}".format(sys.version))
-    logger.debug("#"*80+"\n")
-    check_deps()
+    check_setup()
     logger.info("#"*80+"\n"+"#"*80)
     logger.info(" ")      
     

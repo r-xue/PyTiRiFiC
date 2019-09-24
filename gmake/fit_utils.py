@@ -22,8 +22,6 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
         fit_dct,sampler=emcee_setup(inp_dct,dat_dct)
     if  'lmfit' in inp_dct['optimize']['method']:
         fit_dct=lmfit_setup(inp_dct,dat_dct)
-        
-                
     
     if  copydata==True:
         
@@ -35,9 +33,9 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
 
         start_time = time.time()
         lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                                                 savemodel='')
+                                                 savemodel=None)
         #lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,packblobs=True,
-        #                       savemodel='')        
+        #                       savemodel='')     
         logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
         logger.debug('ndata->'+str(ndata))
         logger.debug('chisq->'+str(chisq))
@@ -47,7 +45,7 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
         logger.debug('p_start:    ')
         logger.debug(pformat(blobs))
         """    
-    pprint.pprint(fit_dct)
+    
     dct2hdf(fit_dct,outname=outfolder+'/fit.h5')
 
     return fit_dct,sampler

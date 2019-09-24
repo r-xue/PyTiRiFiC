@@ -13,7 +13,7 @@ from .gmake_logger import *
 from .gmake_init import *  
 from .gmake_utils import *
 
-from .model_utils import *
+from .model_eval import *
 from .model_func import *
 from .model_func_kinms import *
 from .model_func_dynamics import *

@@ -1,5 +1,5 @@
 from .gmake_init import *
-from .model_utils import * 
+from .model_eval import * 
 
 import numpy as np
 import copy
@@ -13,6 +13,7 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     opt_dct=inp_dct['optimize']
     
     fit_dct={'optimize':opt_dct.copy()}
+    fit_dct={'method':opt_dct['method']}
     fit_dct['p_start']=[]
     fit_dct['p_lo']=[]
     fit_dct['p_up']=[]
@@ -23,7 +24,7 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
-        fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
+        fit_dct['p_name'].append(p_name)
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
 
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
@@ -90,9 +91,6 @@ def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
                        ftol=1e-10,temperature=0,
                        maxiter=nstep,verbose=True)
 
-    fit_dct['p_amoeba']=p_amoeba
-    
-    np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
     dct2fits(p_amoeba,outname=fit_dct['outfolder']+'/amoeba_chain')
     
     return
@@ -114,7 +112,8 @@ def amoeba_analyze(outfolder,
     dict['p_up']=p_up
     dict['p_up']=p_lo
     """
-    fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
+
+    fit_dct=hdf2dct(outfolder+'/fit.h5')
     p_name=fit_dct['p_name']
     p_lo=fit_dct['p_lo']
     p_up=fit_dct['p_up']
@@ -127,9 +126,11 @@ def amoeba_analyze(outfolder,
     #pars=t['pars'].data[0]
     #p_best=t['p_best'].data[0]
     
-    chi2=fit_dct['p_amoeba']['chi2']
-    pars=fit_dct['p_amoeba']['pars']
-    p_best=fit_dct['p_amoeba']['p_best']
+    p_amoeba=hdf2dct(outfolder+'/amoeba_chain.h5')
+    
+    chi2=p_amoeba['chi2']
+    pars=p_amoeba['pars']
+    p_best=p_amoeba['p_best']
                              
     
     ndim=(pars.shape)[0]

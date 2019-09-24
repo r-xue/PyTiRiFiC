@@ -1,5 +1,5 @@
 from .gmake_init import *
-from .model_utils import * 
+from .model_eval import * 
 
 def gmake_mpfit_setup(inp_dct,dat_dct):
     

@@ -81,40 +81,39 @@ def model_dynamics(obj,dyn,rad_as):
     return obj['vrot']
 
 def model_disk2d(header,ra,dec,
-                       r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
-                       pintflux=0.0,pra=None,pdec=None,
-                       intflux=1.,restfreq=235.0,alpha=3.0):
+                 r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
+                 pintflux=0.0,pra=None,pdec=None,
+                 factor=5,
+                 intflux=1.,restfreq=235.0,alpha=3.0):
     """
+    insert a model without frequency-dependency into a 2D image or 3D cube
     
-        insert a continuum model into a 2D image or 3D cube
-        
-        header:    data header including WCS
-        
-        ra,dec:    object center ra/dec
-        ellip:     1-b/a
-        posang:    in the astronomical convention
-        r_eff:     in arcsec
-        n:         sersic index
-        
-        intflux:   Jy
-        restfreq:  GHz
-        alpha:     
-        
-        co-centeral point souce: pintflux=0.0
-        
-        the header is assumed to be ra-dec-freq-stokes
+    header:    data header including WCS
     
-        note:
-            since the convolution is the bottom-neck, a plane-by-plane processing should
-            be avoided.
-            avoid too many header->wcs / wcs-header calls
-            1D use inverse transsforming
+    ra,dec:    object center ra/dec
+    ellip:     1-b/a
+    posang:    in the astronomical convention
+    r_eff:     in arcsec
+    n:         sersic index
+    
+    intflux:   Jy
+    restfreq:  GHz
+    alpha:     
+    
+    co-centeral point souce: pintflux=0.0
+    
+    the header is assumed to be ra-dec-freq-stokes
+
+    note:
+        since the convolution is the bottom-neck, a plane-by-plane processing should
+        be avoided.
+        avoid too many header->wcs / wcs-header calls
+        1D use inverse transsforming
             
     """
 
     #   build objects
     #   use np.meshgrid and don't worry about transposing
-
     w=WCS(header)
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0
     #px,py=skycoord_to_pixel(SkyCoord(ra,dec,unit="deg"),w,origin=0) # default to IRCS
@@ -123,44 +122,34 @@ def model_disk2d(header,ra,dec,
     wz=(w.wcs_pix2world(0,0,vz,0,0))[2]
 
     #   get 2D disk model
-    #start_time = time.time()
+    start_time = time.time()
     x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
     mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
-    #   since the intrinsic model is likley undersampled... we'd be careful on this one.
-    #   use discretize_model(mode='oversample') rather than discretize_model(mode='center')
-    #model2d=mod(x,y)
+    
+    #   use discretize_model(mode='oversample') 
+    #       discretize_model(mode='center') or model2d=mod(x,y) may lead worse precision
     model2d=discretize_model(mod,
                             (0,header['NAXIS1']),
                             (0,header['NAXIS2']),
-                            mode='oversample',factor=10)
-                            #mode='center')
-    
+                            mode='oversample',factor=factor)
     
     model2d=model2d/model2d.sum()
-    #print("--- %s seconds ---" % (time.time() - start_time))
+    
     
     #   intflux at different planes / broadcasting to the data dimension
     #   return model in units of Jy/pix
-    
-    #start_time = time.time()
+
     intflux_z=(wz/1e9/restfreq)**alpha*intflux
     if  pintflux!=0.0:
         pintflux_z=(wz/1e9/restfreq)**alpha*pintflux
-    #start_time = time.time()
+
     model=np.empty((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
     #model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
     for i in range(header['NAXIS3']):
         model[0,i,:,:]=intflux_z[i]*model2d
-        #print(int(np.round(py)))
-        #print(int(np.round(px)))
-        #print(round(py),round(px[0]))
         if  pintflux!=0.0:
             model[0,i,int(np.round(py)),int(np.round(px))]+=pintflux_z[i]
-    #print("--- %s seconds ---" % (time.time() - start_time))    
-    #model_test=np.array([ map(lambda v : v*model2d, range(header['NAXIS3'])) ])
-    #print("--- %s seconds ---" % (time.time() - start_time))
-    #print(model.shape)
 
     return model
 
@@ -354,7 +343,7 @@ def model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
         return inClouds
 
 
-def model_kinmspy(header,obj,
+def model_disk3d(header,obj,
                         nsamps=100000,
                         decomp=False,
                         fixseed=False,
