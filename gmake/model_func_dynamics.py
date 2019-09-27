@@ -15,7 +15,7 @@ def model_func_dynamics(inp_dct,plotrc=False):
             
             if  'method' not in inp_dct[obj]:
                 continue
-            if   'kinmspy' not in inp_dct[obj]['method']:
+            if   'disk3d' not in inp_dct[obj]['method']:
                 continue
             
             z=inp_dct[obj]['z']

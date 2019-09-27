@@ -2,6 +2,7 @@ from .gmake_init import *
 from .gmake_utils import *
 from .model_func_kinms import *
 
+from galario.single import sampleImage
 
 def model_dynamics(obj,dyn,rad_as):
     
@@ -81,6 +82,7 @@ def model_dynamics(obj,dyn,rad_as):
     return obj['vrot']
 
 def model_disk2d(header,ra,dec,
+                 model=None,
                  r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
                  pintflux=0.0,pra=None,pdec=None,
                  factor=5,
@@ -109,7 +111,9 @@ def model_disk2d(header,ra,dec,
         be avoided.
         avoid too many header->wcs / wcs-header calls
         1D use inverse transsforming
-            
+    
+    return model in units of Jy/pix  
+    
     """
 
     #   build objects
@@ -122,38 +126,54 @@ def model_disk2d(header,ra,dec,
     wz=(w.wcs_pix2world(0,0,vz,0,0))[2]
 
     #   get 2D disk model
-    start_time = time.time()
-    x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
     mod = Sersic2D(amplitude=1.0,r_eff=r_eff/cell,n=n,x_0=px,y_0=py,
                ellip=ellip,theta=np.deg2rad(posang+90.0))
-    
+    xs_hz=int(r_eff/cell*7.0)
+    ys_hz=int(r_eff/cell*7.0)
     #   use discretize_model(mode='oversample') 
     #       discretize_model(mode='center') or model2d=mod(x,y) may lead worse precision
+    
+    #   x,y = np.meshgrid(np.arange(header['NAXIS1']), np.arange(header['NAXIS2']))
+    #   model2d=mod(x,y)
+
+    #   intflux at different planes / broadcasting to the data dimension
+    intflux_z=(wz/1e9/restfreq)**alpha*intflux    
+    
+    #option 1
+    
+    px_o_int=round(px-xs_hz)
+    py_o_int=round(py-ys_hz)
+    model2d=discretize_model(mod,
+                             (px_o_int,px_o_int+2*xs_hz+1),
+                             (py_o_int,py_o_int+2*ys_hz+1),
+                             mode='oversample',factor=factor)
+    model2d=model2d/model2d.sum()
+    model2d=model2d[np.newaxis,np.newaxis,:,:]*intflux_z[np.newaxis,:,np.newaxis,np.newaxis]
+
+    if  model is None:
+        model_out=np.zeros((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+        model_out=paste_array(model_out,model2d,(0,0,int(py_o_int),int(px_o_int)),method='replace')
+    else:
+        model_out=model
+        model_out=paste_array(model_out,model2d,(0,0,int(py_o_int),int(px_o_int)),method='add')
+    
+    """
+    #option 2
     model2d=discretize_model(mod,
                             (0,header['NAXIS1']),
                             (0,header['NAXIS2']),
                             mode='oversample',factor=factor)
+    model2d=model2d/model2d.sum() 
+    model=model2d[np.newaxis,np.newaxis,:,:]*intflux_z[np.newaxis,:,np.newaxis,np.newaxis]
+    """
     
-    model2d=model2d/model2d.sum()
-    
-    
-    #   intflux at different planes / broadcasting to the data dimension
-    #   return model in units of Jy/pix
-
-    intflux_z=(wz/1e9/restfreq)**alpha*intflux
     if  pintflux!=0.0:
-        pintflux_z=(wz/1e9/restfreq)**alpha*pintflux
+        pintflux_z=(wz/1e9/restfreq)**alpha*pintflux 
+        model_out[0,:,int(np.round(py)),int(np.round(px))]+=pintflux_z
+    
+    return model_out
 
-    model=np.empty((header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
-    #model=np.broadcast_to(model2d,(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])).copy()
-    for i in range(header['NAXIS3']):
-        model[0,i,:,:]=intflux_z[i]*model2d
-        if  pintflux!=0.0:
-            model[0,i,int(np.round(py)),int(np.round(px))]+=pintflux_z[i]
-
-    return model
-
-def model_kinmspy_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
+def model_disk3d_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
     """
     cloudlet generator with a prior morphological assumption 
     """
@@ -173,8 +193,6 @@ def model_kinmspy_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
     inClouds=np.zeros((shape[1],3))
     inClouds[:,0]=(sample[0,:]-px)*cell
     inClouds[:,1]=(sample[1,:]-py)*cell
-    
-    
     
     mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
     sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
@@ -197,7 +215,7 @@ def model_kinmspy_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
     
     
     
-def model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
+def model_disk3d_inclouds(obj,seed,nSamps=100000,returnprof=True):
     """
     replace the cloudlet generator in KinMSpy.py->kinms_sampleFromArbDist_oneSided();
 
@@ -344,11 +362,11 @@ def model_kinmspy_inclouds(obj,seed,nSamps=100000,returnprof=True):
 
 
 def model_disk3d(header,obj,
-                        nsamps=100000,
-                        decomp=False,
-                        fixseed=False,
-                        verbose=False,
-                        mod_dct=None):
+                 nsamps=100000,
+                 decomp=False,
+                 fixseed=False,
+                 verbose=False,
+                 mod_dct=None):
     """
     handle modeling parameters to kinmspy and generate the model cubes embeded into 
     a dictionary nest
@@ -435,10 +453,10 @@ def model_disk3d(header,obj,
         # seeds[3] -> v_sigma    
     
     if  obj['pmodel'] is None:
-        inclouds,prof1d=model_kinmspy_inclouds(obj,seeds,nSamps=nsamps)
+        inclouds,prof1d=model_disk3d_inclouds(obj,seeds,nSamps=nsamps)
         rad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
     else:
-        inclouds,prof1d=model_kinmspy_inclouds_pmodel(obj,seeds,nSamps=nsamps)
+        inclouds,prof1d=model_disk3d_inclouds_pmodel(obj,seeds,nSamps=nsamps)
         rad=np.arange(0.,np.nanmax(np.sqrt(inclouds[:,0]**2+inclouds[:,1]**2))+obj['sbser'][0]/25.0,obj['sbser'][0]/25.0)
     
     ikind='cubic'  # bad for extraplate but okay for interplate 'linear'/'quadratic'
@@ -536,7 +554,7 @@ def model_disk3d(header,obj,
         model=np.zeros(w.array_shape)
     if  w.naxis==3:
         model=np.zeros((1,)+w.array_shape)
-    #print(model.shape)
+    print(cube.shape,'-->',model.shape)
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
 
     
@@ -726,207 +744,186 @@ def model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,
         return model
 
 #@profile
-def model_uvsample(xymodel,header,uvdata,uvw,phasecenter,
-                         uvmodel_in=None,
-                         average=False,
-                         verbose=True):
+def model_uvsample(xymod3d,xymod2d,xyheader,
+                   uvw,phasecenter,
+                   uvmodel=None,uvdtype='complex64',
+                   average=True,
+                   verbose=True):
     """
     simulate the observation in the UV-domain
-    input is expected in units of Jy/pix
+    The input reference model image (xymodel) is expected in units of Jy/pix
     
-    uvdata shape:        nrecord x nchan (less likely: nrecord x nchan x ncorr)
+    uvw shape:           nrecord x 3  
+    uvmodel shape:       nrecord x nchan (less likely: nrecord x nchan x ncorr)
     xymodel shape:       nstokes x nchan x ny x nx
     
-    note: when uvmodel_in is provided, a new model will be added into the array without additional memory usage 
-          the return variable is just a reference of mutable uvmodel_in 
+    note: when uvmodel is provided as input, a new model will be added into the array without additional memory usage 
+          the return variable is just a reference of mutable uvmodel
+          the minmal time required  is:
+                nplane(with varying morphology) x sampleImage()
+          we already trim any else overhead (e.g. creating new array) and reach close to this limit.
     """
 
-    cell=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
+    #print('3d:',xymod3d is not None)
+    #print('2d:',xymod2d is not None)
     
-    #   
-    # + set order='F' as we want to have quick access to each column.
-    #   i.a. first dimension is consequential in memory 
-    #   this make a big difference in effeciency of fetching each channel
+    cell=np.sqrt(abs(xyheader['CDELT1']*xyheader['CDELT2']))
+    nchan=xyheader['NAXIS3']
+    nrecord=(uvw.shape)[0]
+    
     # + zeros_like vs. zeros()
     #   the memory of an array created by zeros() can allocated on-the-fly
     #   the creation will appear to be faster but the looping+plan initialization may be slightly slower (or comparable?) 
-    #start_time1 = time.time()
-    if  uvmodel_in is not None:
-        uvmodel=uvmodel_in
+    # + set order='F' as we want to have quick access to each column:
+    #   i.a. first dimension is consequential in memory 
+    #   this will improve on the performance of picking uvdata from each channel    
+    if  uvmodel is None:
+        uvmodel_out=np.zeros((nrecord,nchan),dtype=uvdtype,order='F')
     else:
-        uvmodel=np.zeros((uvdata.shape)[0:2],dtype=uvdata.dtype,order='F')
-    
-    #print("---{0:^10} : {1:<8.5f} seconds ---".format('create',time.time()-start_time1))
-    #start_time1 = time.time()
-    
-    #print("---{0:^10} : {1:<8.5f} seconds ---".format('create',time.time()-start_time1))    
-    
-    uvdata_shape=uvdata.shape
-    
+        uvmodel_out=uvmodel
+
     if  verbose==True:
-        #print('uvdata  dim:',uvdata.shape)
-        #print('xymodel dim:',xymodel.shape)
-        #print('uvmodel dim:',uvmodel.shape)
-        start_time = time.time()    
+        start_time = time.time()
+        print('nchan,nrecord:',nchan,nrecord)    
             
     # assume that CRPIX1/CRPIX2 is at model image "center" floor(naxis/2);
-    # which is true for the mock-up image header 
-    dRA=np.deg2rad(+(header['CRVAL1']-phasecenter[0]))
-    dDec=np.deg2rad(+(header['CRVAL2']-phasecenter[1]))
+    # which is true for the mock-up/reference model image xyheader 
+    # more information on the pixel index /ra-dec mapping, see:
+    #       https://mtazzari.github.io/galario/tech-specs.html     
+    dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0]))
+    dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1]))
     
-    #start_time1 = time.time()
+    cc=0
     
     if  average==False:
-        
-        cc=0
-        # create the array before looping
-        if  uvmodel_in is None:
-            uvmodel=np.zeros_like(uvdata,dtype=uvdata.dtype,order='F')
-        #tic0=time.time()
-        for i in range(uvdata_shape[1]):
-            #if  np.sum(xymodel[0,i,:,:])==0.0:
-            #    continue
+        # this will account for the effects of varying frequency on the UV sampling position across the bandwidth
+        xymodel=ne.evaluate("a+b",local_dict={"a":xymod3d,"b":xymod2d})
+        for i in range(nchan):
             if  ne.evaluate("sum(a)",local_dict={'a':xymodel[0,i,:,:]})==0.0:
-                continue            
-
-            tic0=time.time()
-            wv=const.c/(header['CDELT3']*i+header['CRVAL3'])
-            # just like the convolution in the image domain but only fft once vs. fft/iff in convolve_fft
-            #print((uvw[:,0]/wv).flags)            
-            
-            """
-            uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
-                                       #(uvw[:,0]/wv).copy(order='C'),
-                                       #(uvw[:,1]/wv).copy(order='C'),
-                                       (uvw[:,0]/wv),
-                                       (uvw[:,1]/wv),                                   
-                                       dRA=dRA,dDec=dDec,PA=0,check=False)
-            
-            """
-            
-            #"""
-            #ne2
+                continue
+            wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
+            cc+=1
             ne.evaluate("a+b",
-                        local_dict={"a":uvmodel[:,i],
+                        local_dict={"a":uvmodel_out[:,i],
                                     "b":sampleImage((xymodel[0,i,:,:]),np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
                                                     dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
                                     },
-                        casting='same_kind',out=uvmodel[:,i])
-            """
-            #ne3
-            ne.evaluate("out=a+b",
-                        local_dict={"a":uvmodel[:,i],
-                                    "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
-                                                    dRA=dRA,dDec=dDec,PA=0,check=False),
-                                    "out":uvmodel[:,i]
-                                    },
-                        casting='same_kind')            
-            
-            """
+                        casting='same_kind',out=uvmodel_out[:,i])
+    else:
+        # for a 2-d model (xymodel2d, e.g. continuume), we ignore the U-V coordinated shiffting due to varying frequency.
+        if  xymod3d is not None:
+            #ss=time.time()
+            for i in range(nchan):
+                if  ne.evaluate("sum(a)",local_dict={'a':xymod3d[0,i,:,:]})==0.0:
+                    continue
+                wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
+                cc+=1
+                ne.evaluate("a+b",
+                            local_dict={"a":uvmodel_out[:,i],
+                                        "b":sampleImage((xymod3d[0,i,:,:]),
+                                                        np.deg2rad(cell),
+                                                        (uvw[:,0]/wv),
+                                                        (uvw[:,1]/wv),                                   
+                                                        dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                        },
+                            casting='same_kind',out=uvmodel_out[:,i])
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod3d',time.time()-ss))
+        
+        if  xymod2d is not None:
+            i0=int(nchan/2.0)
+            xymodelsum=xymod2d.sum(axis=(0,2,3))
+            xymodel_zscale=xymodelsum/xymodelsum[i0]        
+            wv=const.c/(xyheader['CDELT3']*i0+xyheader['CRVAL3'])
             cc+=1
-        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-tic0))
-    
-    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fft',time.time()-start_time1))
-    
-    if  average==True:
-        
-        cc=1
-        if  uvmodel_in is None:
-            uvmodel=np.zeros_like(uvdata,dtype=uvdata.dtype,order='F')
-        i0=int(uvdata_shape[1]/2.0)
-        xymodelsum=xymodel.sum(axis=(0,2,3))
-        xymodel_zscale=xymodelsum/xymodelsum[i0]        
-        wv=const.c/(header['CDELT3']*i0+header['CRVAL3'])
-        # check the pixel index /ra-dec mapping:
-        #       https://mtazzari.github.io/galario/tech-specs.html 
-        uvmodel0=sampleImage((xymodel[0,i0,:,:]),np.deg2rad(cell),
-                                   #(uvw[:,0]/wv).copy(order='C'),
-                                   #(uvw[:,1]/wv).copy(order='C'),
-                                   (uvw[:,0]/wv),
-                                   (uvw[:,1]/wv),                                   
-                                   dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
-        
-        #tic0=time.time()
-        
-        #"""
-        for i in range(uvdata_shape[1]):
-            #uvmodel[:,i]+=uvmodel0*xymodel_zscale[i]
-            #ne.evaluate("a+b",
-            #            local_dict={"a":uvmodel[:,i],
-            #                        "b":uvmodel0*xymodel_zscale[i]},
-            #            casting='same_kind',out=uvmodel[:,i])               
-            
-            #ne2
-            ne.evaluate("a+b*c",
-                        local_dict={"a":uvmodel[:,i],
-                                    "b":uvmodel0,
-                                    "c":xymodel_zscale[i]},
-                        casting='same_kind',out=uvmodel[:,i])
-            
-#             ne.evaluate("out=a+b*c",
-#                         local_dict={"a":uvmodel[:,i],
-#                                     "b":uvmodel0,
-#                                     "c":xymodel_zscale[i],
-#                                     "out":uvmodel[:,i]},
-#                         casting='safe')        
-        
-        #"""
-
-        #"""
-        #uvmodel+=np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape) #okay
-        #np.add(uvmodel,np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape),out=uvmodel) #same as above
-        #uvmodel[:,:]=ne.evaluate("a+b",local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},casting='same_kind') #slow
-        
-        """
-        #ne2
-        ne.evaluate("a+b",
-                    local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},
-                    casting='same_kind',out=uvmodel) #fast
-        """
-        
-        """
-        #ne3
-        ne.evaluate("out=a+b",
-                    local_dict={"a":uvmodel,
-                                "b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape).copy(),
-                                "out":uvmodel},
-                    casting='safe') #fast
-        """
-        
-        #"""
-        
-        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-tic0))
-        
-                
-        #print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>loop-fancy1',time.time()-start_time1))
-        
-        
-        """"
-         this is x2 fasfter for an array of (489423, 238)
-        np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
-        np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
-        slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
-        slow: uvmodel_test=uvmodel*xymodel_zscale
-        uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
-        print(uvmodel.shape)
-        start_time1 = time.time()
-        print(uvmodel.dtype)
-        print(uvmodel0.dtype)
-        np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
-        slow: uvmodel_test=uvmodel*xymodel_zscale            
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('>>>>matrix',time.time()-start_time1))
-        print(uvmodel.shape)        
-        """
+            #ss=time.time()
+            uvmodel0=sampleImage((xymod2d[0,i0,:,:]),
+                                 np.deg2rad(cell),
+                                 (uvw[:,0]/wv),
+                                 (uvw[:,1]/wv),                                   
+                                 dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-uvsample',time.time()-ss))          
+            #ss=time.time()
+            ne.evaluate('a+b*c',
+                        local_dict={"a":uvmodel_out,
+                                    "b":np.broadcast_to(uvmodel0[:,np.newaxis],(nrecord,nchan)),
+                                    "c":xymodel_zscale},
+                        casting='same_kind',out=uvmodel_out)        
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-pop',time.time()-ss))
         
     if  verbose==True:
-        
         print("uvsampling plane counts: ",cc)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('uvsample',time.time()-start_time))
-        print("out=in+model:",uvmodel is uvmodel_in)
-        
-    return uvmodel
+        print("out=in+model:",uvmodel_out is uvmodel)
+   
+    return uvmodel_out
 
-
+    """
+    #################
+    
+    #(uvw[:,0]/wv).copy(order='C'),
+    #(uvw[:,1]/wv).copy(order='C'),
+                                       
+    alternative 1: average=True
+    uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
+                               #(uvw[:,0]/wv).copy(order='C'),
+                               #(uvw[:,1]/wv).copy(order='C'),
+                               (uvw[:,0]/wv),
+                               (uvw[:,1]/wv),                                   
+                               dRA=dRA,dDec=dDec,PA=0,check=False)
+    alternative 2:
+    ne3
+    ne.evaluate("out=a+b",
+                local_dict={"a":uvmodel[:,i],
+                            "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                            dRA=dRA,dDec=dDec,PA=0,check=False),
+                            "out":uvmodel[:,i]
+                            },
+                casting='same_kind')                                          
+    
+    #################
+    
+    # alternative 1: average=False
+    #     slower than the picked method by 30%
+    for i in range(nchan):
+        ne.evaluate("a+b*c",
+                    local_dict={"a":uvmodel_out[:,i],
+                                "b":uvmodel0,
+                                "c":xymodel_zscale[i]},
+                    casting='same_kind',out=uvmodel_out[:,i])
+    # alternative 2:
+    ne3.evaluate("out=a + b * c",
+                local_dict={"a":uvmodel_out[:,i],
+                            "b":uvmodel0,
+                            "c":xymodel_zscale[i]},
+                casting='safe',out=uvmodel_out[:,i])
+    # others:
+    uvmodel+=np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape) #okay
+    np.add(uvmodel,np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape),out=uvmodel) #same as above
+    uvmodel[:,:]=ne.evaluate("a+b",local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},casting='same_kind') #slow
+    ne2
+    ne.evaluate("a+b",
+                local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},
+                casting='same_kind',out=uvmodel) #fast
+    
+    ne3
+    ne.evaluate("out=a+b",
+                local_dict={"a":uvmodel,
+                            "b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape).copy(),
+                            "out":uvmodel},
+                casting='safe') #fast        
+    
+     this is x2 fasfter for an array of (489423, 238)
+    np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
+    np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
+    slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
+    slow: uvmodel_test=uvmodel*xymodel_zscale
+    uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
+    np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
+    slow: uvmodel_test=uvmodel*xymodel_zscale
+    
+    ss=time.time()
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('timeit',time.time()-ss))                                
+    """
     
 def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
                mode=None,

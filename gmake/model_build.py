@@ -3,6 +3,12 @@ from .model_func import *
 from .model_func_dynamics import *
 from .io_utils import *
 
+
+#from galario.double import get_image_size
+#from galario.double import sampleImage
+#from galario.double import chi2Image
+from galario.single import get_image_size
+
 logger = logging.getLogger(__name__)
 
 def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
@@ -11,23 +17,9 @@ def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     create a data model
     """
     
-    if  verbose==True:
-        start_time = time.time()
-    models=model_init(mod_dct,dat_dct,decomp=decomp,verbose=False)
-    if  verbose==True:            
-        print("---{0:^10} : {1:<8.5f} seconds ---\n".format('initialize-total',time.time() - start_time))
-
-    if  verbose==True:
-        start_time = time.time()        
-    models=model_fill(models,decomp=decomp,verbose=False,nsamps=nsamps)
-    if  verbose==True:            
-        print("---{0:^10} : {1:<8.5f} seconds ---\n".format('fill-total',time.time() - start_time))
-            
-    if  verbose==True:
-        start_time = time.time()    
-    models=model_simobs(models,decomp=decomp,verbose=False)
-    if  verbose==True:            
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('simulate-total',time.time() - start_time))
+    models=model_init(mod_dct,dat_dct,decomp=decomp,verbose=verbose)
+    models=model_fill(models,decomp=decomp,verbose=verbose,nsamps=nsamps)
+    models=model_simobs(models,decomp=decomp,verbose=verbose)
 
     return models
 
@@ -55,6 +47,10 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
           imodel=imod2d+imod3d  : We always keep a copy of imod2d and imod3d to improve the effeicnecy in simobs() 
           
     """
+    
+    if  verbose==True:
+        start_time = time.time()
+            
     models={'mod_dct':mod_dct.copy()}
                 
     for tag in list(mod_dct.keys()):
@@ -81,11 +77,9 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['chanfreq@'+vis]=dat_dct['chanfreq@'+vis]
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
-                    
                     wv=np.mean(const.c/models['chanfreq@'+vis])
-                    
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
-                    nxy=128
+                    nxy=256
                     
                     data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'
                     header=fits.Header.fromfile(data_path+'image_template.header',endcard=False,sep='\n',padding=False)
@@ -172,7 +166,9 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     obj['pmodel']=dat_dct['pmodel@'+tag]
                     obj['pheader']=dat_dct['pheader@'+tag]      
                 
-        
+    if  verbose==True:            
+        print(">>>>>{0:^10} : {1:<8.5f} seconds ---\n".format('initialize-total',time.time() - start_time))
+                
     return models
 
 
@@ -180,10 +176,10 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
     """
     create reference/intrinsic models and fill them into the model container
 
-    notes on evaluating efficiency:
+    Notes (on evaluating efficiency):
     
         While building the intrinsic data-model from a physical model can be expensive,
-        the simulated observation (2D/3D convolution) is usually the bottle-neck.
+        the simulated observation (2D/3D convolution or UV sampling) is usually the bottle-neck.
         
         some tips to improve the effeciency:
             + exclude empty (masked/flux=0) region for the convolution
@@ -195,7 +191,12 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
             --- apicall   : 2.10178  seconds ---
         after splitting line & cont models:
             --- apicall   : 0.84662  seconds ---
+    
+    
     """
+    
+    if  verbose==True:
+        start_time = time.time()    
 
     mod_dct=models['mod_dct']
     
@@ -216,9 +217,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
             
             for vis in vis_list:
                 
-                                
                 test_time = time.time()
-                
                 
                 if  'disk2d' in obj['method'].lower():
                     test_time = time.time()
@@ -226,21 +225,22 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                     if  'pintflux' in obj:
                         pintflux=obj['pintflux']
                     imodel=model_disk2d(models['header@'+vis],obj['xypos'][0],obj['xypos'][1],
-                                             r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
-                                             ellip=1.-np.cos(np.deg2rad(obj['inc'])),
-                                             pintflux=pintflux,
-                                             intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+                                        model=models['imod2d@'+vis],
+                                        r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
+                                        ellip=1.-np.cos(np.deg2rad(obj['inc'])),
+                                        pintflux=pintflux,
+                                        intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
                     print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
-                    print(imodel.shape)
-                    models['imod2d@'+vis]+=imodel
-                    models['imodel@'+vis]+=imodel
+                    #print(imodel.shape)
+                    #models['imod2d@'+vis]+=imodel
+                    #models['imodel@'+vis]+=imodel
                     
-                if  'kinmspy' in obj['method'].lower():
+                if  'disk3d' in obj['method'].lower():
                     
                     test_time = time.time()              
                     imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
-                    print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' kinmspy',time.time() - test_time))
-                    print(imodel.shape)
+                    print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
+                    #print(imodel.shape)
                     models['imod3d@'+vis]+=imodel
                     models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
                     models['imodel@'+vis]+=imodel     
@@ -267,7 +267,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                     models['imodel@'+image]+=imodel
                     
     
-                if  'kinmspy' in obj['method'].lower():
+                if  'disk3d' in obj['method'].lower():
                     #test_time = time.time()              
                     
                     imodel,imodel_prof=model_disk3d(models['header@'+image],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
@@ -277,106 +277,98 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                     models['imod3d_prof@'+tag+'@'+image]=imodel_prof.copy()
                     models['imodel@'+image]+=imodel              
                     
+    if  verbose==True:            
+        print(">>>>>{0:^10} : {1:<8.5f} seconds ---\n".format('fill-total',time.time() - start_time))
+    
     return models
 
 
 def model_simobs(models,decomp=False,verbose=False):
     """
-    simulate observations VIS BY VIS
+    Simulate observations (dataset by dataset)
     
-    notes on evaluating efficiency:
+    models is expected to be a mutable dict reference, and we don't really create any new objects
+    
+    Notes (on evaluating efficiency):
     
         While building the intrinsic data-model from a physical model can be expensive,
-        the simulated observation (2D/3D convolution) is usually the bottle-neck.
+        the simulated observation (i.e. 2D/3D convol or UV sampling) is usually the bottle-neck.
         
-        some tips to improve the effeciency:
-            + exclude empty (masked/flux=0) region for the convolution
-            + joint all objects in the intrinsic model before the convolution, e.g.
-                overlapping objects, lines
-            + use to low-dimension convolution when possible (e.g. for the narrow-band continumm) 
+        To improve the performance, we implement some optimizations:
+            for imaging-domain simulation:
+                + merge all components (e.g.overlapping objects, lines) in the intrinsic/reference model before simulations, e.g.
+                + exclude empty (masked/flux=0) regions
+            for spectral-domain simulation:
+                + seperate 2D component (continuum) from 3D component (line) and do simulation independently,
+                  so only channels with the same emission morphology are process in a single simulation.
+                  this is epsecially important if line emission only occapy a small number of channels
             
-        before splitting line & cont models:
-            --- apicall   : 2.10178  seconds ---
-        after splitting line & cont models:
-            --- apicall   : 0.84662  seconds ---
-            
-    here, models is a mutable dict reference, and we don't really create any new objects
+        
+    print(uvmodel.flags)
+    print(models[tag.replace('imod2d@','uvmodel@')].flags)                                      
+    print(uvmodel is models[tag.replace('imod2d@','uvmodel@')])             
+    
+    the performance of model_uvsample is not very sensitive to the input image size.
+    
     """
+    
+    if  verbose==True:
+        start_time = time.time()    
               
     for tag in list(models.keys()):
-
-        if  'imod2d@' in tag:
-
-            if  models[tag.replace('imod2d@','type@')]=='vis':
-                if  decomp==True:
-                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
-                                            models[tag.replace('imod2d@','data@')],
-                                            models[tag.replace('imod2d@','uvw@')],
-                                            models[tag.replace('imod2d@','phasecenter@')],
-                                            average=True,
-                                            verbose=False)
-                    models[tag.replace('imod2d@','uvmod2d@')]=uvmodel.copy() 
-                    models[tag.replace('imod2d@','uvmodel@')]+=uvmodel.copy() 
-                else:
-                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod2d@','header@')],
-                                            models[tag.replace('imod2d@','data@')],
-                                            models[tag.replace('imod2d@','uvw@')],
-                                            models[tag.replace('imod2d@','phasecenter@')],
-                                            uvmodel_in=models[tag.replace('imod2d@','uvmodel@')],
-                                            average=True,
-                                            verbose=False)                    
-                #
-            if  models[tag.replace('imod2d@','type@')]=='image':
-                cmodel,kernel=model_convol(models[tag],
-                                     models[tag.replace('imod2d@','header@')],
-                                     psf=models[tag.replace('imod2d@','psf@')],
-                                     returnkernel=True,
-                                     average=True,
-                                     verbose=False)
-                                           
-                models[tag.replace('imod2d@','cmod2d@')]=cmodel.copy()
-                models[tag.replace('imod2d@','cmodel@')]+=cmodel.copy()
-                models[tag.replace('imod2d@','kernel@')]=kernel.copy()                      
-            
+        
         if  'imod3d@' in tag:
-
+            
             if  models[tag.replace('imod3d@','type@')]=='vis':
+                print('\n',tag.replace('imod3d@',''),' image model shape: ',models[tag].shape)
                 if  decomp==True:
-                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
-                                                models[tag.replace('imod3d@','data@')],
+                    uvmodel=model_uvsample(models[tag],None,models[tag.replace('imod3d@','header@')],
                                                 models[tag.replace('imod3d@','uvw@')],
                                                 models[tag.replace('imod3d@','phasecenter@')],
+                                                uvdtype=models[tag.replace('imod3d@','data@')].dtype,
                                                 average=False,
-                                                verbose=False)
+                                                verbose=verbose)
                     models[tag.replace('imod3d@','uvmod3d@')]=uvmodel.copy() 
-                    models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()                     
+                    models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()
+                    uvmodel=model_uvsample(None,models[tag.replace('imod3d@','imod2d@')],models[tag.replace('imod3d@','header@')],
+                                            models[tag.replace('imod3d@','uvw@')],
+                                            models[tag.replace('imod3d@','phasecenter@')],
+                                            uvdtype=models[tag.replace('imod3d@','data@')].dtype,
+                                            average=True,
+                                            verbose=verbose)
+                    models[tag.replace('imod3d@','uvmod2d@')]=uvmodel.copy() 
+                    models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()                                          
                 else:
-                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod3d@','header@')],
-                                                models[tag.replace('imod3d@','data@')],
-                                                models[tag.replace('imod3d@','uvw@')],
-                                                models[tag.replace('imod3d@','phasecenter@')],
-                                                uvmodel_in=models[tag.replace('imod3d@','uvmodel@')],
-                                                average=False,
-                                                verbose=False)                
-                 #
-             
+                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod3d@','imod2d@')],
+                                           models[tag.replace('imod3d@','header@')],
+                                           models[tag.replace('imod3d@','uvw@')],
+                                           models[tag.replace('imod3d@','phasecenter@')],
+                                           uvmodel=models[tag.replace('imod3d@','uvmodel@')],
+                                           uvdtype=models[tag.replace('imod3d@','data@')].dtype,
+                                           average=True,
+                                           verbose=verbose)                                   
             if  models[tag.replace('imod3d@','type@')]=='image':
-                              #print('-->',tag)
                 cmodel,kernel=model_convol(models[tag],
                                      models[tag.replace('imod3d@','header@')],
                                      psf=models[tag.replace('imod3d@','psf@')],
                                      returnkernel=True,
                                      average=False,
-                                     verbose=False)
+                                     verbose=verbose)
                 models[tag.replace('imod3d@','cmod3d@')]=cmodel.copy()
                 models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
                 models[tag.replace('imod3d@','kernel@')]=kernel.copy()
+                cmodel,kernel=model_convol(models[tag.replace('imod3d@','imod2d@')],
+                                     models[tag.replace('imod2d@','header@')],
+                                     psf=models[tag.replace('imod2d@','psf@')],
+                                     returnkernel=True,
+                                     average=True,
+                                     verbose=verbose)              
+                models[tag.replace('imod3d@','cmod2d@')]=cmodel.copy()
+                models[tag.replace('imod3d@','cmodel@')]+=cmodel.copy()
+                models[tag.replace('imod3d@','kernel@')]=kernel.copy()                   
+                              
         
-        #print(uvmodel.flags)
-        #print("--")
-        #print(models[tag.replace('imod2d@','uvmodel@')].flags)                                      
-        #print(uvmodel is models[tag.replace('imod2d@','uvmodel@')])                               
-        
-
+    if  verbose==True:            
+        print(">>>>>{0:^10} : {1:<8.5f} seconds ---".format('simulate-total',time.time() - start_time))
         
     return models

@@ -104,7 +104,7 @@ from skimage import transform
 #       to get mkl_fft working properly
 import mkl_fft
 import numexpr as ne
-#import numexpr3 as ne
+#import numexpr3 as ne3
 
 # rebuilt numpy 1.16.2 scipy 1.2.1 to intel-mkl
 #import numpy.distutils.system_info as sysinfo
@@ -192,19 +192,7 @@ from pvextractor import PathFromCenter
 
 import casacore.tables as ctb
 
-#from galario.double import get_image_size
-#from galario.double import sampleImage
-#from galario.double import chi2Image
-from galario.single import get_image_size
-from galario.single import sampleImage
-from galario.single import chi2Image
-from galario.single import threads as galario_threads
-#   MKL_NUM_THREADS=1
-#   export OMP_NUM_THREADS=8
-#   export MKL_NUM_THREADS=8
-# make sure using all threads
-galario_threads(multiprocessing.cpu_count())
-#galario_threads(1)
+
 
 from astropy.io import fits
 import numpy as np
@@ -231,3 +219,10 @@ import h5py
 from contextlib import redirect_stdout
 import socket
 from psutil import virtual_memory
+
+from galario.single import threads as galario_threads
+#   multi-threading
+#       MKL_NUM_THREADS=1
+#       export OMP_NUM_THREADS=8
+#       export MKL_NUM_THREADS=8
+galario_threads(multiprocessing.cpu_count())
