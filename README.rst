@@ -1,22 +1,19 @@
 GMaKE: Galaxy Morphology and Kinematics Estimator
 ==============================================================
 
-A Python wrapper code for evaluating galaxy morphology and kinematics from multi-band astronomical images and spectral cubes
+A Python-based package for evaluating galaxy morphology and kinematics from interferometer and IFU data
 
-We build galaxy line/continuum models from a set of physical parameters describing the galaxy morphology, kinematics, and surface emissivity. Then we map the emission models into the observed images/spectralcube/visibility, and compare predictions with actual data.
 
 Major features of this package:
 
-* generate multi-channel model visibility model 
-* performance a joint fit for mutiple from a prior including mutiple line and continuum components.
-* various choices of fitting algorithm
-* generate galaxy line/continuum emission models in 2D and 3D 
-* optimization for processing large datasets / minimal memory footprint.
+* Generate multi-frequency synthetic visibility or spectral cubes from a galaxy morphology and kinematics model
+* The galaxy model can cooperate mutiple line and continuum components.
+* Performance a joint fit to multi-band interferometer/IFU/imaging datasets from a prior including 
+* Various choices of fitting algorithm
+* Optimized for processing large datasets with minimal memory footprint.
 
-
-A visibility-domain modeling can work around the non-linear process in typical inetrfemeter data imaging process.
-This offers a unique advanatege on the marginal resolution low SNR data (e.g. ALMA high-z observation).
-
+A visibility-domain modeling can work around the non-linear imaging process for typical interferometer data.
+This offers a unique advantage on the marginally-resolved low SNR data (e.g. ALMA high-z observation).
 
 Project links:
 
