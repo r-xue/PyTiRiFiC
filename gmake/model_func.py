@@ -4,82 +4,6 @@ from .model_func_kinms import *
 
 from galario.single import sampleImage
 
-def model_dynamics(obj,dyn,rad_as):
-    
-    """
-    generate a RC from the mass-potential model 
-    """
-    z=obj['z']
-
-    #mpot=MiyamotoNagaiPotential(amp=dyn[''*u.Msun,a=3.*u.kpc,b=300.*u.pc)
-    #kpot=KeplerPotential(amp=5e10*u.Msun)
-    #npot=NFWPotential(amp=dyn['halo_ms']*u.Msun,a=dyn['halo_a']*u.kpc)
-    
-    # c_vir(z,M_vir): concentration, Eq (12) from Klypin+11
-    h=Planck13.h
-    z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
-    c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
-    m0 = np.array([1.5e19,1.5e17,2.5e15,6.8e13,6.3e12,6.6e11]) / h
-    ikind='linear'
-    if_c=interp1d(np.array(z0),np.array(c0),kind=ikind,bounds_error=False,
-                  fill_value=(c0[0],c0[-1]))
-    if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
-                  fill_value=(m0[0],m0[-1]))        
-    m_vir=dyn['halo_mvir']   # 10^12msun
-    c_vir = if_c(z) * (m_vir*h)**(-0.075) * (1+(m_vir*1e12/if_m(z))**0.26)
-                                
-    omega_z=Planck13.Om(z)                                           
-    delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
-
-    npot=galpy_pot.NFWPotential(conc=c_vir,
-                      mvir=m_vir,
-                      H=Planck13.H(z).value,
-                      Om=0.3,#dones't matter as wrtcrit=True
-                      overdens=delta_c,wrtcrit=True,
-                      ro=1,vo=1)
-    dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=dyn['disk_sd']*u.Msun/u.kpc/u.kpc,
-                                           hr=dyn['disk_rs']*u.kpc,ro=1,vo=1)
-
-    kps=Planck13.kpc_proper_per_arcmin(z).value/60.0
-    rad=rad_as*kps
-    #rad=np.arange(0,18,0.1)
-    #vcirc_mp=mpot.vcirc(rad*u.kpc)
-    #vcirc_kp=kpot.vcirc(rad*u.kpc)
-    vcirc_np=npot.vcirc(rad*u.kpc)
-    vcirc_dp=dpot.vcirc(rad*u.kpc)
-
-
-    
-
-    vcirc_tt=np.sqrt(vcirc_np.value**2.0+vcirc_dp.value**2.0)
-    vcirc_tt[0]=0
-    
-    
-    if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
-        if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,
-                         bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
-        obj['vdis']=if_vdis(rad/kps)
-    else:
-        obj['vdis']=rad/kps*0.0+obj['vdis']
-            
-    #   smooth model
-    obj['vrad']=(rad/kps).copy()
-    obj['vrot']=vcirc_tt.copy()
-    obj['vrot_halo']=vcirc_np.value.copy()
-    obj['vrot_disk']=vcirc_dp.value.copy()
-        
-
-        
-    #print(vcirc_tt)
-    #pot=npot+dpot
-    #vcirc_ga=pot.vcirc(rad*u.kpc)
-    #cmass=npot.mass(R=np.array([10,2]))
-    #print(cmass)
-    #cmass=kpot.mass(R=10)
-    #print(cmass)    
-
-        
-    return obj['vrot']
 
 def model_disk2d(header,ra,dec,
                  model=None,
@@ -157,6 +81,9 @@ def model_disk2d(header,ra,dec,
         model_out=model
         model_out=paste_array(model_out,model2d,(0,0,int(py_o_int),int(px_o_int)),method='add')
     
+    #print(model2d.shape,'-->',model_out.shape)
+
+    
     """
     #option 2
     model2d=discretize_model(mod,
@@ -164,7 +91,8 @@ def model_disk2d(header,ra,dec,
                             (0,header['NAXIS2']),
                             mode='oversample',factor=factor)
     model2d=model2d/model2d.sum() 
-    model=model2d[np.newaxis,np.newaxis,:,:]*intflux_z[np.newaxis,:,np.newaxis,np.newaxis]
+    model+=model2d[np.newaxis,np.newaxis,:,:]*intflux_z[np.newaxis,:,np.newaxis,np.newaxis]
+    model_out=model
     """
     
     if  pintflux!=0.0:
@@ -172,194 +100,6 @@ def model_disk2d(header,ra,dec,
         model_out[0,:,int(np.round(py)),int(np.round(px))]+=pintflux_z
     
     return model_out
-
-def model_disk3d_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
-    """
-    cloudlet generator with a prior morphological assumption 
-    """
-
-    w=WCS(obj['pheader']).celestial
-    px,py=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],0)
-    
-    cell=np.mean(proj_plane_pixel_scales(w))*3600.0
-    
-
-    pmodel_flat=gal_flat(obj['pmodel'],obj['pa'],obj['inc'],cen=(px,py),fill_value=0.0,align_major=True)
-    fits.writeto('testx.fits',pmodel_flat,overwrite=True)
-    
-    sample=pdf2rv_nd(pmodel_flat,size=nSamps,sort=False,interp=True,seed=seed)
-    shape=sample.shape
-
-    inClouds=np.zeros((shape[1],3))
-    inClouds[:,0]=(sample[0,:]-px)*cell
-    inClouds[:,1]=(sample[1,:]-py)*cell
-    
-    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
-    sbProf=mod(sbRad)
-    diskThick=0.0
-    if  'diskthick' in obj:
-        diskThick=obj['diskthick']
-    
-    # truncate the sb profile
-    if  'sbrad_min' in obj:
-        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
-    if  'sbrad_max' in obj:
-        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0      
-            
-    profile={}
-    profile['sbrad']=sbRad
-    profile['sbprof']=sbProf    #<--- just a placeholder
-
-    return inClouds,profile
-    
-    
-    
-def model_disk3d_inclouds(obj,seed,nSamps=100000,returnprof=True):
-    """
-    replace the cloudlet generator in KinMSpy.py->kinms_sampleFromArbDist_oneSided();
-
-    Note from KinMSpy()
-        inclouds : np.ndarray of double, optional
-         (Default value = [])
-        If your required gas distribution is not symmetric you
-        may input vectors containing the position of the
-        clouds you wish to simulate. This 3-vector should
-        contain the X, Y and Z positions, in units of arcseconds
-        from the phase centre. If this variable is used, then
-        `diskthick`, `sbrad` and `sbprof` are ignored.
-        Example: INCLOUDS=[[0,0,0],[10,-10,2],...,[xpos,ypos,zpos]]
-
-    This function takes the input radial distribution and generates the positions of
-    `nsamps` cloudlets from under it. It also accounts for disk thickness
-    if requested. Returns 
-    
-    Parameters
-    ----------
-    sbRad : np.ndarray of double
-            Radius vector (in units of pixels).
-    
-    sbProf : np.ndarray of double
-            Surface brightness profile (arbitrarily scaled).
-    
-    nSamps : int
-            Number of samples to draw from the distribution.
-    
-    seed : list of int
-            List of length 4 containing the seeds for random number generation.
-    
-    diskThick : double or np.ndarray of double
-         (Default value = 0.0)
-            The disc scaleheight. If a single value then this is used at all radii.
-            If a ndarray then it should have the same length as sbrad, and will be 
-            the disc thickness as a function of sbrad. 
-
-    Returns
-    -------
-    inClouds : np.ndarray of double
-            Returns an ndarray of `nsamps` by 3 in size. Each row corresponds to
-            the x, y, z position of a cloudlet. 
-    """
-
-    # get sersic profile
-    
-    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
-    
-    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
-    sbProf=mod(sbRad)
-    diskThick=0.0
-    if  'diskthick' in obj:
-        diskThick=obj['diskthick']
-    
-    # truncate the sb profile
-    if  'sbrad_min' in obj:
-        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
-    if  'sbrad_max' in obj:
-        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0        
-
-    
-    # Randomly generate the radii of clouds based on the distribution given by the brightness profile
-    pdf_x=abs(sbRad)
-    pdf_y=sbProf*2.*np.pi*abs(sbRad)
-    r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0],size=int(nSamps))
-
-    # Generates a random phase around the galaxy's axis for each cloud 
-    # with the Fourier Models (not the same as the xy-transform in galfit)
-    fm_m=2. if ('fm_m' not in obj) else obj['fm_m']
-    fm_frac=0. if ('fm_frac' not in obj) else obj['fm_frac']
-    fm_pa=0. if ('fm_pa' not in obj) else obj['fm_pa']
-    # in this case, cdf can be analystically written out easily
-    if  fm_frac!=0.0:
-        nres=10000.   # good enough
-        cdf_x=np.arange(nres+1)/nres*2.0*np.pi-np.pi
-        cdf_y=fm_frac*np.sin(fm_m*cdf_x)/fm_m+cdf_x
-        phi=cdf2rv(cdf_x,cdf_y,size=nSamps,seed=seed[1])+np.deg2rad(fm_pa)
-    else:
-        rng2=np.random.RandomState(seed[1])
-        phi = rng2.random_sample(nSamps) * 2 * np.pi
-        
-    # Generate the GE effect
-    # GE: q=maj/min
-    ge_pa=0. if ('ge_pa' not in obj) else obj['ge_pa']
-    ge_q=1. if ('ge_q' not in obj) else obj['ge_q']
-
-    if  ge_q>1.:
-        phi=phi-np.deg2rad(ge_pa)
-        r_flat=r_flat*np.sqrt((np.cos(phi)**2.+np.sin(phi)**2.0/ge_q**2.0))
-        phi=np.arctan2(np.sin(phi)/ge_q,np.cos(phi))+np.deg2rad(ge_pa)
-    
-    """
-    # CoordRot - Hyperbolic
-    #phi_out=1.0
-    #phi=
-    #cr_alpha=0.0
-    #r_in=1.0
-    #r_out=2.0
-    #theta_out=200.0
-    
-    #phi_offset=theta_out*cr_tanh(r_flat,r_in=r_in,r_out=r_out,theta_out=theta_out)\
-    #           *(0.5*(r_flat/r_out+1.))**cr_alpha
-    #phi=np.deg2rad(phi_offset)+phi
-    """
-
-        
-    # Find the thickness of the disk at the radius of each cloud
-    if  isinstance(diskThick, (list, tuple, np.ndarray)):
-        interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
-        diskThick_here = interpfunc2(r_flat)
-    else:
-        diskThick_here = diskThick    
-    
-    #Generates a random (uniform) z-position satisfying |z|<disk_here 
-    rng3 = np.random.RandomState(seed[2])       
-    zPos = diskThick_here * rng3.uniform(-1,1,nSamps)
-    
-    #Calculate the x & y position of the clouds in the x-y plane of the disk
-    r_3d = np.sqrt((r_flat**2) + (zPos**2))                                                               
-    theta = np.arccos(zPos / r_3d)                                                              
-    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
-    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
-    
-    
-    #transform transform
- 
-    
-    #Generates the output array
-    inClouds = np.empty((nSamps,3))
-    inClouds[:,0] = xPos
-    inClouds[:,1] = yPos
-    inClouds[:,2] = zPos
-
-    #return something could be useful
-    profile={}
-    profile['sbrad']=sbRad
-    profile['sbprof']=sbProf
-    
-    if  returnprof==True:
-        return inClouds,profile
-    else:
-        return inClouds
-
 
 def model_disk3d(header,obj,
                  nsamps=100000,
@@ -554,7 +294,8 @@ def model_disk3d(header,obj,
         model=np.zeros(w.array_shape)
     if  w.naxis==3:
         model=np.zeros((1,)+w.array_shape)
-    print(cube.shape,'-->',model.shape)
+    
+    #print(cube.shape,'-->',model.shape)
     model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
 
     
@@ -577,6 +318,467 @@ def model_disk3d(header,obj,
         model_prof['vrot_disk_node']=np.array(obj['vrot_disk'])
             
     return model,model_prof
+
+
+def model_dynamics(obj,dyn,rad_as):
+    
+    """
+    generate a RC from the mass-potential model 
+    """
+    z=obj['z']
+
+    #mpot=MiyamotoNagaiPotential(amp=dyn[''*u.Msun,a=3.*u.kpc,b=300.*u.pc)
+    #kpot=KeplerPotential(amp=5e10*u.Msun)
+    #npot=NFWPotential(amp=dyn['halo_ms']*u.Msun,a=dyn['halo_a']*u.kpc)
+    
+    # c_vir(z,M_vir): concentration, Eq (12) from Klypin+11
+    h=Planck13.h
+    z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
+    c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
+    m0 = np.array([1.5e19,1.5e17,2.5e15,6.8e13,6.3e12,6.6e11]) / h
+    ikind='linear'
+    if_c=interp1d(np.array(z0),np.array(c0),kind=ikind,bounds_error=False,
+                  fill_value=(c0[0],c0[-1]))
+    if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
+                  fill_value=(m0[0],m0[-1]))        
+    m_vir=dyn['halo_mvir']   # 10^12msun
+    c_vir = if_c(z) * (m_vir*h)**(-0.075) * (1+(m_vir*1e12/if_m(z))**0.26)
+                                
+    omega_z=Planck13.Om(z)                                           
+    delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
+
+    npot=galpy_pot.NFWPotential(conc=c_vir,
+                      mvir=m_vir,
+                      H=Planck13.H(z).value,
+                      Om=0.3,#dones't matter as wrtcrit=True
+                      overdens=delta_c,wrtcrit=True,
+                      ro=1,vo=1)
+    dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=dyn['disk_sd']*u.Msun/u.kpc/u.kpc,
+                                           hr=dyn['disk_rs']*u.kpc,ro=1,vo=1)
+
+    kps=Planck13.kpc_proper_per_arcmin(z).value/60.0
+    rad=rad_as*kps
+    #rad=np.arange(0,18,0.1)
+    #vcirc_mp=mpot.vcirc(rad*u.kpc)
+    #vcirc_kp=kpot.vcirc(rad*u.kpc)
+    vcirc_np=npot.vcirc(rad*u.kpc)
+    vcirc_dp=dpot.vcirc(rad*u.kpc)
+
+
+    
+
+    vcirc_tt=np.sqrt(vcirc_np.value**2.0+vcirc_dp.value**2.0)
+    vcirc_tt[0]=0
+    
+    
+    if  isinstance(obj['vdis'], (list, tuple, np.ndarray)):
+        if_vdis=interp1d(np.array(obj['vrad']),np.array(obj['vdis']),kind=ikind,
+                         bounds_error=False,fill_value=(obj['vdis'][0],obj['vdis'][-1]))
+        obj['vdis']=if_vdis(rad/kps)
+    else:
+        obj['vdis']=rad/kps*0.0+obj['vdis']
+            
+    #   smooth model
+    obj['vrad']=(rad/kps).copy()
+    obj['vrot']=vcirc_tt.copy()
+    obj['vrot_halo']=vcirc_np.value.copy()
+    obj['vrot_disk']=vcirc_dp.value.copy()
+        
+
+        
+    #print(vcirc_tt)
+    #pot=npot+dpot
+    #vcirc_ga=pot.vcirc(rad*u.kpc)
+    #cmass=npot.mass(R=np.array([10,2]))
+    #print(cmass)
+    #cmass=kpot.mass(R=10)
+    #print(cmass)    
+
+        
+    return obj['vrot']
+
+
+
+def model_disk3d_inclouds_pmodel(obj,seed,nSamps=100000,returnprof=True):
+    """
+    cloudlet generator with a prior morphological assumption 
+    """
+
+    w=WCS(obj['pheader']).celestial
+    px,py=w.wcs_world2pix(obj['xypos'][0],obj['xypos'][1],0)
+    
+    cell=np.mean(proj_plane_pixel_scales(w))*3600.0
+    
+
+    pmodel_flat=gal_flat(obj['pmodel'],obj['pa'],obj['inc'],cen=(px,py),fill_value=0.0,align_major=True)
+    fits.writeto('testx.fits',pmodel_flat,overwrite=True)
+    
+    sample=pdf2rv_nd(pmodel_flat,size=nSamps,sort=False,interp=True,seed=seed)
+    shape=sample.shape
+
+    inClouds=np.zeros((shape[1],3))
+    inClouds[:,0]=(sample[0,:]-px)*cell
+    inClouds[:,1]=(sample[1,:]-py)*cell
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    sbProf=mod(sbRad)
+    diskThick=0.0
+    if  'diskthick' in obj:
+        diskThick=obj['diskthick']
+    
+    # truncate the sb profile
+    if  'sbrad_min' in obj:
+        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
+    if  'sbrad_max' in obj:
+        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0      
+            
+    profile={}
+    profile['sbrad']=sbRad
+    profile['sbprof']=sbProf    #<--- just a placeholder
+
+    return inClouds,profile
+    
+    
+    
+def model_disk3d_inclouds(obj,seed,nSamps=100000,returnprof=True):
+    """
+    replace the cloudlet generator in KinMSpy.py->kinms_sampleFromArbDist_oneSided();
+
+    Note from KinMSpy()
+        inclouds : np.ndarray of double, optional
+         (Default value = [])
+        If your required gas distribution is not symmetric you
+        may input vectors containing the position of the
+        clouds you wish to simulate. This 3-vector should
+        contain the X, Y and Z positions, in units of arcseconds
+        from the phase centre. If this variable is used, then
+        `diskthick`, `sbrad` and `sbprof` are ignored.
+        Example: INCLOUDS=[[0,0,0],[10,-10,2],...,[xpos,ypos,zpos]]
+
+    This function takes the input radial distribution and generates the positions of
+    `nsamps` cloudlets from under it. It also accounts for disk thickness
+    if requested. Returns 
+    
+    Parameters
+    ----------
+    sbRad : np.ndarray of double
+            Radius vector (in units of pixels).
+    
+    sbProf : np.ndarray of double
+            Surface brightness profile (arbitrarily scaled).
+    
+    nSamps : int
+            Number of samples to draw from the distribution.
+    
+    seed : list of int
+            List of length 4 containing the seeds for random number generation.
+    
+    diskThick : double or np.ndarray of double
+         (Default value = 0.0)
+            The disc scaleheight. If a single value then this is used at all radii.
+            If a ndarray then it should have the same length as sbrad, and will be 
+            the disc thickness as a function of sbrad. 
+
+    Returns
+    -------
+    inClouds : np.ndarray of double
+            Returns an ndarray of `nsamps` by 3 in size. Each row corresponds to
+            the x, y, z position of a cloudlet. 
+    """
+
+    # get sersic profile
+    
+    mod = Sersic1D(amplitude=1.0,r_eff=obj['sbser'][0],n=obj['sbser'][1])
+    
+    sbRad=np.arange(0.,obj['sbser'][0]*7.0,obj['sbser'][0]/25.0)
+    sbProf=mod(sbRad)
+    diskThick=0.0
+    if  'diskthick' in obj:
+        diskThick=obj['diskthick']
+    
+    # truncate the sb profile
+    if  'sbrad_min' in obj:
+        sbProf[np.where(sbRad<obj['sbrad_min'])]=0.0
+    if  'sbrad_max' in obj:
+        sbProf[np.where(sbRad>obj['sbrad_max'])]=0.0        
+
+    
+    # Randomly generate the radii of clouds based on the distribution given by the brightness profile
+    pdf_x=abs(sbRad)
+    pdf_y=sbProf*2.*np.pi*abs(sbRad)
+    r_flat=pdf2rv(pdf_x,pdf_y,seed=seed[0],size=int(nSamps))
+
+    # Generates a random phase around the galaxy's axis for each cloud 
+    # with the Fourier Models (not the same as the xy-transform in galfit)
+    fm_m=2. if ('fm_m' not in obj) else obj['fm_m']
+    fm_frac=0. if ('fm_frac' not in obj) else obj['fm_frac']
+    fm_pa=0. if ('fm_pa' not in obj) else obj['fm_pa']
+    # in this case, cdf can be analystically written out easily
+    if  fm_frac!=0.0:
+        nres=10000.   # good enough
+        cdf_x=np.arange(nres+1)/nres*2.0*np.pi-np.pi
+        cdf_y=fm_frac*np.sin(fm_m*cdf_x)/fm_m+cdf_x
+        phi=cdf2rv(cdf_x,cdf_y,size=nSamps,seed=seed[1])+np.deg2rad(fm_pa)
+    else:
+        rng2=np.random.RandomState(seed[1])
+        phi = rng2.random_sample(nSamps) * 2 * np.pi
+        
+    # Generate the GE effect
+    # GE: q=maj/min
+    ge_pa=0. if ('ge_pa' not in obj) else obj['ge_pa']
+    ge_q=1. if ('ge_q' not in obj) else obj['ge_q']
+
+    if  ge_q>1.:
+        phi=phi-np.deg2rad(ge_pa)
+        r_flat=r_flat*np.sqrt((np.cos(phi)**2.+np.sin(phi)**2.0/ge_q**2.0))
+        phi=np.arctan2(np.sin(phi)/ge_q,np.cos(phi))+np.deg2rad(ge_pa)
+    
+    """
+    # CoordRot - Hyperbolic
+    #phi_out=1.0
+    #phi=
+    #cr_alpha=0.0
+    #r_in=1.0
+    #r_out=2.0
+    #theta_out=200.0
+    
+    #phi_offset=theta_out*cr_tanh(r_flat,r_in=r_in,r_out=r_out,theta_out=theta_out)\
+    #           *(0.5*(r_flat/r_out+1.))**cr_alpha
+    #phi=np.deg2rad(phi_offset)+phi
+    """
+
+        
+    # Find the thickness of the disk at the radius of each cloud
+    if  isinstance(diskThick, (list, tuple, np.ndarray)):
+        interpfunc2 = interpolate.interp1d(sbRad,diskThick,kind='linear')
+        diskThick_here = interpfunc2(r_flat)
+    else:
+        diskThick_here = diskThick    
+    
+    #Generates a random (uniform) z-position satisfying |z|<disk_here 
+    rng3 = np.random.RandomState(seed[2])       
+    zPos = diskThick_here * rng3.uniform(-1,1,nSamps)
+    
+    #Calculate the x & y position of the clouds in the x-y plane of the disk
+    r_3d = np.sqrt((r_flat**2) + (zPos**2))                                                               
+    theta = np.arccos(zPos / r_3d)                                                              
+    xPos = ((r_3d * np.cos(phi) * np.sin(theta)))                                                        
+    yPos = ((r_3d * np.sin(phi) * np.sin(theta)))
+    
+    
+    #transform transform
+ 
+    
+    #Generates the output array
+    inClouds = np.empty((nSamps,3))
+    inClouds[:,0] = xPos
+    inClouds[:,1] = yPos
+    inClouds[:,2] = zPos
+
+    #return something could be useful
+    profile={}
+    profile['sbrad']=sbRad
+    profile['sbprof']=sbProf
+    
+    if  returnprof==True:
+        return inClouds,profile
+    else:
+        return inClouds
+
+#@profile
+def model_uvsample(xymod3d,xymod2d,xyheader,
+                   uvw,phasecenter,
+                   uvmodel=None,uvdtype='complex64',
+                   average=True,
+                   verbose=True):
+    """
+    simulate the observation in the UV-domain
+    The input reference 2D / 3D model (e.g. continuume+line) is expected in units of Jy/pix
+    
+    uvw shape:           nrecord x 3  
+    uvmodel shape:       nrecord x nchan (less likely: nrecord x nchan x ncorr)
+    xymodel shape:       nstokes x nchan x ny x nx
+    
+    note1:
+        Because sampleImaging() can be only applied to single-wavelength dataset, we have to loop over
+        all channels for multi-frequency dataset (e.g. spectral cubes). This loop operations is typically
+        the bottle-neck. To reduce the number of operation, we can only do uvsampling for frequency-plane
+        with varying morphology and process frequency-inpdent emission using one operation:  
+        the minimal number of operations required  is:
+                nplane(with varying morphology) + 1 x sampleImage()
+          we already trim any else overhead (e.g. creating new array) and reach close to this limit.
+    
+    note2:
+        when <uvmodel> is provided as input, a new model will be added into the array without additional memory usage 
+          the return variable is just a reference of mutable <uvmodel>
+
+    """
+
+    #print('3d:',xymod3d is not None)
+    #print('2d:',xymod2d is not None)
+    
+    cell=np.sqrt(abs(xyheader['CDELT1']*xyheader['CDELT2']))
+    nchan=xyheader['NAXIS3']
+    nrecord=(uvw.shape)[0]
+    
+    # + zeros_like vs. zeros()
+    #   the memory of an array created by zeros() can allocated on-the-fly
+    #   the creation will appear to be faster but the looping+plan initialization may be slightly slower (or comparable?) 
+    # + set order='F' as we want to have quick access to each column:
+    #   i.a. first dimension is consequential in memory 
+    #   this will improve on the performance of picking uvdata from each channel  
+    # we force order='F', so the first dimension is continiuous and we can quicky fetch each channel
+    # as the information in a single channel is saved in a block  
+    if  uvmodel is None:
+        uvmodel_out=np.zeros((nrecord,nchan),dtype=uvdtype,order='F')
+    else:
+        uvmodel_out=uvmodel
+
+    if  verbose==True:
+        start_time = time.time()
+        print('nchan,nrecord:',nchan,nrecord)    
+            
+    # assume that CRPIX1/CRPIX2 is at model image "center" floor(naxis/2);
+    # which is true for the mock-up/reference model image xyheader 
+    # more information on the pixel index /ra-dec mapping, see:
+    #       https://mtazzari.github.io/galario/tech-specs.html     
+    dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0]))
+    dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1]))
+    
+    cc=0
+    
+    if  average==False:
+        # this will account for the effects of varying frequency on the UV sampling position across the bandwidth
+        xymodel=ne.evaluate("a+b",local_dict={"a":xymod3d,"b":xymod2d})
+        for i in range(nchan):
+            if  ne.evaluate("sum(a)",local_dict={'a':xymodel[0,i,:,:]})==0.0:
+                continue
+            wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
+            cc+=1
+            ne.evaluate("a+b",
+                        local_dict={"a":uvmodel_out[:,i],
+                                    "b":sampleImage((xymodel[0,i,:,:]),np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                                    dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                    },
+                        casting='same_kind',out=uvmodel_out[:,i])
+    else:
+        # for a 2-d model (xymodel2d, e.g. continuume), we ignore the U-V coordinated shiffting due to varying frequency.
+        if  xymod3d is not None:
+            #ss=time.time()
+            for i in range(nchan):
+                if  ne.evaluate("sum(a)",local_dict={'a':xymod3d[0,i,:,:]})==0.0:
+                    continue
+                wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
+                cc+=1
+                ne.evaluate("a+b",
+                            local_dict={"a":uvmodel_out[:,i],
+                                        "b":sampleImage((xymod3d[0,i,:,:]),
+                                                        np.deg2rad(cell),
+                                                        (uvw[:,0]/wv),
+                                                        (uvw[:,1]/wv),                                   
+                                                        dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                        },
+                            casting='same_kind',out=uvmodel_out[:,i])
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod3d',time.time()-ss))
+        
+        if  xymod2d is not None:
+            i0=int(nchan/2.0)
+            xymodelsum=xymod2d.sum(axis=(0,2,3))
+            xymodel_zscale=xymodelsum/xymodelsum[i0]        
+            wv=const.c/(xyheader['CDELT3']*i0+xyheader['CRVAL3'])
+            cc+=1
+            #ss=time.time()
+            uvmodel0=sampleImage((xymod2d[0,i0,:,:]),
+                                 np.deg2rad(cell),
+                                 (uvw[:,0]/wv),
+                                 (uvw[:,1]/wv),                                   
+                                 dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-uvsample',time.time()-ss))          
+            #ss=time.time()
+            ne.evaluate('a+b*c',
+                        local_dict={"a":uvmodel_out,
+                                    "b":np.broadcast_to(uvmodel0[:,np.newaxis],(nrecord,nchan)),
+                                    "c":xymodel_zscale},
+                        casting='same_kind',out=uvmodel_out)        
+            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-pop',time.time()-ss))
+        
+    if  verbose==True:
+        print("uvsampling plane counts: ",cc)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('uvsample',time.time()-start_time))
+        print("out=in+model:",uvmodel_out is uvmodel)
+   
+    return uvmodel_out
+
+    """
+    #################
+    
+    #(uvw[:,0]/wv).copy(order='C'),
+    #(uvw[:,1]/wv).copy(order='C'),
+                                       
+    alternative 1: average=True
+    uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
+                               #(uvw[:,0]/wv).copy(order='C'),
+                               #(uvw[:,1]/wv).copy(order='C'),
+                               (uvw[:,0]/wv),
+                               (uvw[:,1]/wv),                                   
+                               dRA=dRA,dDec=dDec,PA=0,check=False)
+    alternative 2:
+    ne3
+    ne.evaluate("out=a+b",
+                local_dict={"a":uvmodel[:,i],
+                            "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
+                                            dRA=dRA,dDec=dDec,PA=0,check=False),
+                            "out":uvmodel[:,i]
+                            },
+                casting='same_kind')                                          
+    
+    #################
+    
+    # alternative 1: average=False
+    #     slower than the picked method by 30%
+    for i in range(nchan):
+        ne.evaluate("a+b*c",
+                    local_dict={"a":uvmodel_out[:,i],
+                                "b":uvmodel0,
+                                "c":xymodel_zscale[i]},
+                    casting='same_kind',out=uvmodel_out[:,i])
+    # alternative 2:
+    ne3.evaluate("out=a + b * c",
+                local_dict={"a":uvmodel_out[:,i],
+                            "b":uvmodel0,
+                            "c":xymodel_zscale[i]},
+                casting='safe',out=uvmodel_out[:,i])
+    # others:
+    uvmodel+=np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape) #okay
+    np.add(uvmodel,np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape),out=uvmodel) #same as above
+    uvmodel[:,:]=ne.evaluate("a+b",local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},casting='same_kind') #slow
+    ne2
+    ne.evaluate("a+b",
+                local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},
+                casting='same_kind',out=uvmodel) #fast
+    
+    ne3
+    ne.evaluate("out=a+b",
+                local_dict={"a":uvmodel,
+                            "b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape).copy(),
+                            "out":uvmodel},
+                casting='safe') #fast        
+    
+     this is x2 fasfter for an array of (489423, 238)
+    np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
+    np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
+    slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
+    slow: uvmodel_test=uvmodel*xymodel_zscale
+    uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
+    np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
+    slow: uvmodel_test=uvmodel*xymodel_zscale
+    
+    ss=time.time()
+    print("---{0:^10} : {1:<8.5f} seconds ---".format('timeit',time.time()-ss))                                
+    """
+
+
 
 
 def model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):
@@ -743,187 +945,6 @@ def model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,
     else:
         return model
 
-#@profile
-def model_uvsample(xymod3d,xymod2d,xyheader,
-                   uvw,phasecenter,
-                   uvmodel=None,uvdtype='complex64',
-                   average=True,
-                   verbose=True):
-    """
-    simulate the observation in the UV-domain
-    The input reference model image (xymodel) is expected in units of Jy/pix
-    
-    uvw shape:           nrecord x 3  
-    uvmodel shape:       nrecord x nchan (less likely: nrecord x nchan x ncorr)
-    xymodel shape:       nstokes x nchan x ny x nx
-    
-    note: when uvmodel is provided as input, a new model will be added into the array without additional memory usage 
-          the return variable is just a reference of mutable uvmodel
-          the minmal time required  is:
-                nplane(with varying morphology) x sampleImage()
-          we already trim any else overhead (e.g. creating new array) and reach close to this limit.
-    """
-
-    #print('3d:',xymod3d is not None)
-    #print('2d:',xymod2d is not None)
-    
-    cell=np.sqrt(abs(xyheader['CDELT1']*xyheader['CDELT2']))
-    nchan=xyheader['NAXIS3']
-    nrecord=(uvw.shape)[0]
-    
-    # + zeros_like vs. zeros()
-    #   the memory of an array created by zeros() can allocated on-the-fly
-    #   the creation will appear to be faster but the looping+plan initialization may be slightly slower (or comparable?) 
-    # + set order='F' as we want to have quick access to each column:
-    #   i.a. first dimension is consequential in memory 
-    #   this will improve on the performance of picking uvdata from each channel    
-    if  uvmodel is None:
-        uvmodel_out=np.zeros((nrecord,nchan),dtype=uvdtype,order='F')
-    else:
-        uvmodel_out=uvmodel
-
-    if  verbose==True:
-        start_time = time.time()
-        print('nchan,nrecord:',nchan,nrecord)    
-            
-    # assume that CRPIX1/CRPIX2 is at model image "center" floor(naxis/2);
-    # which is true for the mock-up/reference model image xyheader 
-    # more information on the pixel index /ra-dec mapping, see:
-    #       https://mtazzari.github.io/galario/tech-specs.html     
-    dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0]))
-    dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1]))
-    
-    cc=0
-    
-    if  average==False:
-        # this will account for the effects of varying frequency on the UV sampling position across the bandwidth
-        xymodel=ne.evaluate("a+b",local_dict={"a":xymod3d,"b":xymod2d})
-        for i in range(nchan):
-            if  ne.evaluate("sum(a)",local_dict={'a':xymodel[0,i,:,:]})==0.0:
-                continue
-            wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
-            cc+=1
-            ne.evaluate("a+b",
-                        local_dict={"a":uvmodel_out[:,i],
-                                    "b":sampleImage((xymodel[0,i,:,:]),np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
-                                                    dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
-                                    },
-                        casting='same_kind',out=uvmodel_out[:,i])
-    else:
-        # for a 2-d model (xymodel2d, e.g. continuume), we ignore the U-V coordinated shiffting due to varying frequency.
-        if  xymod3d is not None:
-            #ss=time.time()
-            for i in range(nchan):
-                if  ne.evaluate("sum(a)",local_dict={'a':xymod3d[0,i,:,:]})==0.0:
-                    continue
-                wv=const.c/(xyheader['CDELT3']*i+xyheader['CRVAL3'])
-                cc+=1
-                ne.evaluate("a+b",
-                            local_dict={"a":uvmodel_out[:,i],
-                                        "b":sampleImage((xymod3d[0,i,:,:]),
-                                                        np.deg2rad(cell),
-                                                        (uvw[:,0]/wv),
-                                                        (uvw[:,1]/wv),                                   
-                                                        dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
-                                        },
-                            casting='same_kind',out=uvmodel_out[:,i])
-            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod3d',time.time()-ss))
-        
-        if  xymod2d is not None:
-            i0=int(nchan/2.0)
-            xymodelsum=xymod2d.sum(axis=(0,2,3))
-            xymodel_zscale=xymodelsum/xymodelsum[i0]        
-            wv=const.c/(xyheader['CDELT3']*i0+xyheader['CRVAL3'])
-            cc+=1
-            #ss=time.time()
-            uvmodel0=sampleImage((xymod2d[0,i0,:,:]),
-                                 np.deg2rad(cell),
-                                 (uvw[:,0]/wv),
-                                 (uvw[:,1]/wv),                                   
-                                 dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
-            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-uvsample',time.time()-ss))          
-            #ss=time.time()
-            ne.evaluate('a+b*c',
-                        local_dict={"a":uvmodel_out,
-                                    "b":np.broadcast_to(uvmodel0[:,np.newaxis],(nrecord,nchan)),
-                                    "c":xymodel_zscale},
-                        casting='same_kind',out=uvmodel_out)        
-            #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-pop',time.time()-ss))
-        
-    if  verbose==True:
-        print("uvsampling plane counts: ",cc)
-        print("---{0:^10} : {1:<8.5f} seconds ---".format('uvsample',time.time()-start_time))
-        print("out=in+model:",uvmodel_out is uvmodel)
-   
-    return uvmodel_out
-
-    """
-    #################
-    
-    #(uvw[:,0]/wv).copy(order='C'),
-    #(uvw[:,1]/wv).copy(order='C'),
-                                       
-    alternative 1: average=True
-    uvmodel[:,i]+=sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),
-                               #(uvw[:,0]/wv).copy(order='C'),
-                               #(uvw[:,1]/wv).copy(order='C'),
-                               (uvw[:,0]/wv),
-                               (uvw[:,1]/wv),                                   
-                               dRA=dRA,dDec=dDec,PA=0,check=False)
-    alternative 2:
-    ne3
-    ne.evaluate("out=a+b",
-                local_dict={"a":uvmodel[:,i],
-                            "b":sampleImage(xymodel[0,i,:,:],np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
-                                            dRA=dRA,dDec=dDec,PA=0,check=False),
-                            "out":uvmodel[:,i]
-                            },
-                casting='same_kind')                                          
-    
-    #################
-    
-    # alternative 1: average=False
-    #     slower than the picked method by 30%
-    for i in range(nchan):
-        ne.evaluate("a+b*c",
-                    local_dict={"a":uvmodel_out[:,i],
-                                "b":uvmodel0,
-                                "c":xymodel_zscale[i]},
-                    casting='same_kind',out=uvmodel_out[:,i])
-    # alternative 2:
-    ne3.evaluate("out=a + b * c",
-                local_dict={"a":uvmodel_out[:,i],
-                            "b":uvmodel0,
-                            "c":xymodel_zscale[i]},
-                casting='safe',out=uvmodel_out[:,i])
-    # others:
-    uvmodel+=np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape) #okay
-    np.add(uvmodel,np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape),out=uvmodel) #same as above
-    uvmodel[:,:]=ne.evaluate("a+b",local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},casting='same_kind') #slow
-    ne2
-    ne.evaluate("a+b",
-                local_dict={"a":uvmodel,"b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape)},
-                casting='same_kind',out=uvmodel) #fast
-    
-    ne3
-    ne.evaluate("out=a+b",
-                local_dict={"a":uvmodel,
-                            "b":np.broadcast_to(uvmodel0[:,np.newaxis],uvmodel.shape).copy(),
-                            "out":uvmodel},
-                casting='safe') #fast        
-    
-     this is x2 fasfter for an array of (489423, 238)
-    np.multiply(uvmodel0,xymodel_zscale[i],out=uvmodel[:,i])
-    np.add(uvmodel[:,i],uvmodel0*xymodel_zscale[i],out=uvmodel[:,i])    
-    slow: uvmodel_test=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,optimize='greedy',order='C')
-    slow: uvmodel_test=uvmodel*xymodel_zscale
-    uvmodel+=np.einsum('i,j->ij',uvmodel0,xymodel_zscale,order='F')
-    np.einsum('i,j->ij',uvmodel0.astype(np.complex64),xymodel_zscale.astype(np.float32),order='F',out=uvmodel)
-    slow: uvmodel_test=uvmodel*xymodel_zscale
-    
-    ss=time.time()
-    print("---{0:^10} : {1:<8.5f} seconds ---".format('timeit',time.time()-ss))                                
-    """
     
 def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
                mode=None,

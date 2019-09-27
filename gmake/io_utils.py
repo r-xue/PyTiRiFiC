@@ -1,8 +1,8 @@
 from .gmake_init import *
 from .gmake_utils import *
 
-
 logger = logging.getLogger(__name__)
+
 
 def read_data(inp_dct,
               fill_mask=False,fill_error=False,                                   # for FITS/image

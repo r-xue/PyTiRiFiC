@@ -12,7 +12,7 @@ __demo__ = os.path.dirname(os.path.abspath(__file__))
 
 from .gmake_logger import *
 from .gmake_init import *  
-from .gmake_utils import *
+#from .gmake_utils import *
 
 from .model_eval import *
 from .model_func import *

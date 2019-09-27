@@ -1,7 +1,11 @@
 from .gmake_init import *
 #import inspect
 
-from configparser import ConfigParser, ExtendedInterpolation
+
+from copy import deepcopy
+
+
+from .metadata import gmake_cfg
 
 logger = logging.getLogger(__name__)
 # get a logger named after a function name
@@ -36,30 +40,6 @@ def arithmeticEval (s):
     return _eval(node.body)
 """
 
-def gmake_config():
-    """
-    load configuration
-    """
-    package_dir=os.path.dirname(os.path.abspath(__file__))
-    cfg=ConfigParser()
-    cfg.read(package_dir+"/gmake.cfg") 
-
-    return cfg
-
-def read_range(center=0,delta=0,mode='a'):
-    """
-        modifiy the parameter exploring bounrdary according to the info from opt section
-        a:    absolute
-        
-        
-    """
-    if  mode=='a':
-        return delta
-    if  mode=='o':
-        return center+delta
-    if  mode=='r':
-        return center*delta
-
 def read_inp(parfile,log=False):
     """
     read parameters/setups from a .inp file into a dictionary nest:
@@ -83,7 +63,7 @@ def read_inp(parfile,log=False):
     lines= filter(None, (line.split('#')[0].strip() for line in lines))
 
     tag='default'
-    cfg=gmake_config()
+    cfg=gmake_cfg
     
     for line in lines:
         if  line.startswith('@'):
@@ -183,6 +163,23 @@ def write_inp(inp_dct,
         output+='\n'
     f.write(output)
     f.close()
+
+
+def read_range(center=0,delta=0,mode='a'):
+    """
+        modifiy the parameter exploring bounrdary according to the info from opt section
+        a:    absolute
+        
+        
+    """
+    if  mode=='a':
+        return delta
+    if  mode=='o':
+        return center+delta
+    if  mode=='r':
+        return center*delta
+
+
 
 def moments(imagename,outname='test',
             maskname='',linechan=None):
@@ -417,7 +414,7 @@ def inp2mod(objs):
     
     """
     
-    cfg=gmake_config()
+    cfg=gmake_cfg
     ids_ignore=cfg['inp.comment']['id'].split(',')+cfg['inp.optimizer']['id'].split(',')
 
     par_list=[]
@@ -580,8 +577,9 @@ def gmake_pformat(fit_dct):
     logger.debug("optimizer: "+fit_dct['method'])
     logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit / scale")
     
-    data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'    
-    def_dct=read_inp(data_path+'parameter_definition.inp',log=False)
+    metadata_path=os.path.dirname(os.path.abspath(__file__))+'/metadata/'
+    template_inp=read_inp(metadata_path+'parameter_definition.inp',log=False)
+    def_dct=template_inp
     def_dct_obj=def_dct['object']
     def_dct_opt=def_dct['optimize']
     
@@ -687,9 +685,6 @@ def h5ls(filename,logfile=None):
                 with h5py.File(filename,'r') as hf:
                     hf.visititems(h5ls_print)
     
-if  __name__=="__main__":
-    
-    pass
 
     #objs=gmake_read_inp('examples/bx610/bx610xy.inp',=False)
     

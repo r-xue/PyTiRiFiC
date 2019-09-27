@@ -2,7 +2,7 @@ from .gmake_init import *
 from .model_func import *
 from .model_func_dynamics import *
 from .io_utils import *
-
+from .metadata import template_imheader
 
 #from galario.double import get_image_size
 #from galario.double import sampleImage
@@ -79,10 +79,9 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
                     wv=np.mean(const.c/models['chanfreq@'+vis])
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
-                    nxy=256
+                    nxy=128
                     
-                    data_path=os.path.dirname(os.path.abspath(__file__))+'/data/'
-                    header=fits.Header.fromfile(data_path+'image_template.header',endcard=False,sep='\n',padding=False)
+                    header=template_imheader.copy()
                     header['NAXIS1']=nxy
                     header['NAXIS2']=nxy
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])
@@ -220,7 +219,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 test_time = time.time()
                 
                 if  'disk2d' in obj['method'].lower():
-                    test_time = time.time()
+                    #test_time = time.time()
                     pintflux=0.0
                     if  'pintflux' in obj:
                         pintflux=obj['pintflux']
@@ -230,16 +229,16 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                                         ellip=1.-np.cos(np.deg2rad(obj['inc'])),
                                         pintflux=pintflux,
                                         intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
-                    print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
+                    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
                     #print(imodel.shape)
                     #models['imod2d@'+vis]+=imodel
                     #models['imodel@'+vis]+=imodel
                     
                 if  'disk3d' in obj['method'].lower():
                     
-                    test_time = time.time()              
+                    #test_time = time.time()              
                     imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
-                    print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
+                    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
                     #print(imodel.shape)
                     models['imod3d@'+vis]+=imodel
                     models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
@@ -320,7 +319,7 @@ def model_simobs(models,decomp=False,verbose=False):
         if  'imod3d@' in tag:
             
             if  models[tag.replace('imod3d@','type@')]=='vis':
-                print('\n',tag.replace('imod3d@',''),' image model shape: ',models[tag].shape)
+                #print('\n',tag.replace('imod3d@',''),' image model shape: ',models[tag].shape)
                 if  decomp==True:
                     uvmodel=model_uvsample(models[tag],None,models[tag.replace('imod3d@','header@')],
                                                 models[tag.replace('imod3d@','uvw@')],
