@@ -383,7 +383,7 @@ def export_model(models,outdir='./',
             if  not os.path.exists(outdir):
                 os.makedirs(outdir)
             
-            versions=['imodel','imod2d','imod3d']        
+            versions=['imodel','imod2d','imod3d','pbeam']        
             hd=models[key.replace('data@','header@')]
             for version in versions:             
                 if  key.replace('data@',version+'@') in models.keys():

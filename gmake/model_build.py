@@ -18,7 +18,7 @@ def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     """
     
     models=model_init(mod_dct,dat_dct,decomp=decomp,verbose=verbose)
-    models=model_fill(models,decomp=decomp,verbose=verbose,nsamps=nsamps)
+    models=model_fill(models,decomp=decomp,nsamps=nsamps,verbose=verbose)
     models=model_simobs(models,decomp=decomp,verbose=verbose)
 
     return models
@@ -26,6 +26,8 @@ def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
 def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
     """
     create model container 
+        this function can be ran only once before starting fitting iteration, so that
+        the memory allocation/ allication will happen once during a fitting run.
 
     notes on evaluating efficiency:
     
@@ -99,6 +101,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     
                     models['header@'+vis]=header.copy()
                     naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
+                    models['pbeam@'+vis]=((makepb(header)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
                     #   uvmodel: np.complex64
                     #   imodel:  np.float32
                     models['imodel@'+vis]=np.zeros(naxis,dtype=np.float32)
@@ -321,15 +324,17 @@ def model_simobs(models,decomp=False,verbose=False):
             if  models[tag.replace('imod3d@','type@')]=='vis':
                 #print('\n',tag.replace('imod3d@',''),' image model shape: ',models[tag].shape)
                 if  decomp==True:
-                    uvmodel=model_uvsample(models[tag],None,models[tag.replace('imod3d@','header@')],
+                    uvmodel=model_uvsample(models[tag]*models[tag.replace('imod3d@','pbeam@')],None,
+                                                models[tag.replace('imod3d@','header@')],
                                                 models[tag.replace('imod3d@','uvw@')],
                                                 models[tag.replace('imod3d@','phasecenter@')],
                                                 uvdtype=models[tag.replace('imod3d@','data@')].dtype,
-                                                average=False,
+                                                average=True,
                                                 verbose=verbose)
                     models[tag.replace('imod3d@','uvmod3d@')]=uvmodel.copy() 
                     models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()
-                    uvmodel=model_uvsample(None,models[tag.replace('imod3d@','imod2d@')],models[tag.replace('imod3d@','header@')],
+                    uvmodel=model_uvsample(None,models[tag.replace('imod3d@','imod2d@')]*models[tag.replace('imod3d@','pbeam@')],
+                                            models[tag.replace('imod3d@','header@')],
                                             models[tag.replace('imod3d@','uvw@')],
                                             models[tag.replace('imod3d@','phasecenter@')],
                                             uvdtype=models[tag.replace('imod3d@','data@')].dtype,
@@ -338,7 +343,8 @@ def model_simobs(models,decomp=False,verbose=False):
                     models[tag.replace('imod3d@','uvmod2d@')]=uvmodel.copy() 
                     models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()                                          
                 else:
-                    uvmodel=model_uvsample(models[tag],models[tag.replace('imod3d@','imod2d@')],
+                    uvmodel=model_uvsample(models[tag]*models[tag.replace('imod3d@','pbeam@')],
+                                           models[tag.replace('imod3d@','imod2d@')]*models[tag.replace('imod3d@','pbeam@')],
                                            models[tag.replace('imod3d@','header@')],
                                            models[tag.replace('imod3d@','uvw@')],
                                            models[tag.replace('imod3d@','phasecenter@')],

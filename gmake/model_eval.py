@@ -7,8 +7,9 @@ from .io_utils import *
 logger = logging.getLogger(__name__)
 
 def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
-                         savemodel=None,returnwdev=False,
-                         verbose=False):
+                 savemodel=None,decomp=False,nsamps=1e5,
+                 returnwdev=False,
+                 verbose=False):
     """
     the likelihood function
     
@@ -36,14 +37,13 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     #tic0=time.time()
     #models=gmake_kinmspy_api(mod_dct,dat_dct=dat_dct)
-    nsamps=100000
-    decomp=False
-    if  savemodel is not None:
-        nsamps=nsamps*10
-        decomp=True
 
-    models=model_api(mod_dct,dat_dct=dat_dct,
-                           decomp=decomp,verbose=verbose,nsamps=nsamps)
+    #if  savemodel is not None:
+    #    nsamps=nsamps*10
+
+
+    models=model_api(mod_dct,dat_dct,
+                     decomp=decomp,nsamps=nsamps,verbose=verbose)
     #print('Took {0} second on one API call'.format(float(time.time()-tic0))) 
     #gmake_listpars(mod_dct)
     
@@ -221,8 +221,9 @@ def model_lnprior(theta,fit_dct):
 
     
 def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
-                savemodel=None,packblobs=False,
-                verbose=False):
+                 savemodel=None,decomp=False,nsamps=1e5,
+                 packblobs=False,
+                 verbose=False):
     """
     this is the evaluating function for emcee
     packblobs=True:
@@ -241,7 +242,9 @@ def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
             return -np.inf,blobs
         else:
             return -np.inf,-np.inf,+np.inf,0.0,len(theta)
-    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,savemodel=savemodel)
+    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,
+                           savemodel=savemodel,decomp=decomp,nsamps=nsamps,
+                           verbose=verbose)
     
     if  verbose==True:
         print("try ->",theta)

@@ -182,7 +182,7 @@ def model_disk3d(header,obj,
     #   only extend to this range in vrot/sbprof
     #   this is the fine radii vector fed to kinmspy
 
-
+    nsamps=int(nsamps)
     if  fixseed==True:
         seeds=[100,101,102,103]
     else:
@@ -650,7 +650,11 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
     
     if  average==False:
         # this will account for the effects of varying frequency on the UV sampling position across the bandwidth
-        xymodel=ne.evaluate("a+b",local_dict={"a":xymod3d,"b":xymod2d})
+        if  xymod3d is not None and xymod2d is not None:
+            xymodel=ne.evaluate("a+b",local_dict={"a":xymod3d,"b":xymod2d})
+        else:
+            xymodel=xymod2d if xymod3d is None else xymod3d
+            
         for i in range(nchan):
             if  ne.evaluate("sum(a)",local_dict={'a':xymodel[0,i,:,:]})==0.0:
                 continue
@@ -945,6 +949,26 @@ def model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,
     else:
         return model
 
+
+def makepb(header):
+    """
+    make a 2D Gaussian image approximated to the ALMA primary beam
+        https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90
+    
+    note: this is just a temp solution, assuming the the pointing is towards the reference pixel in the header 
+          and use the first channel as the reference frequency.
+    
+    """
+    
+    #   PB size in pixel
+    beam=1.13*np.rad2deg(const.c/(header['CDELT3']*0+header['CRVAL3'])/12.0)/np.abs(header['CDELT2'])
+    sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
+    mod=Gaussian2D(amplitude=1.,
+                   x_mean=header['CRPIX1'],y_mean=header['CRPIX2'],
+                   x_stddev=beam/sigma2fwhm,y_stddev=beam/sigma2fwhm,theta=0)
+    pb=discretize_model(mod,(0,int(header['NAXIS1'])),(0,int(header['NAXIS1'])))
+
+    return pb
     
 def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
                mode=None,
