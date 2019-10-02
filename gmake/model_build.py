@@ -240,12 +240,14 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 if  'disk3d' in obj['method'].lower():
                     
                     #test_time = time.time()              
-                    imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
+                    imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,
+                                                    model=models['imod3d@'+vis],
+                                                    nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
                     #print(imodel.shape)
-                    models['imod3d@'+vis]+=imodel
+                    #models['imod3d@'+vis]+=imodel
                     models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
-                    models['imodel@'+vis]+=imodel     
+                    #models['imodel@'+vis]+=imodel     
                     
         if  'image' in mod_dct[tag].keys():
             

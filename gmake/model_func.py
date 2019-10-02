@@ -102,6 +102,7 @@ def model_disk2d(header,ra,dec,
     return model_out
 
 def model_disk3d(header,obj,
+                 model=None,
                  nsamps=100000,
                  decomp=False,
                  fixseed=False,
@@ -263,9 +264,6 @@ def model_disk3d(header,obj,
 
     #start_time = time.time()
 
-        
-
-    
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
@@ -290,13 +288,16 @@ def model_disk3d(header,obj,
     #print(cube.shape)
     cube=cube.T
     if  dv<0: cube=np.flip(cube,axis=0)
-    if  w.naxis==4:
-        model=np.zeros(w.array_shape)
-    if  w.naxis==3:
-        model=np.zeros((1,)+w.array_shape)
     
+    if  model is None:
+        if  w.naxis==4:
+            model_out=np.zeros(w.array_shape)
+        if  w.naxis==3:
+            model_out=np.zeros((1,)+w.array_shape)
+    else:
+        model_out=model
     #print(cube.shape,'-->',model.shape)
-    model=paste_array(model,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)))
+    model_out=paste_array(model_out,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)),method='add')
 
     
     model_prof={}
@@ -317,7 +318,7 @@ def model_disk3d(header,obj,
     if  'vrot_disk' in obj:
         model_prof['vrot_disk_node']=np.array(obj['vrot_disk'])
             
-    return model,model_prof
+    return model_out,model_prof
 
 
 def model_dynamics(obj,dyn,rad_as):
