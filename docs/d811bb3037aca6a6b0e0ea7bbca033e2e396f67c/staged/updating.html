@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Updating Your Package &#8212; Astropy Package Template 1.2 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Next Steps" href="nextsteps.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">astro</span><span id="logotext2">py</span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="nextsteps.html" title="Next Steps">
+	  &laquo; previous
+	</a>
+	
+      </li>
+      <li>
+	<a href="index.html">Astropy Package Template 1.2 documentation</a>
+	 &#187;
+      </li>
+      
+      <li>Updating Your Package</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="updating-your-package">
+<h1>Updating Your Package<a class="headerlink" href="#updating-your-package" title="Permalink to this headline">¶</a></h1>
+<p>Once you have setup your project there will come a time when some things in the
+package template change, new versions of <code class="docutils literal notranslate"><span class="pre">astropy_helpers</span></code> or updates to the
+infrastructure you want to utilise. Updating your package with these changes is
+a balance between maintaining parity with the original template and customising
+your project to your needs.</p>
+<div class="section" id="using-cookiecutter-to-update">
+<h2>Using Cookiecutter to Update<a class="headerlink" href="#using-cookiecutter-to-update" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to use the <cite>cookiecutter</cite> package to make it easier to update
+your package with changes from the template. The basic workflow is to use
+cookiecutter to create a clean version of the package template but with the
+settings configured to your package and then pull the changes into your package.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of cookiecutter 1.5 this is the best way of doing this. Work will continue
+to make this process easier, and possibly even automated.</p>
+</div>
+<ol class="arabic">
+<li><p><strong>Render the template</strong>: Putting in the same settings as the first time the
+template was rendered (or using <code class="docutils literal notranslate"><span class="pre">--replay</span></code>) render the template to a
+temporary folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter [--replay] gh:astropy/package-template -o /tmp
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You should choose ‘n’ for the “initialize_git_repo” question.</p>
+</div>
+</li>
+<li><p><strong>Make a new branch</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout -b update_template
+</pre></div>
+</div>
+</li>
+<li><p><strong>Copy the template over your package</strong>: (replacing ‘packagename’ with your package name):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp -r /tmp/packagename/* ./
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use git diff to see the changes</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git diff
+</pre></div>
+</div>
+</li>
+<li><p><strong>Edit the files</strong> until the changes shown by `` git diff`` are the ones you want to have in your package.</p></li>
+<li><p><strong>Merge the changes</strong> Either by a Pull Request or by merging the <code class="docutils literal notranslate"><span class="pre">update_template</span></code> branch into your master branch.</p></li>
+</ol>
+</div>
+<div class="section" id="using-git-update">
+<h2>Using git Update<a class="headerlink" href="#using-git-update" title="Permalink to this headline">¶</a></h2>
+<p>A pre-rendered version of the package template is automatically generated in the
+<a class="reference external" href="https://github.com/astropy/package-template/">astropy/package-template</a>
+repository. This can be used as a git remote and changes pulled from it.</p>
+<p>The downside of this approach is the branch is rendered using the default
+settings, which means you are much more likely to get conflicts when you merge
+this branch.</p>
+<ol class="arabic">
+<li><p>Add the Astropy package template repo as a git remote (if it is not already):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git remote add package-template
+</pre></div>
+</div>
+</li>
+<li><p>Pull from the remote:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git remote update
+</pre></div>
+</div>
+</li>
+<li><p>Merge the branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git merge package-template/rendered
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Updating Your Package</a><ul>
+<li><a class="reference internal" href="#using-cookiecutter-to-update">Using Cookiecutter to Update</a></li>
+<li><a class="reference internal" href="#using-git-update">Using git Update</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/updating.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2017, The Astropy Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.2.0. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>
