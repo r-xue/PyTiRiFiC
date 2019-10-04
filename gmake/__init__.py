@@ -3,7 +3,9 @@ import os
 # version id: 
 #   https://www.python.org/dev/peps/pep-0440/
 
-__version__ = '0.1.dev3'
+import pkg_resources
+
+__version__ = pkg_resources.get_distribution('gmake').version
 __email__ = 'rx.astro@gmail.com'
 __author__ = 'Rui Xue'
 __credits__ = 'University of Iowa'

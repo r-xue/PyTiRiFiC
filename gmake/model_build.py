@@ -44,10 +44,13 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
             --- apicall   : 2.10178  seconds ---
         after splitting line & cont models:
             --- apicall   : 0.84662  seconds ---
-    note: imod2d                : Hold Emission Conponents with Frequency-Dependent Spatial Distribution
-          imod3d                : Hold Emission Conponents with Frequency-Dependent Spatial Distribution
+    note: imod2d                : Hold emission componnets with Frequency-Dependent Spatial Distribution
+          imod3d                : Hold emission conponents with Frequency-Dependent Spatial Distribution
           imodel=imod2d+imod3d  : We always keep a copy of imod2d and imod3d to improve the effeicnecy in simobs() 
-          
+
+          uvmodel: np.complex64
+           imodel:  np.float32
+                              
     """
     
     if  verbose==True:
@@ -102,11 +105,10 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['header@'+vis]=header.copy()
                     naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
                     models['pbeam@'+vis]=((makepb(header)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
-                    #   uvmodel: np.complex64
-                    #   imodel:  np.float32
-                    models['imodel@'+vis]=np.zeros(naxis,dtype=np.float32)
-                    models['imod2d@'+vis]=np.zeros(naxis,dtype=np.float32)
-                    models['imod3d@'+vis]=np.zeros(naxis,dtype=np.float32)
+                    
+                    models['imod2d@'+vis]=np.zeros(naxis,dtype=np.float32)     # ny * nx
+                    models['imod3d@'+vis]=np.zeros(naxis,dtype=np.float32)     # nz * ny * nx
+                    
                                     
                     models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
                                                     dtype=models['data@'+vis].dtype,

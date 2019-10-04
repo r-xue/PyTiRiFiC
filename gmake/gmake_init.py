@@ -80,11 +80,9 @@ from copy import deepcopy
 from astropy.io import ascii
 import fnmatch
 import pprint
-import fitsio
 import shutil
 #import commands
 import multiprocessing
-#import FITS_tools
 from past.builtins import map
     
     
@@ -146,7 +144,6 @@ from scipy import stats
 from astropy.table import Table
 from astropy.table import Column
 import astropy.convolution as conv
-import FITS_tools
 from scipy._lib._numpy_compat import suppress_warnings
 np.warnings.filterwarnings('ignore')
 from lmfit import minimize, Parameters, report_fit

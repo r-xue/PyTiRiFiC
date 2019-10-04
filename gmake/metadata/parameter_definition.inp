@@ -1,12 +1,20 @@
+###################################################################################################
+@ comments              #   notes in a comment section
+###################################################################################################
 
-##########################################################################################
-@ object                #   keywords n the new model component section(s)
-##########################################################################################
+        
+
+
+
+###################################################################################################
+@ component             #   available keywords with default values in a model "component" section
+###################################################################################################
 
 ## keyword              default     format  type    #   format is only for controlling the decimal point in the log output
-  
-name                    ''          ''      str     #   object name (just a note for you, not used for anything)
-note                    ''          ''      str     #   comments on the object (not implemented yet)
+
+object                  ''          ''      str     #   object name (just a note for you, not used for anything)
+name                    ''          ''      str     #   component name (just a note for you, not used for anything)
+note                    ''          ''      str     #   comments on the object (just a note for you, not used for anything)
 
 image                   ''          ''      str     #   data image name (separated by a comma if more than one are supplied)
 error                   ''          ''      str     #   error image name (separated by a comma if more than one are supplied)
@@ -51,8 +59,10 @@ intflux                 1.0         '.2f'   float   #   Jy x km/s or dataunits *
 restwave                1000.0      ''      float   #   line rest wavelength (angstrom)
 restfreq                100.0       ''      float   #   Ghz line rest frequency
 
-method                  'kinmspy'   ''      str     #   underline simulation algorithm 
-                                                    #   available options are: disk2d,kinmspy
+type                    'disk3d'    ''      str     #   choice simulation algorithm 
+                                                    #   current options: 
+                                                    #       disk2d  for simulating a Sersic disk
+                                                    #       disk3d  for simulating spectral cube from a tilted-ring model
 
 
 
@@ -102,10 +112,18 @@ vdis                    [10.0,10.0] '.2f'   list    #   velocity dispersion radi
 ####    method='disk2d'                                                    
 
 alpha                   0.0         '.2f'   float   #   
-                                                    
-##########################################################################################
-@ potential              #   keywords in the dynamics-prescription section
-##########################################################################################
+
+
+###################################################################################################
+@ keywords_section      #   a set of keywords can be "imported" into another section
+###################################################################################################
+                  
+keyword_1               ''          ''      str     # 
+keyword_2               ''          ''      str     # 
+                                                                      
+###################################################################################################
+@ dynamics              #   keywords in the dynamics-prescription section
+###################################################################################################
 
 disk_sd                 0.0                 float   #   msun/kpc^2.0               
 disk_rs                 1.0                 float   #   kpc
@@ -117,9 +135,9 @@ halo_a                  100.0               float   #   kpc
 halo_conv               4.0                 float   #
 halo_mvir               0.5                 float   #   10.^12 msun
 
-##########################################################################################
-@optimize               #   keywords for the optimization configuration
-##########################################################################################
+###################################################################################################
+@ optimize              #   keywords for the optimization configuration
+###################################################################################################
 
 method                  'amoeba'            str     #   underline parameter optimization algorithm
                                                     #   options: amoeba,lmfit-nm,lmfit-brute,emcee
@@ -139,71 +157,6 @@ parname[a:b]@obectname  ('o',-1,1,0.0)      tuple   #   same as above, but a sli
                                                     #   then all elements in the sliced parameter set is tied to be the same as a single free parameter
                                                     #   e.g., vrot[2:5]@co21disk: the rotational velocity of the third, fourth, fifth radial knots within disk object "co21disk"
 
-
-##########################################################################################
-@ comments
-##########################################################################################
-
-+ Directory Path
-    
-    The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
-    To clear up any confusion, absolute paths can also be used.
-    
-+ The usage of "#":
-
-    "#" marks the beginning of inline comments or commented line: i.a. anything behind it will not be read by the program
-
-+ The usages of "@":
-
-    + any line begins with '@' mark the beginning of a new section (as in this file)
-        
-        The section name is created from valid characters (ignoring comments) following  "@", with leading/trailing space removed
-        some section names are reserved for special purposes:
-            + A name containing "comment", "changelog", "ignore" is considered as comments and the content in that section will be discarded by the program
-            + A name containing "optimize" denote the parameter section control the optimization. 
-            + A name not meeting the above standard will be considered as a model component
-
-    + denote the "parent" object of a parameter:
-        e.g. "pa@co21disk" = the position angle of the disk object "co21disk"
-
-    + tie the parameter values:
-        
-        when a parameter value is set to a string containing "@", it means its value is tied to a math expression of some other parameter(s)
-        e.g.    if 'vdis@co21disk' is assigned to 'vdis' in the object '@co10disk' parameter section, 
-                then the value of 'vdis@co10disk' is always tied to that of 'vdis@co21disk' in modeling.
-                if '2.*influx@line1' is assigned to 'intflux' in the object '@line2' parameter section,
-                then the value of 'intflux@line2' is always twice of 'flux@line1'
-
-+ keyword-value pair
-
-    Under each section, each line always follow the keyword+value pair syntax, separated by white space
-    The first word is considered as the parameter "keyword", and the rest of the line will be considered as the value content.
-    The "value" part in .inp needs to be the string representation of a Python object, e.g.:
-        'test'      :   a string type with a value of "test"
-        3.0         :   a float type with a value of 3.0
-    The program uses eval() to determine the value content and type (which is actually not a good practice in Python...)
-    
-    note: if the eval() step fails, the program will:
-        do split() -> re-evaluate on each element -> assemble the results into a list -> assign the list to the keyword
-        This feature is only designed to work with the file you're looking at right now.  
-        
-
-
-
-
-
-        Special syntax in parameter input files:
-
-        **"@"**:
-
-        + tag the parameter set associated with a specific object; in short, "A@B" = A of B
-        + tie different parameters across different.
-        A simple math function could be implemented in future, e.g.,
-        *px = 2.0\*(py@objz)*; *px = sqrt(\*(py@objz))*
-
-
-        **"#"**:
-
-        + user comments, not read by the ***gmake_utils/gmake_readpars***
-        + @comments / @changelog can be also used for comments/notes
-        
+###################################################################################################
+@ analyze               #   available keywords for configuring diagnotsic analysis
+###################################################################################################
