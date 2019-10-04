@@ -20,4 +20,4 @@ help:
 
 github:
 	@make html
-	@cp -a build/html/* ./d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/staged
+	@cp -a build/html/* ./d811bb3037aca6a6b0e0ea7bbca033e2e396f67c
