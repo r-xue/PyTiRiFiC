@@ -127,9 +127,6 @@ Getting Started
    :maxdepth: 2
    :caption: Contents:
 
-   options
-   nextsteps
-   updating
    par_def
    
 .. toctree::
