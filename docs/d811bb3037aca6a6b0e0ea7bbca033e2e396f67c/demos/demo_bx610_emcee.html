@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example BX610: perform model fitting using method=‘emcee’ &mdash; GMaKE 0.2.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Test the performance of the Image-to-MS-related modules" href="../tests/test_uvsample_performance.html" />
+    <link rel="prev" title="Example BX610: perform model fitting using method=‘amoeba’" href="demo_bx610_amoeba.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GMaKE
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">Options during Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nextsteps.html">Next Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../updating.html">Updating Your Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01.html">Example: HXMM01</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example BX610: perform model fitting using method=‘emcee’</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GMaKE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Example BX610: perform model fitting using method=‘emcee’</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/demos/demo_bx610_emcee.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p><a class="reference external" href="https://colab.research.google.com/github/r-xue/casa_proc/blob/master/demo/test_casaproc.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<div class="section" id="example-bx610-perform-model-fitting-using-method-emcee">
+<h1>Example BX610: perform model fitting using method=‘emcee’<a class="headerlink" href="#example-bx610-perform-model-fitting-using-method-emcee" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
+import glob
+import os
+import io
+import logging
+import emcee
+from pprint import pprint
+
+print(sys.version)
+
+
+import socket
+if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
+    os.chdir(&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/&#39;)
+print(socket.gethostname())
+print(os.getcwd())
+
+import gmake
+print(gmake.__version__)
+print(gmake.__email__)
+print(gmake.__demo__)
+gmake.check_deps()
+
+inpfile=gmake.__demo__+&#39;/../examples/inpfile/bx610_band6_uv_mc.inp&#39;
+logfile=&#39;&#39;
+
+print(&#39;&gt;&#39;*40)
+#gmake.logger_config()
+#gmake.logger_status()
+#import pprint
+#pprint.pprint(logging.Logger.manager.loggerDict)
+gmake.logger_config()
+inp_dct=gmake.read_inp(inpfile)
+outdir=inp_dct[&#39;optimize&#39;][&#39;outdir&#39;]
+gmake.logger_config(logfile=outdir+&#39;/gmake.log&#39;,loglevel=&#39;DEBUG&#39;,logfilelevel=&#39;DEBUG&#39;)
+gmake.logger_status()
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.7</span><span class="o">.</span><span class="mi">4</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Sep</span>  <span class="mi">7</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">29</span><span class="p">)</span>
+<span class="p">[</span><span class="n">Clang</span> <span class="mf">10.0</span><span class="o">.</span><span class="mi">1</span> <span class="p">(</span><span class="n">clang</span><span class="o">-</span><span class="mf">1001.0</span><span class="o">.</span><span class="mf">46.4</span><span class="p">)]</span>
+<span class="n">hyperion</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">astropy</span>            <span class="o">&gt;=</span><span class="mf">3.0</span>        <span class="mf">3.2</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">scikit</span><span class="o">-</span><span class="n">image</span>       <span class="n">unspecified</span>  <span class="mf">0.14</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">alpy</span>               <span class="n">unspecified</span>  <span class="mf">0.22</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">regions</span>            <span class="n">unspecified</span>  <span class="mf">0.3</span>
+<span class="n">scipy</span>              <span class="n">unspecified</span>  <span class="mf">1.2</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">reproject</span>          <span class="n">unspecified</span>  <span class="mf">0.4</span>
+<span class="n">fitsio</span>             <span class="n">unspecified</span>  <span class="mf">0.9</span><span class="o">.</span><span class="mi">12</span>
+<span class="n">fits</span><span class="o">-</span><span class="n">tools</span>         <span class="n">unspecified</span>  <span class="mf">0.2</span>
+<span class="n">yt</span>                 <span class="n">unspecified</span>  <span class="mf">3.5</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">memory</span><span class="o">-</span><span class="n">profiler</span>    <span class="n">unspecified</span>  <span class="mf">0.55</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">python</span><span class="o">-</span><span class="n">casacore</span>    <span class="o">&gt;=</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">galpy</span>              <span class="n">unspecified</span>  <span class="mf">1.5</span><span class="o">.</span><span class="n">dev0</span>
+<span class="n">reikna</span>             <span class="n">unspecified</span>  <span class="mf">0.7</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">tqdm</span>               <span class="n">unspecified</span>  <span class="mf">4.31</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">asteval</span>            <span class="o">&gt;=</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>     <span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">numexpr</span>            <span class="o">&gt;=</span><span class="mf">2.6</span><span class="o">.</span><span class="mi">9</span>      <span class="mf">2.6</span><span class="o">.</span><span class="mi">9</span>
+<span class="n">pvextractor</span>        <span class="n">unspecified</span>  <span class="mf">0.1</span>
+<span class="n">spectral</span><span class="o">-</span><span class="n">cube</span>      <span class="n">unspecified</span>  <span class="mf">0.4</span><span class="o">.</span><span class="mf">4.</span><span class="n">dev2011</span>
+<span class="n">emcee</span>              <span class="o">&gt;=</span><span class="mf">3.0</span><span class="n">rc2</span>     <span class="mf">3.0</span><span class="n">rc2</span>
+<span class="n">corner</span>             <span class="n">unspecified</span>  <span class="mf">2.0</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">lmfit</span>              <span class="n">unspecified</span>  <span class="mf">0.9</span><span class="o">.</span><span class="mi">12</span>
+<span class="n">mkl</span><span class="o">-</span><span class="n">fft</span>            <span class="n">unspecified</span>  <span class="mf">1.0</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">pyyaml</span>             <span class="n">unspecified</span>  <span class="mf">5.1</span>
+<span class="n">hickle</span>             <span class="n">unspecified</span>  <span class="mf">3.4</span><span class="o">.</span><span class="mi">5</span>
+<span class="n">casa</span><span class="o">-</span><span class="n">proc</span>          <span class="n">unspecified</span>  <span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
+<span class="n">rx</span><span class="o">.</span><span class="n">astro</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+<span class="o">&lt;</span><span class="n">Logger</span> <span class="n">gmake</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="p">[</span><span class="o">&lt;</span><span class="n">FileHandler</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span><span class="o">/</span><span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">gmake</span><span class="o">.</span><span class="n">log</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">StreamHandler</span> <span class="n">stderr</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dat_dct=gmake.read_data(inp_dct,fill_mask=True,fill_error=True)
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gmake import model_lnprob
+lnl,blobs=model_lnprob(fit_dct[&#39;p_start&#39;],fit_dct,inp_dct,dat_dct,
+                               savemodel=&#39;&#39;)
+#fit_dct,sampler=gmake.fit_setup(inp_dct,dat_dct)
+print(type(blobs))
+print(np.shape(blobs))
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blobs.item()[&#39;npar&#39;]
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gmake.fit_iterate(fit_dct,sampler,nstep=inp_dct[&#39;optimize&#39;][&#39;niter&#39;])
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gmake.fit_analyze(inpfile)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">the</span> <span class="n">model</span> <span class="nb">set</span><span class="p">:</span>             <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span>              <span class="p">(</span><span class="n">may</span> <span class="n">take</span> <span class="n">some</span> <span class="n">time</span><span class="o">..</span><span class="p">)</span>
+
+<span class="o">--&gt;</span><span class="n">data_b6_bb2</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodel_b6_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod2d_b6_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod3d_b6_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
+    <span class="n">imod3d_prof</span><span class="nd">@co76</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_co76_b6_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
+    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_ci21_b6_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
+    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb2</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
+    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb2</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
+    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6_bb2</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="o">--&gt;</span><span class="n">data_b6_bb3</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodel_b6_bb3</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod2d_b6_bb3</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod3d_b6_bb3</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
+    <span class="n">imod3d_prof</span><span class="nd">@h2o</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_h2o_b6_bb3</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
+    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
+    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb3</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
+    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb3</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6_bb3</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="o">--&gt;</span><span class="n">data_b6_bb1</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodel_b6_bb1</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod2d_b6_bb1</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod3d_b6_bb1</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
+    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb1</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
+    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb1</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
+    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6_bb1</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="o">--&gt;</span><span class="n">data_b6_bb4</span><span class="o">.</span><span class="n">ms</span>
+
+<span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodel_b6_bb4</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod2d_b6_bb4</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
+    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imod3d_b6_bb4</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
+    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb4</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
+    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6_bb4</span><span class="o">.</span><span class="n">ms</span>
+<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
+    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6_bb4</span><span class="o">.</span><span class="n">ms</span>
+<span class="o">--------------------------------------------------------------------------------</span>
+<span class="o">---</span> <span class="n">took</span> <span class="mf">16.30731</span> <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">save</span> <span class="n">the</span> <span class="n">model</span> <span class="nb">input</span> <span class="n">parameter</span><span class="p">:</span> <span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model</span><span class="o">.</span><span class="n">inp</span>
+<span class="n">model_0</span><span class="p">:</span>
+<span class="p">{</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">627572163.540645</span><span class="p">,</span>
+ <span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">178748868.17610985</span><span class="p">,</span>
+ <span class="s1">&#39;ndata&#39;</span><span class="p">:</span> <span class="mf">80455719.0</span><span class="p">,</span>
+ <span class="s1">&#39;npar&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
+
+<span class="ne">ValueError</span>                                <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">21</span><span class="o">-</span><span class="mi">5</span><span class="n">b8ecb09547c</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">gmake</span><span class="o">.</span><span class="n">fit_analyze</span><span class="p">(</span><span class="n">inpfile</span><span class="p">)</span>
+
+
+<span class="o">~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span><span class="o">/</span><span class="n">fit_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">fit_analyze</span><span class="p">(</span><span class="n">inpfile</span><span class="p">,</span> <span class="n">burnin</span><span class="p">,</span> <span class="n">copydata</span><span class="p">)</span>
+    <span class="mi">107</span>     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">blobs</span><span class="p">))</span>
+    <span class="mi">108</span>
+<span class="o">--&gt;</span> <span class="mi">109</span>     <span class="n">lnl</span><span class="p">,</span><span class="n">blobs</span><span class="o">=</span><span class="n">model_lnprob</span><span class="p">(</span><span class="n">theta_end</span><span class="p">,</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">savemodel</span><span class="o">=</span><span class="n">outfolder</span><span class="o">+</span><span class="s1">&#39;/model_1&#39;</span><span class="p">,</span><span class="n">packblobs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="mi">110</span>     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;model_1: &#39;</span><span class="p">)</span>
+    <span class="mi">111</span>     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">blobs</span><span class="p">))</span>
+
+
+<span class="o">~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span><span class="o">/</span><span class="n">model_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">model_lnprob</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">fit_dct</span><span class="p">,</span> <span class="n">inp_dct</span><span class="p">,</span> <span class="n">dat_dct</span><span class="p">,</span> <span class="n">savemodel</span><span class="p">,</span> <span class="n">packblobs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="mi">564</span>         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="mi">565</span>
+<span class="o">--&gt;</span> <span class="mi">566</span>     <span class="n">lp</span> <span class="o">=</span> <span class="n">model_lnprior</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">fit_dct</span><span class="p">)</span>
+    <span class="mi">567</span>     <span class="k">if</span>  <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+    <span class="mi">568</span>         <span class="n">blobs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lnprob&#39;</span><span class="p">:</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="s1">&#39;ndata&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span><span class="s1">&#39;npar&#39;</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)}</span>
+
+
+<span class="o">~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span><span class="o">/</span><span class="n">model_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">model_lnprior</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">fit_dct</span><span class="p">)</span>
+    <span class="mi">545</span>     <span class="n">p_up</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]</span>
+    <span class="mi">546</span>     <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)):</span>
+<span class="o">--&gt;</span> <span class="mi">547</span>         <span class="k">if</span>  <span class="n">theta</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">&lt;</span><span class="n">p_lo</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">or</span> <span class="n">theta</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">&gt;</span><span class="n">p_up</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+    <span class="mi">548</span>             <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="mi">549</span>     <span class="k">return</span> <span class="mf">0.0</span>
+
+
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">The</span> <span class="n">truth</span> <span class="n">value</span> <span class="n">of</span> <span class="n">an</span> <span class="n">array</span> <span class="k">with</span> <span class="n">more</span> <span class="n">than</span> <span class="n">one</span> <span class="n">element</span> <span class="ow">is</span> <span class="n">ambiguous</span><span class="o">.</span> <span class="n">Use</span> <span class="n">a</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">a</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tests/test_uvsample_performance.html" class="btn btn-neutral float-right" title="Test the performance of the Image-to-MS-related modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo_bx610_amoeba.html" class="btn btn-neutral float-left" title="Example BX610: perform model fitting using method=‘amoeba’" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

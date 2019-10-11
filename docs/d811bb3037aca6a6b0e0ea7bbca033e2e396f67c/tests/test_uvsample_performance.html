@@ -1,0 +1,637 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Test the performance of the Image-to-MS-related modules &mdash; GMaKE 0.2.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Example BX610: perform model fitting using method=‘emcee’" href="../demos/demo_bx610_emcee.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GMaKE
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">Options during Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nextsteps.html">Next Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../updating.html">Updating Your Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01.html">Example: HXMM01</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tests</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GMaKE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Test the performance of the Image-to-MS-related modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tests/test_uvsample_performance.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="test-the-performance-of-the-image-to-ms-related-modules">
+<h1>Test the performance of the Image-to-MS-related modules<a class="headerlink" href="#test-the-performance-of-the-image-to-ms-related-modules" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
+import glob
+import os
+import io
+import logging
+import emcee
+from pprint import pprint
+
+import socket
+print(os.getcwd())
+print(socket.gethostname())
+if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
+    os.chdir(&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/&#39;)
+
+import gmake
+print(gmake.__version__)
+print(gmake.__email__)
+print(gmake.__demo__)
+gmake.check_setup()
+
+inpfile=gmake.__demo__+&#39;/../examples/inpfile/bx610_band6_uv_mc.inp&#39;
+logfile=&#39;&#39;
+
+print(&#39;&gt;&#39;*40)
+#gmake.logger_config()
+#gmake.logger_status()
+#import pprint
+#pprint.pprint(logging.Logger.manager.loggerDict)
+gmake.logger_config()
+inp_dct=gmake.read_inp(inpfile)
+outdir=inp_dct[&#39;optimize&#39;][&#39;outdir&#39;]
+gmake.logger_config(logfile=outdir+&#39;/gmake.log&#39;,loglevel=&#39;DEBUG&#39;,logfilelevel=&#39;DEBUG&#39;)
+gmake.logger_status()
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">notebook</span>
+<span class="n">hyperion</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Python</span> <span class="n">version</span><span class="p">:</span>   <span class="mf">3.7</span><span class="o">.</span><span class="mi">4</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Sep</span>  <span class="mi">7</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">29</span><span class="p">)</span>
+<span class="p">[</span><span class="n">Clang</span> <span class="mf">10.0</span><span class="o">.</span><span class="mi">1</span> <span class="p">(</span><span class="n">clang</span><span class="o">-</span><span class="mf">1001.0</span><span class="o">.</span><span class="mf">46.4</span><span class="p">)]</span>
+<span class="n">Host</span> <span class="n">Name</span><span class="p">:</span>        <span class="n">hyperion</span>
+<span class="n">Num</span> <span class="n">of</span> <span class="n">Core</span><span class="p">:</span>      <span class="mi">8</span>
+<span class="n">Total</span> <span class="n">Memory</span><span class="p">:</span>     <span class="mf">32.0</span> <span class="n">GB</span>
+<span class="n">Available</span> <span class="n">Memory</span><span class="p">:</span> <span class="mf">11.33</span> <span class="n">GB</span>
+<span class="c1">################################################################################</span>
+<span class="n">astropy</span>            <span class="o">&gt;=</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">4.0</span><span class="o">.</span><span class="n">dev25797</span>
+<span class="n">emcee</span>              <span class="o">&gt;=</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">corner</span>             <span class="o">&gt;=</span><span class="mf">2.0</span>        <span class="mf">2.0</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">tqdm</span>               <span class="n">unspecified</span>  <span class="mf">4.31</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">lmfit</span>              <span class="n">unspecified</span>  <span class="mf">0.9</span><span class="o">.</span><span class="mi">12</span>
+<span class="n">asteval</span>            <span class="o">&gt;=</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>     <span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">numexpr</span>            <span class="o">&gt;=</span><span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">hickle</span>             <span class="n">unspecified</span>  <span class="mf">3.4</span><span class="o">.</span><span class="mi">5</span>
+<span class="n">alpy</span>               <span class="n">unspecified</span>  <span class="mf">0.22</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">regions</span>            <span class="n">unspecified</span>  <span class="mf">0.3</span>
+<span class="n">scipy</span>              <span class="n">unspecified</span>  <span class="mf">1.2</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">reproject</span>          <span class="n">unspecified</span>  <span class="mf">0.6</span><span class="o">.</span><span class="n">dev644</span>
+<span class="n">python</span><span class="o">-</span><span class="n">casacore</span>    <span class="o">&gt;=</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">scikit</span><span class="o">-</span><span class="n">image</span>       <span class="n">unspecified</span>  <span class="mf">0.14</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">galpy</span>              <span class="n">unspecified</span>  <span class="mf">1.5</span><span class="o">.</span><span class="n">dev0</span>
+<span class="n">mkl</span><span class="o">-</span><span class="n">fft</span>            <span class="n">unspecified</span>  <span class="mf">1.0</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">pvextractor</span>        <span class="o">&gt;=</span><span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span> <span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span>
+<span class="n">spectral</span><span class="o">-</span><span class="n">cube</span>      <span class="o">&gt;=</span><span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev</span>  <span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev2235</span>
+<span class="n">radio</span><span class="o">-</span><span class="n">beam</span>         <span class="o">&gt;=</span><span class="mf">0.3</span>        <span class="mf">0.3</span><span class="o">.</span><span class="mf">3.</span><span class="n">dev397</span>
+<span class="n">reproject</span>          <span class="o">&gt;=</span><span class="mf">0.6</span><span class="o">.</span><span class="n">dev</span>    <span class="mf">0.6</span><span class="o">.</span><span class="n">dev644</span>
+<span class="n">casa</span><span class="o">-</span><span class="n">proc</span>          <span class="n">unspecified</span>  <span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.2</span><span class="o">.</span><span class="n">dev1</span>
+<span class="n">rx</span><span class="o">.</span><span class="n">astro</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
+
+<span class="ne">KeyError</span>                                  <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">fecfb0ed8cdd</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+     <span class="mi">29</span> <span class="n">gmake</span><span class="o">.</span><span class="n">logger_config</span><span class="p">()</span>
+     <span class="mi">30</span> <span class="n">inp_dct</span><span class="o">=</span><span class="n">gmake</span><span class="o">.</span><span class="n">read_inp</span><span class="p">(</span><span class="n">inpfile</span><span class="p">)</span>
+<span class="o">---&gt;</span> <span class="mi">31</span> <span class="n">outdir</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;optimize&#39;</span><span class="p">][</span><span class="s1">&#39;outdir&#39;</span><span class="p">]</span>
+     <span class="mi">32</span> <span class="n">gmake</span><span class="o">.</span><span class="n">logger_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="n">outdir</span><span class="o">+</span><span class="s1">&#39;/gmake.log&#39;</span><span class="p">,</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span><span class="n">logfilelevel</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+     <span class="mi">33</span> <span class="n">gmake</span><span class="o">.</span><span class="n">logger_status</span><span class="p">()</span>
+
+
+<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;outdir&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dat_dct=gmake.read_data(inp_dct,fill_mask=True,fill_error=True)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">read</span> <span class="n">data</span> <span class="p">(</span><span class="n">may</span> <span class="n">take</span> <span class="n">some</span> <span class="n">time</span><span class="o">..</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
+
+<span class="ne">RuntimeError</span>                              <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">7</span><span class="n">b83568be513</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">dat_dct</span><span class="o">=</span><span class="n">gmake</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">fill_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fill_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="o">~/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span><span class="o">/</span><span class="n">io_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">read_data</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">,</span> <span class="n">fill_mask</span><span class="p">,</span> <span class="n">fill_error</span><span class="p">,</span> <span class="n">memorytable</span><span class="p">,</span> <span class="n">polaverage</span><span class="p">,</span> <span class="n">dataflag</span><span class="p">,</span> <span class="n">saveflag</span><span class="p">)</span>
+     <span class="mi">50</span>
+     <span class="mi">51</span>
+<span class="o">---&gt;</span> <span class="mi">52</span>                     <span class="n">t</span><span class="o">=</span><span class="n">ctb</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">vis_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span><span class="n">ack</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">memorytable</span><span class="o">=</span><span class="n">memorytable</span><span class="p">)</span>
+     <span class="mi">53</span>                     <span class="c1"># set order=&#39;F&#39; for the quick access of u/v/w</span>
+     <span class="mi">54</span>                     <span class="n">dat_dct</span><span class="p">[</span><span class="s1">&#39;uvw@&#39;</span><span class="o">+</span><span class="n">vis_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]]</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;UVW&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+
+<span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.7</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">casacore</span><span class="o">/</span><span class="n">tables</span><span class="o">/</span><span class="n">table</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="p">,</span> <span class="n">tabledesc</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">lockoptions</span><span class="p">,</span> <span class="n">ack</span><span class="p">,</span> <span class="n">dminfo</span><span class="p">,</span> <span class="n">endian</span><span class="p">,</span> <span class="n">memorytable</span><span class="p">,</span> <span class="n">concatsubtables</span><span class="p">,</span> <span class="n">_columnnames</span><span class="p">,</span> <span class="n">_datatypes</span><span class="p">,</span> <span class="n">_oper</span><span class="p">,</span> <span class="n">_delete</span><span class="p">)</span>
+    <span class="mi">370</span>                         <span class="n">opt</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="mi">371</span>                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tabname</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+<span class="o">--&gt;</span> <span class="mi">372</span>                     <span class="n">Table</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabname</span><span class="p">,</span> <span class="n">lockopt</span><span class="p">,</span> <span class="n">opt</span><span class="p">)</span>
+    <span class="mi">373</span>                     <span class="k">if</span> <span class="n">ack</span><span class="p">:</span>
+    <span class="mi">374</span>                         <span class="n">six</span><span class="o">.</span><span class="n">print_</span><span class="p">(</span><span class="s1">&#39;Successful&#39;</span><span class="p">,</span> <span class="n">typstr</span><span class="p">,</span> <span class="s1">&#39;open of&#39;</span><span class="p">,</span>
+
+
+<span class="ne">RuntimeError</span><span class="p">:</span> <span class="n">Table</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="n">band6</span><span class="o">/</span><span class="n">bx610_band6</span><span class="o">.</span><span class="n">bb2</span><span class="o">.</span><span class="n">cube3</span><span class="o">.</span><span class="n">ms</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">exist</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pprint import pprint
+#pprint(dat_dct)
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fit_dct,sampler=gmake.fit_setup(inp_dct,dat_dct)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+<span class="n">optimizer</span><span class="p">:</span> <span class="n">emcee</span>
+<span class="n">optimizing</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">index</span> <span class="o">/</span> <span class="n">name</span> <span class="o">/</span> <span class="n">start</span> <span class="o">/</span> <span class="n">lo_limit</span> <span class="o">/</span> <span class="n">up_limit</span> <span class="o">/</span> <span class="n">scale</span>
+ <span class="mi">0</span>   <span class="n">vsys</span><span class="nd">@co76</span>          <span class="mf">117.49</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">120.00</span>   <span class="p">,</span>     <span class="mf">280.00</span>     <span class="p">)</span>     <span class="mf">40.00</span>
+ <span class="mi">1</span>   <span class="n">vrot</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@co76</span>     <span class="mf">197.04</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>     <span class="mf">800.00</span>     <span class="p">)</span>     <span class="mf">40.00</span>
+ <span class="mi">2</span>   <span class="n">vdis</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@co76</span>      <span class="mf">50.82</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>     <span class="mf">800.00</span>     <span class="p">)</span>     <span class="mf">10.00</span>
+ <span class="mi">3</span>   <span class="n">pa</span><span class="nd">@co76</span>            <span class="o">-</span><span class="mf">52.41</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">132.41</span>   <span class="p">,</span>      <span class="mf">27.59</span>     <span class="p">)</span>     <span class="mf">5.00</span>
+ <span class="mi">4</span>   <span class="n">inc</span><span class="nd">@co76</span>            <span class="mf">44.06</span>      <span class="p">(</span>     <span class="mf">5.00</span>     <span class="p">,</span>      <span class="mf">85.00</span>     <span class="p">)</span>     <span class="mf">5.00</span>
+ <span class="mi">5</span>   <span class="n">xypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@co76</span>    <span class="mf">356.5393259</span>   <span class="p">(</span>  <span class="mf">356.5390481</span> <span class="p">,</span>   <span class="mf">356.5396037</span>  <span class="p">)</span>   <span class="mf">0.0000389</span>
+ <span class="mi">6</span>   <span class="n">xypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nd">@co76</span>    <span class="mf">12.8220182</span>    <span class="p">(</span>  <span class="mf">12.8217404</span>  <span class="p">,</span>   <span class="mf">12.8222960</span>   <span class="p">)</span>   <span class="mf">0.0000389</span>
+ <span class="mi">7</span>   <span class="n">intflux</span><span class="nd">@co76</span>        <span class="mf">1.30</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.05</span>
+ <span class="mi">8</span>   <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@co76</span>       <span class="mf">0.22</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">9</span>   <span class="n">intflux</span><span class="nd">@ci21</span>        <span class="mf">0.65</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">10</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@ci21</span>       <span class="mf">0.19</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">11</span>  <span class="n">intflux</span><span class="nd">@h2o</span>         <span class="mf">0.38</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">12</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@h2o</span>        <span class="mf">0.17</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">13</span>  <span class="n">intflux</span><span class="nd">@cont</span>        <span class="mf">0.00</span>       <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>      <span class="mf">0.01</span>      <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">14</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@cont</span>       <span class="mf">0.12</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">0.30</span>      <span class="p">)</span>     <span class="mf">0.01</span>
+ <span class="mi">15</span>  <span class="n">alpha</span><span class="nd">@cont</span>          <span class="mf">3.72</span>       <span class="p">(</span>     <span class="mf">3.00</span>     <span class="p">,</span>      <span class="mf">4.50</span>      <span class="p">)</span>     <span class="mf">0.10</span>
+ <span class="mi">16</span>  <span class="n">pa</span><span class="nd">@cont</span>             <span class="mf">12.06</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">47.94</span>    <span class="p">,</span>      <span class="mf">72.06</span>     <span class="p">)</span>     <span class="mf">5.00</span>
+ <span class="mi">17</span>  <span class="n">inc</span><span class="nd">@cont</span>            <span class="mf">27.53</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>      <span class="mf">45.00</span>     <span class="p">)</span>     <span class="mf">5.00</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+<span class="n">nwalkers</span><span class="p">:</span><span class="mi">40</span>
+<span class="n">nthreads</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">ndim</span><span class="p">:</span>    <span class="mi">18</span>
+<span class="n">outdir</span><span class="p">:</span>  <span class="n">bx610_band6_uv_mc</span>
+<span class="n">one</span> <span class="n">trial</span>                                          <span class="p">:</span> <span class="mf">2.12374</span>  <span class="n">seconds</span>
+<span class="n">ndata</span><span class="o">-&gt;</span><span class="mf">80455719.0</span>
+<span class="n">chisq</span><span class="o">-&gt;</span><span class="mf">627572167.2467092</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#import gmake,time
+#import memory_profiler
+#%load_ext line_profiler
+#%load_ext memory_profiler
+#gmake.galario_threads(12)
+from galario.single import threads as galario_threads
+import multiprocessing
+galario_threads(multiprocessing.cpu_count())
+%time lnl,blobs=gmake.model_lnlike(fit_dct[&#39;p_start&#39;],fit_dct,inp_dct,dat_dct,savemodel=None,verbose=True)
+print(lnl,blobs)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">co76</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">ci21</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">h2o</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">cont</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk2d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;</span><span class="n">initialize</span><span class="o">-</span><span class="n">total</span> <span class="p">:</span> <span class="mf">0.09252</span>  <span class="n">seconds</span> <span class="o">---</span>
+
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">co76</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">ci21</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">h2o</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk3d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">@</span> <span class="n">cont</span>
+<span class="n">method</span><span class="p">:</span> <span class="n">disk2d</span>
+<span class="o">----------------------------------------</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;</span><span class="n">fill</span><span class="o">-</span><span class="n">total</span> <span class="p">:</span> <span class="mf">0.24356</span>  <span class="n">seconds</span> <span class="o">---</span>
+
+<span class="n">nchan</span><span class="p">,</span><span class="n">nrecord</span><span class="p">:</span> <span class="mi">79</span> <span class="mi">515942</span>
+<span class="n">uvsampling</span> <span class="n">plane</span> <span class="n">counts</span><span class="p">:</span>  <span class="mi">43</span>
+<span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.54576</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">out</span><span class="o">=</span><span class="ow">in</span><span class="o">+</span><span class="n">model</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">nchan</span><span class="p">,</span><span class="n">nrecord</span><span class="p">:</span> <span class="mi">79</span> <span class="mi">489423</span>
+<span class="n">uvsampling</span> <span class="n">plane</span> <span class="n">counts</span><span class="p">:</span>  <span class="mi">21</span>
+<span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.29338</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">out</span><span class="o">=</span><span class="ow">in</span><span class="o">+</span><span class="n">model</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">nchan</span><span class="p">,</span><span class="n">nrecord</span><span class="p">:</span> <span class="mi">1</span> <span class="mi">515942</span>
+<span class="n">uvsampling</span> <span class="n">plane</span> <span class="n">counts</span><span class="p">:</span>  <span class="mi">1</span>
+<span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.01252</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">out</span><span class="o">=</span><span class="ow">in</span><span class="o">+</span><span class="n">model</span><span class="p">:</span> <span class="kc">True</span>
+<span class="n">nchan</span><span class="p">,</span><span class="n">nrecord</span><span class="p">:</span> <span class="mi">1</span> <span class="mi">515942</span>
+<span class="n">uvsampling</span> <span class="n">plane</span> <span class="n">counts</span><span class="p">:</span>  <span class="mi">1</span>
+<span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.01337</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">out</span><span class="o">=</span><span class="ow">in</span><span class="o">+</span><span class="n">model</span><span class="p">:</span> <span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;</span><span class="n">simulate</span><span class="o">-</span><span class="n">total</span> <span class="p">:</span> <span class="mf">0.87912</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">6.6</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">244</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">6.84</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.58</span> <span class="n">s</span>
+<span class="o">-</span><span class="mf">178748866.65472293</span> <span class="p">{</span><span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">178748866.65472293</span><span class="p">,</span> <span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">627572160.4978713</span><span class="p">,</span> <span class="s1">&#39;ndata&#39;</span><span class="p">:</span> <span class="mf">80455719.0</span><span class="p">,</span> <span class="s1">&#39;npar&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>-178748872.1410836 {‘lnprob’: -178748872.1410836, ‘chisq’:
+627572171.4705925, ‘ndata’: 80455719.0, ‘npar’: 14}</p>
+<p>++++++++++++++++++++++++++++++++++++++++ &#64; co76 method: disk3d
+—————————————- ++++++++++++++++++++++++++++++++++++++++ &#64; ci21 method:
+disk3d —————————————- ++++++++++++++++++++++++++++++++++++++++ &#64; h2o
+method: disk3d —————————————- ++++++++++++++++++++++++++++++++++++++++ &#64;
+cont method: disk2d —————————————- &gt;&gt;&gt;&gt;&gt;initialize-total : 0.10390
+seconds —</p>
+<p>++++++++++++++++++++++++++++++++++++++++ &#64; co76 method: disk3d
+—————————————- (21, 110, 110) –&gt; (1, 79, 256, 256) —fill:
+co76–&gt;../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms disk3d : 0.07991
+seconds — ++++++++++++++++++++++++++++++++++++++++ &#64; ci21 method: disk3d
+—————————————- (21, 95, 95) –&gt; (1, 79, 256, 256) —fill:
+ci21–&gt;../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms disk3d : 0.07804
+seconds — ++++++++++++++++++++++++++++++++++++++++ &#64; h2o method: disk3d
+—————————————- (20, 79, 79) –&gt; (1, 79, 256, 256) —fill:
+h2o–&gt;../data/bx610/alma/band6/bx610_band6.bb3.cube3.ms disk3d : 0.07822
+seconds — ++++++++++++++++++++++++++++++++++++++++ &#64; cont method: disk2d
+—————————————- (1, 1, 59, 59) –&gt; (1, 1, 256, 256) —fill:
+cont–&gt;../data/bx610/alma/band6/bx610_band6.bb1.mfs.ms disk2d : 0.01697
+seconds — (1, 79, 61, 61) –&gt; (1, 79, 256, 256) —fill:
+cont–&gt;../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms disk2d : 0.01645
+seconds — (1, 79, 55, 55) –&gt; (1, 79, 256, 256) —fill:
+cont–&gt;../data/bx610/alma/band6/bx610_band6.bb3.cube3.ms disk2d : 0.01396
+seconds — (1, 1, 57, 57) –&gt; (1, 1, 256, 256) —fill:
+cont–&gt;../data/bx610/alma/band6/bx610_band6.bb4.mfs.ms disk2d : 0.01095
+seconds — &gt;&gt;&gt;&gt;&gt;fill-total : 0.34662 seconds —</p>
+<p>../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms image model shape: (1,
+79, 256, 256) nchan,nrecord: 79 515942 uvsampling plane counts: 43 —
+uvsample : 0.78571 seconds — out=in+model: True</p>
+<p>../data/bx610/alma/band6/bx610_band6.bb3.cube3.ms image model shape: (1,
+79, 256, 256) nchan,nrecord: 79 489423 uvsampling plane counts: 21 —
+uvsample : 0.39530 seconds — out=in+model: True</p>
+<p>../data/bx610/alma/band6/bx610_band6.bb1.mfs.ms image model shape: (1,
+1, 256, 256) nchan,nrecord: 1 515942 uvsampling plane counts: 1 —
+uvsample : 0.01611 seconds — out=in+model: True</p>
+<p>../data/bx610/alma/band6/bx610_band6.bb4.mfs.ms image model shape: (1,
+1, 256, 256) nchan,nrecord: 1 515942 uvsampling plane counts: 1 —
+uvsample : 0.01723 seconds — out=in+model: True &gt;&gt;&gt;&gt;&gt;simulate-total :
+1.21742 seconds — CPU times: user 6.99 s, sys: 426 ms, total: 7.41 s
+Wall time: 2.09 s -178748873.92085266 {‘lnprob’: -178748873.92085266,
+‘chisq’: 627572175.0301305, ‘ndata’: 80455719.0, ‘npar’: 14}</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import numexpr as ne
+test1=np.arange(515942,dtype=&#39;float64&#39;)
+%time test1*=1/100.0
+#print(test1)
+%time ne.evaluate(&quot;a*0.01&quot;,local_dict={&#39;a&#39;:test1},out=test1)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">352</span> <span class="n">µs</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">292</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">644</span> <span class="n">µs</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">354</span> <span class="n">µs</span>
+<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">3.64</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">419</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">4.06</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">489</span> <span class="n">µs</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mf">0.00000e+00</span><span class="p">,</span> <span class="mf">1.00000e-04</span><span class="p">,</span> <span class="mf">2.00000e-04</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">5.15939e+01</span><span class="p">,</span>
+       <span class="mf">5.15940e+01</span><span class="p">,</span> <span class="mf">5.15941e+01</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gmake.tests.test_model_build import *
+test_gmake_model_disk2d()
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="mf">0.0295867919921875</span> <span class="n">seconds</span> <span class="o">---</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import gmake
+gmake.__demo__
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>a=np.ones(1000000)
+s=np.arange(100)
+c=np.empty((1000000,100),order=&#39;F&#39;)
+start=time.time()
+for i in range(len(s)):
+    #c[:,i]=a*s[i] # 0.57
+    #ne.evaluate(&quot;a*b&quot;,local_dict={&quot;a&quot;:a,&#39;b&#39;:s[i]},casting=&#39;same_kind&#39;,out=c[:,i]) # 0.31954
+    c[:,i]*=s[i]
+print(&quot;---{0:^10} : {1:&lt;8.5f} seconds ---&quot;.format(&#39;uvsample&#39;,time.time()-start))
+print(c)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.30309</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="p">[[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+ <span class="o">...</span>
+ <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="o">...</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gmake.tests.test_array_operations import *
+test_numexpr()
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---&gt;&gt;&gt;&gt;</span><span class="n">loop</span><span class="o">-</span><span class="n">fancy1</span> <span class="p">:</span> <span class="mf">0.05199</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---&gt;&gt;&gt;&gt;</span><span class="n">loop</span><span class="o">-</span><span class="n">fancy1</span> <span class="p">:</span> <span class="mf">0.01873</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---&gt;&gt;&gt;&gt;</span><span class="n">loop</span><span class="o">-</span><span class="n">fancy1</span> <span class="p">:</span> <span class="mf">0.20160</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---&gt;&gt;&gt;&gt;</span><span class="n">loop</span><span class="o">-</span><span class="n">fancy1</span> <span class="p">:</span> <span class="mf">0.02011</span>  <span class="n">seconds</span> <span class="o">---</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numexpr3 as ne3
+import numexpr as ne
+import numpy as np
+import time
+import scipy
+
+
+plane=np.ones(1000000)
+start=time.time()
+x=np.broadcast_to(plane[:,np.newaxis],(1000000,100))
+print(&quot;---{0:^10} : {1:&lt;8.5f} seconds ---&quot;.format(&#39;uvsample&#39;,time.time()-start))
+
+#scale=np.arange(100)
+
+c=np.ones((1000000,100),order=&#39;F&#39;)*2
+
+start=time.time()
+ne.evaluate(&quot;c+x*y&quot;,local_dict={&quot;x&quot;:np.broadcast_to(plane[:,np.newaxis],(1000000,100)),&#39;y&#39;:scale},casting=&#39;same_kind&#39;,out=out) # 0.31954
+print(&quot;---{0:^10} : {1:&lt;8.5f} seconds ---&quot;.format(&#39;uvsample&#39;,time.time()-start))
+#out=ne.evaluate(&quot;x*y&quot;,local_dict={&quot;x&quot;:c,&#39;y&#39;:scale},casting=&#39;same_kind&#39;) # 0.31954
+#
+print(out,out.shape)
+print(out[:,1])
+print(out[:,2])
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.00088</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">uvsample</span>  <span class="p">:</span> <span class="mf">0.09021</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="p">[[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]</span>
+ <span class="o">...</span>
+ <span class="p">[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">2.</span>   <span class="mf">3.</span>   <span class="mf">4.</span> <span class="o">...</span>  <span class="mf">99.</span> <span class="mf">100.</span> <span class="mf">101.</span><span class="p">]]</span> <span class="p">(</span><span class="mi">1000000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="p">[</span><span class="mf">3.</span> <span class="mf">3.</span> <span class="mf">3.</span> <span class="o">...</span> <span class="mf">3.</span> <span class="mf">3.</span> <span class="mf">3.</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">4.</span> <span class="mf">4.</span> <span class="mf">4.</span> <span class="o">...</span> <span class="mf">4.</span> <span class="mf">4.</span> <span class="mf">4.</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+np.zeros((2,2),dtype=&#39;complex64&#39;)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">0.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.</span><span class="o">+</span><span class="mf">0.</span><span class="n">j</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">complex64</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>s=np.arange(100)
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(np.broadcast_to(s,(1,100))).shape
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+model2d=np.ones(1000)
+model3d=model2d[:,np.newaxis]*np.arange(100)[np.newaxis,:]
+#model2d=np.ones((10,10))
+#model3d=model2d[np.newaxis,:,:]*np.arange(100)[:,np.newaxis]
+print(model3d.shape)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+%time x=np.zeros((1,30,256,256))
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.22</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">776</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">2</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.17</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+gmake.convert_size(gmake.getsizeof(np.zeros((1000,100,100),dtype=np.float32)))
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;38.15 MB&#39;</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../demos/demo_bx610_emcee.html" class="btn btn-neutral float-left" title="Example BX610: perform model fitting using method=‘emcee’" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

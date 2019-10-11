@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example HXMM01: test the MS-simulation modules &mdash; GMaKE 0.2.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example BX610: perform model fitting using method=‘amoeba’" href="demo_bx610_amoeba.html" />
+    <link rel="prev" title="Example: HXMM01" href="demo_hxmm01.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GMaKE
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">Options during Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nextsteps.html">Next Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../updating.html">Updating Your Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01.html">Example: HXMM01</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GMaKE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Example HXMM01: test the MS-simulation modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/demos/demo_hxmm01_simulate.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example-hxmm01-test-the-ms-simulation-modules">
+<h1>Example HXMM01: test the MS-simulation modules<a class="headerlink" href="#example-hxmm01-test-the-ms-simulation-modules" title="Permalink to this headline">¶</a></h1>
+<p>This demo is used to illustrate the capability of produce referecen
+model images from model properties #### input file: demo_disk3d.inp</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
+import glob
+import os
+import io
+import logging
+import emcee
+from pprint import pprint
+
+print(sys.version)
+
+import socket
+if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
+    os.chdir(&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/&#39;)
+print(socket.gethostname())
+print(os.getcwd())
+
+import gmake
+print(gmake.__version__)
+print(gmake.__email__)
+print(gmake.__demo__)
+gmake.check_setup()
+
+inpfile=gmake.__demo__+&#39;/../examples/inpfile/demo_disk3d.inp&#39;
+logfile=&#39;&#39;
+
+print(&#39;&gt;&#39;*40)
+#gmake.logger_config()
+#gmake.logger_status()
+#import pprint
+#pprint.pprint(logging.Logger.manager.loggerDict)
+gmake.logger_config()
+inp_dct=gmake.read_inp(inpfile)
+gmake.logger_config(logfile=outdir+&#39;/gmake.log&#39;,loglevel=&#39;DEBUG&#39;,logfilelevel=&#39;DEBUG&#39;)
+gmake.logger_status()
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.7</span><span class="o">.</span><span class="mi">4</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Sep</span>  <span class="mi">7</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">29</span><span class="p">)</span>
+<span class="p">[</span><span class="n">Clang</span> <span class="mf">10.0</span><span class="o">.</span><span class="mi">1</span> <span class="p">(</span><span class="n">clang</span><span class="o">-</span><span class="mf">1001.0</span><span class="o">.</span><span class="mf">46.4</span><span class="p">)]</span>
+<span class="n">hyperion</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span>
+<span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
+<span class="n">rx</span><span class="o">.</span><span class="n">astro</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span>
+<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+<span class="o">&lt;</span><span class="n">Logger</span> <span class="n">gmake</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="p">[</span><span class="o">&lt;</span><span class="n">FileHandler</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span><span class="o">/</span><span class="n">bx610_band6_uv_mc</span><span class="o">/</span><span class="n">gmake</span><span class="o">.</span><span class="n">log</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">StreamHandler</span> <span class="n">stderr</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mod_dct=gmake.inp2mod(inp_dct)
+pprint(mod_dct)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;ci21&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bmaj&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bmin&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bpa&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;ge_pa&#39;</span><span class="p">:</span> <span class="mf">86.03550486210916</span><span class="p">,</span>
+          <span class="s1">&#39;ge_q&#39;</span><span class="p">:</span> <span class="mf">2.1169915581021574</span><span class="p">,</span>
+          <span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
+          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">0.6493000000000002</span><span class="p">,</span>
+          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610-ci21&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;CI21 of BX610 in BB2&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
+          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">809.34197</span><span class="p">,</span>
+          <span class="s1">&#39;samp&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1877150243974696</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;linedisk&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">],</span>
+          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
+          <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">],</span>
+          <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
+          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
+          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">},</span>
+ <span class="s1">&#39;co76&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bmaj&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bmin&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bpa&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;ge_pa&#39;</span><span class="p">:</span> <span class="mf">86.03550486210916</span><span class="p">,</span>
+          <span class="s1">&#39;ge_q&#39;</span><span class="p">:</span> <span class="mf">1.8764669352147458</span><span class="p">,</span>
+          <span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
+          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">1.3025216968324846</span><span class="p">,</span>
+          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610-co76&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;CO76 of BX610 in BB2&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
+          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">806.65181</span><span class="p">,</span>
+          <span class="s1">&#39;samp&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.21709427769626433</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;linedisk&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">,</span>
+                   <span class="mf">50.82245315749322</span><span class="p">],</span>
+          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
+          <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">,</span>
+                   <span class="mf">197.03794217978916</span><span class="p">],</span>
+          <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
+          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
+          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">},</span>
+ <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">3.7183180041434882</span><span class="p">,</span>
+          <span class="s1">&#39;bmaj&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bmin&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;bpa&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">27.532271886702073</span><span class="p">,</span>
+          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">0.001752223593649019</span><span class="p">,</span>
+          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk2d&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610-cont&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;submm cont of BX610 in BB1/2/3/4&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="mf">12.055510762681138</span><span class="p">,</span>
+          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">251.6825177459</span><span class="p">,</span>
+          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.11831161996700099</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;contdisk&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/band6/bx610_band6.bb1.mfs.ms,../data/bx610/alma/band6/bx610_band6.bb2.cube3.ms,../data/bx610/alma/band6/bx610_band6.bb3.cube3.ms,../data/bx610/alma/band6/bx610_band6.bb4.mfs.ms&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
+          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">}}</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gmake.metadata import template_imheader
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pprint(template_imheader)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SIMPLE</span>  <span class="o">=</span>                    <span class="n">T</span> <span class="o">/</span> <span class="n">Written</span> <span class="n">by</span> <span class="n">GMaKe</span>
+<span class="n">BITPIX</span>  <span class="o">=</span>                  <span class="o">-</span><span class="mi">32</span> <span class="o">/</span><span class="n">Floating</span> <span class="n">point</span> <span class="p">(</span><span class="mi">32</span> <span class="n">bit</span><span class="p">)</span>
+<span class="n">NAXIS</span>   <span class="o">=</span>                    <span class="mi">4</span> <span class="o">/</span>
+<span class="n">NAXIS1</span>  <span class="o">=</span>                  <span class="mi">128</span> <span class="o">/</span>
+<span class="n">NAXIS2</span>  <span class="o">=</span>                  <span class="mi">128</span> <span class="o">/</span>
+<span class="n">NAXIS3</span>  <span class="o">=</span>                  <span class="mi">238</span> <span class="o">/</span>
+<span class="n">NAXIS4</span>  <span class="o">=</span>                    <span class="mi">1</span> <span class="o">/</span>
+<span class="n">EXTEND</span>  <span class="o">=</span>                    <span class="n">T</span>
+<span class="n">BSCALE</span>  <span class="o">=</span>   <span class="mf">1.000000000000E+00</span> <span class="o">/</span><span class="n">PHYSICAL</span> <span class="o">=</span> <span class="n">PIXEL</span><span class="o">*</span><span class="n">BSCALE</span> <span class="o">+</span> <span class="n">BZERO</span>
+<span class="n">BZERO</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">BMAJ</span>    <span class="o">=</span>   <span class="mf">0.0E-05</span>
+<span class="n">BMIN</span>    <span class="o">=</span>   <span class="mf">0.0E-05</span>
+<span class="n">BPA</span>     <span class="o">=</span>   <span class="mf">0.0E+01</span>
+<span class="n">BTYPE</span>   <span class="o">=</span> <span class="s1">&#39;Intensity&#39;</span>
+<span class="n">OBJECT</span>  <span class="o">=</span> <span class="s1">&#39;TEMPLATE &#39;</span>
+
+<span class="n">BUNIT</span>   <span class="o">=</span> <span class="s1">&#39;Jy/pixel&#39;</span>           <span class="o">/</span><span class="n">Brightness</span> <span class="p">(</span><span class="n">pixel</span><span class="p">)</span> <span class="n">unit</span>
+<span class="n">RADESYS</span> <span class="o">=</span> <span class="s1">&#39;ICRS    &#39;</span>
+<span class="n">LONPOLE</span> <span class="o">=</span>   <span class="mf">1.800000000000E+02</span>
+<span class="n">LATPOLE</span> <span class="o">=</span>   <span class="mf">1.282202777778E+01</span>
+<span class="n">PC1_1</span>   <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">PC2_1</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC3_1</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC4_1</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC1_2</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC2_2</span>   <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">PC3_2</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC4_2</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC1_3</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC2_3</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC3_3</span>   <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">PC4_3</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC1_4</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC2_4</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC3_4</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PC4_4</span>   <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">CTYPE1</span>  <span class="o">=</span> <span class="s1">&#39;RA---SIN&#39;</span>
+<span class="n">CRVAL1</span>  <span class="o">=</span>   <span class="mf">0.0E+02</span>
+<span class="n">CDELT1</span>  <span class="o">=</span>  <span class="o">-</span><span class="mf">1.111111111111E-05</span>
+<span class="n">CRPIX1</span>  <span class="o">=</span>        <span class="mf">66.0000000000</span> <span class="o">/</span>
+<span class="n">CUNIT1</span>  <span class="o">=</span> <span class="s1">&#39;deg     &#39;</span>
+<span class="n">CTYPE2</span>  <span class="o">=</span> <span class="s1">&#39;DEC--SIN&#39;</span>
+<span class="n">CRVAL2</span>  <span class="o">=</span>   <span class="mf">0.0E+01</span>
+<span class="n">CDELT2</span>  <span class="o">=</span>   <span class="mf">1.111111111111E-05</span>
+<span class="n">CRPIX2</span>  <span class="o">=</span>        <span class="mf">66.0000000000</span> <span class="o">/</span>
+<span class="n">CUNIT2</span>  <span class="o">=</span> <span class="s1">&#39;deg     &#39;</span>
+<span class="n">CTYPE3</span>  <span class="o">=</span> <span class="s1">&#39;FREQ    &#39;</span>
+<span class="n">CRVAL3</span>  <span class="o">=</span>   <span class="mf">2.349542341980E+11</span>
+<span class="n">CDELT3</span>  <span class="o">=</span>   <span class="mf">7.812133295105E+06</span>
+<span class="n">CRPIX3</span>  <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">CUNIT3</span>  <span class="o">=</span> <span class="s1">&#39;Hz      &#39;</span>
+<span class="n">CTYPE4</span>  <span class="o">=</span> <span class="s1">&#39;STOKES  &#39;</span>
+<span class="n">CRVAL4</span>  <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">CDELT4</span>  <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">CRPIX4</span>  <span class="o">=</span>   <span class="mf">1.000000000000E+00</span>
+<span class="n">CUNIT4</span>  <span class="o">=</span> <span class="s1">&#39;        &#39;</span>
+<span class="n">PV2_1</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">PV2_2</span>   <span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">RESTFRQ</span> <span class="o">=</span>   <span class="mf">7.573097700000E+11</span> <span class="o">/</span><span class="n">Rest</span> <span class="n">Frequency</span> <span class="p">(</span><span class="n">Hz</span><span class="p">)</span>
+<span class="n">SPECSYS</span> <span class="o">=</span> <span class="s1">&#39;LSRK    &#39;</span>           <span class="o">/</span><span class="n">Spectral</span> <span class="n">reference</span> <span class="n">frame</span>
+
+<span class="n">VELREF</span>  <span class="o">=</span>                  <span class="mi">257</span> <span class="o">/</span><span class="mi">1</span> <span class="n">LSR</span><span class="p">,</span> <span class="mi">2</span> <span class="n">HEL</span><span class="p">,</span> <span class="mi">3</span> <span class="n">OBS</span><span class="p">,</span> <span class="o">+</span><span class="mi">256</span> <span class="n">Radio</span>
+<span class="n">COMMENT</span> <span class="n">casacore</span> <span class="n">non</span><span class="o">-</span><span class="n">standard</span> <span class="n">usage</span><span class="p">:</span> <span class="mi">4</span> <span class="n">LSD</span><span class="p">,</span> <span class="mi">5</span> <span class="n">GEO</span><span class="p">,</span> <span class="mi">6</span> <span class="n">SOU</span><span class="p">,</span> <span class="mi">7</span> <span class="n">GAL</span>
+<span class="n">TELESCOP</span><span class="o">=</span> <span class="s1">&#39;ALMA    &#39;</span>
+<span class="n">OBSERVER</span><span class="o">=</span> <span class="s1">&#39;GMAKE&#39;</span>
+<span class="n">DATE</span><span class="o">-</span><span class="n">OBS</span><span class="o">=</span> <span class="s1">&#39;2016-08-03T07:35:49.824000&#39;</span>
+<span class="n">TIMESYS</span> <span class="o">=</span> <span class="s1">&#39;UTC     &#39;</span>
+<span class="n">OBSRA</span>   <span class="o">=</span>   <span class="mf">3.565393333333E+02</span>
+<span class="n">OBSDEC</span>  <span class="o">=</span>   <span class="mf">1.282202777778E+01</span>
+<span class="n">OBSGEO</span><span class="o">-</span><span class="n">X</span><span class="o">=</span>   <span class="mf">2.225142180269E+06</span>
+<span class="n">OBSGEO</span><span class="o">-</span><span class="n">Y</span><span class="o">=</span>  <span class="o">-</span><span class="mf">5.440307370349E+06</span>
+<span class="n">OBSGEO</span><span class="o">-</span><span class="n">Z</span><span class="o">=</span>  <span class="o">-</span><span class="mf">2.481029851874E+06</span>
+<span class="n">INSTRUME</span><span class="o">=</span> <span class="s1">&#39;ALMA    &#39;</span>
+<span class="n">DISTANCE</span><span class="o">=</span>   <span class="mf">0.000000000000E+00</span>
+<span class="n">DATE</span>    <span class="o">=</span> <span class="s1">&#39;2019-01-01T00:00:00.000000&#39;</span> <span class="o">/</span><span class="n">Date</span> <span class="n">FITS</span> <span class="n">file</span> <span class="n">was</span> <span class="n">written</span>
+<span class="n">ORIGIN</span>  <span class="o">=</span> <span class="s1">&#39;GMAKE&#39;</span>
+<span class="n">HISTORY</span> <span class="n">FROM</span> <span class="n">TCLEAN</span> <span class="n">STANDARD</span> <span class="n">OUTPUT</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="demo_bx610_amoeba.html" class="btn btn-neutral float-right" title="Example BX610: perform model fitting using method=‘amoeba’" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo_hxmm01.html" class="btn btn-neutral float-left" title="Example: HXMM01" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

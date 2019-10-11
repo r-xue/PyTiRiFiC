@@ -150,7 +150,8 @@ pre {
   -moz-border-radius: 3px;
   border-radius: 3px;
   white-space: pre;
-  word-wrap: break-word;
+  /* word-wrap: break-word; */
+  overflow: auto;
 }
 
 img {
