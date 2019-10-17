@@ -1,32 +1,8 @@
 .. _package-template:
 
-Welcome to Astropy Package Template's documentation!
+Welcome to GMaKE's documentation!
 ====================================================
 
-The Astropy package template is designed to help quickly create new Python
-packages within the Astropy ecosystem. This package is similar to the layout of
-the main Astropy_ core library, and reuses much of the helper code used to
-organize Astropy_ and many Astropy affiliated packages.
-
-This documentation will guide you through getting started with the package
-template and updating your package when the template is updated.
-
-If you have any issues using the package template, please open an issue in
-the `package-template issue tracker <https://github.com/astropy/package-template/issues>`_.
-
-homepage
---------
-
-This is intended to be a quick reference for the program. The current task list is `here`_
-
-1. Introduction
-2. `Parameter File Format`_
-3. Examples
-4. More options
-
-
-.. _Parameter File Format: https://github.com/r-xue/GMaKE/wiki/Parameter-File-Format
-.. _here: https://github.com/r-xue/GMaKE/wiki/Task-List
 
 
 TaskList
@@ -54,16 +30,54 @@ This is intended to be a quick reference for the program. The current task list 
 3. Examples
 4. More options
 
-
-.. _Parameter File Format: https://www.magclouds/GMaKE/wiki/Parameter-File-Format
+.. _Parameter File Format: ./par_def.html
 .. _here: https://github.com/r-xue/GMaKE/wiki/Task-List
 
 Installation
-------------
+~~~~~~~~~~~~
+The command line script can be installed via::
 
-Release:
-=====
-pending
+    pip install --user .                                                  # from a local copy 
+    pip install --user --upgrade casa-proc                                # from PyPI
+    pip install --user https://github.com/r-xue/GMaKE/archive/master.zip  # from GitHub
+
+Usage
+~~~~~
+
+Although GMaKe is written as a Python package/module, a user-friendly console command-line interface is provided::
+    
+    hyperion:output Rui$ gmake_cli -h
+    
+    usage: gmake_cli [-h] [-f] [-a] [-p] [-d] [-t] [-l LOGFILE] inpfile
+
+    The GMAKE CL entry point: 
+        gmake path/example.inp
+
+        model fitting:
+            gmake -f path/example.inp
+        analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting  
+            gmake -a path/example.inp 
+        generate diagnostic plots
+            gmake -p path/example.inp 
+
+    Note:
+        for more complicated / customized user cases, one should build a workflow by
+        calling modules/functions directly (e.g. hz_examples.py) 
+            
+        
+    positional arguments:
+      inpfile               A parameter input file
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -f, --fit             perform parameter optimization
+      -a, --analyze         analyze the fitting results / exporting data+model
+      -p, --plot            generate diagnotisc plots
+      -d, --debug           Debug mode; prints extra statements
+      -t, --test            test mode; run benchmarking scripts
+      -l LOGFILE, --logfile LOGFILE
+                            path to log file
+
 
 Dependencies:
 =====
@@ -87,7 +101,6 @@ Dependencies:
 - `pyfftw <https://pypi.org/project/pyFFTW/>`_ *(optional: for improving FFT speed)*
 
 
-
 ChangeLog:
 =====
 ::
@@ -109,63 +122,29 @@ After a comparison among several readable plain-text syntaxes potentially suitab
 Getting Started
 ---------------
 
-The Astropy Package template uses the `Cookiecutter
-<http://cookiecutter.readthedocs.io/>`_ project to make it easier to customise
-the template for your package. To use the package template you need cookiecutter
-installed. The package template also optionally makes use of `gitpython
-<https://gitpython.readthedocs.io/en/stable/>`_ to setup the
-``astropy_helpers`` submodule. Depending on how you have Python
-installed these packages can be obtained through either pip or conda::
-
-  conda install -c conda-forge cookiecutter gitpython
-
-or::
-
-  pip install cookiecutter gitpython
-
-Cookiecutter works by taking a template (in this case the Astropy Package
-Template) and asking you a series of :ref:`questions <options>` to create a set
-of files and folders where your answers to the questions are pre-filled into the
-correct places. The package template uses this to allow you to specify things
-like your project's name as well as choose what parts and features of the
-template you want to use.
-
-To start a package with the package template run::
-
-  cookiecutter gh:astropy/package-template
-
-This will prompt you with a series of questions about your project. See
-the :ref:`options` page for more details on the various options.
-
-If this is the first time you are rendering a template, you may want to take a
-moment to examine the example files that have been included in the package.
-These are examples of a pure-python module, a test script, a `Cython
-<http://cython.org/>`_ module, and a sub-package, respectively.  These are
-provided as examples of a standard way to lay these out. Once you understand
-these or if you do not need them, you'll want to delete them
-and later replace with your own as needed.
-
-For further customization of your package including setting up testing and
-documentation, read the :ref:`next-steps` for further information.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   options
-   nextsteps
-   updating
-   par_def.rst
+   par_def
+   
+.. toctree::
+    maxdepth: 1
+    :caption: Tutorials
+    
+    demos/demo_bx610
+    demos/demo_hxmm01
+    
+    demos/demo_hxmm01_simulate
+    demos/demo_bx610_amoeba
+    demos/demo_bx610_emcee
 
-
-Removal of Python 2 support
-===========================
-
-This package template now supports Python 3.5+ versions only. However we
-will provide critical bug fixes to the ``cookiecutter-2.x`` branch until
-the end of 2019.
-We also provide a Python 2 compatible rendered versions of the template in
-the ``master-py2`` branch.
+.. toctree::
+    maxdepth: 1
+    :caption: Tests
+    
+    tests/test_uvsample_performance
 
 
 Indices and tables
@@ -174,5 +153,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. _Astropy: http://astropy.org

@@ -1,6 +1,10 @@
 from .gmake_init import *
 from .gmake_utils import *
 
+from .ms_utils import read_ms
+
+from sys import getsizeof
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,66 +52,9 @@ def read_data(inp_dct,
                 
                 if  ('data@'+vis_list[ind] not in dat_dct) and 'vis' in obj:
                     
-    
-                    t=ctb.table(vis_list[ind],ack=False,memorytable=memorytable)
-                    # set order='F' for the quick access of u/v/w 
-                    dat_dct['uvw@'+vis_list[ind]]=(t.getcol('UVW')).astype(np.float32,order='F')
-                    dat_dct['type@'+vis_list[ind]]='vis'
-                    
-                    if  polaverage==True:
-                        # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
-                        # then the data/weight in numpy as nrecord x nchan / nrecord
-                        dat_dct['data@'+vis_list[ind]]=np.mean(t.getcol('DATA'),axis=-1)
-                        dat_dct['weight@'+vis_list[ind]]=np.sum(t.getcol('WEIGHT'),axis=-1)
-                        if  dataflag==True:
-                            dat_dct['data@'+vis_list[ind]][np.where(np.any(t.getcol('FLAG'),axis=-1))]=np.nan
-                        if  saveflag==True:
-                            dat_dct['flag@'+vis_list[ind]]=np.any(t.getcol('FLAG'),axis=-1)         
-                    else:
-                        dat_dct['data@'+vis_list[ind]]=t.getcol('DATA')
-                        dat_dct['weight@'+vis_list[ind]]=t.getcol('WEIGHT')
-                        if  dataflag==True:
-                            dat_dct['data@'+vis_list[ind]][np.nonzero(t.getcol('FLAG')==True)]=np.nan
-                        if  saveflag==True:
-                            dat_dct['flag@'+vis_list[ind]]=t.getcol('FLAG')
-                    t.close()
-                    
-                    #   use the last spw in the SPECTRAL_WINDOW table
-                    ts=ctb.table(vis_list[ind]+'/SPECTRAL_WINDOW',ack=False)
-                    dat_dct['chanfreq@'+vis_list[ind]]=ts.getcol('CHAN_FREQ')[-1]
-                    dat_dct['chanwidth@'+vis_list[ind]]=ts.getcol('CHAN_WIDTH')[-1]
-                    ts.close()
-                    
-                    #   use the last field phasecenter in the FIELD table
-                    tf=ctb.table(vis_list[ind]+'/FIELD',ack=False) 
-                    phase_dir=tf.getcol('PHASE_DIR')
-                    tf.close()
-                    phase_dir=phase_dir[-1][0]
-                    phase_dir=np.rad2deg(phase_dir)
-                    if  phase_dir[0]<0:
-                        phase_dir[0]+=360.0
-                    dat_dct['phasecenter@'+vis_list[ind]]=phase_dir
-                    
-
-                    logger.debug('\nloading: '+vis_list[ind]+'\n')
-                    logger.debug('data@'+vis_list[ind]+'>>'+str(dat_dct['data@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['data@'+vis_list[ind]]))))
-                    logger.debug('uvw@'+vis_list[ind]+'>>'+str(dat_dct['uvw@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['uvw@'+vis_list[ind]]))))
-                    logger.debug('weight@'+vis_list[ind]+'>>'+\
-                          str(dat_dct['weight@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['weight@'+vis_list[ind]])))+\
-                          str(np.median(dat_dct['weight@'+vis_list[ind]])))
-                    if  saveflag==True:
-                        logger.debug('flag@'+vis_list[ind]+'>>'+\
-                              str(dat_dct['flag@'+vis_list[ind]].shape)+str(convert_size(getsizeof(dat_dct['flag@'+vis_list[ind]])))+\
-                              str(np.median(dat_dct['weight@'+vis_list[ind]])))                                      
-                    logger.debug('chanfreq@'+vis_list[ind]+'>> [GHz]'+\
-                          str(np.min(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
-                          str(np.max(dat_dct['chanfreq@'+vis_list[ind]])/1e9)+\
-                          str(np.size(dat_dct['chanfreq@'+vis_list[ind]])))
-                    logger.debug('chanwidth@'+vis_list[ind]+'>> [GHz]'+\
-                          str(np.min(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
-                          str(np.max(dat_dct['chanwidth@'+vis_list[ind]])/1e9)+\
-                          str(np.mean(dat_dct['chanwidth@'+vis_list[ind]])/1e9))
-                    logger.debug('phasecenter@'+vis_list[ind]+'>>'+str(dat_dct['phasecenter@'+vis_list[ind]]))
+                    dat_dct_out=read_ms(vis_list[ind],
+                                        polaverage=polaverage,dataflag=dataflag,saveflag=saveflag,
+                                        dat_dct=dat_dct)
                         
         if  'image' in inp_dct[tag].keys():
         
@@ -131,8 +78,8 @@ def read_data(inp_dct,
                 
                 logger.debug('loading: '+obj['pmodel']+' to ')
                 logger.debug('pmodel@'+tag)       
-                logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))              
-            
+                logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))              
+
             for ind in range(len(im_list)):
                 
                 if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
@@ -143,7 +90,7 @@ def read_data(inp_dct,
                     
                     logger.debug('loading: '+im_list[ind]+' to ')
                     logger.debug('data@'+im_list[ind],'header@'+im_list[ind])
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                     
                 if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
                     data=fits.getdata(em_list[ind],memmap=False)
@@ -151,7 +98,7 @@ def read_data(inp_dct,
                     
                     logger.debug('loading: '+em_list[ind]+' to ')
                     logger.debug('error@'+im_list[ind])
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                     
                 if  ('mask@'+im_list[ind] not in dat_dct) and 'mask' in obj:
                     data=fits.getdata(mk_list[ind],memmap=False)                
@@ -159,7 +106,7 @@ def read_data(inp_dct,
                     
                     logger.debug('loading: '+mk_list[ind]+' to ')
                     logger.debug('mask@'+im_list[ind])
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
@@ -167,13 +114,13 @@ def read_data(inp_dct,
                     
                     logger.debug('loading: '+sp_list[ind]+' to ')
                     logger.debug('sample@'+im_list[ind])
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     data=fits.getdata(pf_list[ind],memmap=False)                
                     dat_dct['psf@'+im_list[ind]]=data
                     logger.debug('loading: '+pf_list[ind]+' to ')
                     logger.debug('psf@'+im_list[ind])       
-                    logger.debug(str(data.shape)+str(convert_size(getsizeof(data))))
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                         
                      
                             
@@ -191,7 +138,8 @@ def read_data(inp_dct,
   
     logger.info('-'*80)
     logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
-        
+    logger.info("--- dat_dct size {0} ---".format(human_unit(get_obj_size(dat_dct)*u.byte)))
+    
     return dat_dct
 
 def dct2npy(dct,outname='dct2npy'):

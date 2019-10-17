@@ -3,3 +3,7 @@ python-casacore/
 numexpr-numexpr-3.0/
 mkl_fft-1.0.14/
 galario/
+
+for mkl_fft:
+
+pip install --user .

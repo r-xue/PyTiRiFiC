@@ -40,6 +40,10 @@ def arithmeticEval (s):
     return _eval(node.body)
 """
 
+
+import sys
+import gc
+
 def read_inp(parfile,log=False):
     """
     read parameters/setups from a .inp file into a dictionary nest:
@@ -408,7 +412,7 @@ def inp2mod(objs):
     
     inp_dct_modified
     
-    --> inp2mod (fullfill the default value / ties / reject comments <-- more like a formatter) 
+    --> inp2mod (fullfill the default value / ties / reject comments <-- act as a formatter) 
     
     mod_dct
     
@@ -441,6 +445,7 @@ def inp2mod(objs):
  
             value=objs[tag][key]
             if  isinstance(value, str):
+                
                 pars=[par for par in par_list if par in value] 
                 if  pars!=[]:   # a string expression for parameter tie is detected
                     par=max(pars, key=len) 
@@ -456,6 +461,13 @@ def inp2mod(objs):
                         #objs[tag][key]=ne.evaluate(value_expr).tolist()
                         objs[tag][key]=aeval(value_expr)
                         #print(value,'-->',objs[tag][key])
+                
+                if  values in list(objs.keys()) and key.lower() == 'import':
+                    #   value: the section to be imported
+                    #   
+                    del objs[tag][key]
+                    for import_key in list(objs[value].keys()):
+                        objs[tag][import_key]=objs[value][import_key]
                     
                     #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
                 """
@@ -626,13 +638,127 @@ def gmake_pformat(fit_dct):
 
 
 def convert_size(size_bytes): 
+    """
+    **obsolete** now we use human_unit()/human_to_string()
+    """
     if size_bytes == 0: 
         return "0B" 
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB") 
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    power = math.pow(1024, i) 
+    i = int(np.floor(np.log(size_bytes)/np.log(1024)))
+    power = np.power(1024, i) 
     size = round(size_bytes / power, 2) 
     return "{} {}".format(size, size_name[i])
+
+
+def human_unit(quantity, return_unit=False, base_index=0, scale_range=None):
+
+    """
+    Sugguest a better unit for the quantity and make it more human readable
+    e.g. 1200 m/s -> 1.2 km/s
+        
+    return_unit:
+        False:          return the input quantity in a suggested unit
+        True:           just return a suggested unit
+
+    base_index:
+        the index of the unitbase which we examine its prefix possibility.
+            
+    For time:           try built-in astropy.utils.console.human_time()
+    For file size:      one may also use astropy.utils.concolse.human_file_size()
+
+    reference:    https://docs.astropy.org/en/stable/_modules/astropy/units/core.html
+    
+    have tried the functions below,they work similar for PrefixUnit, but they dont work well 
+    with composited units (e.g. u.km/u.s)
+        get_current_unit_registry().get_units_with_physical_type(unit)
+        unit.find_equivalent_units(include_prefix_units=True)
+        unit.compose(include_prefix_units=True) might work but the results can be unexpected
+    note:
+        get_units_with_same_physical_type() is a private method, since end users should be encouraged
+        to use the more powerful `compose` and `find_equivalent_units`
+        methods (which use this under the hood).
+        
+    help find the best human readable unit
+    then you can do q.to_string(unit='*')        
+    
+    """
+
+    
+    if  not quantity.isscalar:
+        raise Exception("given quantity is not scalar")
+   
+    
+
+    human_unit=quantity.unit
+
+    bases=human_unit.bases.copy()
+    powers=human_unit.powers.copy()
+    base=bases[base_index]
+    candidate_list=(base).compose(include_prefix_units=True,max_depth=1)
+
+    if  not base.is_equivalent(u.byte):
+        base_factor=1e3     # SI
+    else:
+        base_factor=2**10   # Binary
+
+    for candidate in candidate_list:
+    
+        if  scale_range is not None:
+            if  candidate.scale < min(scale_range) or candidate.scale > max(scale_range):
+                continue
+        
+        if  1 <= abs(quantity.value)*candidate.scale < base_factor and \
+            (np.log(candidate.scale)/np.log(base_factor)).is_integer():
+            
+            human_base=(candidate.bases)[0]
+            bases[base_index]=human_base
+            human_unit=u.Unit(1)
+            for b, p in zip(bases, powers): 
+                human_unit *= b if p == 1 else b**p # make sure back to PrefixUnit when possible
+            break
+
+    if  return_unit==False:
+        return quantity.to(human_unit)
+    else:
+        return human_unit
+        
+        
+def human_to_string(quantity,
+                     nospace=True,shortname=True,
+                     format='generic',format_string='{0:0.2f} {1}'):
+                
+    """
+    format: forwarded to .to_string(format):
+        options: generic, unscaled, cds, console, fits, latex, latex_inline, ogip, unicode, vounit
+    
+    format_string: {0:0.2f} {1}
+        help format you output when output='string'
+        
+    output: 
+        'string':       a string represent the input quantity in best-guess unit
+
+            
+    For time:           try built-in astropy.utils.console.human_time()
+    For file size:      one may also use astropy.utils.concolse.human_file_size()
+
+    
+    """
+    format_all=['generic', 'unscaled', 'cds', 'console', 'latex', 'latex_inline', 'ogip', 'unicode', 'vounit']
+
+    unit_string=quantity.unit.to_string(format=format)
+    if  shortname==True and format=='generic':
+        unit_names=[]
+        try:
+            unit_names+=quantity.unit.names
+        except AttributeError as error:
+            unit_names+=[quantity.unit.to_string(format=f) for f in format_all]
+        unit_string=min(unit_names,key=len)
+    if  nospace==True and format=='generic':
+        unit_string=unit_string.replace(' ','')
+    quantity_str=format_string.format(quantity.value,unit_string)
+
+    return quantity_str
+
 
     
     #if  'lmfit' in inp_dct['optimize']['method']:
@@ -659,6 +785,30 @@ def check_deps(package_name='gmake'):
         logger.debug('{0:<18} {1:<12} {2:<12}'.format(name,version_required,version_installed))
 
     return
+
+def get_obj_size(obj):
+    marked = {id(obj)}
+    obj_q = [obj]
+    sz = 0
+
+    while obj_q:
+        sz += sum(map(sys.getsizeof, obj_q))
+
+        # Lookup all the object referred to by the object in obj_q.
+        # See: https://docs.python.org/3.7/library/gc.html#gc.get_referents
+        all_refr = ((id(o), o) for o in gc.get_referents(*obj_q))
+
+        # Filter object that are already marked.
+        # Using dict notation will prevent repeated objects.
+        new_refr = {o_id: o for o_id, o in all_refr if o_id not in marked and not isinstance(o, type)}
+
+        # The new obj_q will be the ones that were not marked,
+        # and we will update marked with their ids so we will
+        # not traverse them again.
+        obj_q = new_refr.values()
+        marked.update(new_refr.keys())
+
+    return sz
 
 def check_setup():
     

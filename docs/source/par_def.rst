@@ -37,7 +37,7 @@ A input section should fall into one of the following categories:
     
     a section named ``plot``, which contains parameters controlling how the program generate diagnostic plots
     
-    ``@ misc``
+    ``@ general``
     
     a section named ``misc``, which contains some general configuration information on **GMaKE** (e.g., specifying the location of output files or working folders)
 

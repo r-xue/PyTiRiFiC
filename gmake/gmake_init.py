@@ -196,8 +196,6 @@ import numpy as np
 from astropy.wcs import WCS
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 
-from sys import getsizeof
-import math
 from memory_profiler import profile
 
 
