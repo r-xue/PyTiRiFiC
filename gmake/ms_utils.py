@@ -10,6 +10,7 @@ from .gmake_utils import human_unit
 from .gmake_utils import human_to_string
 
 import astropy.units as u
+from astropy.coordinates import Angle
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +48,8 @@ def read_ms(vis='',
     
     #   use the last spw in the SPECTRAL_WINDOW table
     ts=ctb.table(vis+'/SPECTRAL_WINDOW',ack=False)
-    dat_dct_out['chanfreq@'+vis]=ts.getcol('CHAN_FREQ')[-1]
-    dat_dct_out['chanwidth@'+vis]=ts.getcol('CHAN_WIDTH')[-1]
+    dat_dct_out['chanfreq@'+vis]=ts.getcol('CHAN_FREQ')[-1]*u.Hz
+    dat_dct_out['chanwidth@'+vis]=ts.getcol('CHAN_WIDTH')[-1]*u.Hz
     ts.close()
     
     #   use the last field phasecenter in the FIELD table
@@ -56,10 +57,12 @@ def read_ms(vis='',
     phase_dir=tf.getcol('PHASE_DIR')
     tf.close()
     phase_dir=phase_dir[-1][0]
-    phase_dir=np.rad2deg(phase_dir)
-    if  phase_dir[0]<0:
-        phase_dir[0]+=360.0
+    phase_dir=Angle(phase_dir*u.rad)
+    phase_dir[0]=phase_dir[0].wrap_at(360.0*u.deg)
     dat_dct_out['phasecenter@'+vis]=phase_dir
+    #np.rad2deg(phase_dir)
+    #if  phase_dir[0]<0:
+    #    phase_dir[0]+=360.0    
     
     logger.debug('\nRead: '+vis+'\n')
     vars=['data','uvw','weight']
@@ -75,19 +78,20 @@ def read_ms(vis='',
             textout+=str(np.median(dat_dct_out['weight@'+vis]))
         logger.debug(textout)                                   
     
-    key=['chanfreq','chanwidth']
-    uts=['GHz','MHz']
-    scale=[1e9,1e6]
+    vars=['chanfreq','chanwidth']
     for ind in range(2):
-        fmin=human_unit(np.min(dat_dct_out[key[ind]+'@'+vis])*u.Hz)
-        fmax=human_unit(np.max(dat_dct_out[key[ind]+'@'+vis])*u.Hz)
-        textout='{:60} {:20} {:10.4f} {:10.4f}'.format(
-            'chanfreq@'+vis,
-            str(dat_dct_out[key[ind]+'@'+vis].shape),
-            fmin,fmax)
+        tag=vars[ind]+'@'+vis
+        textout='{:60} {:10} {:10.4f} {:10.4f}'.format(
+            tag,
+            str(dat_dct_out[tag].shape),
+            human_unit(np.min(dat_dct_out[tag])),
+            human_unit(np.max(dat_dct_out[tag])))
         logger.debug(textout)
-
-    logger.debug('phasecenter@'+vis+'>>'+str(dat_dct_out['phasecenter@'+vis]))
+    
+    #print(phase_dir[0].to_string(unit=u.hr,sep='hms'))      # print(phase_dir[0].hms)
+    #print(phase_dir[1].to_string(unit=u.degree,sep='dms'))  # print(phase_dir[1].dms)
+    radec=phase_dir[0].to_string(unit=u.hr,sep='hms')+' '+phase_dir[1].to_string(unit=u.degree,sep='dms')
+    logger.debug('{:60} {:10}'.format('phasecenter@'+vis,radec))
     
     return dat_dct_out
 

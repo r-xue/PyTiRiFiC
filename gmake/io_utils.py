@@ -8,7 +8,13 @@ from sys import getsizeof
 logger = logging.getLogger(__name__)
 
 
+
+import hickle as hkl
+
+
+
 def read_data(inp_dct,
+              save_data=False,
               fill_mask=False,fill_error=False,                                   # for FITS/image
               memorytable=True,polaverage=True,dataflag=True,saveflag=False):     # for MS/visibilities
     """
@@ -142,6 +148,14 @@ def read_data(inp_dct,
     logger.info("--- dat_dct size {:0.2f} ---".format(dat_size))
     logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
     
+    
+    if  save_data==True:
+        outdir='./'
+        if  'general' in inp_dct:
+            if  'outdir' in inp_dct['general']:
+                outdir=inp_dct['general']['outdir']+'/'
+        hkl.dump(dat_dct, outdir+'dat_dct.h5', mode='w')
+        logger.info('--- save to: '+outdir+'dat_dct.h5')
     
     return dat_dct
 
