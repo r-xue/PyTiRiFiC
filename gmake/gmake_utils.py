@@ -397,11 +397,11 @@ def gmake_listpars(objs,showcontent=True):
                 print(key," : ",objs[tag][key])
         
 
-def inp2mod(objs):
+def inp2mod(inp_dct):
     """
-    Intereprete Model Properties
+    Convert Input Parameter Dictionary to Model Properties Dictionary
     
-    get ready for model constructions, including:
+    The code will make a dictionary ready for model constructions, including:
         + add the default values
         + fill optional keywords
         + fill the "tied" values
@@ -418,14 +418,20 @@ def inp2mod(objs):
     
     """
     
+    objs=deepcopy(inp_dct)
+    
     cfg=gmake_cfg
     ids_ignore=cfg['inp.comment']['id'].split(',')+cfg['inp.optimizer']['id'].split(',')
 
+    #   assemble all parameters
+    
     par_list=[]
-    for tmp1 in objs.keys():
-        for tmp2 in objs[tmp1].keys():
-            par_list+=[tmp2+'@'+tmp1]
-                
+    for sec_name in objs.keys():
+        for key_name in objs[sec_name].keys():
+            par_list+=[key_name+'@'+sec_name]
+    
+    secs_imported=[]
+    
     for tag in list(objs.keys()):
         
         #   remove sections not related to model component properties
@@ -434,7 +440,7 @@ def inp2mod(objs):
             tmp=objs.pop(tag,None)
             continue
 
-        for key in objs[tag].keys():
+        for key in list(objs[tag].keys()):
 
             #value=objs[tag][key]
             #for value0 in value:
@@ -462,9 +468,10 @@ def inp2mod(objs):
                         objs[tag][key]=aeval(value_expr)
                         #print(value,'-->',objs[tag][key])
                 
-                if  values in list(objs.keys()) and key.lower() == 'import':
+                if  value in list(objs.keys()) and key.lower() == 'import':
                     #   value: the section to be imported
-                    #   
+                    secs_imported+=[value]
+                    
                     del objs[tag][key]
                     for import_key in list(objs[value].keys()):
                         objs[tag][import_key]=objs[value][import_key]
@@ -475,7 +482,10 @@ def inp2mod(objs):
                     key_nest=value.split("@")
                     objs[tag][key]=objs[key_nest[1]][key_nest[0]]
                 """
-           
+    
+    for par_group in list(set(secs_imported)):
+        del objs[par_group]
+    
     return objs
     
 

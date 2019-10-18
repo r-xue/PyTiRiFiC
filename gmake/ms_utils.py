@@ -81,7 +81,6 @@ def read_ms(vis='',
     for ind in range(2):
         fmin=human_unit(np.min(dat_dct_out[key[ind]+'@'+vis])*u.Hz)
         fmax=human_unit(np.max(dat_dct_out[key[ind]+'@'+vis])*u.Hz)
-        print(fmin,fmax)
         textout='{:60} {:20} {:10.4f} {:10.4f}'.format(
             'chanfreq@'+vis,
             str(dat_dct_out[key[ind]+'@'+vis].shape),

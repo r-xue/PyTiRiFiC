@@ -137,8 +137,11 @@ def read_data(inp_dct,
                         logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
   
     logger.info('-'*80)
+    dat_size=human_unit(get_obj_size(dat_dct)*u.byte)
+    
+    logger.info("--- dat_dct size {:0.2f} ---".format(dat_size))
     logger.info("--- took {0:<8.5f} seconds ---".format(time.time()-start_time))
-    logger.info("--- dat_dct size {0} ---".format(human_unit(get_obj_size(dat_dct)*u.byte)))
+    
     
     return dat_dct
 
