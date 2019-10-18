@@ -34,7 +34,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example HXMM01: test the MS-simulation modules" href="demo_hxmm01_simulate.html" />
+    <link rel="prev" title="Example: BX610 (High-z SFG)" href="demo_bx610_prep.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,9 +89,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example: HXMM01 (High-z Merger)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#s-band-6-cycle-3-xue-et-al-2018">2015.1.00723.S (Band 6, Cycle-3, Xue et al. 2018)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spws-setup">Spws Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-one-ms-per-baseband">Export one MS per baseband</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ms-manupilation">MS manupilation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#s-band-7-cycle-0">2011.0.00539.S (Band 7, Cycle-0)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Spws Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
@@ -848,6 +867,15 @@ for i in range(0,4):
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="demo_hxmm01_simulate.html" class="btn btn-neutral float-right" title="Example HXMM01: test the MS-simulation modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo_bx610_prep.html" class="btn btn-neutral float-left" title="Example: BX610 (High-z SFG)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
