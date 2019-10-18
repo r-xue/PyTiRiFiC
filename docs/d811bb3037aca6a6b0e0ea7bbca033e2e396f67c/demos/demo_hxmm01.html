@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Example HXMM01: test the MS-simulation modules" href="demo_hxmm01_simulate.html" />
-    <link rel="prev" title="Load some essential Python modules + CASA 6 tasks/tools" href="demo_bx610.html" /> 
+    <link rel="prev" title="Example: BX610 (High-z SFG)" href="demo_bx610.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,16 +90,11 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html">Load some essential Python modules + CASA 6 tasks/tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html#create-some-convinient-functions">Create some convinient functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html#spws-setup">Spws Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html#export-one-ms-per-baseband">Export one MS per baseband</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html#ms-manupilation">MS manupilation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html#id1">Spws Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610.html">Example: BX610 (High-z SFG)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example: HXMM01 (High-z Merger)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-some-convinient-functions">Create some convinient functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#s-band-6-cycle-3-xue-et-al-2018">2015.1.00723.S (Band 6, Cycle-3, Xue et al. 2018)</a><ul>
@@ -217,30 +212,10 @@ print(&#39;casatasks ver:&#39;,ctasks.version_string())
 </pre></div>
 </div>
 </div>
-<div class="section" id="create-some-convinient-functions">
-<h3>Create some convinient functions<a class="headerlink" href="#create-some-convinient-functions" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def rmPointing(outvis):
-    &quot;&quot;&quot;
-    Empty the POINTING table
-    &quot;&quot;&quot;
-    os.system(&quot;du -hs &quot;+outvis)
-    ctb=ctools.table()
-    ctb.open(outvis+&#39;/POINTING&#39;,nomodify=False)
-    ctb.removerows(range(ctb.nrows()))
-    ctb.done()
-    # rmtables(outvis+&#39;/POINTING&#39;) # doesn&#39;t work
-    os.system(&quot;du -hs &quot;+outvis)
-
-def setLogfile(logfile,overwrite=False,rmlast=False,onconsole=True):
-    &quot;&quot;&quot;
-    Set CASA log file
-    &quot;&quot;&quot;
-    if  overwrite==True:
-        os.system(&#39;rm -rf &#39;+logfile)
-    if  rmlast==True:
-        os.system(&#39;rm -rf &#39;+ctasks.casalog.logfile())
-    ctasks.casalog.setlogfile(logfile)
-    ctasks.casalog.showconsole(onconsole=onconsole)
+<div class="section" id="import-some-convinient-functions-from-rxutils">
+<h3>Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code><a class="headerlink" href="#import-some-convinient-functions-from-rxutils" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from rxutils.casa.proc import rmPointing  # help remove POINTING tables hidden under
+from rxutils.casa.proc import setLogfile  # help reset the casa 6 log file
 </pre></div>
 </div>
 </div>
@@ -276,9 +251,10 @@ the bandwidth smearing)</p></li>
 mosaic imaging, not in this specific case; for ALMA data, the table
 can be quite large even for channle-/time-averaged data)</p></li>
 </ul>
-<p>1 We can’t remove ms/POINTING table using <code class="docutils literal notranslate"><span class="pre">rmtables()</span></code> as its abence
-will crash certain CASA tasks/tools (e.g. listable); instead, we set it
-to have empty row, as it’s done in <code class="docutils literal notranslate"><span class="pre">rmPointing()</span></code>.</p>
+<p>1 We can’t remove ms/POINTING table directly using <code class="docutils literal notranslate"><span class="pre">rmtables()</span></code> as its
+abence will crash certain CASA tasks/tools (e.g. listable); instead, we
+set it to have empty row, as it’s done by
+<code class="docutils literal notranslate"><span class="pre">rxutils.casa.proc.rmPointing()</span></code>.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Switch working directory
 
 demo_dir=&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/data/hxmm01/alma/2015.1.00723.S/&#39;
@@ -899,7 +875,7 @@ for i in range(0,4):
         <a href="demo_hxmm01_simulate.html" class="btn btn-neutral float-right" title="Example HXMM01: test the MS-simulation modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="demo_bx610.html" class="btn btn-neutral float-left" title="Load some essential Python modules + CASA 6 tasks/tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="demo_bx610.html" class="btn btn-neutral float-left" title="Example: BX610 (High-z SFG)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
