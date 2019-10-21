@@ -92,7 +92,7 @@ Note:
         return
 
     inp_dct=read_inp(args.inpfile)
-    outdir=inp_dct['optimize']['outdir']    
+    outdir=inp_dct['general']['outdir']    
     if  args.logfile=='':
         args.logfile=outdir+'/gmake.log'  
     loglevel='DEBUG' if args.debug==True else 'INFO'
@@ -149,7 +149,7 @@ def proc_inpfile(args):
         casa_proc.logger_config(logfile=args.logfile,loglevel=loglevel,logfilelevel=loglevel)         
         casa_proc.casa_init(reset=True)
         
-        ms_names=inp_dct['optimize']['outdir']+'/p_*/*.ms'
+        ms_names=inp_dct['general']['outdir']+'/p_*/*.ms'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
         mslist=glob.glob(ms_names)        
         logger.debug(pformat(mslist))
@@ -167,7 +167,7 @@ def proc_inpfile(args):
                         cell=0.04,imsize=64,
                         datacolumn='data',preload=ms2im)         
         
-        ms_names=inp_dct['optimize']['outdir']+'/p_*/*.ms.contsub'
+        ms_names=inp_dct['general']['outdir']+'/p_*/*.ms.contsub'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
         mslist=glob.glob(ms_names)        
         logger.debug(pformat(mslist))
@@ -188,7 +188,7 @@ def proc_inpfile(args):
             
     if  args.plot==True:
         
-        fn_pattern=inp_dct['optimize']['outdir']+'/p_*/data_b?_bb?.fits'
+        fn_pattern=inp_dct['general']['outdir']+'/p_*/data_b?_bb?.fits'
         fn_names=sorted(glob.glob(fn_pattern))
         logger.debug("\n"+fn_pattern)
         logger.debug('plotting list:')

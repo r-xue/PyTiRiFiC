@@ -644,8 +644,8 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
     # which is true for the mock-up/reference model image xyheader 
     # more information on the pixel index /ra-dec mapping, see:
     #       https://mtazzari.github.io/galario/tech-specs.html     
-    dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0]))
-    dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1]))
+    dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0].to_value(u.deg)))
+    dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1].to_value(u.deg)))
     
     cc=0
     
@@ -1046,5 +1046,3 @@ if  __name__=="__main__":
     examples
     """
     pass
-
-

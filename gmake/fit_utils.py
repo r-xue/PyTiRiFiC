@@ -8,7 +8,7 @@ from .io_utils import *
 
 logger = logging.getLogger(__name__)
 
-def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
+def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
     """
     for method='emcee': sampler is an emcee object
     for method=others: sampler is a dict
@@ -23,9 +23,10 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=True):
     if  'lmfit' in inp_dct['optimize']['method']:
         fit_dct=lmfit_setup(inp_dct,dat_dct)
     
+    outfolder=fit_dct['outfolder']
+    
     if  copydata==True:
-        
-        outfolder=inp_dct['optimize']['outdir']
+    
         dat_dct_path=outfolder+'/data.h5'
         dct2hdf(dat_dct,outname=dat_dct_path)    
     
@@ -65,7 +66,7 @@ def fit_iterate(fit_dct,sampler,nstep=100):
 def fit_analyze(inpfile,burnin=None,copydata=True):
     
     inp_dct=read_inp(inpfile)
-    outfolder=inp_dct['optimize']['outdir']
+    outfolder=inp_dct['general']['outdir']
     
     if  'amoeba' in inp_dct['optimize']['method']:
         amoeba_analyze(outfolder,burnin=burnin)

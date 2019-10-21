@@ -115,9 +115,9 @@ def read_inp(parfile,log=False):
                 inp_dct[tag]=pars
 
     
-    if  'optimize' in inp_dct.keys():
-        if  'outdir' in (inp_dct['optimize']).keys():
-            outdir=inp_dct['optimize']['outdir']
+    if  'general' in inp_dct.keys():
+        if  'outdir' in (inp_dct['general']).keys():
+            outdir=inp_dct['general']['outdir']
             if  isinstance(outdir,str):
                 if  not os.path.exists(outdir):
                     os.makedirs(outdir)
@@ -602,7 +602,7 @@ def gmake_pformat(fit_dct):
     metadata_path=os.path.dirname(os.path.abspath(__file__))+'/metadata/'
     template_inp=read_inp(metadata_path+'parameter_definition.inp',log=False)
     def_dct=template_inp
-    def_dct_obj=def_dct['object']
+    def_dct_obj=def_dct['emission_component']
     def_dct_opt=def_dct['optimize']
     
     

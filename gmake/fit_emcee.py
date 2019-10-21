@@ -41,6 +41,7 @@ def emcee_setup(inp_dct,dat_dct):
     """
     
     opt_dct=inp_dct['optimize']
+    gen_dct=inp_dct['general']
     
     fit_dct={'optimize':opt_dct.copy()}
     fit_dct={'method':opt_dct['method']}
@@ -92,7 +93,7 @@ def emcee_setup(inp_dct,dat_dct):
     #   turn off mutiple-processing since mkl_fft has been threaded.
     fit_dct['nthreads']=1#multiprocessing.cpu_count() #1
     fit_dct['nwalkers']=opt_dct['nwalkers']
-    fit_dct['outfolder']=opt_dct['outdir']
+    fit_dct['outfolder']=gen_dct['outdir']
     
     logger.debug('nwalkers:'+str(fit_dct['nwalkers']))
     logger.debug('nthreads:'+str(fit_dct['nthreads']))

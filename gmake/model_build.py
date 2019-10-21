@@ -79,10 +79,11 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['type@'+vis]=dat_dct['type@'+vis]
                     models['weight@'+vis]=dat_dct['weight@'+vis]   
                     models['uvw@'+vis]=dat_dct['uvw@'+vis]
+                    
                     models['chanfreq@'+vis]=dat_dct['chanfreq@'+vis]
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
-                    wv=np.mean(const.c/models['chanfreq@'+vis])
+                    wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz))
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
                     nxy=128
                     
@@ -90,15 +91,15 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     header['NAXIS1']=nxy
                     header['NAXIS2']=nxy
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])
-                    header['CRVAL1']=models['phasecenter@'+vis][0]
-                    header['CRVAL2']=models['phasecenter@'+vis][1]
-                    crval3=models['chanfreq@'+vis]
+                    header['CRVAL1']=models['phasecenter@'+vis][0].to_value(u.deg)
+                    header['CRVAL2']=models['phasecenter@'+vis][1].to_value(u.deg)
+                    crval3=models['chanfreq@'+vis].to_value(u.Hz)
                     if  not np.isscalar(crval3):
                         crval3=crval3[0]
                     header['CRVAL3']=crval3
                     header['CDELT1']=-np.rad2deg(dxy)
                     header['CDELT2']=np.rad2deg(dxy)
-                    header['CDELT3']=np.mean(dat_dct['chanwidth@'+vis])   
+                    header['CDELT3']=np.mean(dat_dct['chanwidth@'+vis].to_value(u.Hz))   
                     header['CRPIX1']=np.floor(nxy/2)+1
                     header['CRPIX2']=np.floor(nxy/2)+1
                     

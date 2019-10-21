@@ -17,20 +17,37 @@ logger = logging.getLogger(__name__)
 def read_ms(vis='',
             polaverage=True,dataflag=True,saveflag=False,memorytable=True,
             dat_dct=None):
+    """
+    Read a Measurement Set into a Dictionary only containing useful UV variables.
+    
+    vis:           MS file name
+        We assume that only a single field/spw exist in this MS, so the MS needs to 
+        be carefully prepared.
+    
+    polaverage:    True
+        averging different polarization variable to reduce data size by 2
+    dataflag:      True
+        set the flagged chan-vis to np.nan (so no extra flag array is needed)
+    saveflag:      False
+        save the flag array
+    
+    dat_dct:       pre-defined container for saving memory usages. 
+    
+    """
     
     if  dat_dct is None:
         dat_dct_out={}
     else:
         dat_dct_out=dat_dct    
     
+    # set order='F' for the quick access of u/v/w seperately
+    # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
+    # then the data/weight in numpy as nrecord x nchan / nrecord    
+    
     t=ctb.table(vis,ack=False,memorytable=memorytable)
-    # set order='F' for the quick access of u/v/w 
     dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).astype(np.float32,order='F')
     dat_dct_out['type@'+vis]='vis'
-    
     if  polaverage==True:
-        # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
-        # then the data/weight in numpy as nrecord x nchan / nrecord
         dat_dct_out['data@'+vis]=np.mean(t.getcol('DATA'),axis=-1)
         dat_dct_out['weight@'+vis]=np.sum(t.getcol('WEIGHT'),axis=-1)
         if  dataflag==True:
@@ -46,18 +63,21 @@ def read_ms(vis='',
             dat_dct_out['flag@'+vis]=t.getcol('FLAG')
     t.close()
     
-    #   use the last spw in the SPECTRAL_WINDOW table
+    #   use the "last" and "only" spw in the SPECTRAL_WINDOW table
+    #   We don't handle mutipl-spw MS here.
+    
     ts=ctb.table(vis+'/SPECTRAL_WINDOW',ack=False)
     dat_dct_out['chanfreq@'+vis]=ts.getcol('CHAN_FREQ')[-1]*u.Hz
     dat_dct_out['chanwidth@'+vis]=ts.getcol('CHAN_WIDTH')[-1]*u.Hz
     ts.close()
     
-    #   use the last field phasecenter in the FIELD table
+    #   use the "last" and "only" field phase center in the FIELD table
+    
     tf=ctb.table(vis+'/FIELD',ack=False) 
     phase_dir=tf.getcol('PHASE_DIR')
     tf.close()
     phase_dir=phase_dir[-1][0]
-    phase_dir=Angle(phase_dir*u.rad)
+    phase_dir=Angle(phase_dir*u.rad).to(unit=u.deg)
     phase_dir[0]=phase_dir[0].wrap_at(360.0*u.deg)
     dat_dct_out['phasecenter@'+vis]=phase_dir
     #np.rad2deg(phase_dir)
@@ -87,11 +107,19 @@ def read_ms(vis='',
             human_unit(np.min(dat_dct_out[tag])),
             human_unit(np.max(dat_dct_out[tag])))
         logger.debug(textout)
+
+    radec=phase_dir[0].to_string(unit=u.hr,sep='hms') # print(phase_dir[0].hms)
+    radec+='  '
+    radec+=phase_dir[1].to_string(unit=u.degree,sep='dms') # print(phase_dir[1].dms)
     
-    #print(phase_dir[0].to_string(unit=u.hr,sep='hms'))      # print(phase_dir[0].hms)
-    #print(phase_dir[1].to_string(unit=u.degree,sep='dms'))  # print(phase_dir[1].dms)
-    radec=phase_dir[0].to_string(unit=u.hr,sep='hms')+' '+phase_dir[1].to_string(unit=u.degree,sep='dms')
     logger.debug('{:60} {:10}'.format('phasecenter@'+vis,radec))
+    
+    if  dataflag==True:
+        count_flag=np.count_nonzero(np.isnan(dat_dct_out['data@'+vis]))
+        count_record=np.size(dat_dct_out['data@'+vis])
+        logger.debug('data flagging fraction: {}'.format(count_flag*1./count_record))
+
+    
     
     return dat_dct_out
 

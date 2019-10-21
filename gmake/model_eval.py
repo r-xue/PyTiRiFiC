@@ -175,16 +175,18 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         #   remove certain words from long file names 
 
         outname_exclude=None
-        if  'shortname' in inp_dct['optimize'].keys():
-            outname_exclude=inp_dct['optimize']['shortname']
-        if  'outname_exclude' in inp_dct['optimize'].keys():
-            outname_exclude=inp_dct['optimize']['outname_exclude']
+        if  'shortname' in inp_dct['general'].keys():
+            outname_exclude=inp_dct['general']['shortname']
+        if  'outname_exclude' in inp_dct['general'].keys():
+            outname_exclude=inp_dct['general']['outname_exclude']
             
         outname_replace=None
-        if  'outname_replace' in inp_dct['optimize'].keys():
-            outname_replace=inp_dct['optimize']['outname_replace']
+        if  'outname_replace' in inp_dct['general'].keys():
+            outname_replace=inp_dct['general']['outname_replace']
                                 
-
+        print(savemodel)
+        print(outname_exclude)
+        print(outname_replace)
         export_model(models,outdir=savemodel,
                      outname_exclude=outname_exclude,
                      outname_replace=outname_replace)
