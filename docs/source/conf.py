@@ -93,3 +93,4 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'http://docs.astropy.org/en/stable/': None}
                        
 verbatimwrapslines = False                       
+html_show_sourcelink = False
