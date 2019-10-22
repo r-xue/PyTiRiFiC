@@ -131,3 +131,19 @@ A simple math function could be implemented in future, e.g.,
 
 + user comments, not read by the ***gmake_utils/gmake_readpars***
 + @comments / @changelog can be also used for comments/notes
+
+
+Units
+~~~~~
+
+We support astropy.units/coordinates syntax for defning parameter
+
+Ref:
+https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html
+
+Either number (with default units) or quality (number*quanity)
+
+By defauly, number if fine., but it can handle quatity and to conversion automatically
+
+u           : astropy.units
+Angle       : astropy.coordiante.Angle
