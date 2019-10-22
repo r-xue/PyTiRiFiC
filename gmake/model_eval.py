@@ -6,6 +6,9 @@ from .io_utils import *
 
 logger = logging.getLogger(__name__)
 
+import builtins
+
+
 def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                  savemodel=None,decomp=False,nsamps=1e5,
                  returnwdev=False,
@@ -257,6 +260,43 @@ def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
         return lp+lnl,blobs
     else:
         return lp+lnl,blobs['lnprob'],blobs['chisq'],blobs['ndata'],blobs['npar']
+    
+def model_lnprob_glob(theta,fit_dct,inp_dct,
+                 savemodel=None,decomp=False,nsamps=1e5,
+                 packblobs=False,
+                 verbose=False):
+    """
+    this is the evaluating function for emcee
+    packblobs=True:
+        lnl,blobs
+    packblobs=False:
+        lnl,lnp,chisq,ndata,npar
+    """
+
+    if  verbose==True:
+        start_time = time.time()
+        
+    lp = model_lnprior(theta,fit_dct)
+    if  not np.isfinite(lp):
+        blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
+        if  packblobs==True:
+            return -np.inf,blobs
+        else:
+            return -np.inf,-np.inf,+np.inf,0.0,len(theta)
+
+    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,builtins.dat_dct,
+                           savemodel=savemodel,decomp=decomp,nsamps=nsamps,
+                           verbose=verbose)
+    
+    if  verbose==True:
+        print("try ->",theta)
+        print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
+    
+    # np.array: to creat a zero-d object array 
+    if  packblobs==True:
+        return lp+lnl,blobs
+    else:
+        return lp+lnl,blobs['lnprob'],blobs['chisq'],blobs['ndata'],blobs['npar']    
 
 def model_chisq(theta,
                       fit_dct=None,inp_dct=None,dat_dct=None,

@@ -2,6 +2,10 @@ from .gmake_init import *
 from .model_eval import * 
 
 logger = logging.getLogger(__name__)
+import builtins
+from multiprocessing import Pool
+import os
+import socket
 
 def emcee_setup(inp_dct,dat_dct):
     """
@@ -91,7 +95,7 @@ def emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
-    fit_dct['nthreads']=1#multiprocessing.cpu_count() #1
+    fit_dct['nthreads']=multiprocessing.cpu_count() #1
     fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=gen_dct['outdir']
     
@@ -117,20 +121,21 @@ def emcee_setup(inp_dct,dat_dct):
     #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
     
     # setup backend
-    h5name=fit_dct['outfolder']+'/emcee_chain.h5'
-    os.system('rm -rf '+h5name)
-    backend = emcee.backends.HDFBackend(h5name)
-    backend.reset(fit_dct['nwalkers'],fit_dct['ndim'])
+
     
-    # initilize the sampler
-    dtype = [("lnprob",float),("chisq",float),("ndata",int),("npar",int)]
+    """
     sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
                                     model_lnprob,backend=backend,blobs_dtype=dtype,
-                                    args=(fit_dct,inp_dct,dat_dct),threads=fit_dct['nthreads'],
+                                    args=(fit_dct,inp_dct,dat_dct),
                                     runtime_sortingfn=sort_on_runtime)
-                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'])
-    
-       
+                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'],threads=fit_dct['nthreads'])
+    """
+    builtins.dat_dct=dat_dct
+    builtins.inp_dct=inp_dct                                
+
+                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads']threads=fit_dct['nthreads'],)                                    
+    #"""
+    sampler=[]
     return fit_dct,sampler
     
 def emcee_iterate(sampler,fit_dct,nstep=100,
@@ -156,24 +161,58 @@ def emcee_iterate(sampler,fit_dct,nstep=100,
     autocorr=np.empty(fit_dct['nstep'])
     old_tau=np.inf
     
-    for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
-                                 progress=True,store=True):
-        
-        # Only check convergence every 100 steps
-        if  sampler.iteration % int(fit_dct['nstep']/10.0):
-            continue
+    h5name=fit_dct['outfolder']+'/emcee_chain.h5'
+    os.system('rm -rf '+h5name)
+    fit_dct['backend']=h5name
+    backend = emcee.backends.HDFBackend(h5name)
+    backend.reset(fit_dct['nwalkers'],fit_dct['ndim'])
     
-        # Compute the autocorrelation time so far
-        tau=sampler.get_autocorr_time(tol=0)    # (npar.)
-        autocorr[index]=np.mean(tau)
-        index+=1
+    # initilize the sampler
+    dtype = [("lnprob",float),("chisq",float),("ndata",int),("npar",int)]    
+    
+    host_nthread=multiprocessing.cpu_count()
+    
+    logger.info('hostname: {0}; {1} CPU cores'.format(socket.gethostname(),host_nthread))
+    logger.info('emcee threading: {0}'.format(fit_dct['nthreads']))
+    
+    omp_nthread=1 if fit_dct['nthreads']>=2 else host_nthread
+    logger.info('OpenMP threading: {0}'.format(omp_nthread))
+    galario_threads(omp_nthread)
+    os.environ["OMP_NUM_THREADS"] = str(omp_nthread)        
+    
+    with Pool(processes=fit_dct['nthreads']) as pool:
+        sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+                                    model_lnprob_glob,backend=backend,blobs_dtype=dtype,
+                                    args=(fit_dct,builtins.inp_dct),
+                                    runtime_sortingfn=sort_on_runtime)    
+        #sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+        #                            model_lnprob,backend=backend,blobs_dtype=dtype,
+        #                            args=(fit_dct,builtins.inp_dct,builtins.dat_dct),
+        #                            runtime_sortingfn=sort_on_runtime)
+        sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)
+        """    
+        for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
+                                     progress=True,store=True):
+            
+            # Only check convergence every 100 steps
+            if  sampler.iteration % int(fit_dct['nstep']/10.0):
+                continue
         
-        # Check convergence
-        converged = np.all(tau * 100 < sampler.iteration)
-        converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
-        if  converged:
-            break
-        old_tau = tau
+            # Compute the autocorrelation time so far
+            tau=sampler.get_autocorr_time(tol=0)    # (npar.)
+            autocorr[index]=np.mean(tau)
+            index+=1
+            
+            # Check convergence
+            converged = np.all(tau * 100 < sampler.iteration)
+            converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
+            if  converged:
+                break
+            old_tau = tau
+        """
+    
+    galario_threads(host_nthread)
+    os.environ["OMP_NUM_THREADS"] = str(host_nthread)        
 
     logger.debug("Done.")
     logger.debug('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))

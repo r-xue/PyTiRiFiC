@@ -29,8 +29,15 @@ import logging
 from pprint import pformat
 from io import StringIO
 import io
+
+
 from asteval import Interpreter
+import astropy.units as u
+from astropy.coordinates import Angle
+from astropy.coordinates import SkyCoord
 aeval = Interpreter(err_writer=StringIO())
+aeval.symtable['u']=u
+aeval.symtable('SkyCoord')=SkyCoord
 
 #import reikna.cluda as cluda
 #from reikna.cluda import any_api
@@ -220,4 +227,6 @@ from galario.single import threads as galario_threads
 #       MKL_NUM_THREADS=1
 #       export OMP_NUM_THREADS=8
 #       export MKL_NUM_THREADS=8
+
 galario_threads(multiprocessing.cpu_count())
+os.environ["OMP_NUM_THREADS"] = str(multiprocessing.cpu_count())

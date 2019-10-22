@@ -11,6 +11,15 @@ logger = logging.getLogger(__name__)
 # get a logger named after a function name
 # logger=logging.getLogger(inspect.stack()[0][3])
 
+from io import StringIO
+from asteval import Interpreter
+import astropy.units as u
+from astropy.coordinates import Angle
+from astropy.coordinates import SkyCoord
+aeval = Interpreter(err_writer=StringIO())
+aeval.symtable['u']=u
+aeval.symtable['SkyCoord']=SkyCoord
+
 """
 import ast, operator
 
@@ -467,14 +476,15 @@ def inp2mod(inp_dct):
                         #objs[tag][key]=ne.evaluate(value_expr).tolist()
                         objs[tag][key]=aeval(value_expr)
                         #print(value,'-->',objs[tag][key])
-                
-                if  value in list(objs.keys()) and key.lower() == 'import':
-                    #   value: the section to be imported
-                    secs_imported+=[value]
-                    
+                values=value.split(',')
+                if  key.lower() == 'import':
                     del objs[tag][key]
-                    for import_key in list(objs[value].keys()):
-                        objs[tag][import_key]=objs[value][import_key]
+                    for value0 in values:
+                        if  value0 in list(objs.keys()):
+                            #   value: the section to be imported
+                            secs_imported+=[value0]
+                            for import_key in list(objs[value0].keys()):
+                                objs[tag][import_key]=objs[value0][import_key]
                     
                     #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
                 """
@@ -483,8 +493,16 @@ def inp2mod(inp_dct):
                     objs[tag][key]=objs[key_nest[1]][key_nest[0]]
                 """
     
+    #   for "imported" parameter group sections, we delete them one by one
+    
     for par_group in list(set(secs_imported)):
         del objs[par_group]
+    
+    #   for "non-general" sections, we delete those without keyword "type"
+    
+    for section in list(objs.keys()):
+        if  ('type' not in list(objs[section].keys())) and ('general' not in section.lower()):
+            del objs[section]
     
     return objs
     
