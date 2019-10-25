@@ -3,8 +3,11 @@
 ###################################################################################################
 
 ###################################################################################################
-@ emission_component             #   available keywords with default values in a model "component" section
+@ pars_def              #   parameter definition table 
 ###################################################################################################
+
+# emission_component_parameter             #   available keywords with default values in a model "component" section
+
 
 ## keyword              default     format  type    units       #   format is only for controlling the decimal point in the log output
 
@@ -27,7 +30,8 @@ pmodel                  ''          ''      str     ''          #   prior image 
 
 type                    ''          ''      str     ''          #   replacing the old-style method
 xypos                   [0.0,0.0]   '.7f'   list    'deg'       #   [ra,dec] in degree
-                                                                #   where the origin of resginal scaling 
+                                                                #   where the origin of resginal scaling
+                                                                #   https://docs.astropy.org/en/stable/coordinates/ 
 xypos_kin               [0.0,0.0]   '.7f'   list    'deg'       #   [ra,dec] in degree for the kinematical center if different from the geometric center
 
 z                       0.0         '.3f'   float   1.0         #   redshift
@@ -51,7 +55,7 @@ inc                     0.0         '.2f'   float   'deg'       #   disk plane i
                                                         
 sbser                   [1.0,1.0]   '.2f'   list    ['arcsec',1]#  
 
-intflux                 1.0         '.2f'   float   ['Jy*km/s'] #   Jy x km/s or dataunits * angstrom
+
 
 restwave                1000.0      ''      float   'angstrom'  #   line rest wavelength (angstrom)
 restfreq                100.0       ''      float   'GHz'       #   Ghz line rest frequency
@@ -103,24 +107,20 @@ vrot                    [100,100]   '.2f'   list    'km/s'      #   rotational v
                                                                 #   dynamical model examples:
                                                                 #        +  using a dynamical model specified from the parameter section 'halodisk'
                                                                 #           vrot <<< ('dynamics','halodisk')
+lineflux                1.0         '.2f'   float   'Jy*km/s'   #   Jy x km/s or dataunits * angstrom
                                                     
 vdis                    [10.0,10.0] '.2f'   list    'km/s'      #   velocity dispersion radial profile
 
 ####    method='disk2d'                                                    
 
-alpha                   0.0         '.2f'   float   1.0         #   
-
-
-###################################################################################################
-@ keywords_group      #   a set of keywords can be "imported" into another section
-###################################################################################################
-                  
-keyword_1               ''          ''      str     ''          # 
-keyword_2               ''          ''      str     ''          # 
+#   currently only a crude power-law continuum is implemented
                                                                       
-###################################################################################################
-@ dynamics_component              #   keywords in the dynamics-prescription section
-###################################################################################################
+contflux                1.0         '.2f'   float   'Jy'        #   Jy or dataunits * angstrom
+reffreq                 100.0       ''      float   'GHz'       #   Refernce Frequency
+alpha                   0.0         '.2f'   float   1.0         #   
+                                                 
+# dynamics_component_parameters #   keywords in the dynamics-prescription section
+
 
 disk_sd                 0.0                 float   'Msun/kpc^2'#   msun/kpc^2.0               
 disk_rs                 1.0                 float   'kpc'       #   kpc
@@ -133,15 +133,21 @@ halo_conv               4.0                 float   ''          #
 halo_mvir               0.5                 float   '1e12Msun'  #   10.^12 msun
 
 ###################################################################################################
+@ general               #   keywords for the optimization configuration
+###################################################################################################
+
+outname_replace         []                  list    ''          #   list of two-element tuple
+outname_exclude         []                  list    ''          #   list of string
+outdir                  'testdir'           str     ''          #   output dir path
+
+###################################################################################################
 @ optimize              #   keywords for the optimization configuration
 ###################################################################################################
 
 method                  'amoeba'            str     ''          #   underline parameter optimization algorithm
                                                                 #   options: amoeba,lmfit-nm,lmfit-brute,emcee
 niter                   100                 int     ''          #   max iteration for parameter optimization                                                  
-outname_replace         []                  list    ''          #   list of two-element tuple
-outname_exclude         []                  list    ''          #   list of string
-outdir                  'testdir'           str     ''          #   output dir path
+
 
 parname@objectname      ('o',-1,1,0.0)      tuple   ''          #   3-/4-element tuple for a free parameter
                                                     ''          #   this could be something like:
