@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Example HXMM01: test the MS-simulation modules" href="demo_hxmm01_simulate.html" />
-    <link rel="prev" title="Example: BX610 (High-z SFG)" href="demo_bx610_prep.html" /> 
+    <link rel="prev" title="Input File Format" href="../par_def.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,7 +90,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example: HXMM01 (High-z Merger)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
@@ -110,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
 </ul>
@@ -223,10 +223,10 @@ from rxutils.casa.proc import setLogfile  # help reset the casa 6 log file
 <div class="section" id="spws-setup">
 <h3>Spws Setup<a class="headerlink" href="#spws-setup" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>spw=0,4,8,12 228GHz H2O 211-202</p></li>
-<li><p>spw=1,5,9,13 231GHz Continuum</p></li>
-<li><p>spw=2,6,10,14 243GHz CI 2-1</p></li>
-<li><p>spw=3,7,11,15 242GHz CO76/CI 7-6</p></li>
+<li><p>spw=0,4,8,12 BB1 228GHz H2O 211-202</p></li>
+<li><p>spw=1,5,9,13 BB2 231GHz Continuum</p></li>
+<li><p>spw=2,6,10,14 BB3 243GHz CI 2-1</p></li>
+<li><p>spw=3,7,11,15 BB4 242GHz CO76/CI 7-6</p></li>
 </ul>
 </div>
 <div class="section" id="export-one-ms-per-baseband">
@@ -873,7 +873,7 @@ for i in range(0,4):
         <a href="demo_hxmm01_simulate.html" class="btn btn-neutral float-right" title="Example HXMM01: test the MS-simulation modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="demo_bx610_prep.html" class="btn btn-neutral float-left" title="Example: BX610 (High-z SFG)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../par_def.html" class="btn btn-neutral float-left" title="Input File Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

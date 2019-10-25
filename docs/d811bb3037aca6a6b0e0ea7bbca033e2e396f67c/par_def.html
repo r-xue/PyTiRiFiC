@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#keyword-value-pairs">Keyword-Value Pairs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-magic-of">The magic of “&#64;”</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#others">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#units">Units</a></li>
 </ul>
 </li>
 </ul>
@@ -298,6 +299,16 @@ the place where this line is will be important as inp2mod will overwrite existin
 <li><p>user comments, not read by the <strong>*gmake_utils/gmake_readpars*</strong></p></li>
 <li><p>&#64;comments / &#64;changelog can be also used for comments/notes</p></li>
 </ul>
+</div>
+<div class="section" id="units">
+<h2>Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
+<p>We support astropy.units/coordinates syntax for defning parameter</p>
+<p>Ref:
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html">https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html</a></p>
+<p>Either number (with default units) or quality (number*quanity)</p>
+<p>By defauly, number if fine., but it can handle quatity and to conversion automatically</p>
+<p>u           : astropy.units
+Angle       : astropy.coordiante.Angle</p>
 </div>
 </div>
 
