@@ -53,7 +53,10 @@ vis                  '../data/hxmm01/alma/2015.1.00723.S/bb1.ms,../data/hxmm01/a
 
 pa                  -14.*u.deg
 inc                 79.*u.deg
-xypos               [Angle('02h20m16.653s'),Angle('-06d01m41.92s')]
+#xypos              SkyCoord('02h20m16.653s','-06d01m41.92s',frame='icrs')
+#xypos   			[Angle('02h20m16.653s'),Angle('-06d01m41.92s')]      
+#xypos				'02h20m16.653s -06d01m41.92s icrs'
+xypos				'02h20m16.653s -06d01m41.92s'
 vsys                292.*u.km/u.s
 
 vrad                [0,     0.1,     0.2,     0.3,     0.4,     0.5,     0.6]*u.arcsec
@@ -66,7 +69,7 @@ vdis                [120,    120,    120,    120,    120,    120,    120]*u.km/u
 
 pa                  1.*u.deg
 inc                 60.*u.deg
-xypos               [Angle('02h20m16.657s'),Angle('-06d01m44.60s')]
+xypos             	'02h20m16.657s -06d01m44.60s'
 vsys                -179.*u.km/u.s
 
 vrad                [0,     0.1,     0.2,     0.3,     0.4,     0.5,     0.6]*u.arcsec
@@ -79,7 +82,7 @@ vdis                [120,    120,    120,    120,    120,    120,    120]*u.km/u
 
 pa                  -2.*u.deg
 inc                 70.*u.deg
-xypos               [Angle('02h20m16.569s'),Angle('-06d01m43.62s')]
+xypos   			'02h20m16.569s -06d01m43.62s'
 vsys                +189.*u.km/u.s
 
 vrad                [0,     0.1,     0.2,     0.3,     0.4,     0.5,     0.6]*u.arcsec
@@ -91,7 +94,7 @@ vdis                [60,    60,    60,    60,    60,    60,   60]*u.km/u.s
 ################################################################################
 
 import              'basics,co76,compa'
-intflux             1.30*u.Jy*u.km/u.s
+lineflux             1.30*u.Jy*u.km/u.s
 sbser               [0.21709*u.arcsec, 1.0]
 
 ################################################################################
@@ -99,7 +102,7 @@ sbser               [0.21709*u.arcsec, 1.0]
 ################################################################################
 
 import              'basics,ci21,compa'
-intflux             0.65*u.Jy*u.km/u.s
+lineflux             0.65*u.Jy*u.km/u.s
 sbser               [0.18771*u.arcsec, 1.0]
 
 ################################################################################
@@ -107,7 +110,7 @@ sbser               [0.18771*u.arcsec, 1.0]
 ################################################################################
 
 import              'basics,h2o,compa'
-intflux             0.38*u.Jy*u.km/u.s
+lineflux             0.38*u.Jy*u.km/u.s
 sbser               [0.16759*u.arcsec, 1.0]
 
 ################################################################################
@@ -115,38 +118,36 @@ sbser               [0.16759*u.arcsec, 1.0]
 ################################################################################
 
 import              'basics,cont,compa'
-alpha               3.7183180041434882
-intflux             1.75*u.mJy
-sbser               [0.11831161996700099, 1.0]
+alpha               3.7
+contflux             1.75*u.mJy
+sbser               [0.11831*u.arcsec, 1.0]
 
 ################################################################################
 @ optimize
 ################################################################################
 
-xypos[0]@compa          ('o', [-2.0, +2.0, 0.15]*u.arcsec)
-xypos[1]@compa          ('o', [-2.0, +2.0, 0.15]*u.arcsec)
+xypos.ra@compa      ('o', [-2.0, +2.0, 0.15]*u.arcsec)
+xypos.dec@compa    	('o', [-2.0, +2.0, 0.15]*u.arcsec)
 
-vsys@bx610-basics       ('a', [-120, 280, 40]*u.km/u.s)
-vrot[1:5]@bx610-basics  ('a', [0.0, 800.0, 40]*u.km/u.s)
-vdis[0:5]@bx610-basics  ('a', [0.0, 800.0, 10.0]*u.km/u.s)
-pa@bx610-basics         ('o', [-80, 80, 5.0]*u.km/u.s)
-inc@bx610-basics        ('a', [5.0, 85.0, 5.0]*u.km/u.s)
+vsys@compa       	('a', [-120, 280, 40]*u.km/u.s)
+vrot[1:5]@compa  	('a', [0.0, 800.0, 40]*u.km/u.s)
+vdis[0:5]@compa  	('a', [0.0, 800.0, 10.0]*u.km/u.s)
+pa@compa         	('o', [-80, 80, 5.0]*u.deg)
+inc@compa        	('a', [5.0, 85.0, 5.0]*u.deg)
 
-intflux@co76         ('a', [0.1, 200.0, 0.05]*u.Jy*u.km/u.s)
-sbser[0]@co76        ('a', [0.01, 1.0, 0.01]*u.arcsec)
+lineflux@co76-compa         ('a', [0.1, 200.0, 0.05]*u.Jy*u.km/u.s)
+sbser[0]@co76-compa        ('a', [0.01, 1.0, 0.01]*u.arcsec)
 
-intflux@ci21         ('a', [0.1, 200.0, 0.01]*u.Jy*u.km/u.s)
-sbser[0]@ci21        ('a', [0.01, 1.0, 0.01]*u.arcsec)
+lineflux@ci21-compa         ('a', [0.1, 200.0, 0.01]*u.Jy*u.km/u.s)
+sbser[0]@ci21-compa        ('a', [0.01, 1.0, 0.01]*u.arcsec)
 
-intflux@h2o          ('a', [0.1, 200.0, 0.01]*u.Jy*u.km/u.s)
-sbser[0]@h2o         ('a', [0.01, 1.0, 0.01]*u.arcsec)
+lineflux@h2o-compa          ('a', [0.1, 200.0, 0.01]*u.Jy*u.km/u.s)
+sbser[0]@h2o-compa         ('a', [0.01, 1.0, 0.01]*u.arcsec)
 
-intflux@cont         ('a', [0.0001, 0.01, 0.01]*u.Jy)
-sbser[0]@cont        ('a', [0.01, 0.3, 0.01]*u.arcsec)
+contflux@cont-compa         ('a', [0.0001, 0.01, 0.01]*u.Jy)
+sbser[0]@cont-compa        ('a', [0.01, 0.3, 0.01]*u.arcsec)
 
-alpha@cont           ('a', [3, 4.5, 0.1])
-pa@cont              ('o', [-60, 60, 5]*u.deg)
-inc@cont             ('a', [0, 45.0, 5]*u.deg)
+alpha@cont-compa           ('a', [3, 4.5, 0.1])
 
 method               'emcee'
 niter                10
