@@ -1,8 +1,7 @@
-from .gmake_init import *
 from .model_func import *
 from .model_func_dynamics import *
-from .io_utils import *
-from .metadata import template_imheader
+from .io import *
+from .meta import xymodel_header
 
 #from galario.double import get_image_size
 #from galario.double import sampleImage

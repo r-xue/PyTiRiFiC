@@ -1,11 +1,14 @@
-from .gmake_init import *
-from .gmake_utils import *
+"""
+A Module used as an abstract layer for different optimization algorithms
+"""
+from .utils import *
 
-from .fit_amoeba import *
-from .fit_emcee import *
-from .fit_lmfit import *
-from .io_utils import *
+from .opt_amoeba import *
+from .opt_emcee import *
+from .opt_lmfit import *
+from .io import *
 
+import logging
 logger = logging.getLogger(__name__)
 
 def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):

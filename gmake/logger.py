@@ -1,5 +1,6 @@
 import logging
 import os
+import pprint as pp
 
 logger = logging.getLogger('gmake')
 
@@ -44,12 +45,15 @@ def logger_config(logfile=None,
     
     return     
 
-def logger_status():
+def logger_status(root=False):
     """
     print out the current status of gmake logger
     """
     print(logging.getLogger('gmake'))
     print(logging.getLogger('gmake').handlers)
+    
+    if  root==True:
+        pp.pprint(logging.Logger.manager.loggerDict) 
     
     return
 

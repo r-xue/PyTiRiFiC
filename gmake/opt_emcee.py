@@ -1,11 +1,13 @@
-from .gmake_init import *
+
 from .model_eval import * 
 
-logger = logging.getLogger(__name__)
 import builtins
 from multiprocessing import Pool
 import os
 import socket
+
+import logging
+logger = logging.getLogger(__name__)
 
 def emcee_setup(inp_dct,dat_dct):
     """
@@ -54,35 +56,52 @@ def emcee_setup(inp_dct,dat_dct):
     fit_dct['p_up']=[]
     fit_dct['p_name']=[]
     fit_dct['p_scale']=[]
+    fit_dct['p_unit']=[]
     
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
         #fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
         fit_dct['p_name'].append(p_name)
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
+        p_value,p_unit=read_par(inp_dct,p_name,to_value=True)
+        fit_dct['p_unit'].append(p_unit)
+        print(opt_dct[p_name])
+        print('-->',p_name,p_unit,p_value)
+        
+        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(p_value))
         
         if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
             si=1 ; mode=deepcopy(opt_dct[p_name][0])
         else:
             si=0 ; mode='a'
+        
+        if  isinstance(opt_dct[p_name][1][0],u.Quantity):
+            p_lo_value=(opt_dct[p_name][1][0]).to_value(unit=p_unit)
+        else:
+            p_lo_value=opt_dct[p_name][1][0]
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],
                                   read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+0],
+                                                   delta=p_lo_value,
                                                    mode=mode))
+        if  isinstance(opt_dct[p_name][1][1],u.Quantity):
+            p_up_value=(opt_dct[p_name][1][1]).to_value(unit=p_unit)
+        else:
+            p_up_value=opt_dct[p_name][1][1]
+        
         fit_dct['p_up']=np.append(fit_dct['p_up'],
                                   read_range(center=fit_dct['p_start'][-1],
-                                                   delta=opt_dct[p_name][si+1],
+                                                   delta=p_up_value,
                                                    mode=mode))                                  
         
         scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
         if  (si+2)>=len(opt_dct[p_name]):
             scale=scale_def*0.01
         else:
+            scale_value=(opt_dct[p_name][1][2]).to_value(unit=p_unit)
             if  mode=='a' or mode=='o':
-                scale=opt_dct[p_name][si+2]
+                scale=scale_value
             if  mode=='r':
-                scale=abs(fit_dct['p_start'][-1]*opt_dct[p_name][si+2])
+                scale=abs(fit_dct['p_start'][-1]*scale_value)
             scale=min(scale_def,scale)
         fit_dct['p_scale']=np.append(fit_dct['p_scale'],scale)
 

@@ -1,5 +1,4 @@
-from .gmake_init import *
-from .gmake_utils import imcontsub
+from .utils import imcontsub
 
 logger = logging.getLogger(__name__)
 

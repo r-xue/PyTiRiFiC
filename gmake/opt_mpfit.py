@@ -1,5 +1,8 @@
-from .gmake_init import *
-from .model_eval import * 
+
+from .model_eval import *
+
+import logging
+logger = logging.getLogger(__name__) 
 
 def gmake_mpfit_setup(inp_dct,dat_dct):
     

@@ -1,5 +1,7 @@
-from .gmake_init import *
 from .model_eval import * 
+
+import logging
+logger = logging.getLogger(__name__)
 
 def lmfit_setup(inp_dct,dat_dct):
     

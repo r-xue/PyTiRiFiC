@@ -1,11 +1,11 @@
-from .gmake_init import *
+
 from .model_eval import * 
 
 import numpy as np
 import copy
 import sys
-import logging
 
+import logging
 logger = logging.getLogger(__name__)
 
 def amoeba_setup(inp_dct,dat_dct,initial_model=False):

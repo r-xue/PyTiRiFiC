@@ -1,11 +1,21 @@
-from .gmake_init import *
+"""
+General-purpose utility Functions used by other modules
+"""
+
 #import inspect
 
-
 from copy import deepcopy
+import logging
+import socket
+import multiprocessing
+from psutil import virtual_memory
+import numpy as np
+from pip._vendor import pkg_resources
+import pprint as pp
+import re
 
-
-from .metadata import gmake_cfg
+from .meta import cfg
+from .meta import inp_def
 
 logger = logging.getLogger(__name__)
 # get a logger named after a function name
@@ -19,6 +29,12 @@ from astropy.coordinates import SkyCoord
 aeval = Interpreter(err_writer=StringIO())
 aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
+
+import sys
+import gc
+from unittest.mock import patch
+
+
 
 """
 import ast, operator
@@ -50,92 +66,15 @@ def arithmeticEval (s):
 """
 
 
-import sys
-import gc
-
-def read_inp(parfile,log=False):
+def pprint(*args, **kwargs):
     """
-    read parameters/setups from a .inp file into a dictionary nest:
-        inp_dct[id][keywords]=values.
-        inp_dct['comments']='??'
-        inp_dct['changlog']='??'
-        inp_dct['optimize']='??'
-        
-    keyword value formatting
-        1.remove trailing/prefix space / comments
-        2.split my space
-        3.first element is the key
-        4.the rest elements will be filled into value
-            more than one element : list
-            one element: scaler
+    A modified pprint.pprint without sorting dictionary keys
+    
+    this may not be neccsary with Py38+ as optional keyword sort_dicts become available
+        https://docs.python.org/3/library/pprint.html
     """
-
-    inp_dct={}
-    with open(parfile,'r') as f:
-        lines=f.readlines()
-    lines= filter(None, (line.split('#')[0].strip() for line in lines))
-
-    tag='default'
-    cfg=gmake_cfg
-    
-    for line in lines:
-        if  line.startswith('@'):
-            tag=line.replace('@','',1).strip()
-            #pars={'content':''}
-            pars={}
-            #pars['content']+=line+"\n"
-            if  log==True:
-                logger.debug("+"*40)
-                logger.debug('@ {}'.format(tag))
-                logger.debug("-"*40)
-        else:
-            
-            if  any(section in tag.lower() for section in cfg['inp.comment']['id'].split(',')):
-                pass
-                #pars['content']+=line+"\n"
-                #inp_dct[tag]=pars
-            else:
-                #pars['content']+=line+"\n"               
-                #   identify the "key"
-                key=line.split()[0]
-                #   remove leading/trailing space to get the "value" portion
-                value=line.replace(key,'',1).strip()
-                if  log==True:
-                    logger.debug('{:20}'.format(key)+" : "+str(value))
-                
-                """                    
-                try:                #   likely mutiple-elements are provided, 
-                                    #   but be careful of eval() usage here
-                                    #   e.g.:"tuple (1)" will be a valid statement
-                    #pars[key]=eval(value)
-                    #pars[key]=ast.literal_eval(value)
-                    pars[key]=aeval(value)
-                except SyntaxError: #   pack the value content into a list
-                    values=value.split()
-                    #pars[key]=[eval(value0) for value0 in value]
-                    #pars[key]=[ast.literal_eval(value0) for value0 in value]
-                    pars[key]=[aeval(value0) for value0 in values]
-                """
-                pars[key]=aeval(value)
-                if  len(aeval.error)>0 and pars[key] is None:
-                    values=value.split()
-                    pars[key]=[aeval(value0) for value0 in values]
-                
-                inp_dct[tag]=pars
-
-    
-    if  'general' in inp_dct.keys():
-        if  'outdir' in (inp_dct['general']).keys():
-            outdir=inp_dct['general']['outdir']
-            if  isinstance(outdir,str):
-                if  not os.path.exists(outdir):
-                    os.makedirs(outdir)
-                #np.save(outdir+'/inp_dct.npy',inp_dct)
-                #write_inp(inp_dct,inpfile=outdir+'/p_start.inp',
-                #          overwrite=True)
-                                
-                
-    return inp_dct
+    with patch('builtins.sorted', new=lambda l, **_: l):
+        pp.pprint(*args, **kwargs)
 
 
 def write_inp(inp_dct,
@@ -176,6 +115,7 @@ def write_inp(inp_dct,
         output+='\n'
     f.write(output)
     f.close()
+    
 
 
 def read_range(center=0,delta=0,mode='a'):
@@ -191,8 +131,6 @@ def read_range(center=0,delta=0,mode='a'):
         return center+delta
     if  mode=='r':
         return center*delta
-
-
 
 def moments(imagename,outname='test',
             maskname='',linechan=None):
@@ -429,7 +367,6 @@ def inp2mod(inp_dct):
     
     objs=deepcopy(inp_dct)
     
-    cfg=gmake_cfg
     ids_ignore=cfg['inp.comment']['id'].split(',')+cfg['inp.optimizer']['id'].split(',')
 
     #   assemble all parameters
@@ -545,23 +482,49 @@ def make_slice(expr):
         s=int(expr.strip())
     return s
 
-def read_par(inp_dct,par_name):
+def read_par(inp_dct,par_name,to_value=False):
     """
-    read parameter values
-        key:    par_str[ind_str]@obj_str
+    read parameter quantity / values (in default units) from a parameter dictionary
+    this function can handle literal slicing and attribute syntax
+        e.g.:   par_str[ind_str]@section_name
+                par_str.attrubute@section_name
     """
+    
     po_key=par_name.split("@")
-    i_key=re.findall("\[(.*?)\]", po_key[0])
-    if  len(i_key)==0:
+    slicing_expr=re.findall("\[(.*?)\]", po_key[0])
+        
+    if  len(slicing_expr)==0:
         p_key=po_key[0]
         o_key=po_key[1]
-        return inp_dct[o_key][p_key]
+        par_name=p_key.split('.')
+        if  len(par_name)==2:
+            par_value=getattr(inp_dct[o_key][par_name[0]],par_name[1])
+            par_name=par_name[0]
+        else:
+            par_value=inp_dct[o_key][par_name[0]]
+            par_name=par_name[0]
     else:
         p_key=(po_key[0].split("["))[0]
         o_key=po_key[1]
-        i_key=i_key[0]
-        return inp_dct[o_key][p_key][make_slice(i_key)]
-    
+        slicing_expr=slicing_expr[0]
+        par_value=inp_dct[o_key][p_key][make_slice(slicing_expr)]
+        par_name=p_key
+        
+    if  to_value==True:
+        if  isinstance(par_value,u.Quantity):
+            units=inp_def['pars_def'][par_name][-1]
+            if  isinstance(units,list):
+                unit=units[make_slice(slicing_expr)]
+            else:
+                unit=units
+            par_value=par_value.to_value(unit=unit)
+            par_unit=unit
+            return par_value,par_unit
+        else:
+            return par_value,''
+    else:
+        return par_value
+ 
 def write_par(inp_dct,par_name,par_value,verbose=False):
     """
     write parameter values
@@ -617,11 +580,10 @@ def gmake_pformat(fit_dct):
     logger.debug("optimizer: "+fit_dct['method'])
     logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit / scale")
     
-    metadata_path=os.path.dirname(os.path.abspath(__file__))+'/metadata/'
-    template_inp=read_inp(metadata_path+'parameter_definition.inp',log=False)
-    def_dct=template_inp
-    def_dct_obj=def_dct['emission_component']
-    def_dct_opt=def_dct['optimize']
+
+
+    pars_def=inp_def['pars_def']
+    opt_def=inp_def['optimize']
     
     
     maxlen=len(max(fit_dct['p_name'],key=len))
@@ -633,12 +595,13 @@ def gmake_pformat(fit_dct):
         p_up=fit_dct['p_up'][ind]
         p_up=fit_dct['p_up'][ind]
         p_scale=fit_dct['p_scale'][ind]
+        p_unit=fit_dct['p_unit'][ind]
         
         smin=len(p_key)        
-        for keyword in def_dct_obj.keys():
-            if  keyword+'@' in p_key or keyword+'[' in p_key:
+        for keyword in pars_def.keys():
+            if  keyword+'@' in p_key or keyword+'[' in p_key or keyword+'.' in p_key:
                 #print(keyword,def_dct_obj[keyword])
-                p_format0_prec=def_dct_obj[keyword][1]
+                p_format0_prec=pars_def[keyword][1]
                 p_format0_keys=''+str(max(smin,5))
                 
         #  same widths for all parameters in one trial
@@ -862,7 +825,7 @@ def h5ls(filename,logfile=None):
             with redirect_stdout(f):
                 with h5py.File(filename,'r') as hf:
                     hf.visititems(h5ls_print)
-    
+
 
     #objs=gmake_read_inp('examples/bx610/bx610xy.inp',=False)
     

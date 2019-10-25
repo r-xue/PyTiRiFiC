@@ -1,4 +1,4 @@
-from .gmake_init import *
+
 
 def model_func_dynamics(inp_dct,plotrc=False):
     

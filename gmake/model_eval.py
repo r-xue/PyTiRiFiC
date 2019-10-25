@@ -1,8 +1,7 @@
-from .gmake_init import *
 from .model_func import *
 from .model_build import *
 from .model_func_dynamics import *
-from .io_utils import *
+from .io import *
 
 logger = logging.getLogger(__name__)
 

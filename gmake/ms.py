@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from galario.single import apply_phase_vis 
 
 from sys import getsizeof
-from .gmake_utils import human_unit
-from .gmake_utils import human_to_string
+from .utils import human_unit
+from .utils import human_to_string
 
 import astropy.units as u
 from astropy.coordinates import Angle

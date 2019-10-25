@@ -27,8 +27,8 @@ from gmake import plt_makeslice
 from gmake import plt_slice
 from gmake import plt_radprof
 
-from .gmake_utils import *
-from .gmake_logger import *
+from .utils import *
+from .logger import *
 
 import astropy.units as u
 

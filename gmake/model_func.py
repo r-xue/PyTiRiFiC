@@ -1,8 +1,16 @@
-from .gmake_init import *
-from .gmake_utils import *
+from .utils import *
 from .model_func_kinms import *
 
 from galario.single import sampleImage
+
+from io import StringIO
+from asteval import Interpreter
+import astropy.units as u
+from astropy.coordinates import Angle
+from astropy.coordinates import SkyCoord
+aeval = Interpreter(err_writer=StringIO())
+aeval.symtable['u']=u
+aeval.symtable['SkyCoord']=SkyCoord
 
 
 def model_disk2d(header,ra,dec,
