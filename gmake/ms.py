@@ -1,8 +1,9 @@
 import logging
 import casacore.tables as ctb
-import scipy.constants as const
+#import scipy.constants as const
+from astropy import constants as const
 import numpy as np
-import matplotlib.pyplot as plt
+
 from galario.single import apply_phase_vis 
 
 from sys import getsizeof
@@ -11,6 +12,7 @@ from .utils import human_to_string
 
 import astropy.units as u
 from astropy.coordinates import Angle
+
 
 logger = logging.getLogger(__name__)
 
@@ -154,7 +156,7 @@ def ms_read(vis,datacolumn='corrected',
     #logger.debug(str(chan_freq.shape))
     #logger.debug(str(uvw.shape))
     
-    chan_wv=const.c/chan_freq
+    chan_wv=const.c.value/chan_freq
     
     nrecord=(uvw.shape)[0]
     nchan=(chan_freq.shape)[0]

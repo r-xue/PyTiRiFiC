@@ -21,19 +21,29 @@ logger = logging.getLogger(__name__)
 # get a logger named after a function name
 # logger=logging.getLogger(inspect.stack()[0][3])
 
-from io import StringIO
-from asteval import Interpreter
+
 import astropy.units as u
 from astropy.coordinates import Angle
 from astropy.coordinates import SkyCoord
+from astropy.units import Quantity
+from numbers import Number
+
+from io import StringIO
+from asteval import Interpreter
+
 aeval = Interpreter(err_writer=StringIO())
 aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
+aeval.symtable['Angle']=Angle
+aeval.symtable['Number']=Number
+aeval.symtable['Quantity']=Quantity
 
 import sys
 import gc
 from unittest.mock import patch
 
+import scipy.integrate
+from scipy import interpolate
 
 
 """
@@ -65,6 +75,38 @@ def arithmeticEval (s):
     return _eval(node.body)
 """
 
+def repr_parameter(v):
+    """
+    Similiar to the built-in repr(), but can handle Quantity / SkyCoord
+    used for writing input files
+    """
+    if  isinstance(v,Quantity):
+        str_value=repr(v.value).replace('\n','')    #   replace line break from repr(numpy.array)
+        str_value=' '.join(str_value.split())       #   remove double/triple.. spacing
+        str_value=str_value.replace(' , ',', ')             #   remove leading white space 
+        str_value=str_value.replace('[ ','[')               #   remove leading white space
+        str_unit="u.Unit('{0.unit}')".format(v)
+        str_repr=str_value+" * "+str_unit
+    elif  isinstance(v,SkyCoord):
+        str_coord=repr(v.to_string(style='hmsdms'))
+        str_repr="SkyCoord(" +str_coord +",frame='icrs')"
+    elif  isinstance(v,list):
+        str_repr=[]
+        for v0 in v:
+            str_repr.append(repr_parameter(v0))
+        str_repr='[ '+' , '.join(str_repr)+' ]'
+    elif  isinstance(v,tuple):
+        str_repr=[]
+        for v0 in v:
+            str_repr.append(repr_parameter(v0))
+        str_repr='( '+' , '.join(str_repr)+' )'        
+    else:
+        str_repr=repr(v)
+        
+        
+
+    return  str_repr
+
 
 def pprint(*args, **kwargs):
     """
@@ -78,8 +120,7 @@ def pprint(*args, **kwargs):
 
 
 def write_inp(inp_dct,
-              inpfile='example.inp',writepar=None,
-              overwrite=False):
+              inpfile='example.inp',overwrite=False):
     """
     write out inp files from inp_dct
     if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name
@@ -92,9 +133,7 @@ def write_inp(inp_dct,
     logger.info('save the model input parameter: '+inpfile)    
     
     inp_dct0=deepcopy(inp_dct)
-    if  writepar is not None:
-        for ind in range(len(writepar[0])):
-            write_par(inp_dct0,writepar[0][ind],writepar[1][ind])
+
     
     outname=inpfile
     
@@ -111,7 +150,8 @@ def write_inp(inp_dct,
         output+='@'+obj+'\n'
         output+='#'*80+'\n\n'
         for key in inp_dct0[obj].keys():
-            output+='{:20} {}\n'.format(key,repr(inp_dct0[obj][key]))
+            print(repr_parameter(inp_dct0[obj][key]))
+            output+='{:20} {}\n'.format(key,repr_parameter(inp_dct0[obj][key]),format=200)
         output+='\n'
     f.write(output)
     f.close()
@@ -519,9 +559,9 @@ def read_par(inp_dct,par_name,to_value=False):
                 unit=units
             par_value=par_value.to_value(unit=unit)
             par_unit=unit
-            return par_value,par_unit
+            return par_value,u.Unit(par_unit)
         else:
-            return par_value,''
+            return par_value,u.Unit("")
     else:
         return par_value
  
@@ -548,10 +588,29 @@ def write_par(inp_dct,par_name,par_value,verbose=False):
     
     po_key=par_name.split("@")
     i_key=re.findall("\[(.*?)\]", po_key[0])
+
+    
     if  len(i_key)==0:
         p_key=po_key[0]
         o_key=po_key[1]
-        inp_dct[o_key][p_key]=par_value
+        par_name=p_key.split('.')
+        
+        if  len(par_name)==2:
+            if  par_name[1]=='ra':
+                cc=inp_dct[o_key][par_name[0]]
+                cc.data.lon[()]=par_value
+                cc.cache.clear()
+            elif    par_name[1]=='dec':
+                cc=inp_dct[o_key][par_name[0]]               
+                cc.data.lat[()]=par_value
+                cc.cache.clear()
+            else:
+                setattr(inp_dct[o_key][par_name[0]],par_name[1],par_value)
+            par_name=par_name[0]
+        else:
+            inp_dct[o_key][par_name[0]]=par_value
+            par_name=par_name[0]
+                    
     else:
         p_key=(po_key[0].split("["))[0]
         o_key=po_key[1]
@@ -560,10 +619,73 @@ def write_par(inp_dct,par_name,par_value,verbose=False):
             not isinstance(par_value,list):
             par_value=[par_value]*len(inp_dct[o_key][p_key][make_slice(i_key)])
         inp_dct[o_key][p_key][make_slice(i_key)]=par_value
-        
+
+    
     if  verbose==True:
         print('after: {} : {}'.format(par_name,read_par(inp_dct,par_name)))        
+
+
+def inp_validate(inp_dct,verbose=False):
+    """
+    validate the input parameters, will do the follows step by step
+        1. check if the variable type against its type definition
+        2. for quanity, check the physical_type use .is_eqivalent(default_unit)
+    """
     
+    inp_out=deepcopy(inp_dct)
+    pars_def=inp_def['pars_def']
+    
+    for sec in inp_out:
+        if  verbose==True:
+            print('sec:'+sec)
+        for key in inp_out[sec]:
+            if  key in pars_def:
+                value=inp_out[sec][key]
+                default_value=pars_def[key][0]
+                default_format=pars_def[key][1]
+                default_type=pars_def[key][2]
+                if  verbose==True:
+                    print(key,value,pars_def[key],'--->\n\n')
+                valid=True
+                if  isinstance(value,list):
+                    for ind in range(len(value)):
+                        type0=default_type
+                        if  isinstance(default_type,list):
+                            type0=default_type[ind]
+                        if  not isinstance(inp_out[sec][key][ind],type0):
+                            valid=False
+                else:                    
+                    if  not isinstance(inp_out[sec][key],default_type):
+                        valid=False
+                if  valid==False:
+                    str_out='The input is supposed to be {0}, got {1} instead...'.format(default_type,value)
+                    raise ValueError(str_out)
+          
+    return inp_out
+
+
+def obj_defunit(obj):
+    """
+    convert quatity to values in default internal units
+    """
+     
+    obj_out=deepcopy(obj)
+    pars_def=inp_def['pars_def']
+    for key in obj_out:
+        if  key in pars_def:
+            if  isinstance(pars_def[key][-1],list):
+                for ind in range(len(pars_def[key][-1])):
+                    if  isinstance(obj_out[key][ind],u.Quantity):
+                        obj_out[key][ind]=obj_out[key][ind].to_value(pars_def[key][-1][ind])
+            else:
+                if  isinstance(obj_out[key],u.Quantity):
+                    obj_out[key]=obj_out[key].to_value(pars_def[key][-1])
+            if  isinstance(obj_out[key],SkyCoord):
+                obj_out[key]=[obj_out[key].ra.to_value(u.deg),obj_out[key].dec.to_value(u.deg)]
+           
+    return obj_out
+
+
 def gmake_pformat(fit_dct):
     """
     fill..
@@ -575,13 +697,13 @@ def gmake_pformat(fit_dct):
     p_format_prec=[]
     
     
-    logger.debug("+"*90)
+    logger.debug("+"*100)
     #print("outdir:               ",fit_dct['optimize']['outdir'])
     logger.debug("optimizer: "+fit_dct['method'])
-    logger.debug("optimizing parameters: index / name / start / lo_limit / up_limit / scale")
+    logger.debug("optimizing parameters:")
+    logger.debug("-"*100)
+    logger.debug("index    name    unit    start    lo_limit    up_limit    scale")
     
-
-
     pars_def=inp_def['pars_def']
     opt_def=inp_def['optimize']
     
@@ -607,13 +729,13 @@ def gmake_pformat(fit_dct):
         #  same widths for all parameters in one trial
         textout=' {:{align}{width}} '.format(ind,align='<',width=2)
         textout+=' {:{align}{width}} '.format(p_key,align='<',width=maxlen)
+        textout+=' {:{align}{width}} '.format(p_unit,align='<',width=maxlen)
         textout+=' {:{align}{width}{prec}} '.format(p_start,align='^',width=13,prec=p_format0_prec)
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo,align='^',width=13,prec=p_format0_prec)
         textout+=' {:{align}{width}{prec}} )'.format(p_up,align='^',width=13,prec=p_format0_prec)
         textout+=' {:{align}{width}{prec}} '.format(p_scale,align='^',width=13,prec=p_format0_prec)
         logger.debug(textout)
-
-
+        
         #   used for emcee table output
         p_format0='<'+str(max(smin,5))+p_format0_prec
         p_format0_keys='<'+str(max(smin,5))      
@@ -621,7 +743,7 @@ def gmake_pformat(fit_dct):
         p_format_keys+=[p_format0_keys]
         p_format_prec+=[p_format0_prec]
         
-    logger.debug("+"*90)
+    logger.debug("+"*100)
     
     fit_dct['p_format']=deepcopy(p_format)
     fit_dct['p_format_keys']=deepcopy(p_format_keys)
@@ -678,8 +800,6 @@ def human_unit(quantity, return_unit=False, base_index=0, scale_range=None):
     if  not quantity.isscalar:
         raise Exception("given quantity is not scalar")
    
-    
-
     human_unit=quantity.unit
 
     bases=human_unit.bases.copy()

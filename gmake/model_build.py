@@ -10,6 +10,10 @@ from galario.single import get_image_size
 
 logger = logging.getLogger(__name__)
 
+import scipy.constants as const
+
+from astropy.modeling.models import Gaussian2D
+
 def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     """
     use model properties (from mod_dct) and data metadata info (from dat_dct) to
@@ -62,7 +66,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
         obj=models['mod_dct'][tag]
         
         if  verbose==True:
-            print("+"*40); print('@',tag); print('method:',obj['method']) ; print("-"*40)
+            print("+"*40); print('@',tag); print('type:',obj['type']) ; print("-"*40)
 
         if  'vis' in mod_dct[tag].keys():
             
@@ -86,7 +90,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
                     nxy=128
                     
-                    header=template_imheader.copy()
+                    header=xymodel_header.copy()
                     header['NAXIS1']=nxy
                     header['NAXIS2']=nxy
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])
@@ -208,12 +212,12 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 
     for tag in list(mod_dct.keys()):
 
-        #   skip if no "method" or the item is not a physical model
+        #   skip if no "type" or the item is not a physical model
         
         obj=mod_dct[tag]
         
         if  verbose==True:
-            print("+"*40); print('@',tag); print('method:',obj['method']) ; print("-"*40)
+            print("+"*40); print('@',tag); print('type:',obj['type']) ; print("-"*40)
 
         if  'vis' in mod_dct[tag].keys():
             
@@ -223,23 +227,18 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 
                 test_time = time.time()
                 
-                if  'disk2d' in obj['method'].lower():
+                if  'disk2d' in obj['type'].lower():
                     #test_time = time.time()
-                    pintflux=0.0
-                    if  'pintflux' in obj:
-                        pintflux=obj['pintflux']
-                    imodel=model_disk2d(models['header@'+vis],obj['xypos'][0],obj['xypos'][1],
+
+                    imodel=model_disk2d(models['header@'+vis],obj,
                                         model=models['imod2d@'+vis],
-                                        r_eff=obj['sbser'][0],n=obj['sbser'][1],posang=obj['pa'],
-                                        ellip=1.-np.cos(np.deg2rad(obj['inc'])),
-                                        pintflux=pintflux,
-                                        intflux=obj['intflux'],restfreq=obj['restfreq'],alpha=obj['alpha'])
+                                        factor=5)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
                     #print(imodel.shape)
                     #models['imod2d@'+vis]+=imodel
                     #models['imodel@'+vis]+=imodel
                     
-                if  'disk3d' in obj['method'].lower():
+                if  'disk3d' in obj['type'].lower():
                     
                     #test_time = time.time()              
                     imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,
@@ -257,7 +256,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
             
             for image in image_list:
                 
-                if  'disk2d' in obj['method'].lower():
+                if  'disk2d' in obj['type'].lower():
                     #test_time = time.time()
                     pintflux=0.0
                     if  'pintflux' in obj:
@@ -273,7 +272,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                     models['imodel@'+image]+=imodel
                     
     
-                if  'disk3d' in obj['method'].lower():
+                if  'disk3d' in obj['type'].lower():
                     #test_time = time.time()              
                     
                     imodel,imodel_prof=model_disk3d(models['header@'+image],obj,nsamps=nsamps,fixseed=False,mod_dct=mod_dct)

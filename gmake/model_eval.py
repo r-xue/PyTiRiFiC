@@ -7,11 +7,14 @@ logger = logging.getLogger(__name__)
 
 import builtins
 
+#from .meta import dat_dct_global
+
+import gmake.meta as meta
 
 def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                  savemodel=None,decomp=False,nsamps=1e5,
                  returnwdev=False,
-                 verbose=False):
+                 verbose=False,test_threading=False):
     """
     the likelihood function
     
@@ -27,10 +30,22 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
            'npar':len(theta)}
     if  returnwdev==False:
         del blobs['wdev']
-     
+
+        
+    if  test_threading==True:
+        #   don't actually calculate model
+        #   used for testing threading overheads.
+        x=dat_dct
+        t = time.time() + np.random.uniform(0.01, 0.02)
+        while True:
+            if time.time() >= t:
+                break
+        return -np.inf,blobs
+    
     inp_dct0=deepcopy(inp_dct)
     for ind in range(len(fit_dct['p_name'])):
-        write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind],verbose=False)
+        #print(fit_dct['p_name'][ind],theta[ind],fit_dct['p_unit'][ind],type(fit_dct['p_unit'][ind]))
+        write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind]*fit_dct['p_unit'][ind],verbose=False)
     
     #tic0=time.time()
     mod_dct=inp2mod(inp_dct0)
@@ -200,12 +215,15 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 del models[key]
         dct2hdf(models,savemodel+'/'+'models.h5')
         
-        write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True,
-                  writepar=(fit_dct['p_name'],theta))             
+        pprint(inp_dct)
+        write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True)             
         
         np.save(savemodel+'/'+'mod_dct.npy',models['mod_dct'])     
 
     lnl=blobs['lnprob']
+    
+    
+    
     
     return lnl,blobs
 
@@ -240,12 +258,16 @@ def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
         start_time = time.time()
         
     lp = model_lnprior(theta,fit_dct)
+    
     if  not np.isfinite(lp):
         blobs={'lnprob':-np.inf,'chisq':+np.inf,'ndata':0.0,'npar':len(theta)}
         if  packblobs==True:
             return -np.inf,blobs
         else:
             return -np.inf,-np.inf,+np.inf,0.0,len(theta)
+
+     
+             
     lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                            savemodel=savemodel,decomp=decomp,nsamps=nsamps,
                            verbose=verbose)
@@ -260,7 +282,7 @@ def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
     else:
         return lp+lnl,blobs['lnprob'],blobs['chisq'],blobs['ndata'],blobs['npar']
     
-def model_lnprob_glob(theta,fit_dct,inp_dct,
+def model_lnprob_global(theta,fit_dct,inp_dct,
                  savemodel=None,decomp=False,nsamps=1e5,
                  packblobs=False,
                  verbose=False):
@@ -282,8 +304,8 @@ def model_lnprob_glob(theta,fit_dct,inp_dct,
             return -np.inf,blobs
         else:
             return -np.inf,-np.inf,+np.inf,0.0,len(theta)
-
-    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,builtins.dat_dct,
+    
+    lnl,blobs=model_lnlike(theta,fit_dct,inp_dct,meta.dat_dct_global,
                            savemodel=savemodel,decomp=decomp,nsamps=nsamps,
                            verbose=verbose)
     

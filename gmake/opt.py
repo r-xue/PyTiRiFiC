@@ -16,13 +16,12 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
     for method='emcee': sampler is an emcee object
     for method=others: sampler is a dict
     """
-    
-    sampler={'inp_dct':inp_dct,'dat_dct':dat_dct}
+
 
     if  'amoeba' in inp_dct['optimize']['method']:
         fit_dct=amoeba_setup(inp_dct,dat_dct)
     if  'emcee' in inp_dct['optimize']['method']:
-        fit_dct,sampler=emcee_setup(inp_dct,dat_dct)
+        fit_dct=emcee_setup(inp_dct,dat_dct)
     if  'lmfit' in inp_dct['optimize']['method']:
         fit_dct=lmfit_setup(inp_dct,dat_dct)
     
@@ -49,21 +48,22 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
         logger.debug('p_start:    ')
         logger.debug(pformat(blobs))
         """    
-    
+    #print('++')
     dct2hdf(fit_dct,outname=outfolder+'/fit.h5')
+    #print('--')
 
-    return fit_dct,sampler
+    return fit_dct
 
-def fit_iterate(fit_dct,sampler,nstep=100):
+def fit_iterate(fit_dct,inp_dct,dat_dct):
     
     if  'amoeba' in fit_dct['method']:
-        amoeba_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+        amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
         return
     if  'emcee' in fit_dct['method']:
-        emcee_iterate(sampler,fit_dct,nstep=nstep)
+        emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
         return
     if  'lmfit' in fit_dct['method']:
-        lmfit_iterate(fit_dct,sampler['inp_dct'],sampler['dat_dct'],nstep=nstep)
+        lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
         return
 
 def fit_analyze(inpfile,burnin=None,copydata=True):

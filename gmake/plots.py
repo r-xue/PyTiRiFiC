@@ -2,9 +2,11 @@ from .utils import imcontsub
 
 logger = logging.getLogger(__name__)
 
+
+import matplotlib as mpl
+mpl.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
-import matplotlib as mpl
 
 # mpl.rcParams['xtick.direction'] = 'in'
 # mpl.rcParams['ytick.direction'] = 'in'

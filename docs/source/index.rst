@@ -133,10 +133,11 @@ Getting Started
     maxdepth: 1
     :caption: Tutorials
     
-    demos/demo_bx610_prep
-    demos/demo_hxmm01_prep
     
+    demos/demo_hxmm01_prep
     demos/demo_hxmm01_simulate
+    
+    demos/demo_bx610_prep
     demos/demo_bx610_amoeba
     demos/demo_bx610_emcee
 

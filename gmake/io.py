@@ -3,6 +3,11 @@ from sys import getsizeof
 import logging
 import time
 from .utils import *
+import os
+from astropy.io import fits 
+from astropy.table import Table
+from astropy.table import Column
+import casacore.tables as ctb
 
 logger = logging.getLogger(__name__)
 

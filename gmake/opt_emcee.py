@@ -5,9 +5,13 @@ import builtins
 from multiprocessing import Pool
 import os
 import socket
+import emcee
+
+from galario.single import threads as galario_threads
 
 import logging
 logger = logging.getLogger(__name__)
+import gmake.meta as meta
 
 def emcee_setup(inp_dct,dat_dct):
     """
@@ -42,7 +46,14 @@ def emcee_setup(inp_dct,dat_dct):
         update the dependency to emcee>3.0rc2
         the setup follows the guideline here:
             https://emcee.readthedocs.io/en/latest/tutorials/monitor/?highlight=sampler.sample
+    
+    Note:
+        emcee-threading vs model-threading
+        model-threading may be ineffecient if the calculation process is not truely/fully parameliized
+        but some overhead can be avoid
+        emcee-threading will require more memory and carefully arrange input parameter to avoid heavy pickling
         
+        if memory allowed, using emcee-threading may be the better option generally 
             
     """
     
@@ -65,8 +76,8 @@ def emcee_setup(inp_dct,dat_dct):
         fit_dct['p_name'].append(p_name)
         p_value,p_unit=read_par(inp_dct,p_name,to_value=True)
         fit_dct['p_unit'].append(p_unit)
-        print(opt_dct[p_name])
-        print('-->',p_name,p_unit,p_value)
+        #print(opt_dct[p_name])
+        #print('-->',p_name,p_unit,p_value)
         
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(p_value))
         
@@ -115,6 +126,7 @@ def emcee_setup(inp_dct,dat_dct):
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
     fit_dct['nthreads']=multiprocessing.cpu_count() #1
+    fit_dct['nthreads']=1
     fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=gen_dct['outdir']
     
@@ -149,15 +161,18 @@ def emcee_setup(inp_dct,dat_dct):
                                     runtime_sortingfn=sort_on_runtime)
                                     #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'],threads=fit_dct['nthreads'])
     """
-    builtins.dat_dct=dat_dct
-    builtins.inp_dct=inp_dct                                
+
+    meta.dat_dct_global=dat_dct
+    #print(dat_dct_global)
+    
+                               
 
                                     #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads']threads=fit_dct['nthreads'],)                                    
     #"""
-    sampler=[]
-    return fit_dct,sampler
+
+    return fit_dct
     
-def emcee_iterate(sampler,fit_dct,nstep=100,
+def emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=100,
                   mctest=False):
     """
         RUN the sampler
@@ -199,36 +214,47 @@ def emcee_iterate(sampler,fit_dct,nstep=100,
     galario_threads(omp_nthread)
     os.environ["OMP_NUM_THREADS"] = str(omp_nthread)        
     
-    with Pool(processes=fit_dct['nthreads']) as pool:
+    #dat_dct_debug=np.arange(10000*100000)
+    #print(human_unit(get_obj_size(dat_dct_debug)*u.byte))
+    #builtins.dat_dct=dat_dct_debug
+    
+    if  fit_dct['nthreads']==1:
         sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
-                                    model_lnprob_glob,backend=backend,blobs_dtype=dtype,
-                                    args=(fit_dct,builtins.inp_dct),
-                                    runtime_sortingfn=sort_on_runtime)    
-        #sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
-        #                            model_lnprob,backend=backend,blobs_dtype=dtype,
-        #                            args=(fit_dct,builtins.inp_dct,builtins.dat_dct),
-        #                            runtime_sortingfn=sort_on_runtime)
+                                    model_lnprob,backend=backend,blobs_dtype=dtype,
+                                    args=(fit_dct,inp_dct,dat_dct),
+                                    runtime_sortingfn=sort_on_runtime)
         sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)
-        """    
-        for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
-                                     progress=True,store=True):
-            
-            # Only check convergence every 100 steps
-            if  sampler.iteration % int(fit_dct['nstep']/10.0):
-                continue
+    else:
+        print("try pool")
+        with Pool(processes=fit_dct['nthreads']) as pool:
+            #   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  
+            sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+                                        model_lnprob_global,backend=backend,blobs_dtype=dtype,
+                                        args=(fit_dct,inp_dct),
+                                        runtime_sortingfn=sort_on_runtime,pool=pool)
+            sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)        
+
+    
+    """    
+    for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
+                                 progress=True,store=True):
         
-            # Compute the autocorrelation time so far
-            tau=sampler.get_autocorr_time(tol=0)    # (npar.)
-            autocorr[index]=np.mean(tau)
-            index+=1
-            
-            # Check convergence
-            converged = np.all(tau * 100 < sampler.iteration)
-            converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
-            if  converged:
-                break
-            old_tau = tau
-        """
+        # Only check convergence every 100 steps
+        if  sampler.iteration % int(fit_dct['nstep']/10.0):
+            continue
+    
+        # Compute the autocorrelation time so far
+        tau=sampler.get_autocorr_time(tol=0)    # (npar.)
+        autocorr[index]=np.mean(tau)
+        index+=1
+        
+        # Check convergence
+        converged = np.all(tau * 100 < sampler.iteration)
+        converged &= np.all(np.abs(old_tau - tau) / tau < 0.01)
+        if  converged:
+            break
+        old_tau = tau
+    """
     
     galario_threads(host_nthread)
     os.environ["OMP_NUM_THREADS"] = str(host_nthread)        

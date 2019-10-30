@@ -1,5 +1,10 @@
 """
 Container for internal metadata/configuration variables under the program namespace
+
+
+    inp_dct:    input parameter set (using quantities)
+    mod_dct:    model parameter set (using quantities)
+    obj_dct:    component parameter set (dimensionless, values in internal units)
 """
 
 import os
@@ -10,11 +15,18 @@ from io import StringIO
 import astropy.units as u
 from astropy.coordinates import Angle
 from astropy.coordinates import SkyCoord
+from numbers import Number
+from astropy.units import Quantity
 
 from asteval import Interpreter
-aeval = Interpreter(err_writer=StringIO())
+aeval = Interpreter(use_numpy=True,err_writer=StringIO())
 aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
+aeval.symtable['Angle']=Angle
+aeval.symtable['Number']=Number
+aeval.symtable['Quantity']=Quantity
+
+
 
 package_path=os.path.dirname(os.path.abspath(__file__))
 metadata_path=os.path.dirname(os.path.abspath(__file__))+'/metadata/'
@@ -24,6 +36,7 @@ cfg.read(package_path+"/default.cfg")
 
 xymodel_header=fits.Header.fromfile(metadata_path+'xymodel.header',endcard=False,sep='\n',padding=False)
 
+dat_dct_global={}
 
 __all__ = ['read_inp']
 

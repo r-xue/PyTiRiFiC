@@ -13,14 +13,23 @@ aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
 
 
-def model_disk2d(header,ra,dec,
+import scipy.constants as const
+from astropy.modeling.models import Gaussian2D
+from astropy.modeling.models import Sersic1D
+from astropy.modeling.models import Sersic2D
+from astropy.convolution import discretize_model
+from astropy.wcs import WCS
+
+from scipy.interpolate import interp1d
+
+from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
+import numexpr as ne
+
+def model_disk2d(header,objp,
                  model=None,
-                 r_eff=1.0,n=1.0,posang=0.,ellip=0.0,
-                 pintflux=0.0,pra=None,pdec=None,
-                 factor=5,
-                 intflux=1.,restfreq=235.0,alpha=3.0):
+                 factor=5):
     """
-    insert a model without frequency-dependency into a 2D image or 3D cube
+    insert a continuum model (frequency-independent) into a 2D image or 3D cube
     
     header:    data header including WCS
     
@@ -47,7 +56,26 @@ def model_disk2d(header,ra,dec,
     return model in units of Jy/pix  
     
     """
+    
+    obj=obj_defunit(objp)
+    
+    #   translate to dimensionless numerical value in default units
 
+    ra=obj['xypos'][0]
+    dec=obj['xypos'][1]
+    r_eff=obj['sbser'][0]
+    n=obj['sbser'][1]
+    posang=obj['pa']
+    ellip=1.-np.cos(np.deg2rad(obj['inc']))
+    pintflux=0.0
+    if  'pcontflux' in obj:
+        pintflux=obj['pcontflux']    
+    intflux=obj['contflux']
+    restfreq=obj['restfreq']
+    alpha=3.0
+    if  'alpha' in obj:
+        alpha=obj['alpha']
+    
     #   build objects
     #   use np.meshgrid and don't worry about transposing
     w=WCS(header)
@@ -109,11 +137,9 @@ def model_disk2d(header,ra,dec,
     
     return model_out
 
-def model_disk3d(header,obj,
+def model_disk3d(header,objp,
                  model=None,
-                 nsamps=100000,
-                 decomp=False,
-                 fixseed=False,
+                 nsamps=100000,decomp=False,fixseed=False,
                  verbose=False,
                  mod_dct=None):
     """
@@ -146,9 +172,14 @@ def model_disk3d(header,obj,
     #   http://dx.doi.org/10.1051/0004-6361/201015362
     #   https://www.atnf.csiro.au/people/mcalabre/WCS/wcslib/wcsunits_8h.html#a25ba0f0129e88c6e7c74d4562cf796cd
     
+    
+    
+    obj=obj_defunit(objp)
+
+    
     w=WCS(header)
     if  'Hz' in header['CUNIT3']:
-        wz=obj['restfreq']*1e9/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
+        wz=obj['restfreq']/(1.0+obj['z'])*(1.-obj['vsys']*1e3/const.c)
         dv=-const.c*header['CDELT3']/(1.0e9*obj['restfreq']/(1.0+obj['z']))/1000.
     if  'angstrom' in header['CUNIT3']:
         wz=obj['restwave']*(1.0+obj['z'])*(1.+obj['vsys']*1e3/const.c)/1e10
@@ -286,7 +317,7 @@ def model_disk3d(header,obj,
                fixSeed=fixseed,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
-               intFlux=obj['intflux'])
+               intFlux=obj['lineflux'])
     # cube in units of Jy/pixel * km/s or specifici intensity * km/s
     if  'angstrom' in header['CUNIT3']:
         cube=cube*abs(dv)/(header['CDELT3'])

@@ -19,9 +19,9 @@ image                   ''          ''      str     ''          #   data image n
 error                   ''          ''      str     ''          #   error image name (separated by a comma if more than one are supplied)
 mask                    ''          ''      str     ''          #   mask image name (separated by a comma if more than one are supplied)
 psf                     ''          ''      str     ''          #   psf image name (separated by a comma if more than one are supplied)
-bmaj                    None        ''      float   'arcsec'    #   bmaj, for overriding whatever in the image header # can be parsed by astropy.units, e.g. u.Unit('km/s')
-bmin                    None        ''      float   'arcsec'    #   bmaj, for overriding whatever in the image header
-bpa                     None        ''      float   'deg'       #   bmaj, for overriding whatever in the image header
+bmaj                    None        ''      Quantity   'arcsec'    #   bmaj, for overriding whatever in the image header # can be parsed by astropy.units, e.g. u.Unit('km/s')
+bmin                    None        ''      Quantity   'arcsec'    #   bmaj, for overriding whatever in the image header
+bpa                     None        ''      Quantity   'deg'       #   bmaj, for overriding whatever in the image header
 samp                    ''          ''      str     ''          #   sampling table
 
 vis                     ''          ''      str     ''          #   vis-ms name (separated by a comma if more than one are supplied)
@@ -29,16 +29,16 @@ vis                     ''          ''      str     ''          #   vis-ms name 
 pmodel                  ''          ''      str     ''          #   prior image name (separated by a comma if more than one are supplied)
 
 type                    ''          ''      str     ''          #   replacing the old-style method
-xypos                   [0.0,0.0]   '.7f'   list    'deg'       #   [ra,dec] in degree
+xypos                   [0.0,0.0]   '.7f'   (str,SkyCoord)    'deg'       #   [ra,dec] in degree
                                                                 #   where the origin of resginal scaling
                                                                 #   https://docs.astropy.org/en/stable/coordinates/ 
-xypos_kin               [0.0,0.0]   '.7f'   list    'deg'       #   [ra,dec] in degree for the kinematical center if different from the geometric center
+xypos_kin               [0.0,0.0]   '.7f'   (str,SkyCoord)    'deg'       #   [ra,dec] in degree for the kinematical center if different from the geometric center
 
-z                       0.0         '.3f'   float   1.0         #   redshift
-vsys                    0.0         '.2f'   float   'km/s'      #   km/s galaxy systematic velocity in respective to the redshift
+z                       0.0         '.3f'   Number   1.0         #   redshift
+vsys                    0.0         '.2f'   Quantity   'km/s'      #   km/s galaxy systematic velocity in respective to the redshift
 
 
-sbrp                    [1.0,1.0]   '.2f'   list    ['arcsec',1]#   surface brightness radial profile in the disk plane (method='kinmspy') or sky-plane (method='disk2d')
+sbrp                    [1.0,1.0]   '.2f'   [Quantity,Number]    ['arcsec',1]#   surface brightness radial profile in the disk plane (method='kinmspy') or sky-plane (method='disk2d')
                                                                 #   if a list is provided:
                                                                 #       a sersic radial profile is provided, and sbrp=[half-light-radius, sersic-index]
                                                                 #   if a tuple is provided:
@@ -47,18 +47,18 @@ sbrp                    [1.0,1.0]   '.2f'   list    ['arcsec',1]#   surface brig
                                                                 #       +   a sersic1d profile
                                                                 #           sbrp <<< ('exp(-(r/p1)^(1/p2)=1)',re,n)
                                                                 #                <<< ('sersic',re,n)    # built-in shortcut
-ge_pa                   90.0        '.2f'   float   'deg'       #
-ge_q                    2.0         '.2f'   float   1.0         #
+ge_pa                   90.0        '.2f'   Quantity   'deg'       #
+ge_q                    2.0         '.2f'   Number   1.0         #
                                                                                                         
-pa                      0.0         '.2f'   float   'deg'       #   Pa of the receding half major axis of the projected disk plane
-inc                     0.0         '.2f'   float   'deg'       #   disk plane inclination                                                    
+pa                      0.0         '.2f'   Quantity   'deg'       #   Pa of the receding half major axis of the projected disk plane
+inc                     0.0         '.2f'   Quantity   'deg'       #   disk plane inclination                                                    
                                                         
-sbser                   [1.0,1.0]   '.2f'   list    ['arcsec',1]#  
+sbser                   [1.0,1.0]   '.2f'   [Quantity,Number]    ['arcsec',1]#  
 
 
 
-restwave                1000.0      ''      float   'angstrom'  #   line rest wavelength (angstrom)
-restfreq                100.0       ''      float   'GHz'       #   Ghz line rest frequency
+restwave                1000.0      ''      Quantity   'angstrom'  #   line rest wavelength (angstrom)
+restfreq                100.0       ''      Quantity   'GHz'       #   Ghz line rest frequency
 
 type                    'disk3d'    ''      str     ''          #   choice simulation algorithm 
                                                                 #   current options: 
@@ -69,7 +69,7 @@ type                    'disk3d'    ''      str     ''          #   choice simul
 
 #### type='disk3d'
 
-sbvp                    0.0         '.2f'   float   ''          #   disk surface brightness vertical profile
+sbvp                    [None,0]    '.2f'   [str,Number]   ''          #   disk surface brightness vertical profile
                                                                 #   thickness characteriztion (default to I(z)=exp(-z^2/hz^2.0))
                                                                 #   when a tuple is provided, expect: sbvp=(math_expr/options,p1,p2...) 
                                                                 #           + a Gaussian profile I(z)=exp(-z^2/2^hz^2)
@@ -82,9 +82,9 @@ sbvp                    0.0         '.2f'   float   ''          #   disk surface
                                                                 #             sbvp <<< ('(sech(h/hz))^2',hz)  
                                                                 #                  <<< ('sech',hz)      # built-in shortcut
 
-vrad                    [0.0,0.1]   '.2f'   list    'arcsec'    #   radial knots in galactocentric distance (for velocity and dispersion vector)
+vrad                    [0.0,0.1]   '.2f'   Quantity    'arcsec'    #   radial knots in galactocentric distance (for velocity and dispersion vector)
 
-vrot                    [100,100]   '.2f'   list    'km/s'      #   rotational velocity radial profile
+vrot                    [100,100]   '.2f'   Quantity    'km/s'      #   rotational velocity radial profile
                                                                 #
                                                                 #   some "advanced" options available:
                                                                 #
@@ -107,38 +107,41 @@ vrot                    [100,100]   '.2f'   list    'km/s'      #   rotational v
                                                                 #   dynamical model examples:
                                                                 #        +  using a dynamical model specified from the parameter section 'halodisk'
                                                                 #           vrot <<< ('dynamics','halodisk')
-lineflux                1.0         '.2f'   float   'Jy*km/s'   #   Jy x km/s or dataunits * angstrom
+lineflux                1.0         '.2f'   Quantity   'Jy*km/s'   #   Jy x km/s or dataunits * angstrom
                                                     
-vdis                    [10.0,10.0] '.2f'   list    'km/s'      #   velocity dispersion radial profile
+vdis                    [10.0,10.0] '.2f'   Quantity    'km/s'      #   velocity dispersion radial profile
+
+ncrit                   1e3         '.2f'   Quantity   'cm**-3'    #   reserved
 
 ####    method='disk2d'                                                    
 
 #   currently only a crude power-law continuum is implemented
                                                                       
-contflux                1.0         '.2f'   float   'Jy'        #   Jy or dataunits * angstrom
-reffreq                 100.0       ''      float   'GHz'       #   Refernce Frequency
-alpha                   0.0         '.2f'   float   1.0         #   
+contflux                1.0         '.2f'   Quantity   'Jy'        #   Jy or dataunits * angstrom
+reffreq                 100.0       ''      Quantity   'GHz'       #   Refernce Frequency
+alpha                   0.0         '.2f'   Number   1.0         #   
+pcontflux               0.0         '.2f'   Quantity   'Jy'        #
                                                  
 # dynamics_component_parameters #   keywords in the dynamics-prescription section
 
 
-disk_sd                 0.0                 float   'Msun/kpc^2'#   msun/kpc^2.0               
-disk_rs                 1.0                 float   'kpc'       #   kpc
+disk_sd                 0.0         '.2f'   Quantity   'Msun/kpc^2'#   msun/kpc^2.0               
+disk_rs                 1.0         '.2f'   Quantity   'kpc'       #   kpc
 
-disk_sb2sd              ('object',1)        tuple   ''          #   a mass distribution model based on the disk SB and a constant surface brightness-to-mass ratio
+disk_sb2sd              ['object',1] '.2f'  tuple   ''          #   a mass distribution model based on the disk SB and a constant surface brightness-to-mass ratio
                                                     ''          #   ('object_name',brightness-to-mass ratio)    
-halo_ms                 5e10                float   'Msun'      #   msun
-halo_a                  100.0               float   'kpc'       #   kpc
-halo_conv               4.0                 float   ''          #
-halo_mvir               0.5                 float   '1e12Msun'  #   10.^12 msun
+halo_ms                 5e10         '.2f'  Quantity   'Msun'      #   msun
+halo_a                  100.0        '.2f'  Quantity   'kpc'       #   kpc
+halo_conv               4.0          '.2f'  Quantity   ''          #
+halo_mvir               0.5          '.2f'  Quantity   '1e12Msun'  #   10.^12 msun
 
 ###################################################################################################
 @ general               #   keywords for the optimization configuration
 ###################################################################################################
 
-outname_replace         []                  list    ''          #   list of two-element tuple
-outname_exclude         []                  list    ''          #   list of string
-outdir                  'testdir'           str     ''          #   output dir path
+outname_replace         []           '.2f'  list    ''          #   list of two-element tuple
+outname_exclude         []           '.2f'  list    ''          #   list of string
+outdir                  'testdir'    '.2f'  str     ''          #   output dir path
 
 ###################################################################################################
 @ optimize              #   keywords for the optimization configuration
