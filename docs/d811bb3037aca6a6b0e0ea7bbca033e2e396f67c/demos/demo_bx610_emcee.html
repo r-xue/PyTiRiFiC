@@ -201,10 +201,17 @@ inp_dct=gmake.read_inp(inpfile)
 outdir=inp_dct[&#39;general&#39;][&#39;outdir&#39;]
 gmake.logger_config(logfile=outdir+&#39;/gmake.log&#39;,loglevel=&#39;DEBUG&#39;,logfilelevel=&#39;DEBUG&#39;)
 gmake.logger_status()
+gmake.pprint(inp_dct)
+inp_dct=gmake.inp_validate(inp_dct)
 </pre></div>
 </div>
+<pre class="literal-block">3.7.5 (default, Oct 19 2019, 11:15:26)
+[Clang 11.0.0 (clang-1100.0.33.8)]
+hyperion
+/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output
+<strong>********exe read_inp()************</strong></pre>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">astropy</span>            <span class="o">&gt;=</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">3.2</span><span class="o">.</span><span class="mi">2</span>
-<span class="n">emcee</span>              <span class="o">&gt;=</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">emcee</span>              <span class="o">&gt;=</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">corner</span>             <span class="o">&gt;=</span><span class="mf">2.0</span>        <span class="mf">2.0</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">tqdm</span>               <span class="n">unspecified</span>  <span class="mf">4.31</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">lmfit</span>              <span class="n">unspecified</span>  <span class="mf">0.9</span><span class="o">.</span><span class="mi">12</span>
@@ -212,357 +219,145 @@ gmake.logger_status()
 <span class="n">numexpr</span>            <span class="o">&gt;=</span><span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>
 <span class="n">hickle</span>             <span class="n">unspecified</span>  <span class="mf">3.4</span><span class="o">.</span><span class="mi">5</span>
 <span class="n">alpy</span>               <span class="n">unspecified</span>  <span class="mf">0.22</span><span class="o">.</span><span class="mi">0</span>
-<span class="n">regions</span>            <span class="n">unspecified</span>  <span class="mf">0.3</span>
+<span class="n">regions</span>            <span class="n">unspecified</span>  <span class="mf">0.5</span><span class="o">.</span><span class="n">dev1001</span>
 <span class="n">scipy</span>              <span class="n">unspecified</span>  <span class="mf">1.2</span><span class="o">.</span><span class="mi">1</span>
-<span class="n">reproject</span>          <span class="n">unspecified</span>  <span class="mf">0.6</span><span class="o">.</span><span class="n">dev644</span>
+<span class="n">reproject</span>          <span class="n">unspecified</span>  <span class="mf">0.6</span><span class="o">.</span><span class="n">dev646</span>
 <span class="n">python</span><span class="o">-</span><span class="n">casacore</span>    <span class="o">&gt;=</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">scikit</span><span class="o">-</span><span class="n">image</span>       <span class="n">unspecified</span>  <span class="mf">0.14</span><span class="o">.</span><span class="mi">2</span>
 <span class="n">galpy</span>              <span class="n">unspecified</span>  <span class="mf">1.5</span><span class="o">.</span><span class="n">dev0</span>
 <span class="n">mkl</span><span class="o">-</span><span class="n">fft</span>            <span class="n">unspecified</span>  <span class="mf">1.0</span><span class="o">.</span><span class="mi">14</span>
 <span class="n">pvextractor</span>        <span class="o">&gt;=</span><span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span> <span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span>
-<span class="n">spectral</span><span class="o">-</span><span class="n">cube</span>      <span class="o">&gt;=</span><span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev</span>  <span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev2235</span>
+<span class="n">spectral</span><span class="o">-</span><span class="n">cube</span>      <span class="o">&gt;=</span><span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev</span>  <span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev2267</span>
 <span class="n">radio</span><span class="o">-</span><span class="n">beam</span>         <span class="o">&gt;=</span><span class="mf">0.3</span>        <span class="mf">0.3</span><span class="o">.</span><span class="mf">3.</span><span class="n">dev397</span>
-<span class="n">reproject</span>          <span class="o">&gt;=</span><span class="mf">0.6</span><span class="o">.</span><span class="n">dev</span>    <span class="mf">0.6</span><span class="o">.</span><span class="n">dev644</span>
+<span class="n">reproject</span>          <span class="o">&gt;=</span><span class="mf">0.6</span><span class="o">.</span><span class="n">dev</span>    <span class="mf">0.6</span><span class="o">.</span><span class="n">dev646</span>
 <span class="n">casa</span><span class="o">-</span><span class="n">proc</span>          <span class="n">unspecified</span>  <span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.7</span><span class="o">.</span><span class="mi">5</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Oct</span> <span class="mi">19</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">26</span><span class="p">)</span>
-<span class="p">[</span><span class="n">Clang</span> <span class="mf">11.0</span><span class="o">.</span><span class="mi">0</span> <span class="p">(</span><span class="n">clang</span><span class="o">-</span><span class="mf">1100.0</span><span class="o">.</span><span class="mf">33.8</span><span class="p">)]</span>
-<span class="n">hyperion</span>
-<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span>
-<span class="mf">0.2</span><span class="o">.</span><span class="n">dev1</span>
-<span class="n">rx</span><span class="o">.</span><span class="n">astro</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span>
-<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">gmake</span>
-<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
-<span class="o">&lt;</span><span class="n">Logger</span> <span class="n">gmake</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span>
-<span class="p">[</span><span class="o">&lt;</span><span class="n">FileHandler</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">output</span><span class="o">/</span><span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">gmake</span><span class="o">.</span><span class="n">log</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">StreamHandler</span> <span class="n">stderr</span> <span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span><span class="o">&gt;</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dat_dct=gmake.read_data(inp_dct,fill_mask=True,fill_error=True,save_data=True)
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">read</span> <span class="n">data</span> <span class="p">(</span><span class="n">may</span> <span class="n">take</span> <span class="n">some</span> <span class="n">time</span><span class="o">..</span><span class="p">)</span>
-
-<span class="n">Read</span><span class="p">:</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">data</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>                <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">238</span><span class="p">)</span>         <span class="mi">102</span> <span class="n">MiB</span>
-<span class="n">uvw</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>                 <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>           <span class="mi">661</span> <span class="n">KiB</span>
-<span class="n">weight</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>              <span class="p">(</span><span class="mi">56354</span><span class="p">,)</span>             <span class="mi">220</span> <span class="n">KiB</span>             <span class="mf">161.43835</span>
-<span class="n">chanfreq</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>            <span class="p">(</span><span class="mi">238</span><span class="p">,)</span>       <span class="mf">250.7529</span> <span class="n">GHz</span>   <span class="mf">252.6043</span> <span class="n">GHz</span>
-<span class="n">chanwidth</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>           <span class="p">(</span><span class="mi">238</span><span class="p">,)</span>         <span class="mf">7.8118</span> <span class="n">MHz</span>     <span class="mf">7.8118</span> <span class="n">MHz</span>
-<span class="n">phasecenter</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>         <span class="mi">23</span><span class="n">h46m09</span><span class="o">.</span><span class="mi">44</span><span class="n">s</span>  <span class="mi">12</span><span class="n">d49m19</span><span class="o">.</span><span class="mi">3</span><span class="n">s</span>
-<span class="n">data</span> <span class="n">flagging</span> <span class="n">fraction</span><span class="p">:</span> <span class="mf">0.0</span>
-
-<span class="n">Read</span><span class="p">:</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">data</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>                <span class="p">(</span><span class="mi">53466</span><span class="p">,</span> <span class="mi">238</span><span class="p">)</span>          <span class="mi">97</span> <span class="n">MiB</span>
-<span class="n">uvw</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>                 <span class="p">(</span><span class="mi">53466</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>           <span class="mi">627</span> <span class="n">KiB</span>
-<span class="n">weight</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>              <span class="p">(</span><span class="mi">53466</span><span class="p">,)</span>             <span class="mi">209</span> <span class="n">KiB</span>             <span class="mf">187.34055</span>
-<span class="n">chanfreq</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>            <span class="p">(</span><span class="mi">238</span><span class="p">,)</span>       <span class="mf">233.2543</span> <span class="n">GHz</span>   <span class="mf">235.1058</span> <span class="n">GHz</span>
-<span class="n">chanwidth</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>           <span class="p">(</span><span class="mi">238</span><span class="p">,)</span>        <span class="o">-</span><span class="mf">7.8118</span> <span class="n">MHz</span>    <span class="o">-</span><span class="mf">7.8118</span> <span class="n">MHz</span>
-<span class="n">phasecenter</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>         <span class="mi">23</span><span class="n">h46m09</span><span class="o">.</span><span class="mi">44</span><span class="n">s</span>  <span class="mi">12</span><span class="n">d49m19</span><span class="o">.</span><span class="mi">3</span><span class="n">s</span>
-<span class="n">data</span> <span class="n">flagging</span> <span class="n">fraction</span><span class="p">:</span> <span class="mf">0.0</span>
-
-<span class="n">Read</span><span class="p">:</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">data</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>            <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>           <span class="mi">440</span> <span class="n">KiB</span>
-<span class="n">uvw</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>             <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>           <span class="mi">661</span> <span class="n">KiB</span>
-<span class="n">weight</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>          <span class="p">(</span><span class="mi">56354</span><span class="p">,)</span>             <span class="mi">220</span> <span class="n">KiB</span>             <span class="mf">35061.727</span>
-<span class="n">chanfreq</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>        <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>         <span class="mf">250.0734</span> <span class="n">GHz</span>   <span class="mf">250.0734</span> <span class="n">GHz</span>
-<span class="n">chanwidth</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>       <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>           <span class="mf">1.8592</span> <span class="n">GHz</span>     <span class="mf">1.8592</span> <span class="n">GHz</span>
-<span class="n">phasecenter</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>     <span class="mi">23</span><span class="n">h46m09</span><span class="o">.</span><span class="mi">44</span><span class="n">s</span>  <span class="mi">12</span><span class="n">d49m19</span><span class="o">.</span><span class="mi">3</span><span class="n">s</span>
-<span class="n">data</span> <span class="n">flagging</span> <span class="n">fraction</span><span class="p">:</span> <span class="mf">0.0</span>
-
-<span class="n">Read</span><span class="p">:</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">data</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>            <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>           <span class="mi">440</span> <span class="n">KiB</span>
-<span class="n">uvw</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>             <span class="p">(</span><span class="mi">56354</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>           <span class="mi">661</span> <span class="n">KiB</span>
-<span class="n">weight</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>          <span class="p">(</span><span class="mi">56354</span><span class="p">,)</span>             <span class="mi">220</span> <span class="n">KiB</span>             <span class="mf">48239.17</span>
-<span class="n">chanfreq</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>        <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>         <span class="mf">235.8799</span> <span class="n">GHz</span>   <span class="mf">235.8799</span> <span class="n">GHz</span>
-<span class="n">chanwidth</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>       <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>          <span class="o">-</span><span class="mf">1.8592</span> <span class="n">GHz</span>    <span class="o">-</span><span class="mf">1.8592</span> <span class="n">GHz</span>
-<span class="n">phasecenter</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>     <span class="mi">23</span><span class="n">h46m09</span><span class="o">.</span><span class="mi">44</span><span class="n">s</span>  <span class="mi">12</span><span class="n">d49m19</span><span class="o">.</span><span class="mi">3</span><span class="n">s</span>
-<span class="n">data</span> <span class="n">flagging</span> <span class="n">fraction</span><span class="p">:</span> <span class="mf">0.0</span>
-<span class="o">--------------------------------------------------------------------------------</span>
-<span class="o">---</span> <span class="n">dat_dct</span> <span class="n">size</span> <span class="mf">203.68</span> <span class="n">Mibyte</span> <span class="o">---</span>
-<span class="o">---</span> <span class="n">took</span> <span class="mf">1.93229</span>  <span class="n">seconds</span> <span class="o">---</span>
-<span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">dat_dct</span><span class="o">.</span><span class="n">h5</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>inp_dct=gmake.read_inp(inpfile)
-pprint(gmake.gmake_utils.inp2mod(inp_dct))
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;bx610-dynamics&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;disk_rs&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;disk_sd&#39;</span><span class="p">:</span> <span class="mf">5000000000.0</span><span class="p">,</span> <span class="s1">&#39;halo_mvir&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
- <span class="s1">&#39;ci21&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
-          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">0.6493000000000002</span><span class="p">,</span>
-          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;CI21 of BX610 in BB2&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
-          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">809.34197</span><span class="p">,</span>
-          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1877150243974696</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">],</span>
-          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/bb2.ms&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
-          <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">],</span>
-          <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
-          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
-          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">},</span>
- <span class="s1">&#39;co76&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
-          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">1.3025216968324846</span><span class="p">,</span>
-          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;CO76 of BX610 in BB2&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
-          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">806.65181</span><span class="p">,</span>
-          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.21709427769626433</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">],</span>
-          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/bb2.ms&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
-          <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">],</span>
-          <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
-          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
-          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">},</span>
- <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">3.7183180041434882</span><span class="p">,</span>
-          <span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
-          <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">0.001752223593649019</span><span class="p">,</span>
-          <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk2d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;submm cont of BX610 in BB-1/2/3/4&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
-          <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">251.6825177459</span><span class="p">,</span>
-          <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.11831161996700099</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-          <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;disk2d&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">,</span>
-                   <span class="mf">50.82245315749322</span><span class="p">],</span>
-          <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/bb1.mfs.ms,../data/bx610/alma/2015.1.00250.S/bb2.ms,../data/bx610/alma/2015.1.00250.S/bb3.ms,../data/bx610/alma/2015.1.00250.S/bb4.mfs.ms&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
-          <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">,</span>
-                   <span class="mf">197.03794217978916</span><span class="p">],</span>
-          <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
-          <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
-          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">},</span>
- <span class="s1">&#39;general&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;outdir&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610_b6c3_uv_mc&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;outname_exclude&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cube.&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs.&#39;</span><span class="p">,</span> <span class="s1">&#39;cube3.&#39;</span><span class="p">],</span>
-             <span class="s1">&#39;outname_replace&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/&#39;</span><span class="p">,</span>
-                                  <span class="s1">&#39;b6c3_&#39;</span><span class="p">)]},</span>
- <span class="s1">&#39;h2o&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inc&#39;</span><span class="p">:</span> <span class="mf">44.06318834223217</span><span class="p">,</span>
-         <span class="s1">&#39;intflux&#39;</span><span class="p">:</span> <span class="mf">0.3832031813648053</span><span class="p">,</span>
-         <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;H2O of BX610 in BB3&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;bx610&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;pa&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">52.40943192318819</span><span class="p">,</span>
-         <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="mf">752.03314</span><span class="p">,</span>
-         <span class="s1">&#39;sbser&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1675906051028018</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-         <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;disk3d&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;vdis&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">50.82245315749322</span><span class="p">,</span>
-                  <span class="mf">50.82245315749322</span><span class="p">,</span>
-                  <span class="mf">50.82245315749322</span><span class="p">,</span>
-                  <span class="mf">50.82245315749322</span><span class="p">,</span>
-                  <span class="mf">50.82245315749322</span><span class="p">],</span>
-         <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/bb3.ms&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;vrad&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">],</span>
-         <span class="s1">&#39;vrot&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
-                  <span class="mf">197.03794217978916</span><span class="p">,</span>
-                  <span class="mf">197.03794217978916</span><span class="p">,</span>
-                  <span class="mf">197.03794217978916</span><span class="p">,</span>
-                  <span class="mf">197.03794217978916</span><span class="p">],</span>
-         <span class="s1">&#39;vsys&#39;</span><span class="p">:</span> <span class="mf">117.49374310082439</span><span class="p">,</span>
-         <span class="s1">&#39;xypos&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">356.53932590540563</span><span class="p">,</span> <span class="mf">12.82201818705264</span><span class="p">],</span>
-         <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">2.21</span><span class="p">}}</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from gmake import model_lnprob
-fit_dct,sampler=gmake.fit_setup(inp_dct,dat_dct)
-lnl,blobs=model_lnprob(fit_dct[&#39;p_start&#39;],fit_dct,inp_dct,dat_dct,
-                               savemodel=inp_dct[&#39;general&#39;][&#39;outdir&#39;],packblobs=True)
-
+<pre class="literal-block">0.2.dev1
+<a class="reference external" href="mailto:rx&#46;astro&#37;&#52;&#48;gmail&#46;com">rx<span>&#46;</span>astro<span>&#64;</span>gmail<span>&#46;</span>com</a>
+/Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+<strong>********exe read_inp()************</strong>
+&lt;Logger gmake (DEBUG)&gt;
+[&lt;FileHandler /Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/bx610_b6c3_uv_mc/gmake.log (DEBUG)&gt;, &lt;StreamHandler stderr (DEBUG)&gt;]
+{'basics': {'object': 'bx610',
+            'z': 2.21,
+            'pa': &lt;Quantity -52.4 deg&gt;,
+            'inc': &lt;Quantity 44.06 deg&gt;,
+            'xypos': &lt;SkyCoord (ICRS): (ra, dec) in deg
+    (356.53932583, 12.82201819)&gt;,
+            'vsys': &lt;Quantity 117.5 km / s&gt;,
+            'vrad': &lt;Quantity [0.  , 0.12, 0.24, 0.36, 0.48] arcsec&gt;,
+            'vrot': &lt;Quantity [  0.        , 197.03794218, 197.03794218, 197.03794218,
+           197.03794218] km / s&gt;,
+            'vdis': &lt;Quantity [50.82245316, 50.82245316, 50.82245316, 50.82245316, 50.82245316] km / s&gt;},
+ 'dynamics   (not implemented yet)': {'disk_sd': &lt;Quantity 5.e+09 solMass / kpc2&gt;,
+                                      'disk_rs': &lt;Quantity 1. kpc&gt;,
+                                      'halo_mvir': &lt;Quantity 5.e+11 solMass&gt;},
+ 'co76': {'type': 'disk3d',
+          'import': 'basics',
+          'note': 'CO76 of BX610 in BB2',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb2.ms',
+          'restfreq': &lt;Quantity 806.65181 GHz&gt;,
+          'lineflux': &lt;Quantity 1.3025217 Jy km / s&gt;,
+          'sbser': [&lt;Quantity 0.21709428 arcsec&gt;, 1.0]},
+ 'ci21': {'type': 'disk3d',
+          'import': 'basics',
+          'note': 'CI21 of BX610 in BB2',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb2.ms',
+          'restfreq': &lt;Quantity 809.34197 GHz&gt;,
+          'lineflux': &lt;Quantity 0.6493 Jy km / s&gt;,
+          'sbser': [&lt;Quantity 0.18771502 arcsec&gt;, 1.0]},
+ 'h2o': {'type': 'disk3d',
+         'import': 'basics',
+         'note': 'H2O of BX610 in BB3',
+         'vis': '../data/bx610/alma/2015.1.00250.S/bb3.ms',
+         'restfreq': &lt;Quantity 752.03314 GHz&gt;,
+         'lineflux': &lt;Quantity 0.38320318 Jy km / s&gt;,
+         'sbser': [&lt;Quantity 0.16759061 arcsec&gt;, 1.0]},
+ 'cont': {'type': 'disk2d',
+          'import': 'basics',
+          'note': 'submm cont of BX610 in BB-1/2/3/4',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb1.mfs.ms,../data/bx610/alma/2015.1.00250.S/bb2.ms,../data/bx610/alma/2015.1.00250.S/bb3.ms,../data/bx610/alma/2015.1.00250.S/bb4.mfs.ms',
+          'pa': &lt;Quantity 12.05551076 deg&gt;,
+          'inc': &lt;Quantity 27.53227189 deg&gt;,
+          'restfreq': &lt;Quantity 251.68251775 GHz&gt;,
+          'alpha': 3.7183180041434882,
+          'contflux': &lt;Quantity 0.00175222 Jy&gt;,
+          'sbser': [&lt;Quantity 0.11831162 arcsec&gt;, 1.0]},
+ 'optimize': <a class="reference external" href="mailto:{'vsys&#37;&#52;&#48;basics">{'vsys<span>&#64;</span>basics</a>': ('a', &lt;Quantity [-120.,  280.,   40.] km / s&gt;),
+              'vrot[1:5]&#64;basics': ('a', &lt;Quantity [  0., 800.,  40.] km / s&gt;),
+              'vdis[0:5]&#64;basics': ('a', &lt;Quantity [  0., 200.,  10.] km / s&gt;),
+              <a class="reference external" href="mailto:'xypos&#46;ra&#37;&#52;&#48;basics">'xypos<span>&#46;</span>ra<span>&#64;</span>basics</a>': ('o', &lt;Quantity [-1. ,  1. ,  0.1] arcsec&gt;),
+              <a class="reference external" href="mailto:'xypos&#46;dec&#37;&#52;&#48;basics">'xypos<span>&#46;</span>dec<span>&#64;</span>basics</a>': ('o', &lt;Quantity [-1. ,  1. ,  0.1] arcsec&gt;),
+              'method': 'emcee',
+              'niter': 100,
+              'nwalkers': 20},
+ 'general': {'outdir': 'bx610_b6c3_uv_mc',
+             'outname_replace': [('../data/bx610/alma/2015.1.00250.S/',
+                                  '<a href="#id1"><span class="problematic" id="id2">b6c3_</span></a>')],
+             'outname_exclude': ['cube.', 'mfs.', 'cube3.']}}</pre>
+<p>dat_dct=gmake.read_data(inp_dct,fill_mask=True,fill_error=True,save_data=True)</p>
+<p>from gmake import model_lnprob
+#import gmake</p>
+<p>#mod_dct=gmake.inp2mod(inp_dct)
+#gmake.pprint(mod_dct)
+#obj_dct=gmake.obj_defunit(mod_dct[‘co76’])
+#gmake.pprint(obj_dct)
+inp_dct=gmake.read_inp(inpfile)
+fit_dct=gmake.fit_setup(inp_dct,dat_dct)
+gmake.fit_iterate(fit_dct,inp_dct,dat_dct)</p>
+<p>#lnl,blobs=model_lnprob(fit_dct[‘p_start’],fit_dct,inp_dct,dat_dct,
+#                               savemodel=inp_dct[‘general’][‘outdir’],packblobs=True)
+#
+#import numpy as np
 #print(type(blobs))
-#print(np.shape(blobs))
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
-<span class="n">optimizer</span><span class="p">:</span> <span class="n">emcee</span>
-<span class="n">optimizing</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">index</span> <span class="o">/</span> <span class="n">name</span> <span class="o">/</span> <span class="n">start</span> <span class="o">/</span> <span class="n">lo_limit</span> <span class="o">/</span> <span class="n">up_limit</span> <span class="o">/</span> <span class="n">scale</span>
- <span class="mi">0</span>   <span class="n">vsys</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>          <span class="mf">117.49</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">120.00</span>   <span class="p">,</span>     <span class="mf">280.00</span>     <span class="p">)</span>     <span class="mf">40.00</span>
- <span class="mi">1</span>   <span class="n">vrot</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>     <span class="mf">197.04</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>     <span class="mf">800.00</span>     <span class="p">)</span>     <span class="mf">40.00</span>
- <span class="mi">2</span>   <span class="n">vdis</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>      <span class="mf">50.82</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>     <span class="mf">800.00</span>     <span class="p">)</span>     <span class="mf">10.00</span>
- <span class="mi">3</span>   <span class="n">pa</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>            <span class="o">-</span><span class="mf">52.41</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">132.41</span>   <span class="p">,</span>      <span class="mf">27.59</span>     <span class="p">)</span>     <span class="mf">5.00</span>
- <span class="mi">4</span>   <span class="n">inc</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>            <span class="mf">44.06</span>      <span class="p">(</span>     <span class="mf">5.00</span>     <span class="p">,</span>      <span class="mf">85.00</span>     <span class="p">)</span>     <span class="mf">5.00</span>
- <span class="mi">5</span>   <span class="n">xypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>    <span class="mf">356.5393259</span>   <span class="p">(</span>  <span class="mf">356.5390481</span> <span class="p">,</span>   <span class="mf">356.5396037</span>  <span class="p">)</span>   <span class="mf">0.0000389</span>
- <span class="mi">6</span>   <span class="n">xypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nd">@bx610</span><span class="o">-</span><span class="n">basics</span>    <span class="mf">12.8220182</span>    <span class="p">(</span>  <span class="mf">12.8217404</span>  <span class="p">,</span>   <span class="mf">12.8222960</span>   <span class="p">)</span>   <span class="mf">0.0000389</span>
- <span class="mi">7</span>   <span class="n">intflux</span><span class="nd">@co76</span>                <span class="mf">1.30</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.05</span>
- <span class="mi">8</span>   <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@co76</span>               <span class="mf">0.22</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">9</span>   <span class="n">intflux</span><span class="nd">@ci21</span>                <span class="mf">0.65</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">10</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@ci21</span>               <span class="mf">0.19</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">11</span>  <span class="n">intflux</span><span class="nd">@h2o</span>                 <span class="mf">0.38</span>       <span class="p">(</span>     <span class="mf">0.10</span>     <span class="p">,</span>     <span class="mf">200.00</span>     <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">12</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@h2o</span>                <span class="mf">0.17</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">1.00</span>      <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">13</span>  <span class="n">intflux</span><span class="nd">@cont</span>                <span class="mf">0.00</span>       <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>      <span class="mf">0.01</span>      <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">14</span>  <span class="n">sbser</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@cont</span>               <span class="mf">0.12</span>       <span class="p">(</span>     <span class="mf">0.01</span>     <span class="p">,</span>      <span class="mf">0.30</span>      <span class="p">)</span>     <span class="mf">0.01</span>
- <span class="mi">15</span>  <span class="n">alpha</span><span class="nd">@cont</span>                  <span class="mf">3.72</span>       <span class="p">(</span>     <span class="mf">3.00</span>     <span class="p">,</span>      <span class="mf">4.50</span>      <span class="p">)</span>     <span class="mf">0.10</span>
- <span class="mi">16</span>  <span class="n">pa</span><span class="nd">@cont</span>                     <span class="mf">12.06</span>      <span class="p">(</span>    <span class="o">-</span><span class="mf">47.94</span>    <span class="p">,</span>      <span class="mf">72.06</span>     <span class="p">)</span>     <span class="mf">5.00</span>
- <span class="mi">17</span>  <span class="n">inc</span><span class="nd">@cont</span>                    <span class="mf">27.53</span>      <span class="p">(</span>     <span class="mf">0.00</span>     <span class="p">,</span>      <span class="mf">45.00</span>     <span class="p">)</span>     <span class="mf">5.00</span>
-<span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
-<span class="n">nwalkers</span><span class="p">:</span><span class="mi">40</span>
-<span class="n">nthreads</span><span class="p">:</span><span class="mi">1</span>
-<span class="n">ndim</span><span class="p">:</span>    <span class="mi">18</span>
-<span class="n">outdir</span><span class="p">:</span>  <span class="n">bx610_b6c3_uv_mc</span>
-<span class="n">one</span> <span class="n">trial</span>                                          <span class="p">:</span> <span class="mf">0.82398</span>  <span class="n">seconds</span>
-<span class="n">ndata</span><span class="o">-&gt;</span><span class="mf">26249868.0</span>
-<span class="n">chisq</span><span class="o">-&gt;</span><span class="mf">66853555.1396716</span>
-<span class="n">export</span> <span class="n">the</span> <span class="n">model</span> <span class="nb">set</span><span class="p">:</span>                  <span class="n">bx610_b6c3_uv_mc</span>                  <span class="p">(</span><span class="n">may</span> <span class="n">take</span> <span class="n">some</span> <span class="n">time</span><span class="o">..</span><span class="p">)</span>
-
-<span class="o">--&gt;</span><span class="n">data_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod2d_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod3d_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">pbeam_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
-    <span class="n">imod3d_prof</span><span class="nd">@co76</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imodrp_co76_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
-    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imodrp_ci21_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bx610_b6c3_uv_mc</span>
-<span class="p">[</span><span class="s1">&#39;cube.&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs.&#39;</span><span class="p">,</span> <span class="s1">&#39;cube3.&#39;</span><span class="p">]</span>
-<span class="p">[(</span><span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/&#39;</span><span class="p">,</span> <span class="s1">&#39;b6c3_&#39;</span><span class="p">)]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
-    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
-    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
-    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">data_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="o">--&gt;</span><span class="n">data_b6c3_bb3</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod2d_b6c3_bb3</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod3d_b6c3_bb3</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">pbeam_b6c3_bb3</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
-    <span class="n">imod3d_prof</span><span class="nd">@h2o</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imodrp_h2o_b6c3_bb3</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
-    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb3</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
-    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb3</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
-    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb3</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">data_b6c3_bb3</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="o">--&gt;</span><span class="n">data_b6c3_bb1</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod2d_b6c3_bb1</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod3d_b6c3_bb1</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">pbeam_b6c3_bb1</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
-    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb1</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
-    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb1</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
-    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb1</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">data_b6c3_bb1</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="o">--&gt;</span><span class="n">data_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
-
-<span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod2d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod2d_b6c3_bb4</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">imod3d</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">imod3d_b6c3_bb4</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">image</span><span class="p">:</span>
-    <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">pbeam_b6c3_bb4</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
-    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
-    <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
-    <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">data_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
-<span class="o">--------------------------------------------------------------------------------</span>
-<span class="o">---</span> <span class="n">took</span> <span class="mf">4.75281</span>  <span class="n">seconds</span> <span class="o">---</span>
-<span class="n">save</span> <span class="n">the</span> <span class="n">model</span> <span class="nb">input</span> <span class="n">parameter</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_mc</span><span class="o">/</span><span class="n">model</span><span class="o">.</span><span class="n">inp</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blobs.item()[&#39;npar&#39;]
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
-
-<span class="ne">NameError</span>                                 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">54</span><span class="o">-</span><span class="n">f0192a255a23</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">blobs</span><span class="o">.</span><span class="n">item</span><span class="p">()[</span><span class="s1">&#39;npar&#39;</span><span class="p">]</span>
-
-
-<span class="ne">NameError</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;blobs&#39;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">defined</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gmake.fit_iterate(fit_dct,sampler,nstep=inp_dct[&#39;optimize&#39;][&#39;niter&#39;])
-</pre></div>
-</div>
+#print(np.shape(blobs))</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gmake.fit_analyze(inpfile)
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import astropy.units as u
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vsys</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">149.16</span>      <span class="o">-</span><span class="mf">99.80</span>      <span class="o">-</span><span class="mf">70.84</span>      <span class="mf">82.17</span>       <span class="mf">126.46</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">149.16</span>      <span class="mf">49.36</span>       <span class="mf">78.32</span>       <span class="mf">231.33</span>      <span class="mf">275.62</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">117.50</span>     <span class="o">/</span><span class="mf">2.38</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">94.35</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vrot</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">242.03</span>           <span class="o">-</span><span class="mf">214.42</span>          <span class="o">-</span><span class="mf">152.68</span>          <span class="mf">338.48</span>           <span class="mf">463.74</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">242.03</span>           <span class="mf">27.61</span>            <span class="mf">89.35</span>            <span class="mf">580.51</span>           <span class="mf">705.77</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">197.04</span>          <span class="o">/</span><span class="mf">6.03</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">199.54</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vdis</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">65.87</span>            <span class="o">-</span><span class="mf">63.34</span>           <span class="o">-</span><span class="mf">48.12</span>           <span class="mf">73.44</span>            <span class="mf">120.69</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">65.87</span>            <span class="mf">2.53</span>             <span class="mf">17.75</span>            <span class="mf">139.30</span>           <span class="mf">186.56</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">50.82</span>           <span class="o">/</span><span class="mf">1.49</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">10.80</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x=1.0*u.deg
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x.to(unit=u.FITS)
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
-
-<span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">43</span><span class="o">-</span><span class="n">ffddda05c498</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">FITS</span><span class="p">)</span>
-
-
-<span class="ne">AttributeError</span><span class="p">:</span> <span class="n">module</span> <span class="s1">&#39;astropy.units&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;FITS&#39;</span>
+<pre class="literal-block"><strong>********exe read_inp()************</strong></pre>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">xypos</span><span class="o">.</span><span class="n">ra</span><span class="nd">@basics</span><span class="p">:</span>
+<span class="go"> median(sigma) = 356.5393255     -0.0000009      -0.0000005      0.0000005       0.0000009</span>
+<span class="go"> median(ptile) = 356.5393255     356.5393246     356.5393249     356.5393260     356.5393263</span>
+<span class="go"> start(iscale) = 356.5393258    /0.0000028</span>
+<span class="go"> mode          = 356.5393258</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">xypos</span><span class="o">.</span><span class="n">dec</span><span class="nd">@basics</span><span class="p">:</span>
+<span class="go"> median(sigma) = 12.8220191       -0.0000009       -0.0000004       0.0000005        0.0000010</span>
+<span class="go"> median(ptile) = 12.8220191       12.8220182       12.8220187       12.8220196       12.8220200</span>
+<span class="go"> start(iscale) = 12.8220182      /0.0000028</span>
+<span class="go"> mode          = 12.8220189</span>
+<span class="go">------------------------------------------------------------------------------------------</span>
+<span class="go">analyzing outfolder:bx610_b6c3_uv_mc</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/emcee-iteration.pdf</span>
+<span class="go">analyzing outfolder:bx610_b6c3_uv_mc</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/emcee-iteration-blobs.pdf</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/line-triangle.pdf</span>
+<span class="go">input data size:(1000, 5)</span>
+<span class="go">Took 1.1343879699707031 seconds</span>
+<span class="go">/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.units.core.CompositeUnit&#39;&gt; type not understood, data have been serialized</span>
+<span class="go">  SerializedWarning)</span>
+<span class="go">/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.units.core.Unit&#39;&gt; type not understood, data have been serialized</span>
+<span class="go">  SerializedWarning)</span>
+<span class="go">--- save to: bx610_b6c3_uv_mc/fit.h5</span>
 </pre></div>
 </div>
 </div>
