@@ -22,6 +22,7 @@ from .meta import *
 from .io import *
 from .model_eval import * 
 from .opt import *
+from .model_dynamics import *
 
 __all__ = []
 

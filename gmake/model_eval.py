@@ -1,6 +1,6 @@
 from .model_func import *
 from .model_build import *
-from .model_func_dynamics import *
+from .model_dynamics import *
 from .io import *
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
     #tic0=time.time()
     mod_dct=inp2mod(inp_dct0)
-    model_func_dynamics(mod_dct,plotrc=False)
+    model_vrot(mod_dct)
     #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
     #tic0=time.time()
@@ -215,14 +215,12 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 del models[key]
         dct2hdf(models,savemodel+'/'+'models.h5')
         
-        pprint(inp_dct)
-        write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True)             
+        #pprint(inp_dct)
+        #write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True)             
         
         np.save(savemodel+'/'+'mod_dct.npy',models['mod_dct'])     
 
     lnl=blobs['lnprob']
-    
-    
     
     
     return lnl,blobs
@@ -326,7 +324,7 @@ def model_chisq(theta,
     """
     this is the evaluating function for amoeba 
     """
-
+    #print(theta)
     if  verbose==True:
         start_time = time.time()
         

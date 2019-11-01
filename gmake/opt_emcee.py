@@ -9,9 +9,16 @@ import emcee
 
 from galario.single import threads as galario_threads
 
+import matplotlib as mpl
+mpl.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+
 import logging
 logger = logging.getLogger(__name__)
+
 import gmake.meta as meta
+import corner 
 
 def emcee_setup(inp_dct,dat_dct):
     """
@@ -72,32 +79,27 @@ def emcee_setup(inp_dct,dat_dct):
     for p_name in opt_dct.keys():
         if  '@' not in p_name:
             continue
-        #fit_dct['p_name']=np.append(fit_dct['p_name'],[p_name])
         fit_dct['p_name'].append(p_name)
         p_value,p_unit=read_par(inp_dct,p_name,to_value=True)
         fit_dct['p_unit'].append(p_unit)
-        #print(opt_dct[p_name])
-        #print('-->',p_name,p_unit,p_value)
-        
+        #print(p_name,p_unit,p_value)
         fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(p_value))
         
-        if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
-            si=1 ; mode=deepcopy(opt_dct[p_name][0])
-        else:
-            si=0 ; mode='a'
+        mode=opt_dct[p_name][0]
+        lims=opt_dct[p_name][1]
         
-        if  isinstance(opt_dct[p_name][1][0],u.Quantity):
-            p_lo_value=(opt_dct[p_name][1][0]).to_value(unit=p_unit)
+        if  isinstance(lims[0],u.Quantity):
+            p_lo_value=(lims[0]).to_value(unit=p_unit)
         else:
-            p_lo_value=opt_dct[p_name][1][0]
+            p_lo_value=lims[0]
         fit_dct['p_lo']=np.append(fit_dct['p_lo'],
                                   read_range(center=fit_dct['p_start'][-1],
                                                    delta=p_lo_value,
                                                    mode=mode))
-        if  isinstance(opt_dct[p_name][1][1],u.Quantity):
-            p_up_value=(opt_dct[p_name][1][1]).to_value(unit=p_unit)
+        if  isinstance(lims[1],u.Quantity):
+            p_up_value=(lims[1]).to_value(unit=p_unit)
         else:
-            p_up_value=opt_dct[p_name][1][1]
+            p_up_value=lims[1]
         
         fit_dct['p_up']=np.append(fit_dct['p_up'],
                                   read_range(center=fit_dct['p_start'][-1],
@@ -105,10 +107,13 @@ def emcee_setup(inp_dct,dat_dct):
                                                    mode=mode))                                  
         
         scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
-        if  (si+2)>=len(opt_dct[p_name]):
-            scale=scale_def*0.01
+        if  len(lims)<=2:
+            if  fit_dct['method']=='emcee':
+                scale=scale_def*0.01
+            else:
+                scale=scale_def*1.0
         else:
-            scale_value=(opt_dct[p_name][1][2]).to_value(unit=p_unit)
+            scale_value=(lims[2]).to_value(unit=p_unit)
             if  mode=='a' or mode=='o':
                 scale=scale_value
             if  mode=='r':
@@ -125,26 +130,32 @@ def emcee_setup(inp_dct,dat_dct):
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
-    fit_dct['nthreads']=multiprocessing.cpu_count() #1
-    fit_dct['nthreads']=1
-    fit_dct['nwalkers']=opt_dct['nwalkers']
+    fit_dct['nthreads']=multiprocessing.cpu_count()
+    if  'nthreads' in opt_dct:
+        fit_dct['nthreads']=opt_dct['nthreads'] # doens't reallyt matter if method='emcee'
+    if  'nwalkers' in opt_dct:
+        fit_dct['nwalkers']=opt_dct['nwalkers']
     fit_dct['outfolder']=gen_dct['outdir']
     
-    logger.debug('nwalkers:'+str(fit_dct['nwalkers']))
-    logger.debug('nthreads:'+str(fit_dct['nthreads']))
+    
+    if  fit_dct['method']=='emcee':
+        logger.debug('nthreads:'+str(fit_dct['nthreads']))
+        logger.debug('nwalkers:'+str(fit_dct['nwalkers']))
+    
     logger.debug('ndim:    '+str(fit_dct['ndim']))
     logger.debug('outdir:  '+str(fit_dct['outfolder']))
     
-    np.random.seed(0)
-    fit_dct['pos_start'] = \
-    [ np.maximum(np.minimum(fit_dct['p_start']+fit_dct['p_scale']*np.random.randn(fit_dct['ndim']),fit_dct['p_up']),fit_dct['p_lo']) for i in range(fit_dct['nwalkers']) ]
-    
-    if  not os.path.exists(fit_dct['outfolder']):
+    if  fit_dct['method']=='emcee':
+        np.random.seed(0)
+        fit_dct['pos_start'] = \
+        [ np.maximum(np.minimum(fit_dct['p_start']+fit_dct['p_scale']*np.random.randn(fit_dct['ndim']),fit_dct['p_up']),fit_dct['p_lo']) for i in range(fit_dct['nwalkers']) ]
+        fit_dct['pos_last']=deepcopy(fit_dct['pos_start'])
+    if  (not os.path.exists(fit_dct['outfolder'])) and fit_dct['outfolder']!='':
         os.makedirs(fit_dct['outfolder'])
 
 
     
-    fit_dct['pos_last']=deepcopy(fit_dct['pos_start'])
+    
     fit_dct['step_last']=0
     
     #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
@@ -214,9 +225,6 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=100,
     galario_threads(omp_nthread)
     os.environ["OMP_NUM_THREADS"] = str(omp_nthread)        
     
-    #dat_dct_debug=np.arange(10000*100000)
-    #print(human_unit(get_obj_size(dat_dct_debug)*u.byte))
-    #builtins.dat_dct=dat_dct_debug
     
     if  fit_dct['nthreads']==1:
         sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
@@ -232,9 +240,7 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=100,
                                         model_lnprob_global,backend=backend,blobs_dtype=dtype,
                                         args=(fit_dct,inp_dct),
                                         runtime_sortingfn=sort_on_runtime,pool=pool)
-            sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)        
-
-    
+            sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)            
     """    
     for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
                                  progress=True,store=True):
@@ -354,10 +360,10 @@ def emcee_analyze(outfolder,
 
     figsize=(8.,(len(p_name))*2.5)
     ncol=1
-    pl.clf()
+    plt.clf()
     picki=range(len(p_name))
     nrow=int(np.ceil(len(picki)*1.0/ncol))
-    fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
+    fig, axes = plt.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
     cc=0
     for i in picki:
         iy=int(cc % nrow)
@@ -393,7 +399,7 @@ def emcee_analyze(outfolder,
     fig.tight_layout(h_pad=0.0)
     figname=outfolder+"/emcee-iteration.pdf"
     fig.savefig(figname)
-    pl.close()
+    plt.close()
 
     logger.debug("analyzing outfolder:"+outfolder)
     logger.debug("plotting..."+figname)
@@ -405,10 +411,10 @@ def emcee_analyze(outfolder,
     
     figsize=(8.,8.)
     ncol=1
-    pl.clf()
+    plt.clf()
     picki=range(len(m_name))
     nrow=int(np.ceil(len(picki)*1.0/ncol))
-    fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
+    fig, axes = plt.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
     cc=0
     for i in picki:
         iy=int(cc % nrow)
@@ -436,7 +442,7 @@ def emcee_analyze(outfolder,
     fig.tight_layout(h_pad=0.0)
     figname=outfolder+"/emcee-iteration-blobs.pdf"
     fig.savefig(figname)
-    pl.close()
+    plt.close()
     logger.debug("analyzing outfolder:"+outfolder)
     logger.debug("plotting..."+figname)    
 
@@ -479,7 +485,7 @@ def emcee_analyze(outfolder,
                 ax.plot(value2[xi], value2[yi], "sr")
         
         fig.savefig(outfolder+"/emcee-corner.pdf")
-        pl.close()
+        plt.close()
         logger.debug('Took {0} seconds'.format(float(time.time()-tic)))
     
     # Make the triangle plot.
@@ -496,7 +502,7 @@ def emcee_analyze(outfolder,
             levels=(1-np.exp(-0.5),)        
         fig = corner.corner(subsamples, labels=p_name[plotsub],truths=p_start[plotsub],quantiles=quantiles,levels=levels,quiet=True)
         fig.savefig(outfolder+"/line-triangle-sub.pdf")
-        pl.close()
+        plt.close()
         logger.debug('Took {0} seconds'.format(float(time.time()-tic)))    
 
     

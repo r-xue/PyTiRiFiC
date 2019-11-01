@@ -150,7 +150,7 @@ def write_inp(inp_dct,
         output+='@'+obj+'\n'
         output+='#'*80+'\n\n'
         for key in inp_dct0[obj].keys():
-            print(repr_parameter(inp_dct0[obj][key]))
+            #print(repr_parameter(inp_dct0[obj][key]))
             output+='{:20} {}\n'.format(key,repr_parameter(inp_dct0[obj][key]),format=200)
         output+='\n'
     f.write(output)
@@ -811,6 +811,13 @@ def human_unit(quantity, return_unit=False, base_index=0, scale_range=None):
         base_factor=1e3     # SI
     else:
         base_factor=2**10   # Binary
+
+    if  base.is_equivalent(u.byte):
+        base_factor=2**10
+    elif    base.is_equivalent(u.s):
+        base_factor=60
+    else:
+        base_factor=2**10
 
     for candidate in candidate_list:
     

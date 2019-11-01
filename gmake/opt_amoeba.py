@@ -5,8 +5,15 @@ import numpy as np
 import copy
 import sys
 
+import matplotlib as mpl
+mpl.use("Agg")
+import matplotlib.pyplot as plt
+
 import logging
 logger = logging.getLogger(__name__)
+
+from galario.single import threads as galario_threads
+import os
 
 def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     
@@ -80,18 +87,28 @@ def amoeba_setup(inp_dct,dat_dct,initial_model=False):
     
     return fit_dct
 
-def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=500):
+def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
     """
     calling amoeba
     """
+    
+    logger.debug(" ")
+    logger.debug("Running AMOEBA...")
+    logger.debug(">>"+fit_dct['outfolder']+"/amoeba_chain.h5")
+    logger.debug(" ")    
+
+    host_nthread=multiprocessing.cpu_count()
+    galario_threads(host_nthread)
+    os.environ["OMP_NUM_THREADS"] = str(host_nthread)
 
     p_amoeba=amoeba_sa(model_chisq,fit_dct['p_start'],fit_dct['p_scale'],
                        p_lo=fit_dct['p_lo'],p_up=fit_dct['p_up'],
                        funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
                        ftol=1e-10,temperature=0,
                        maxiter=nstep,verbose=True)
-
-    dct2fits(p_amoeba,outname=fit_dct['outfolder']+'/amoeba_chain')
+    lnl,blobs=model_lnlike(p_amoeba['p_best'],fit_dct,inp_dct,dat_dct)
+    p_amoeba['blobs']=blobs
+    dct2hdf(p_amoeba,outname=fit_dct['outfolder']+'/amoeba_chain.h5')
     
     return
 
@@ -119,6 +136,7 @@ def amoeba_analyze(outfolder,
     p_up=fit_dct['p_up']
     p_start=fit_dct['p_start']
     p_format=fit_dct['p_format']
+    p_unit=fit_dct['p_unit']
     p_format_prec=fit_dct['p_format_prec']
     
     #t=Table.read(outfolder+'/'+'amoeba_chain.fits')
@@ -128,9 +146,16 @@ def amoeba_analyze(outfolder,
     
     p_amoeba=hdf2dct(outfolder+'/amoeba_chain.h5')
     
-    chi2=p_amoeba['chi2']
+    blobs=p_amoeba['blobs']
+    ndp=blobs['ndata']
+    chi2=p_amoeba['chi2']/blobs['ndata']
     pars=p_amoeba['pars']
     p_best=p_amoeba['p_best']
+    
+    fit_dct['p_best']=p_best
+    
+    dct2hdf(fit_dct,outfolder+'/'+'fit.h5')
+    
                              
     
     ndim=(pars.shape)[0]
@@ -154,37 +179,48 @@ def amoeba_analyze(outfolder,
     #   PLOT PARAMETERS
     
     figsize=(8.*2.0,ndim*2.5)
-    pl.clf()
+    plt.clf()
     ncol=3
     nrow=int(np.ceil(ndim*1.0/1))
-    fig, axes = pl.subplots(nrow+1,ncol,figsize=figsize,squeeze=True)
+    fig, axes = plt.subplots(nrow+1,ncol,figsize=figsize,squeeze=True)
     
     for i in range(ndim):
-        
-        axes[i,0].plot(np.arange(niter),(pars[i,:]).T, color="gray", alpha=0.4)
+        offset=0
+        scale=1
+        p_unit_display=p_unit[i]
+        if  'xypos.ra' in p_name[i] or 'xypos.dec' in p_name[i]:
+            offset=p_start[i]
+            scale=3600 # deg -> sec
+            p_unit_display=u.arcsec
+        axes[i,0].plot(np.arange(niter),((pars[i,:]).T-offset)*scale, color="gray", alpha=0.4)
         ymin, ymax = axes[i,0].get_ylim()
         axes[i,0].set_ylim(ymin, ymax)
         axes[i,0].set_xlim(0, niter)
-        axes[i,0].axhline(p_lo[i], color="r", lw=0.8,ls='-')
-        axes[i,0].axhline(p_up[i], color="r", lw=0.8,ls='-')
-        axes[i,0].axhline(p_start[i],color="b", lw=2,ls='-')
-        axes[i,0].set_ylabel(p_name[i])
-        axes[i,0].axhline(p_best[i],color="g", lw=3,ls='-')
-        axes[i,0].set_title(("{0:"+p_format[i]+"}").format(p_start[i]),color="b")
+        
+        axes[i,0].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
+        axes[i,0].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
+        axes[i,0].axhline((p_start[i]-offset)*scale,color="b", lw=2,ls='-')
+        axes[i,0].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-')
+        
+        axes[i,0].set_ylabel(("{0:"+p_format[i]+"}").format(p_start[i]*p_unit[i]),color="b")
+        axes[i,0].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
         
         if  i==ndim-1:
             axes[i,0].set_xlabel("step number")
 
         
-        axes[i,1].plot(np.arange(burnin,niter),pars[i,burnin:].T, color="gray", alpha=0.4)
+        axes[i,1].plot(np.arange(burnin,niter),(pars[i,burnin:].T-offset)*scale, color="gray", alpha=0.4)
         ymin, ymax = axes[i,1].get_ylim()
         axes[i,1].set_ylim(ymin, ymax)
         axes[i,1].set_xlim(burnin, niter)
-        axes[i,1].axhline(p_lo[i], color="r", lw=0.8,ls='-')
-        axes[i,1].axhline(p_up[i], color="r", lw=0.8,ls='-')
-        axes[i,1].axhline(p_start[i],color="b", lw=2,ls='-')
-        axes[i,1].axhline(p_best[i],color="g", lw=3,ls='-')
-        axes[i,1].set_title(("{0:"+p_format[i]+"}").format(p_best[i]),color="g")
+        
+        axes[i,1].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
+        axes[i,1].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
+        axes[i,1].axhline((p_start[i]-offset)*scale,color="b", lw=2,ls='-')
+        axes[i,1].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-')
+        
+        axes[i,1].set_ylabel(("{0:"+p_format[i]+"}").format(p_best[i]*p_unit[i]),color="b")
+        axes[i,1].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
         
         if  i==ndim-1:
             axes[i,1].set_xlabel("step number")
@@ -195,24 +231,26 @@ def amoeba_analyze(outfolder,
         axes[i,2].set_ylim(ymin, ymax)
         
         pick_ind=np.where(np.logical_and(chi2 < ymax,chi2 > ymin))
-        axes[i,2].plot(pars[i,pick_ind].T,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
+        axes[i,2].plot((pars[i,pick_ind].T-offset)*scale,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
         
-        axes[i,2].axvline(p_best[i], ls='-', color='g',lw=3)
-        axes[i,2].axvline(p_start[i], ls='-', color='b',lw=3)
+        axes[i,2].axvline((p_best[i]-offset)*scale, ls='-', color='g',lw=3)
+        axes[i,2].axvline((p_start[i]-offset)*scale, ls='-', color='b',lw=3)
         axes[i,2].set_xlabel(fit_dct['p_name'][i])         
 
     axes[i+1,0].plot(np.arange(niter),chi2)
     axes[i+1,1].plot(np.arange(burnin,niter),chi2[burnin:])
-    axes[i+1,1].set_title(("{0}").format(np.nanmin(chi2)),color="g")
+    #axes[i+1,1].set_title(("{0}").format(np.nanmin(chi2)),color="g")
     
     fig.delaxes(axes[i+1,2])
-    axes[i+1,0].set_ylabel('Goodness Scale')
+    axes[i+1,0].set_title('Goodness Scale')
                     
                 
     fig.tight_layout(h_pad=0.0)
     figname=outfolder+"/iteration.pdf"
     fig.savefig(figname)
-    pl.close()       
+    plt.close()       
+    logger.debug("analyzing outfolder:"+outfolder)
+    logger.debug("plotting..."+figname)      
 
 
 def amoeba_sa(func,p0,scale, 

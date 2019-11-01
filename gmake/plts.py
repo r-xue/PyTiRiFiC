@@ -1,5 +1,6 @@
 from .utils import imcontsub
 
+import logging
 logger = logging.getLogger(__name__)
 
 
@@ -14,6 +15,16 @@ import matplotlib.ticker as plticker
 # mpl.rcParams["font.family"] = "serif"
 # mpl.rcParams["image.origin"]="lower"
 # mpl.rc('text', usetex=True)
+
+mpl.rcParams['xtick.direction'] = 'in'
+mpl.rcParams['ytick.direction'] = 'in'
+mpl.rcParams.update({'font.size': 12})
+mpl.rcParams["font.family"] = "serif"
+mpl.rcParams["image.origin"]="lower"
+mpl.rcParams['agg.path.chunksize'] = 10000
+#mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+#mpl.rc('font',**{'family':'serif','serif':['Palatino']})
+#mpl.rc('text',usetex=True)
 
 def calc_ppbeam(header):
     """

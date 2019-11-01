@@ -21,18 +21,20 @@ from gmake import fit_analyze
 
 import casa_proc
 
-from gmake import plt_spec1d
-from gmake import plt_mom0xy
-from gmake import plt_makeslice
-from gmake import plt_slice
-from gmake import plt_radprof
+from .plts import plt_spec1d
+from .plts import plt_mom0xy
+from .plts import plt_makeslice
+from .plts import plt_slice
+from .plts import plt_radprof
 
 from .utils import *
 from .logger import *
 
 import astropy.units as u
-
+import logging
 logger=logging.getLogger(__name__)
+
+from pprint import pformat
 
 def main():
     
@@ -140,33 +142,35 @@ def proc_inpfile(args):
         
     if  args.analyze==True:
         
-        fit_analyze(args.inpfile)
+        #fit_analyze(args.inpfile)
         
-        """
+        #"""
         casa_script_dir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
-        ms2im=casa_script_dir+'/ms2im.py'
+        ms2im=casa_script_dir+'/ms2im_script.py'
         loglevel='DEBUG' if args.debug==True else 'INFO'
         casa_proc.logger_config(logfile=args.logfile,loglevel=loglevel,logfilelevel=loglevel)         
         casa_proc.casa_init(reset=True)
         
-        ms_names=inp_dct['general']['outdir']+'/p_*/*.ms'
+        ms_names=inp_dct['general']['outdir']+'/model_1/data*.ms'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
         mslist=glob.glob(ms_names)        
         logger.debug(pformat(mslist))
+        
+        print(ms2im)
         for vis in mslist:
             logger.debug(" ")
             logger.debug('imaging: '+str(vis))
             casa_proc.casa_task('ms2im',
-                        vis=vis,
+                        vis=vis.replace('data_','model_'),
                         imagename=vis.replace('.ms','').replace('data_','cmodel_'),
                         cell=0.04,imsize=64,
-                        datacolumn='corrected',preload=ms2im)
+                        datacolumn='data',preload=ms2im)
             casa_proc.casa_task('ms2im',
                         vis=vis,
                         imagename=vis.replace('.ms','').replace('data_','data_'),
                         cell=0.04,imsize=64,
                         datacolumn='data',preload=ms2im)         
-        
+        """
         ms_names=inp_dct['general']['outdir']+'/p_*/*.ms.contsub'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
         mslist=glob.glob(ms_names)        

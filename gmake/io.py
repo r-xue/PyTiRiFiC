@@ -189,7 +189,8 @@ def dct2hdf(dct,outname='dct2hdf'):
     else:
         outpath=outname+'.h5'
     hkl.dump(dct0, outpath, mode='w')#,compression='gzip')      
-
+    logger.info('--- save to: '+outpath)
+    
     return
 
 def hdf2dct(hdf):

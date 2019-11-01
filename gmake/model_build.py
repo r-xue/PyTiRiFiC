@@ -1,5 +1,5 @@
 from .model_func import *
-from .model_func_dynamics import *
+from .model_dynamics import *
 from .io import *
 from .meta import xymodel_header
 
@@ -239,7 +239,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                     #models['imodel@'+vis]+=imodel
                     
                 if  'disk3d' in obj['type'].lower():
-                    
+                    #pprint(obj)
                     #test_time = time.time()              
                     imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,
                                                     model=models['imod3d@'+vis],
