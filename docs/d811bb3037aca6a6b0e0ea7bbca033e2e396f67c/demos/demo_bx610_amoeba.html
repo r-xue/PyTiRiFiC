@@ -204,6 +204,7 @@ gmake.logger_status()
 [Clang 11.0.0 (clang-1100.0.33.8)]
 hyperion
 /Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output
+<strong>********exe read_inp()************</strong>
 0.2.dev1
 <a class="reference external" href="mailto:rx&#46;astro&#37;&#52;&#48;gmail&#46;com">rx<span>&#46;</span>astro<span>&#64;</span>gmail<span>&#46;</span>com</a>
 /Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake
@@ -257,7 +258,7 @@ hyperion
 <span class="n">data</span> <span class="n">flagging</span> <span class="n">fraction</span><span class="p">:</span> <span class="mf">0.0</span>
 <span class="o">--------------------------------------------------------------------------------</span>
 <span class="o">---</span> <span class="n">dat_dct</span> <span class="n">size</span> <span class="mf">203.68</span> <span class="n">Mibyte</span> <span class="o">---</span>
-<span class="o">---</span> <span class="n">took</span> <span class="mf">1.54312</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">took</span> <span class="mf">2.05208</span>  <span class="n">seconds</span> <span class="o">---</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#
@@ -277,6 +278,7 @@ fit_dct=gmake.fit_setup(inp_dct,dat_dct)
 gmake.fit_iterate(fit_dct,inp_dct,dat_dct)
 </pre></div>
 </div>
+<pre class="literal-block"><strong>********exe read_inp()************</strong></pre>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
 <span class="n">optimizer</span><span class="p">:</span> <span class="n">amoeba</span>
 <span class="n">optimizing</span> <span class="n">parameters</span><span class="p">:</span>
@@ -290,12 +292,13 @@ gmake.fit_iterate(fit_dct,inp_dct,dat_dct)
 <span class="n">outdir</span><span class="p">:</span>  <span class="n">bx610_b6c3_uv_ab</span>
 </pre></div>
 </div>
-<pre class="literal-block"><strong>********exe read_inp()************</strong>
-/Users/Rui/Library/Python/3.7/lib/python/site-packages/galpy/potential/RazorThinExponentialDiskPotential.py:128: RuntimeWarning: invalid value encountered in multiply
-  return -2.*nu.pi*y*(special.i0(y)*special.k0(y)-special.i1(y)*special.k1(y))</pre>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">one</span> <span class="n">trial</span>                                          <span class="p">:</span> <span class="mf">0.88414</span>  <span class="n">seconds</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.7</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">galpy</span><span class="o">/</span><span class="n">potential</span><span class="o">/</span><span class="n">RazorThinExponentialDiskPotential</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">128</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">multiply</span>
+  <span class="k">return</span> <span class="o">-</span><span class="mf">2.</span><span class="o">*</span><span class="n">nu</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="p">(</span><span class="n">special</span><span class="o">.</span><span class="n">i0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">special</span><span class="o">.</span><span class="n">k0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="n">special</span><span class="o">.</span><span class="n">i1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">special</span><span class="o">.</span><span class="n">k1</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">one</span> <span class="n">trial</span>                                          <span class="p">:</span> <span class="mf">1.35949</span>  <span class="n">seconds</span>
 <span class="n">ndata</span><span class="o">-&gt;</span><span class="mf">26249868.0</span>
-<span class="n">chisq</span><span class="o">-&gt;</span><span class="mf">66853646.75246938</span>
+<span class="n">chisq</span><span class="o">-&gt;</span><span class="mf">66853641.943349816</span>
 <span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">fit</span><span class="o">.</span><span class="n">h5</span>
 
 <span class="n">Running</span> <span class="n">AMOEBA</span><span class="o">...</span>
@@ -307,354 +310,99 @@ gmake.fit_iterate(fit_dct,inp_dct,dat_dct)
 
 /Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.units.core.Unit&#39;&gt; type not understood, data have been serialized
   SerializedWarning)
-
-[5000.          356.53932583   12.82201819]
-[5.00000000e+04 3.56539326e+02 1.28220182e+01]
-[5000.          356.53988139   12.82201819]
-[5000.          356.53932583   12.82257375]
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>   <span class="mi">66853649</span>   <span class="mi">66870628</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3.50000000e+04</span> <span class="mf">3.56538770e+02</span> <span class="mf">1.28223886e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>   <span class="mi">66853649</span>   <span class="mi">66869743</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">5.00000000e+04</span> <span class="mf">3.56538955e+02</span> <span class="mf">1.28217096e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.75000000e+04</span> <span class="mf">3.56539233e+02</span> <span class="mf">1.28223577e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2.75000000e+04</span> <span class="mf">3.56539326e+02</span> <span class="mf">1.28220182e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2.00000000e+04</span> <span class="mf">3.56539048e+02</span> <span class="mf">1.28222034e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">5000.</span>          <span class="mf">356.53932583</span>   <span class="mf">12.82229597</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">6</span>   <span class="mi">66853649</span>   <span class="mi">66882991</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3.00000000e+04</span> <span class="mf">3.56539141e+02</span> <span class="mf">1.28218639e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">7</span>   <span class="mi">66853649</span>   <span class="mi">66882148</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2.16666667e+04</span> <span class="mf">3.56539480e+02</span> <span class="mf">1.28217301e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">8</span>   <span class="mi">66853649</span>   <span class="mi">66882105</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">6111.11111111</span>  <span class="mf">356.5396139</span>    <span class="mf">12.82198047</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2.40277778e+04</span> <span class="mf">3.56539259e+02</span> <span class="mf">1.28218930e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">10</span>   <span class="mi">66853649</span>   <span class="mi">66881657</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.60185185e+04</span> <span class="mf">3.56539127e+02</span> <span class="mf">1.28222228e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.74305556e+04</span> <span class="mf">3.56539215e+02</span> <span class="mf">1.28220996e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">12</span>   <span class="mi">66853649</span>   <span class="mi">66879173</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2.02546296e+04</span> <span class="mf">3.56539392e+02</span> <span class="mf">1.28218533e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.81365741e+04</span> <span class="mf">3.56539259e+02</span> <span class="mf">1.28220381e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">14</span>   <span class="mi">66853649</span>   <span class="mi">66879076</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">9729.9382716</span>   <span class="mf">356.53934841</span>   <span class="mf">12.82215661</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2.04533179e+04</span> <span class="mf">3.56539281e+02</span> <span class="mf">1.28219589e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">16</span>   <span class="mi">66853649</span>   <span class="mi">66870171</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.33043981e+04</span> <span class="mf">3.56539326e+02</span> <span class="mf">1.28220907e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.86660880e+04</span> <span class="mf">3.56539293e+02</span> <span class="mf">1.28219919e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">18</span>   <span class="mi">66853649</span>   <span class="mi">66870062</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.59741512e+04</span> <span class="mf">3.56539370e+02</span> <span class="mf">1.28219808e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.65147569e+04</span> <span class="mf">3.56539342e+02</span> <span class="mf">1.28219951e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">20</span>   <span class="mi">66853649</span>   <span class="mi">66862095</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.40104167e+04</span> <span class="mf">3.56539370e+02</span> <span class="mf">1.28220291e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.75021701e+04</span> <span class="mf">3.56539312e+02</span> <span class="mf">1.28220012e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">22</span>   <span class="mi">66853649</span>   <span class="mi">66859039</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.68200231e+04</span> <span class="mf">3.56539300e+02</span> <span class="mf">1.28220299e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.67437066e+04</span> <span class="mf">3.56539311e+02</span> <span class="mf">1.28220212e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">24</span>   <span class="mi">66853649</span>   <span class="mi">66857247</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.53269676e+04</span> <span class="mf">3.56539330e+02</span> <span class="mf">1.28220372e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.58707682e+04</span> <span class="mf">3.56539325e+02</span> <span class="mf">1.28220282e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">26</span>   <span class="mi">66853649</span>   <span class="mi">66856159</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.55034722e+04</span> <span class="mf">3.56539341e+02</span> <span class="mf">1.28220218e+01</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1.58135308e+04</span> <span class="mf">3.56539333e+02</span> <span class="mf">1.28220217e+01</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">28</span>   <span class="mi">66853649</span>   <span class="mi">66855408</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">100.</span>         <span class="mf">356.53933025</span>  <span class="mf">12.82202721</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">29</span>   <span class="mi">66853649</span>   <span class="mi">66855344</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">100.</span>         <span class="mf">356.5393343</span>   <span class="mf">12.82201651</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">30</span>   <span class="mi">66853649</span>   <span class="mi">66855174</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">100.</span>         <span class="mf">356.53932713</span>  <span class="mf">12.82201958</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">31</span>   <span class="mi">66853649</span>   <span class="mi">66854914</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3366.66666667</span>  <span class="mf">356.53932793</span>   <span class="mf">12.82200898</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">32</span>   <span class="mi">66853649</span>   <span class="mi">66854882</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">5544.44444444</span>  <span class="mf">356.53931963</span>   <span class="mf">12.82201467</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">33</span>   <span class="mi">66853649</span>   <span class="mi">66854454</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">9174.07407407</span>  <span class="mf">356.5393218</span>    <span class="mf">12.82200831</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2368.51851852</span>  <span class="mf">356.5393258</span>    <span class="mf">12.82201677</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">35</span>   <span class="mi">66853428</span>   <span class="mi">66854000</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1612.34567901</span>  <span class="mf">356.53933341</span>   <span class="mf">12.82201463</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">36</span>   <span class="mi">66853428</span>   <span class="mi">66853995</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2620.57613169</span>  <span class="mf">356.53932876</span>   <span class="mf">12.82202408</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">37</span>   <span class="mi">66853428</span>   <span class="mi">66853918</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">5047.05075446</span>  <span class="mf">356.53932019</span>   <span class="mf">12.82202473</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2471.02194787</span>  <span class="mf">356.5393301</span>    <span class="mf">12.82201715</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">39</span>   <span class="mi">66853428</span>   <span class="mi">66853649</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">100.</span>         <span class="mf">356.53933061</span>  <span class="mf">12.82202047</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">3743.35276635</span>  <span class="mf">356.53932703</span>   <span class="mf">12.82201876</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">41</span>   <span class="mi">66853428</span>   <span class="mi">66853607</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3101.35269014</span>  <span class="mf">356.53932652</span>   <span class="mf">12.82201104</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2740.7702713</span>   <span class="mf">356.5393282</span>    <span class="mf">12.82202082</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">43</span>   <span class="mi">66853428</span>   <span class="mi">66853531</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3430.73908957</span>  <span class="mf">356.53932392</span>   <span class="mf">12.82202041</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">44</span>   <span class="mi">66853428</span>   <span class="mi">66853497</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1949.99915325</span>  <span class="mf">356.53932492</span>   <span class="mf">12.8220199</span> <span class="p">]</span>
-<span class="p">[</span><span class="mf">3295.01436307</span>  <span class="mf">356.5393265</span>    <span class="mf">12.82201905</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">46</span>   <span class="mi">66853428</span>   <span class="mi">66853482</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2172.12967902</span>  <span class="mf">356.53932975</span>   <span class="mf">12.82201734</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">3116.08673693</span>  <span class="mf">356.53932538</span>   <span class="mf">12.82201964</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">48</span>   <span class="mi">66853428</span>   <span class="mi">66853461</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3112.30947438</span>  <span class="mf">356.53932358</span>   <span class="mf">12.82201615</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2833.65507207</span>  <span class="mf">356.53932705</span>   <span class="mf">12.82201965</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">50</span>   <span class="mi">66853428</span>   <span class="mi">66853449</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2250.49252194</span>  <span class="mf">356.53932565</span>   <span class="mf">12.82201833</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">1728.23160138</span>  <span class="mf">356.53932522</span>   <span class="mf">12.82201797</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">52</span>   <span class="mi">66853404</span>   <span class="mi">66853439</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1852.35733809</span>  <span class="mf">356.53932695</span>   <span class="mf">12.82201685</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2800.15438722</span>  <span class="mf">356.53932577</span>   <span class="mf">12.82201895</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">54</span>   <span class="mi">66853404</span>   <span class="mi">66853433</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2112.45521305</span>  <span class="mf">356.53932443</span>   <span class="mf">12.82201637</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2653.35510732</span>  <span class="mf">356.53932639</span>   <span class="mf">12.82201883</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">56</span>   <span class="mi">66853404</span>   <span class="mi">66853428</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2767.4828258</span>   <span class="mf">356.53932608</span>   <span class="mf">12.82202064</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2468.25959534</span>  <span class="mf">356.53932587</span>   <span class="mf">12.82201773</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">58</span>   <span class="mi">66853404</span>   <span class="mi">66853426</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2114.58376251</span>  <span class="mf">356.53932617</span>   <span class="mf">12.82201765</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2285.97641869</span>  <span class="mf">356.53932607</span>   <span class="mf">12.82201797</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">60</span>   <span class="mi">66853404</span>   <span class="mi">66853413</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2628.76173104</span>  <span class="mf">356.53932587</span>   <span class="mf">12.82201862</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2800.15438722</span>  <span class="mf">356.53932577</span>   <span class="mf">12.82201895</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">62</span>   <span class="mi">66853400</span>   <span class="mi">66853412</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2553.4799782</span>   <span class="mf">356.53932607</span>   <span class="mf">12.82201945</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2532.17488248</span>  <span class="mf">356.53932602</span>   <span class="mf">12.82201902</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">64</span>   <span class="mi">66853400</span>   <span class="mi">66853411</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2489.56469105</span>  <span class="mf">356.53932592</span>   <span class="mf">12.82201816</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2521.52233463</span>  <span class="mf">356.539326</span>     <span class="mf">12.82201881</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">66</span>   <span class="mi">66853400</span>   <span class="mi">66853407</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2280.49595109</span>  <span class="mf">356.53932528</span>   <span class="mf">12.82201834</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2560.14031826</span>  <span class="mf">356.53932612</span>   <span class="mf">12.82201871</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">68</span>   <span class="mi">66853400</span>   <span class="mi">66853404</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2889.79040068</span>  <span class="mf">356.53932634</span>   <span class="mf">12.8220191</span> <span class="p">]</span>
-<span class="p">[</span><span class="mf">2410.31699163</span>  <span class="mf">356.53932582</span>   <span class="mf">12.82201852</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">70</span>   <span class="mi">66853398</span>   <span class="mi">66853402</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2544.62369266</span>  <span class="mf">356.53932588</span>   <span class="mf">12.82201843</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2527.29767413</span>  <span class="mf">356.53932597</span>   <span class="mf">12.82201871</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2485.22865494</span>  <span class="mf">356.53932597</span>   <span class="mf">12.82201862</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2465.91966313</span>  <span class="mf">356.53932591</span>   <span class="mf">12.82201867</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2519.53936134</span>  <span class="mf">356.53932585</span>   <span class="mf">12.82201857</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">75</span>   <span class="mi">66853398</span>   <span class="mi">66853403</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2445.28868912</span>  <span class="mf">356.53932575</span>   <span class="mf">12.82201856</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2475.24366349</span>  <span class="mf">356.53932591</span>   <span class="mf">12.8220186</span> <span class="p">]</span>
-<span class="p">[</span><span class="mf">2447.77282329</span>  <span class="mf">356.53932589</span>   <span class="mf">12.82201857</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2438.11832738</span>  <span class="mf">356.53932586</span>   <span class="mf">12.82201859</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2464.92817648</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201855</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">80</span>   <span class="mi">66853398</span>   <span class="mi">66853409</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2427.80284037</span>  <span class="mf">356.53932578</span>   <span class="mf">12.82201854</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2442.78032756</span>  <span class="mf">356.53932587</span>   <span class="mf">12.82201856</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">82</span>   <span class="mi">66853398</span>   <span class="mi">66853409</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2440.5653364</span>   <span class="mf">356.53932582</span>   <span class="mf">12.82201849</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2438.73007963</span>  <span class="mf">356.53932585</span>   <span class="mf">12.82201857</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2426.54865959</span>  <span class="mf">356.53932584</span>   <span class="mf">12.82201854</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2424.2176595</span>   <span class="mf">356.53932584</span>   <span class="mf">12.82201856</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2437.62258405</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">87</span>   <span class="mi">66853398</span>   <span class="mi">66853409</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2403.09962309</span>  <span class="mf">356.53932584</span>   <span class="mf">12.82201855</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">88</span>   <span class="mi">66853398</span>   <span class="mi">66853404</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2398.54085656</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201854</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2419.54670883</span>  <span class="mf">356.53932584</span>   <span class="mf">12.82201854</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2418.43282561</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2417.26732556</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201854</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2406.70830736</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">93</span>   <span class="mi">66853398</span>   <span class="mi">66853408</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2404.42892409</span>  <span class="mf">356.53932582</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2407.92989947</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2407.37295786</span>  <span class="mf">356.53932582</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2413.7921586</span>   <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-<span class="p">[</span><span class="mf">2408.51264949</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">98</span>   <span class="mi">66853398</span>   <span class="mi">66853413</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2414.37490862</span>  <span class="mf">356.53932583</span>   <span class="mf">12.82201853</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">99</span>   <span class="mi">66853398</span>   <span class="mi">66853410</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2417.14338973</span>  <span class="mf">356.53932582</span>   <span class="mf">12.82201852</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="mi">100</span>   <span class="mi">66853398</span>   <span class="mi">66853409</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="mi">0</span>   <span class="mi">66853644</span>   <span class="mi">66870632</span>
+     <span class="mi">1</span>   <span class="mi">66853644</span>   <span class="mi">66869746</span>
+     <span class="mi">6</span>   <span class="mi">66853644</span>   <span class="mi">66883000</span>
+     <span class="mi">7</span>   <span class="mi">66853644</span>   <span class="mi">66882152</span>
+     <span class="mi">8</span>   <span class="mi">66853644</span>   <span class="mi">66882095</span>
+    <span class="mi">10</span>   <span class="mi">66853644</span>   <span class="mi">66881657</span>
+    <span class="mi">12</span>   <span class="mi">66853644</span>   <span class="mi">66879188</span>
+    <span class="mi">14</span>   <span class="mi">66853644</span>   <span class="mi">66879047</span>
+    <span class="mi">16</span>   <span class="mi">66853644</span>   <span class="mi">66870167</span>
+    <span class="mi">18</span>   <span class="mi">66853644</span>   <span class="mi">66870062</span>
+    <span class="mi">20</span>   <span class="mi">66853644</span>   <span class="mi">66862099</span>
+    <span class="mi">22</span>   <span class="mi">66853644</span>   <span class="mi">66859046</span>
+    <span class="mi">24</span>   <span class="mi">66853644</span>   <span class="mi">66857220</span>
+    <span class="mi">26</span>   <span class="mi">66853644</span>   <span class="mi">66856156</span>
+    <span class="mi">28</span>   <span class="mi">66853644</span>   <span class="mi">66855412</span>
+    <span class="mi">29</span>   <span class="mi">66853644</span>   <span class="mi">66855334</span>
+    <span class="mi">30</span>   <span class="mi">66853644</span>   <span class="mi">66855184</span>
+    <span class="mi">31</span>   <span class="mi">66853644</span>   <span class="mi">66854899</span>
+    <span class="mi">32</span>   <span class="mi">66853644</span>   <span class="mi">66854868</span>
+    <span class="mi">33</span>   <span class="mi">66853644</span>   <span class="mi">66854446</span>
+    <span class="mi">35</span>   <span class="mi">66853430</span>   <span class="mi">66854001</span>
+    <span class="mi">37</span>   <span class="mi">66853430</span>   <span class="mi">66853999</span>
+    <span class="mi">39</span>   <span class="mi">66853430</span>   <span class="mi">66853673</span>
+    <span class="mi">40</span>   <span class="mi">66853430</span>   <span class="mi">66853644</span>
+    <span class="mi">42</span>   <span class="mi">66853430</span>   <span class="mi">66853510</span>
+    <span class="mi">43</span>   <span class="mi">66853430</span>   <span class="mi">66853504</span>
+    <span class="mi">44</span>   <span class="mi">66853430</span>   <span class="mi">66853487</span>
+    <span class="mi">45</span>   <span class="mi">66853430</span>   <span class="mi">66853485</span>
+    <span class="mi">47</span>   <span class="mi">66853425</span>   <span class="mi">66853480</span>
+    <span class="mi">49</span>   <span class="mi">66853425</span>   <span class="mi">66853462</span>
+    <span class="mi">51</span>   <span class="mi">66853412</span>   <span class="mi">66853430</span>
+    <span class="mi">53</span>   <span class="mi">66853407</span>   <span class="mi">66853426</span>
+    <span class="mi">55</span>   <span class="mi">66853407</span>   <span class="mi">66853425</span>
+    <span class="mi">57</span>   <span class="mi">66853407</span>   <span class="mi">66853415</span>
+    <span class="mi">59</span>   <span class="mi">66853407</span>   <span class="mi">66853414</span>
+    <span class="mi">60</span>   <span class="mi">66853407</span>   <span class="mi">66853412</span>
+    <span class="mi">61</span>   <span class="mi">66853407</span>   <span class="mi">66853411</span>
+    <span class="mi">62</span>   <span class="mi">66853407</span>   <span class="mi">66853409</span>
+    <span class="mi">64</span>   <span class="mi">66853402</span>   <span class="mi">66853408</span>
+    <span class="mi">66</span>   <span class="mi">66853402</span>   <span class="mi">66853408</span>
+    <span class="mi">68</span>   <span class="mi">66853401</span>   <span class="mi">66853407</span>
+    <span class="mi">73</span>   <span class="mi">66853401</span>   <span class="mi">66853417</span>
+    <span class="mi">74</span>   <span class="mi">66853401</span>   <span class="mi">66853407</span>
+    <span class="mi">75</span>   <span class="mi">66853401</span>   <span class="mi">66853407</span>
+    <span class="mi">76</span>   <span class="mi">66853401</span>   <span class="mi">66853407</span>
+    <span class="mi">77</span>   <span class="mi">66853401</span>   <span class="mi">66853405</span>
+    <span class="mi">78</span>   <span class="mi">66853401</span>   <span class="mi">66853405</span>
+    <span class="mi">83</span>   <span class="mi">66853401</span>   <span class="mi">66853413</span>
+    <span class="mi">85</span>   <span class="mi">66853401</span>   <span class="mi">66853405</span>
+    <span class="mi">87</span>   <span class="mi">66853401</span>   <span class="mi">66853405</span>
+    <span class="mi">88</span>   <span class="mi">66853401</span>   <span class="mi">66853405</span>
+    <span class="mi">93</span>   <span class="mi">66853401</span>   <span class="mi">66853409</span>
+    <span class="mi">95</span>   <span class="mi">66853401</span>   <span class="mi">66853404</span>
+    <span class="mi">97</span>   <span class="mi">66853398</span>   <span class="mi">66853404</span>
+   <span class="mi">102</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">103</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">105</span>   <span class="mi">66853398</span>   <span class="mi">66853401</span>
+   <span class="mi">110</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">112</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">114</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">119</span>   <span class="mi">66853398</span>   <span class="mi">66853413</span>
+   <span class="mi">120</span>   <span class="mi">66853398</span>   <span class="mi">66853413</span>
+   <span class="mi">122</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">127</span>   <span class="mi">66853398</span>   <span class="mi">66853409</span>
+   <span class="mi">128</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">130</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">135</span>   <span class="mi">66853398</span>   <span class="mi">66853416</span>
+   <span class="mi">137</span>   <span class="mi">66853398</span>   <span class="mi">66853407</span>
+   <span class="mi">138</span>   <span class="mi">66853398</span>   <span class="mi">66853403</span>
+   <span class="mi">139</span>   <span class="mi">66853398</span>   <span class="mi">66853401</span>
+   <span class="mi">144</span>   <span class="mi">66853398</span>   <span class="mi">66853518</span>
+   <span class="mi">146</span>   <span class="mi">66853398</span>   <span class="mi">66853408</span>
+   <span class="mi">148</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">153</span>   <span class="mi">66853398</span>   <span class="mi">66853403</span>
+   <span class="mi">158</span>   <span class="mi">66853398</span>   <span class="mi">66853407</span>
+   <span class="mi">163</span>   <span class="mi">66853398</span>   <span class="mi">66853413</span>
+   <span class="mi">165</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">170</span>   <span class="mi">66853398</span>   <span class="mi">66853408</span>
+   <span class="mi">172</span>   <span class="mi">66853398</span>   <span class="mi">66853407</span>
+   <span class="mi">174</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">176</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">181</span>   <span class="mi">66853398</span>   <span class="mi">66853407</span>
+   <span class="mi">182</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
+   <span class="mi">184</span>   <span class="mi">66853398</span>   <span class="mi">66853405</span>
+   <span class="mi">186</span>   <span class="mi">66853398</span>   <span class="mi">66853404</span>
+   <span class="mi">188</span>   <span class="mi">66853398</span>   <span class="mi">66853402</span>
+   <span class="mi">189</span>   <span class="mi">66853398</span>   <span class="mi">66853402</span>
+   <span class="mi">194</span>   <span class="mi">66853398</span>   <span class="mi">66853410</span>
+   <span class="mi">196</span>   <span class="mi">66853398</span>   <span class="mi">66853408</span>
+   <span class="mi">197</span>   <span class="mi">66853398</span>   <span class="mi">66853407</span>
+   <span class="mi">198</span>   <span class="mi">66853398</span>   <span class="mi">66853406</span>
 <span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">amoeba_chain</span><span class="o">.</span><span class="n">h5</span>
 </pre></div>
 </div>
@@ -665,17 +413,12 @@ gmake.fit_analyze(inpfile,export=True)
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">fit</span><span class="o">.</span><span class="n">h5</span>
 <span class="n">Check</span> <span class="n">optimized</span> <span class="n">parameters</span><span class="p">:</span>
- <span class="mi">0</span>   <span class="n">disk_sd</span><span class="nd">@diskdyn</span>   <span class="o">=</span>    <span class="mf">2410.32</span>     <span class="o">&lt;-</span>    <span class="mf">5000.00</span>     <span class="p">(</span>    <span class="mf">100.00</span>    <span class="p">,</span>    <span class="mf">50000.00</span>    <span class="p">)</span>
- <span class="mi">1</span>   <span class="n">xypos</span><span class="o">.</span><span class="n">ra</span><span class="nd">@basics</span>   <span class="o">=</span>  <span class="mf">356.5393258</span>   <span class="o">&lt;-</span>  <span class="mf">356.5393258</span>   <span class="p">(</span>  <span class="mf">356.5387703</span> <span class="p">,</span>   <span class="mf">356.5398814</span>  <span class="p">)</span>
- <span class="mi">2</span>   <span class="n">xypos</span><span class="o">.</span><span class="n">dec</span><span class="nd">@basics</span>  <span class="o">=</span>  <span class="mf">12.8220185</span>    <span class="o">&lt;-</span>  <span class="mf">12.8220182</span>    <span class="p">(</span>  <span class="mf">12.8214626</span>  <span class="p">,</span>   <span class="mf">12.8225738</span>   <span class="p">)</span>
+ <span class="mi">0</span>   <span class="n">disk_sd</span><span class="nd">@diskdyn</span>   <span class="o">=</span>    <span class="mf">2529.26</span>     <span class="o">&lt;-</span>    <span class="mf">5000.00</span>     <span class="p">(</span>    <span class="mf">100.00</span>    <span class="p">,</span>    <span class="mf">50000.00</span>    <span class="p">)</span>
+ <span class="mi">1</span>   <span class="n">xypos</span><span class="o">.</span><span class="n">ra</span><span class="nd">@basics</span>   <span class="o">=</span>  <span class="mf">356.5393256</span>   <span class="o">&lt;-</span>  <span class="mf">356.5393258</span>   <span class="p">(</span>  <span class="mf">356.5387703</span> <span class="p">,</span>   <span class="mf">356.5398814</span>  <span class="p">)</span>
+ <span class="mi">2</span>   <span class="n">xypos</span><span class="o">.</span><span class="n">dec</span><span class="nd">@basics</span>  <span class="o">=</span>  <span class="mf">12.8220184</span>    <span class="o">&lt;-</span>  <span class="mf">12.8220182</span>    <span class="p">(</span>  <span class="mf">12.8214626</span>  <span class="p">,</span>   <span class="mf">12.8225738</span>   <span class="p">)</span>
 </pre></div>
 </div>
-<pre class="literal-block"><strong>********exe read_inp()************</strong>
-/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class 'astropy.units.core.CompositeUnit'&gt; type not understood, data have been serialized
-  SerializedWarning)
-
-/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class 'astropy.units.core.Unit'&gt; type not understood, data have been serialized
-  SerializedWarning)</pre>
+<pre class="literal-block"><strong>********exe read_inp()************</strong></pre>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">analyzing</span> <span class="n">outfolder</span><span class="p">:</span><span class="n">bx610_b6c3_uv_ab</span>
 <span class="n">plotting</span><span class="o">...</span><span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">iteration</span><span class="o">.</span><span class="n">pdf</span>
 </pre></div>
@@ -699,6 +442,10 @@ gmake.fit_analyze(inpfile,export=True)
     <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">pbeam_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
 <span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
     <span class="n">imod3d_prof</span><span class="nd">@co76</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_co76_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
+    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_ci21_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
+<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
+    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span>
@@ -706,11 +453,7 @@ gmake.fit_analyze(inpfile,export=True)
 <span class="p">[(</span><span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/&#39;</span><span class="p">,</span> <span class="s1">&#39;b6c3_&#39;</span><span class="p">)]</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
-    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">imodrp_ci21_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
-    <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
-<span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
     <span class="n">uvmodel</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">data</span><span class="nd">@bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
 <span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
     <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
@@ -771,7 +514,7 @@ gmake.fit_analyze(inpfile,export=True)
 <span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
     <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">data_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
 <span class="o">--------------------------------------------------------------------------------</span>
-<span class="o">---</span> <span class="n">took</span> <span class="mf">4.73755</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">took</span> <span class="mf">5.02229</span>  <span class="n">seconds</span> <span class="o">---</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.io.fits.header.Header&#39;&gt; type not understood, data have been serialized
@@ -780,8 +523,8 @@ gmake.fit_analyze(inpfile,export=True)
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_0</span><span class="o">/</span><span class="n">models</span><span class="o">.</span><span class="n">h5</span>
 <span class="n">model_0</span><span class="p">:</span>
-<span class="p">{</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">66853638.49608389</span><span class="p">,</span>
- <span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="mf">10223010.930221781</span><span class="p">,</span>
+<span class="p">{</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">66853638.58140921</span><span class="p">,</span>
+ <span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="mf">10223010.887559123</span><span class="p">,</span>
  <span class="s1">&#39;ndata&#39;</span><span class="p">:</span> <span class="mf">26249868.0</span><span class="p">,</span>
  <span class="s1">&#39;npar&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
 <span class="n">export</span> <span class="n">the</span> <span class="n">model</span> <span class="nb">set</span><span class="p">:</span>              <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span>              <span class="p">(</span><span class="n">may</span> <span class="n">take</span> <span class="n">some</span> <span class="n">time</span><span class="o">..</span><span class="p">)</span>
@@ -799,7 +542,6 @@ gmake.fit_analyze(inpfile,export=True)
     <span class="n">pbeam</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">pbeam_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
 <span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
     <span class="n">imod3d_prof</span><span class="nd">@co76</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">imodrp_co76_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
-<span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span>
@@ -807,7 +549,8 @@ gmake.fit_analyze(inpfile,export=True)
 <span class="p">[(</span><span class="s1">&#39;../data/bx610/alma/2015.1.00250.S/&#39;</span><span class="p">,</span> <span class="s1">&#39;b6c3_&#39;</span><span class="p">)]</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">imodrp_ci21_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">write</span> <span class="n">reference</span> <span class="n">model</span> <span class="n">profile</span><span class="p">:</span>
+    <span class="n">imod3d_prof</span><span class="nd">@ci21</span><span class="o">@../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span> <span class="n">to</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">imodrp_ci21_b6c3_bb2</span><span class="o">.</span><span class="n">fits</span>
 <span class="n">copy</span> <span class="n">ms</span> <span class="n">container</span><span class="p">:</span>
     <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb2</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">model_b6c3_bb2</span><span class="o">.</span><span class="n">ms</span>
 <span class="n">write</span> <span class="n">ms</span> <span class="n">column</span><span class="p">:</span>
@@ -871,22 +614,16 @@ gmake.fit_analyze(inpfile,export=True)
 <span class="n">create</span> <span class="n">symlink</span><span class="p">:</span>
     <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Rui</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">Worklib</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">GMaKE</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">bx610</span><span class="o">/</span><span class="n">alma</span><span class="o">/</span><span class="mf">2015.1</span><span class="o">.</span><span class="mf">00250.</span><span class="n">S</span><span class="o">/</span><span class="n">bb4</span><span class="o">.</span><span class="n">mfs</span><span class="o">.</span><span class="n">ms</span>  <span class="n">to</span>  <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">data_b6c3_bb4</span><span class="o">.</span><span class="n">ms</span>
 <span class="o">--------------------------------------------------------------------------------</span>
-<span class="o">---</span> <span class="n">took</span> <span class="mf">4.18509</span>  <span class="n">seconds</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">took</span> <span class="mf">4.63073</span>  <span class="n">seconds</span> <span class="o">---</span>
 <span class="o">---</span> <span class="n">save</span> <span class="n">to</span><span class="p">:</span> <span class="n">bx610_b6c3_uv_ab</span><span class="o">/</span><span class="n">model_1</span><span class="o">/</span><span class="n">models</span><span class="o">.</span><span class="n">h5</span>
 <span class="n">model_1</span><span class="p">:</span>
-<span class="p">{</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">66853415.49100598</span><span class="p">,</span>
- <span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="mf">10223122.432760734</span><span class="p">,</span>
+<span class="p">{</span><span class="s1">&#39;chisq&#39;</span><span class="p">:</span> <span class="mf">66853410.458042026</span><span class="p">,</span>
+ <span class="s1">&#39;lnprob&#39;</span><span class="p">:</span> <span class="mf">10223124.949242717</span><span class="p">,</span>
  <span class="s1">&#39;ndata&#39;</span><span class="p">:</span> <span class="mf">26249868.0</span><span class="p">,</span>
  <span class="s1">&#39;npar&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>0.00027778*3600
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.000008</span>
 </pre></div>
 </div>
 </div>

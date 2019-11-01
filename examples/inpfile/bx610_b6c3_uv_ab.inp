@@ -125,7 +125,7 @@ xypos.dec@basics			('o', [-2,2]*u.arcsec)
 #inc@cont             	('a', [0, 45.0]*u.deg)
 
 method               'amoeba'
-niter                100
+niter                200
 
 ################################################################################
 @ general
