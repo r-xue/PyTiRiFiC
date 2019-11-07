@@ -74,9 +74,11 @@ def model_vcirc(pot_dct):
 
         dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=pot_dct['disk_sd'],
                                                hr=pot_dct['disk_rs'],ro=ro,vo=vo)
-
+        #   temp modify first data point to get ride of warning from galpy
+        rad[0]=rad[1]
         vcirc_dp=dpot.vcirc(rad)
         vcirc_dp[0]=0
+        rad[0]=0*u.kpc
         
     #pot=npot+dpot
     vcirc=np.sqrt(vcirc_np**2.0+vcirc_dp**2.0)
@@ -114,12 +116,14 @@ def model_vcirc_plot(rc,figname='vcirc_plt.pdf'):
     #ax2.loglog(rad,cmass_tp)
     fig.savefig(figname)   
 
-def model_vrot_plot(rc,figname='vrot_plt.pdf'):
-
+def model_vrot_plot(mod_obj_disk3d,figname='vrot_plt.pdf'):
+    """
+    mod_obj_disk3d:    just a single disk object (unitless)
+    """
     plt.clf()
     fig,ax=plt.subplots(1,1,figsize=(5,3))
-    ax.plot(rc['vrad'],rc['vcirc'],color='red',label='Vcirc')
-    ax.plot(rc['vrad'],rc['vrot'],color='black',label='Vrot')
+    ax.plot(mod_obj_disk3d['vrad'],mod_obj_disk3d['vcirc'],color='red',label='Vcirc')
+    ax.plot(mod_obj_disk3d['vrad'],mod_obj_disk3d['vrot'],color='black',label='Vrot')
     ax.set_xlabel('Radius [arcsec]')
     ax.set_ylabel('Vcirc or Vrot [km/s]')
     ax.legend()
@@ -160,10 +164,7 @@ def model_vrot(mod_dct):
                 continue
             
             z=mod_dct[obj]['z']
-            
-
-            # <Quantity 8.58263899 kpc / arcsec>
-            kps=Planck13.kpc_proper_per_arcmin(2).to(u.kpc/u.arcsec)  
+            kps=Planck13.kpc_proper_per_arcmin(z).to(u.kpc/u.arcsec)  
 
             rad=rc['rad']
             

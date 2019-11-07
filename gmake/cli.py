@@ -137,8 +137,8 @@ def proc_inpfile(args):
     if  args.fit==True:
         
         dat_dct=read_data(inp_dct,fill_mask=True,fill_error=True)
-        fit_dct,sampler=fit_setup(inp_dct,dat_dct)
-        fit_iterate(fit_dct,sampler,nstep=inp_dct['optimize']['niter'])
+        fit_dct=fit_setup(inp_dct,dat_dct)
+        fit_iterate(fit_dct,inp_dct,dat_dct)
         
     if  args.analyze==True:
         

@@ -48,8 +48,8 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind]*fit_dct['p_unit'][ind],verbose=False)
     
     #tic0=time.time()
-    mod_dct=inp2mod(inp_dct0)
-    model_vrot(mod_dct)
+    mod_dct=inp2mod(inp_dct0)   # in physical units
+    model_vrot(mod_dct)         # in natural (default internal units)
     #print('Took {0} second on inp2mod'.format(float(time.time()-tic0))) 
     
     #tic0=time.time()
@@ -215,10 +215,9 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 del models[key]
         dct2hdf(models,savemodel+'/'+'models.h5')
         
-        #pprint(inp_dct)
-        #write_inp(inp_dct,inpfile=savemodel+'/model.inp',overwrite=True)             
-        
-        np.save(savemodel+'/'+'mod_dct.npy',models['mod_dct'])     
+        pprint(inp_dct0)
+        write_inp(inp_dct0,inpfile=savemodel+'/model.inp',overwrite=True)             
+  
 
     lnl=blobs['lnprob']
     

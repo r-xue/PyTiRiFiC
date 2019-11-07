@@ -15,77 +15,6 @@ logger = logging.getLogger(__name__)
 from galario.single import threads as galario_threads
 import os
 
-def amoeba_setup(inp_dct,dat_dct,initial_model=False):
-    
-    opt_dct=inp_dct['optimize']
-    
-    fit_dct={'optimize':opt_dct.copy()}
-    fit_dct={'method':opt_dct['method']}
-    fit_dct['p_start']=[]
-    fit_dct['p_lo']=[]
-    fit_dct['p_up']=[]
-    fit_dct['p_name']=[]
-    fit_dct['p_scale']=[]
-    
-    
-    for p_name in opt_dct.keys():
-        if  '@' not in p_name:
-            continue
-        fit_dct['p_name'].append(p_name)
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(read_par(inp_dct,p_name)))
-
-        if  opt_dct[p_name][0]=='a' or opt_dct[p_name][0]=='r' or opt_dct[p_name][0]=='o': 
-            si=1 ; mode=deepcopy(opt_dct[p_name][0])
-        else:
-            si=0 ; mode='a'
-        fit_dct['p_lo']=np.append(fit_dct['p_lo'],
-                                  read_range(center=fit_dct['p_start'][-1],
-                                             delta=opt_dct[p_name][si+0],
-                                             mode=mode))
-        fit_dct['p_up']=np.append(fit_dct['p_up'],
-                                  read_range(center=fit_dct['p_start'][-1],
-                                             delta=opt_dct[p_name][si+1],
-                                             mode=mode))
-        scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
-        if  (si+2)>=len(opt_dct[p_name]):
-            scale=scale_def
-        else:
-            if  mode=='a' or mode=='o':
-                scale=opt_dct[p_name][si+2]
-            if  mode=='r':
-                scale=abs(fit_dct['p_start'][-1]*opt_dct[p_name][si+2])
-            scale=min(scale_def,scale)
-        fit_dct['p_scale']=np.append(fit_dct['p_scale'],scale)
-        
-    
-    gmake_pformat(fit_dct)    
-    
-    fit_dct['ndim']=len(fit_dct['p_start'])
-    fit_dct['nthreads']=1
-    fit_dct['outfolder']=opt_dct['outdir']
-    
-    if  (not os.path.exists(fit_dct['outfolder'])) and fit_dct['outfolder']!='':
-        os.makedirs(fit_dct['outfolder'])
-
-    
-    fit_dct['ndim']=len(fit_dct['p_start'])
-    #   turn off mutiple-processing since mkl_fft has been threaded.
-    fit_dct['nthreads']=1   #multiprocessing.cpu_count()
-    #fit_dct['nwalkers']=opt_dct['nwalkers']
-    fit_dct['outfolder']=opt_dct['outdir']
-    
-    #print('nwalkers:',fit_dct['nwalkers'])
-    #print('nthreads:',fit_dct['nthreads'])
-    logger.debug('ndim:    '+str(fit_dct['ndim']))
-    logger.debug('outdir:  '+str(fit_dct['outfolder']))    
-    
-    #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
-    #dct2fits(dat_dct,fit_dct['outfolder']+'/data.fits')
-    #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
-    #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata    
-    
-    
-    return fit_dct
 
 def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
     """
@@ -178,13 +107,14 @@ def amoeba_analyze(outfolder,
     
     #   PLOT PARAMETERS
     
-    figsize=(8.*2.0,ndim*2.5)
+    figsize=(20.0,ndim*3.0)
     plt.clf()
-    ncol=3
+    ncol=4
     nrow=int(np.ceil(ndim*1.0/1))
     fig, axes = plt.subplots(nrow+1,ncol,figsize=figsize,squeeze=True)
     
     for i in range(ndim):
+        
         offset=0
         scale=1
         p_unit_display=p_unit[i]
@@ -192,57 +122,66 @@ def amoeba_analyze(outfolder,
             offset=p_start[i]
             scale=3600 # deg -> sec
             p_unit_display=u.arcsec
-        axes[i,0].plot(np.arange(niter),((pars[i,:]).T-offset)*scale, color="gray", alpha=0.4)
-        ymin, ymax = axes[i,0].get_ylim()
-        axes[i,0].set_ylim(ymin, ymax)
-        axes[i,0].set_xlim(0, niter)
         
-        axes[i,0].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
-        axes[i,0].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
-        axes[i,0].axhline((p_start[i]-offset)*scale,color="b", lw=2,ls='-')
-        axes[i,0].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-')
-        
-        axes[i,0].set_ylabel(("{0:"+p_format[i]+"}").format(p_start[i]*p_unit[i]),color="b")
-        axes[i,0].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
-        
-        if  i==ndim-1:
-            axes[i,0].set_xlabel("step number")
-
-        
-        axes[i,1].plot(np.arange(burnin,niter),(pars[i,burnin:].T-offset)*scale, color="gray", alpha=0.4)
-        ymin, ymax = axes[i,1].get_ylim()
-        axes[i,1].set_ylim(ymin, ymax)
-        axes[i,1].set_xlim(burnin, niter)
-        
-        axes[i,1].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
-        axes[i,1].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
-        axes[i,1].axhline((p_start[i]-offset)*scale,color="b", lw=2,ls='-')
-        axes[i,1].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-')
-        
-        axes[i,1].set_ylabel(("{0:"+p_format[i]+"}").format(p_best[i]*p_unit[i]),color="b")
-        axes[i,1].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
-        
-        if  i==ndim-1:
-            axes[i,1].set_xlabel("step number")
+        for j in [0,1]:
             
-        
-        ymin=np.nanmin(chi2[burnin:])
-        ymax=np.nanmax(chi2[burnin:])
-        axes[i,2].set_ylim(ymin, ymax)
-        
-        pick_ind=np.where(np.logical_and(chi2 < ymax,chi2 > ymin))
-        axes[i,2].plot((pars[i,pick_ind].T-offset)*scale,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
-        
-        axes[i,2].axvline((p_best[i]-offset)*scale, ls='-', color='g',lw=3)
-        axes[i,2].axvline((p_start[i]-offset)*scale, ls='-', color='b',lw=3)
-        axes[i,2].set_xlabel(fit_dct['p_name'][i])         
+            step_start=0 if j==0 else burnin
+            
+            axes[i,j].plot(np.arange(step_start,niter),((pars[i,step_start:]).T-offset)*scale, color="gray", alpha=0.4)
+            ymin, ymax = axes[i,j].get_ylim()
+            axes[i,j].set_ylim(ymin, ymax)
+            axes[i,j].set_xlim(step_start, niter)
+            
+            if  j==1:
+                axes[i,j-1].axvspan(step_start,niter,color='whitesmoke')
+            
+            axes[i,j].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
+            axes[i,j].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
+            
+            label_start=label_best=''
+            if  j==0:
+                label_start='Initial: '+("{0:"+p_format[i]+"}").format(p_start[i]*p_unit[i])
+            else:
+                label_best='Optimized:'+("{0:"+p_format[i]+"}").format(p_best[i]*p_unit[i])
+            
+            axes[i,j].axhline((p_start[i]-offset)*scale,color="b", lw=9,ls='-',label=label_start,alpha=0.4)
+            axes[i,j].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-',label=label_best)
+            #axes[i,0].set_ylabel(("{0:"+p_format[i]+"}").format(p_start[i]*p_unit[i]),color="b")
+            if  j==0:
+                axes[i,j].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
+            
+            show_labels=''
+            axes[i,j].legend(loc='upper right')
+            chi2_selected=chi2[step_start:]
+            ymin=np.min(chi2_selected[np.isfinite(chi2_selected)])
+            ymax=np.max(chi2_selected[np.isfinite(chi2_selected)])    
+            axes[i,j+2].set_ylim(ymin, ymax)
+            if  j==0:
+                axes[i,j+2].set_ylabel('$\chi^2_{red}$')
+            if  j==1:
+                axes[i,j+2-1].axhspan(ymin,ymax,color='whitesmoke')
+            #axes[i,j+2].text(0.9,0.8,'$\chi^2_{red}<$'+str(ymax),transform=axes[i,j+2].transAxes)
+            
+            pick_ind=np.where(np.logical_and(chi2 < ymax,chi2 > ymin))
+            axes[i,j+2].plot((pars[i,pick_ind].T-offset)*scale,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
+            
+            
+            axes[i,j+2].axvline((p_start[i]-offset)*scale, ls='-', color='b',lw=9,alpha=0.4)
+            axes[i,j+2].axvline((p_best[i]-offset)*scale, ls='-', color='g',lw=3)
+            axes[i,j+2].set_xlabel(p_name[i]+' ['+(p_unit_display.to_string())+']')
+                     
 
-    axes[i+1,0].plot(np.arange(niter),chi2)
+    axes[i+1,0].plot(np.arange(0,niter),chi2)
+    axes[i+1,0].set_xlim(0, niter)
     axes[i+1,1].plot(np.arange(burnin,niter),chi2[burnin:])
+    axes[i+1,1].set_xlim(step_start, niter)
     #axes[i+1,1].set_title(("{0}").format(np.nanmin(chi2)),color="g")
-    
     fig.delaxes(axes[i+1,2])
-    axes[i+1,0].set_title('Goodness Scale')
+    fig.delaxes(axes[i+1,3])
+    axes[i+1,0].set_ylabel('Goodness Scale')
+    axes[i+1,1].set_ylabel('Goodness Scale')
+    axes[i+1,0].set_xlabel("Iteration")
+    axes[i+1,1].set_xlabel("Iteration")
                     
                 
     fig.tight_layout(h_pad=0.0)

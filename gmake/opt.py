@@ -6,8 +6,10 @@ from .utils import *
 from .opt_amoeba import *
 from .opt_emcee import *
 from .opt_lmfit import *
+from .opt_utils import *
 from .io import *
 from .meta import read_inp
+
 from pprint import pformat
 
 import logging
@@ -19,13 +21,7 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
     for method=others: sampler is a dict
     """
 
-
-    if  'amoeba' in inp_dct['optimize']['method']:
-        fit_dct=emcee_setup(inp_dct,dat_dct)
-    if  'emcee' in inp_dct['optimize']['method']:
-        fit_dct=emcee_setup(inp_dct,dat_dct)
-    if  'lmfit' in inp_dct['optimize']['method']:
-        fit_dct=lmfit_setup(inp_dct,dat_dct)
+    fit_dct=opt_setup(inp_dct,dat_dct)
     
     outfolder=fit_dct['outfolder']
     

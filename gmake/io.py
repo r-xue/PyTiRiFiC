@@ -9,13 +9,14 @@ from astropy.table import Table
 from astropy.table import Column
 import casacore.tables as ctb
 
+
 logger = logging.getLogger(__name__)
 
 
-
+import warnings
 import hickle as hkl
-
-
+from hickle.hickle import SerializedWarning   
+warnings.filterwarnings("ignore",category=SerializedWarning)  
 
 def read_data(inp_dct,
               save_data=False,

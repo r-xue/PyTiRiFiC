@@ -35,6 +35,11 @@ def read_ms(vis='',
     
     dat_dct:       pre-defined container for saving memory usages. 
     
+    
+    DATA:    nrecord x nchan
+    UVW:     nrecord x 3
+    WEIGHT:  nrecord,
+    
     """
     
     if  dat_dct is None:
@@ -49,21 +54,28 @@ def read_ms(vis='',
     t=ctb.table(vis,ack=False,memorytable=memorytable)
     dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).astype(np.float32,order='F')
     dat_dct_out['type@'+vis]='vis'
+        
+    dat_dct_out['data@'+vis]=t.getcol('DATA')
+    dat_dct_out['weight@'+vis]=t.getcol('WEIGHT')
+    if  dataflag==True:
+        dat_dct_out['data@'+vis][np.nonzero(t.getcol('FLAG')==True)]=np.nan
+    if  saveflag==True:
+        dat_dct_out['flag@'+vis]=t.getcol('FLAG')
+    
     if  polaverage==True:
-        dat_dct_out['data@'+vis]=np.mean(t.getcol('DATA'),axis=-1)
-        dat_dct_out['weight@'+vis]=np.sum(t.getcol('WEIGHT'),axis=-1)
-        if  dataflag==True:
-            dat_dct_out['data@'+vis][np.where(np.any(t.getcol('FLAG'),axis=-1))]=np.nan
+        dat_dct_out['data@'+vis]=np.mean(dat_dct_out['data@'+vis],axis=-1)
+        dat_dct_out['weight@'+vis]=np.sum(dat_dct_out['weight@'+vis],axis=-1)       
         if  saveflag==True:
-            dat_dct_out['flag@'+vis]=np.any(t.getcol('FLAG'),axis=-1)         
-    else:
-        dat_dct_out['data@'+vis]=t.getcol('DATA')
-        dat_dct_out['weight@'+vis]=t.getcol('WEIGHT')
-        if  dataflag==True:
-            dat_dct_out['data@'+vis][np.nonzero(t.getcol('FLAG')==True)]=np.nan
-        if  saveflag==True:
-            dat_dct_out['flag@'+vis]=t.getcol('FLAG')
+            dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)
+
     t.close()
+    
+    irecord_bad=np.where(dat_dct_out['uvw@'+vis][:,0]==0)
+    dat_dct_out['data@'+vis]=np.delete(dat_dct_out['data@'+vis],irecord_bad,axis=0)
+    dat_dct_out['weight@'+vis]=np.delete(dat_dct_out['weight@'+vis],irecord_bad,axis=0)
+    if  saveflag==True:
+        dat_dct_out['flag@'+vis]=np.delete(dat_dct_out['flag@'+vis],irecord_bad,axis=0)
+    #dat_dct_out['@'+vis]=np.delete(dat_dct_out['data@'+vis],irecord_bad,axis=0)
     
     #   use the "last" and "only" spw in the SPECTRAL_WINDOW table
     #   We don't handle mutipl-spw MS here.

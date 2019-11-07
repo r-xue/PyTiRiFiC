@@ -87,6 +87,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
                     wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz))
+                    
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
                     nxy=128
                     
