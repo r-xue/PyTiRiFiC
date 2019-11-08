@@ -138,8 +138,11 @@ Getting Started
     demos/demo_hxmm01_simulate
     
     demos/demo_bx610_prep
+    demos/demo_bx610_imaging
+    demos/demo_bx610_display
     demos/demo_bx610_amoeba
     demos/demo_bx610_emcee
+    demos/demo_bx610_b4c5_uv_ab
 
 .. toctree::
     maxdepth: 1

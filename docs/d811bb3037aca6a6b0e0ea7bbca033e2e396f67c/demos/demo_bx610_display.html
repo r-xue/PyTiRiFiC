@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example: BX610 (High-z SFG) : Moment0 + 1D Spectrum &mdash; GMaKE 0.2.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/Users/Rui/Documents/Workspace/projects/GMaKE/docs/source/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example BX610: perform model fitting using method=‘amoeba’" href="demo_bx610_amoeba.html" />
+    <link rel="prev" title="Example: BX610 (High-z SFG) : Data Imaging" href="demo_bx610_imaging.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GMaKE
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example: BX610 (High-z SFG) : Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_amoeba.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tests</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GMaKE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Example: BX610 (High-z SFG) : Moment0 + 1D Spectrum</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example-bx610-high-z-sfg-moment0-1d-spectrum">
+<h1>Example: BX610 (High-z SFG) : Moment0 + 1D Spectrum<a class="headerlink" href="#example-bx610-high-z-sfg-moment0-1d-spectrum" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from spectral_cube import SpectralCube, LazyMask
+from spectral_cube.utils import SpectralCubeWarning
+warnings.filterwarnings(action=&#39;ignore&#39;, category=SpectralCubeWarning,append=True)
+warnings.filterwarnings(&quot;ignore&quot;, category=FutureWarning)
+warnings.filterwarnings(&quot;ignore&quot;)
+
+import numpy as np
+from astropy.io import fits
+from astropy.wcs import WCS
+import astropy.units as u
+from astropy.coordinates import SkyCoord
+from astropy.stats import mad_std
+import regions
+import glob
+
+%matplotlib inline
+import matplotlib as mpl
+
+mpl.rcParams[&#39;xtick.direction&#39;] = &#39;in&#39;
+mpl.rcParams[&#39;ytick.direction&#39;] = &#39;in&#39;
+mpl.rcParams.update({&#39;font.size&#39;: 14})
+mpl.rcParams[&quot;font.family&quot;] = &quot;serif&quot;
+mpl.rcParams[&quot;image.origin&quot;]=&quot;lower&quot;
+mpl.rc(&#39;text&#39;, usetex=True)
+
+import matplotlib.pyplot as plt
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>demo_dir=&#39;/Users/Rui/Documents/Workspace/projects/GMaKE/examples/data/bx610/alma/&#39;
+if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
+    os.chdir(demo_dir)
+
+
+cc=SkyCoord(&#39;23h46m09.4382s +12d49m19.2655s&#39;,unit=(u.hourangle, u.deg),frame=&#39;icrs&#39;)
+inc=0.*u.deg
+pa=0.*u.deg
+rad=1.2*u.arcsec
+skyreg=regions.EllipseSkyRegion(cc,rad,rad*np.cos(inc),\
+                                angle=pa+90.0*u.deg,meta={&#39;label&#39;:&#39;Aperture&#39;})
+
+cubelist=[]
+cubelist.extend(glob.glob(&#39;2013*/*/*sci.fits&#39;))
+cubelist.extend(glob.glob(&#39;2017*/*/*sci.fits&#39;))
+cubelist.extend(glob.glob(&#39;band4*/*/*sci.fits&#39;))
+cubelist.extend(glob.glob(&#39;2015*/*/*sci.fits&#39;))
+for cubename in cubelist:
+
+    if &#39;cont&#39; in cubename:
+        continue
+
+    figname=cubename.replace(&#39;/sci.fits&#39;,&#39;_sci.pdf&#39;)
+
+    cube=SpectralCube.read(cubename,mode=&#39;readonly&#39;)
+    cube.beam_threshold=1.0
+    cbeam=cube.beams.largest_beam()
+    mom0=(cube.moment(order=0)).array
+    #mom0=(cube.moment(order=1)).array
+
+    #cube_sigma = mad_std(cube,ignore_nan=True)
+    #cube_mask = LazyMask(lambda x: x&gt;(6.0*cube_sigma),cube=cube)
+    #cube_mskd=cube.with_mask(cube_mask)
+    #mom0=(cube_mskd.moment(order=0)).array
+    #mom0=(cube_mskd.moment(order=1)).array
+
+
+    header=fits.getheader(cubename)
+    w=WCS(header).celestial
+    skyreg_pix=skyreg.to_pixel(w)
+
+    plt.clf()
+    figsize=(10,5)
+    fig=plt.figure(figsize=figsize)
+
+    ax = fig.add_axes([0.1,0.1,0.5,0.9],projection=w)
+
+    ax.imshow(mom0, interpolation=&#39;nearest&#39;, vmin=np.nanmin(mom0), vmax=np.nanmax(mom0))
+    skyreg_pix.plot(ax=ax,facecolor=&#39;none&#39;, edgecolor=&#39;yellow&#39;, lw=0.5,label=&#39;test&#39;)
+
+    sz=mom0.shape
+    wx,wy=w.wcs_pix2world(sz[0]/8.0,sz[1]/8.0,0)
+    bshape=mpl.patches.Ellipse((wx,wy),
+                           (cbeam.minor).to_value(u.deg),(cbeam.major).to_value(u.deg),
+                           angle=-(cbeam.pa).to_value(u.deg),
+                            edgecolor=&#39;cyan&#39;, facecolor=&#39;cyan&#39;,
+                            transform=ax.get_transform(&#39;icrs&#39;))
+    ax.add_patch(bshape)
+    ax.coords[&#39;ra&#39;].set_axislabel(&#39;Right Ascension (ICRS)&#39;)
+    ax.coords[&#39;dec&#39;].set_axislabel(&#39;Declination (ICRS)&#39;)
+
+    subcube=cube.subcube_from_regions([skyreg])
+    subcube_1d=subcube.sum(axis=(1,2))
+
+    ax_spec=fig.add_axes([0.7,0.1,0.9,0.9])
+    freq=(cube.spectral_axis)
+    freq=freq.to(u.GHz)
+    ax_spec.plot(freq,subcube_1d.array,color=&#39;gray&#39;,label=&#39;Data&#39;) #,drawstyle=&#39;steps-mid&#39;
+    ax_spec.fill_between(freq,0,subcube_1d.array,facecolor=&#39;0.9&#39;,step=&#39;mid&#39;,alpha=1.0)
+    ax_spec.set_xlabel(&#39;Freq [GHz]&#39;)
+    ax_spec.set_ylabel(&#39;Jy/ppbeam&#39;)
+    ax_spec.set_title(cubename+&quot;     &quot;+\
+                      &quot;{0.value:0.2f}{0.unit:latex} x {1.value:0.2f}{1.unit:latex} {2.value:0.2f}{2.unit:latex}&quot;.format(cbeam.major,cbeam.minor,cbeam.pa),
+                     fontsize=15)
+
+    plt.show()
+    fig.savefig(figname)
+    plt.close()
+
+#cubename=&#39;bb3.co43/sci.fits&#39;
+#cubename=&#39;bb1.ci10/sci.fits&#39;
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_1.png" src="../_images/demo_bx610_display_2_1.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_3.png" src="../_images/demo_bx610_display_2_3.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_5.png" src="../_images/demo_bx610_display_2_5.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_7.png" src="../_images/demo_bx610_display_2_7.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_9.png" src="../_images/demo_bx610_display_2_9.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_11.png" src="../_images/demo_bx610_display_2_11.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_13.png" src="../_images/demo_bx610_display_2_13.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_bx610_display_2_15.png" src="../_images/demo_bx610_display_2_15.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="demo_bx610_amoeba.html" class="btn btn-neutral float-right" title="Example BX610: perform model fitting using method=‘amoeba’" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo_bx610_imaging.html" class="btn btn-neutral float-left" title="Example: BX610 (High-z SFG) : Data Imaging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
