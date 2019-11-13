@@ -14,6 +14,8 @@ import scipy.constants as const
 
 from astropy.modeling.models import Gaussian2D
 
+
+
 def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     """
     use model properties (from mod_dct) and data metadata info (from dat_dct) to
@@ -21,10 +23,11 @@ def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     """
     
     models=model_init(mod_dct,dat_dct,decomp=decomp,verbose=verbose)
-    models=model_fill(models,decomp=decomp,nsamps=nsamps,verbose=verbose)
-    models=model_simobs(models,decomp=decomp,verbose=verbose)
+    model_fill(models,decomp=decomp,nsamps=nsamps,verbose=verbose)
+    model_simobs(models,decomp=decomp,verbose=verbose)
 
     return models
+
 
 def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
     """
@@ -89,6 +92,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz))
                     
                     nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
+                    
                     nxy=128
                     
                     header=xymodel_header.copy()
@@ -231,7 +235,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 if  'disk2d' in obj['type'].lower():
                     #test_time = time.time()
 
-                    imodel=model_disk2d(models['header@'+vis],obj,
+                    model_disk2d(models['header@'+vis],obj,
                                         model=models['imod2d@'+vis],
                                         factor=5)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
@@ -242,7 +246,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
                 if  'disk3d' in obj['type'].lower():
                     #pprint(obj)
                     #test_time = time.time()              
-                    imodel,imodel_prof=model_disk3d(models['header@'+vis],obj,
+                    imodel_prof=model_disk3d(models['header@'+vis],obj,
                                                     model=models['imod3d@'+vis],
                                                     nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
                     #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
@@ -286,7 +290,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
     if  verbose==True:            
         print(">>>>>{0:^10} : {1:<8.5f} seconds ---\n".format('fill-total',time.time() - start_time))
     
-    return models
+    return
 
 
 def model_simobs(models,decomp=False,verbose=False):
@@ -315,6 +319,8 @@ def model_simobs(models,decomp=False,verbose=False):
     print(uvmodel is models[tag.replace('imod2d@','uvmodel@')])             
     
     the performance of model_uvsample is not very sensitive to the input image size.
+    
+    just make sure imodel match header; phasecenter offset will be take care of in model_uvsample
     
     """
     
@@ -380,4 +386,4 @@ def model_simobs(models,decomp=False,verbose=False):
     if  verbose==True:            
         print(">>>>>{0:^10} : {1:<8.5f} seconds ---".format('simulate-total',time.time() - start_time))
         
-    return models
+    return

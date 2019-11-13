@@ -144,7 +144,7 @@ def kinms_create_velField_oneSided(velRad,velProf,r_flat,inc,posAng,gasSigma,see
             Magnitude of inflow/outflowing motions (km/s). Negative
             numbers here are inflow, positive numbers denote
             outflow. These are included in the velocity field using
-            formalism of KINEMETRY (Krajnović et al. 2006 MNRAS, 366, 787).
+            formalism of KINEMETRY (Krajnovi�� et al. 2006 MNRAS, 366, 787).
             Can input a constant or a vector, giving the radial
             motion as a function of the radius vector
             `velrad`. Default is no inflow/outflow.

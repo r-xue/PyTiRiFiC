@@ -6,10 +6,12 @@ from .io import *
 logger = logging.getLogger(__name__)
 
 import builtins
+import gc
 
 #from .meta import dat_dct_global
 
 import gmake.meta as meta
+
 
 def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                  savemodel=None,decomp=False,nsamps=1e5,
@@ -74,6 +76,10 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
 
         if  models[key.replace('data@','type@')]=='vis':
             
+            
+            start_time = time.time() #!!!!
+            
+            
             uvmodel=models[key.replace('data@','uvmodel@')]
             uvdata=models[key]
             
@@ -102,6 +108,7 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                                          'c':np.broadcast_to((models[key.replace('data@','weight@')])[:,np.newaxis],uvmodel.shape)})
             """
             lnl1=ne.evaluate("sum(wdev**2)")    # speed up for long vectors:  lnl1=np.sum( wdev**2 )
+            #lnl1=ne.evaluate("sum((where(wdev==wdev, wdev,0))**2)")
             lnl2=ne.evaluate("sum(-log(a))",
                              local_dict={'a':models[key.replace('data@','weight@')]})*nchan + \
                  np.log(2.0*np.pi)*uvdata.size
@@ -109,11 +116,14 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             lnl=-0.5*(lnl1+lnl2)        
             blobs['lnprob']+=lnl
             blobs['chisq']+=lnl1
+            #print(key,lnl1) #!!!!
             blobs['ndata']+=wdev.size
             #print(key,lnl1,wdev.size)
             
             if  returnwdev==True:
                 blobs['wdev']=np.append(blobs['wdev'],wdev)
+            
+            #logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time)) #!!!!
             
         #print("---{0:^30} : {1:<8.5f} seconds ---\n".format('chisq',time.time() - tic0))
 
@@ -182,6 +192,7 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             
             blobs['lnprob']+=lnl
             blobs['chisq']+=lnl1
+            
             blobs['ndata']+=wdev.size
 
             if  returnwdev==True:
@@ -218,14 +229,15 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         pprint(inp_dct0)
         write_inp(inp_dct0,inpfile=savemodel+'/model.inp',overwrite=True)             
   
-
+    models=None
+    gc.collect()
+    
     lnl=blobs['lnprob']
     
     
     return lnl,blobs
 
 #@profile
-
 
 def model_lnprior(theta,fit_dct):
     """
@@ -238,7 +250,7 @@ def model_lnprior(theta,fit_dct):
             return -np.inf
     return 0.0
 
-    
+
 def model_lnprob(theta,fit_dct,inp_dct,dat_dct,
                  savemodel=None,decomp=False,nsamps=1e5,
                  packblobs=False,
@@ -340,7 +352,8 @@ def model_chisq(theta,
     if  verbose==True:
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
-
+    
+    print('-->',lp+blobs['chisq'])
     return lp+blobs['chisq']       
 
 

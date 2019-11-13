@@ -16,8 +16,40 @@ from astropy.coordinates import Angle
 
 logger = logging.getLogger(__name__)
 
+#from memory_profiler import profile
+#from copy import deepcopy
+#import numexpr as ne
+
+def getcolnp(t,colname):
+    """
+    use casacore.table.getcolnp rather than casacore.table.getcol()
+    to reduce the memory footprint
+    
+    this is a drop-in replacement for table.getcol() without memory comsumption spike:
+    
+    #https://github.com/casacore/python-casacore/issues/9
+    #https://github.com/casacore/python-casacore/issues/38
+    #https://github.com/casacore/python-casacore/issues/130
+    getslicenp/getcolnp/getcellnp
+    
+    the below calls should give the same results beside the peak memory comsumption  different
+        
+        getcolnp(t,'DATA')
+        vs.
+        t.getcol('DATA') 
+    
+    in-place like operation
+    for more complicated case, you probally want to use tqsl
+    """
+    record0=t.getcell(colname,0)
+    arr=np.empty(shape=(t.nrows(),)+record0.shape,dtype=record0.dtype)
+    t.getcolnp(colname,arr)
+    
+    return arr
+       
+#@profile
 def read_ms(vis='',
-            polaverage=True,dataflag=True,saveflag=False,memorytable=True,
+            polaverage=True,dataflag=False,saveflag=False,memorytable=False,
             dat_dct=None):
     """
     Read a Measurement Set into a Dictionary only containing useful UV variables.
@@ -40,6 +72,14 @@ def read_ms(vis='',
     UVW:     nrecord x 3
     WEIGHT:  nrecord,
     
+    note:
+        currently, the implemetation may not work for MS with flagging uneven across the spectrum domain:
+        use checkchflag to check the channel-wise flagging consistancy
+    
+    make sure:
+        the flagging/missing data doesn't lead to chi^2=Nan
+        UVW is valid
+        
     """
     
     if  dat_dct is None:
@@ -51,31 +91,49 @@ def read_ms(vis='',
     # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
     # then the data/weight in numpy as nrecord x nchan / nrecord    
     
-    t=ctb.table(vis,ack=False,memorytable=memorytable)
-    dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).astype(np.float32,order='F')
-    dat_dct_out['type@'+vis]='vis'
+    
+    with ctb.table(vis,ack=False,memorytable=memorytable) as t:
         
-    dat_dct_out['data@'+vis]=t.getcol('DATA')
-    dat_dct_out['weight@'+vis]=t.getcol('WEIGHT')
-    if  dataflag==True:
-        dat_dct_out['data@'+vis][np.nonzero(t.getcol('FLAG')==True)]=np.nan
-    if  saveflag==True:
-        dat_dct_out['flag@'+vis]=t.getcol('FLAG')
-    
-    if  polaverage==True:
-        dat_dct_out['data@'+vis]=np.mean(dat_dct_out['data@'+vis],axis=-1)
-        dat_dct_out['weight@'+vis]=np.sum(dat_dct_out['weight@'+vis],axis=-1)       
-        if  saveflag==True:
-            dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)
+        dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).astype(np.float32,order='F')
+        dat_dct_out['type@'+vis]='vis'
+        
+        if  polaverage==False:
+            dat_dct_out['data@'+vis]=getcolnp(t,'DATA')
+            dat_dct_out['weight@'+vis]=getcolnp(t,'WEIGHT')
+        else:
+            tmp=ctb.taql('SELECT means(DATA,1) as DATA_I C4 from $t')
+            dat_dct_out['data@'+vis]=getcolnp(tmp,'DATA_I')
+            tmp.done()
+            # the above imlememntation requires avaiable memory of 1xdata
+            # the below will requires memort of 2.0xdata 
+            #dat_dct_out['data@'+vis]=np.mean(getcolnp(t,'DATA'),axis=-1)    
+            dat_dct_out['weight@'+vis]=np.sum(getcolnp(t,'WEIGHT'),axis=-1)          
 
-    t.close()
+        
+        
+        #if  dataflag==True:
+        #    dat_dct_out['data@'+vis][np.nonzero(t.getcol('FLAG')==True)]=np.nan
+        #if  saveflag==True:
+        #    dat_dct_out['flag@'+vis]=t.getcol('FLAG')
+        
+        if  polaverage==True:       
+            if  saveflag==True:
+                dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)
+        
     
+    #   for auto-corr uvw=[0,0,0], which will not work right now
+    
+    """
+    #   mstransform.timeaverging data may show some short-integration record with uvw set to = [0,0,0]
     irecord_bad=np.where(dat_dct_out['uvw@'+vis][:,0]==0)
+
     dat_dct_out['data@'+vis]=np.delete(dat_dct_out['data@'+vis],irecord_bad,axis=0)
     dat_dct_out['weight@'+vis]=np.delete(dat_dct_out['weight@'+vis],irecord_bad,axis=0)
+    dat_dct_out['uvw@'+vis]=np.delete(dat_dct_out['uvw@'+vis],irecord_bad,axis=0)
     if  saveflag==True:
         dat_dct_out['flag@'+vis]=np.delete(dat_dct_out['flag@'+vis],irecord_bad,axis=0)
     #dat_dct_out['@'+vis]=np.delete(dat_dct_out['data@'+vis],irecord_bad,axis=0)
+    """
     
     #   use the "last" and "only" spw in the SPECTRAL_WINDOW table
     #   We don't handle mutipl-spw MS here.
@@ -98,18 +156,21 @@ def read_ms(vis='',
     #if  phase_dir[0]<0:
     #    phase_dir[0]+=360.0    
     
+    
+    #"""
     logger.debug('\nRead: '+vis+'\n')
     vars=['data','uvw','weight']
     for var in vars:
         if  var+'@'+vis not in dat_dct_out.keys():
             continue
+        #print(getsizeof(dat_dct_out[var+'@'+vis])*u.byte)
         size=human_unit(getsizeof(dat_dct_out[var+'@'+vis])*u.byte)
         size=human_to_string(size,format_string='{0:3.0f} {1}')
-        textout='{:60} {:20} {:20}'.format(
-            var+'@'+vis,str(dat_dct_out[var+'@'+vis].shape),
+        textout='{:60} {:15} {:20} {:20}'.format(
+            var+'@'+vis,str(dat_dct_out[var+'@'+vis].dtype),str(dat_dct_out[var+'@'+vis].shape),
             size)
         if  var=='weight':
-            textout+=str(np.median(dat_dct_out['weight@'+vis]))
+            textout+='\n  >>percentiles (0,16,50,84,100)%: '+str(np.percentile(dat_dct_out['weight@'+vis],[0,16,50,84,100]))
         logger.debug(textout)                                   
     
     vars=['chanfreq','chanwidth']
@@ -127,15 +188,20 @@ def read_ms(vis='',
     radec+=phase_dir[1].to_string(unit=u.degree,sep='dms') # print(phase_dir[1].dms)
     
     logger.debug('{:60} {:10}'.format('phasecenter@'+vis,radec))
+    #"""
+    
+    
+    
     
     if  dataflag==True:
         count_flag=np.count_nonzero(np.isnan(dat_dct_out['data@'+vis]))
         count_record=np.size(dat_dct_out['data@'+vis])
         logger.debug('data flagging fraction: {}'.format(count_flag*1./count_record))
+    
+    return
+
 
     
-    
-    return dat_dct_out
 
 def ms_read(vis,datacolumn='corrected',
           figname=None):

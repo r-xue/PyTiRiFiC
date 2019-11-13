@@ -10,6 +10,7 @@ from astropy.table import Column
 import casacore.tables as ctb
 
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,10 +19,12 @@ import hickle as hkl
 from hickle.hickle import SerializedWarning   
 warnings.filterwarnings("ignore",category=SerializedWarning)  
 
+#from memory_profiler import profile
+#@profile
 def read_data(inp_dct,
               save_data=False,
               fill_mask=False,fill_error=False,                                   # for FITS/image
-              memorytable=True,polaverage=True,dataflag=True,saveflag=False):     # for MS/visibilities
+              memorytable=False,polaverage=True,dataflag=False,saveflag=False):     # for MS/visibilities
     """
     read FITS/image or MS/visibilities into the dictionary
     
@@ -63,9 +66,9 @@ def read_data(inp_dct,
                 
                 if  ('data@'+vis_list[ind] not in dat_dct) and 'vis' in obj:
                     
-                    dat_dct_out=read_ms(vis_list[ind],
-                                        polaverage=polaverage,dataflag=dataflag,saveflag=saveflag,
-                                        dat_dct=dat_dct)
+                    read_ms(vis_list[ind],
+                            polaverage=polaverage,dataflag=dataflag,saveflag=saveflag,
+                            dat_dct=dat_dct)
                         
         if  'image' in inp_dct[tag].keys():
         
@@ -146,7 +149,9 @@ def read_data(inp_dct,
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
                         logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
-  
+                        
+                        
+    
     logger.info('-'*80)
     dat_size=human_unit(get_obj_size(dat_dct)*u.byte)
     
@@ -161,6 +166,7 @@ def read_data(inp_dct,
                 outdir=inp_dct['general']['outdir']+'/'
         hkl.dump(dat_dct, outdir+'dat_dct.h5', mode='w')
         logger.info('--- save to: '+outdir+'dat_dct.h5')
+    
     
     return dat_dct
 

@@ -56,7 +56,7 @@ def read_inp(parfile,log=False):
             more than one element : list
             one element: scaler
     """
-    print("**********exe read_inp()**************")
+    #print("**********exe read_inp()**************")
     
     inp_dct={}
     with open(parfile,'r') as f:

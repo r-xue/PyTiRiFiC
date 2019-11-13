@@ -12,6 +12,9 @@ aeval = Interpreter(err_writer=StringIO())
 aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
 
+from sys import getsizeof
+from .utils import human_unit
+from .utils import human_to_string
 
 import scipy.constants as const
 from astropy.modeling.models import Gaussian2D
@@ -25,6 +28,10 @@ from scipy.interpolate import interp1d
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 import numexpr as ne
 
+import gc
+
+from memory_profiler import profile
+@profile
 def model_disk2d(header,objp,
                  model=None,
                  factor=5):
@@ -135,8 +142,13 @@ def model_disk2d(header,objp,
         pintflux_z=(wz/1e9/restfreq)**alpha*pintflux 
         model_out[0,:,int(np.round(py)),int(np.round(px))]+=pintflux_z
     
-    return model_out
-
+    if  model is None:
+        return model_out
+    else:
+        return 
+    #return #model_out
+from memory_profiler import profile
+@profile
 def model_disk3d(header,objp,
                  model=None,
                  nsamps=100000,decomp=False,fixseed=False,
@@ -301,9 +313,10 @@ def model_disk3d(header,objp,
     pz_o_int=round(pz_o) ; pz_o_frac=pz_o-pz_o_int
     phasecen=np.array([px_o_frac,py_o_frac])*cell
     voffset=(pz_o_frac)*dv
-
+    
     #start_time = time.time()
-
+    print(obj)
+    print(cell,xs,ys,vs)
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
@@ -319,6 +332,7 @@ def model_disk3d(header,objp,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
                intFlux=obj['lineflux'])
+    gc.collect()
     # cube in units of Jy/pixel * km/s or specifici intensity * km/s
     if  'angstrom' in header['CUNIT3']:
         cube=cube*abs(dv)/(header['CDELT3'])
@@ -326,7 +340,15 @@ def model_disk3d(header,objp,
     #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
     #   flip z-axis if dv<0
     #print(cube.shape)
+    size=human_unit(getsizeof(cube)*u.byte)
+    size=human_to_string(size,format_string='{0:3.0f} {1}')
+    print(cube.shape)
+    print(cube.sum())
+    
     cube=cube.T
+    
+
+            
     if  dv<0: cube=np.flip(cube,axis=0)
     
     if  model is None:
@@ -338,6 +360,11 @@ def model_disk3d(header,objp,
         model_out=model
     #print(cube.shape,'-->',model.shape)
     model_out=paste_array(model_out,cube[np.newaxis,:,:,:],(0,int(pz_o_int),int(py_o_int),int(px_o_int)),method='add')
+    
+    size=human_unit(getsizeof(model_out)*u.byte)
+    size=human_to_string(size,format_string='{0:3.0f} {1}')
+    print(size)
+    print(model_out.shape)
 
     
     model_prof={}
@@ -357,8 +384,11 @@ def model_disk3d(header,objp,
         model_prof['vrot_halo_node']=np.array(obj['vrot_halo'])
     if  'vrot_disk' in obj:
         model_prof['vrot_disk_node']=np.array(obj['vrot_disk'])
-            
-    return model_out,model_prof
+
+    if  model is None:
+        return model_out,model_prof
+    else:
+        return model_prof
 
 
 

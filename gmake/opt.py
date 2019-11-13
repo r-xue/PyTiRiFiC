@@ -15,6 +15,8 @@ from pprint import pformat
 import logging
 logger = logging.getLogger(__name__)
 
+#from memory_profiler import profile
+#@profile
 def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
     """
     for method='emcee': sampler is an emcee object
@@ -35,6 +37,8 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
         start_time = time.time()
         lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
                                                  savemodel=None)
+        
+                                                 #savemodel=outfolder+'/model_0')
         #lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,packblobs=True,
         #                       savemodel='')     
         logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
