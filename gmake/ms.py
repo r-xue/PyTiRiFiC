@@ -104,6 +104,10 @@ def read_ms(vis='',
             tmp=ctb.taql('SELECT means(DATA,1) as DATA_I C4 from $t')
             dat_dct_out['data@'+vis]=getcolnp(tmp,'DATA_I')
             tmp.done()
+            # the WEIGHT value is a single channel weight (not the bandwidth weight)
+            # the mstransform() opertation will do the WEIGHT summming when do channel 
+            # averging in my data prep procedure
+            # 
             # the above imlememntation requires avaiable memory of 1xdata
             # the below will requires memort of 2.0xdata 
             #dat_dct_out['data@'+vis]=np.mean(getcolnp(t,'DATA'),axis=-1)    

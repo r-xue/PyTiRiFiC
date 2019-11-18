@@ -96,11 +96,14 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
     
             weight_sqrt=ne.evaluate("sqrt(a)",
                                local_dict={"a":models[key.replace('data@','weight@')]})
-            weight_sqrt=np.sqrt(models[key.replace('data@','weight@')])        
+            
+            #weight_sqrt=np.sqrt(models[key.replace('data@','weight@')])        
             wdev=ne.evaluate("abs(a-b).real*c",
                              local_dict={'a':models[key],
                                          'b':models[key.replace('data@','uvmodel@')],
                                          'c':np.broadcast_to(weight_sqrt[:,np.newaxis],uvmodel.shape)})
+
+            
             """
             wdev=ne.evaluate("abs(a-b).real*sqrt(c)",
                              local_dict={'a':models[key],
@@ -108,7 +111,7 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                                          'c':np.broadcast_to((models[key.replace('data@','weight@')])[:,np.newaxis],uvmodel.shape)})
             """
             lnl1=ne.evaluate("sum(wdev**2)")    # speed up for long vectors:  lnl1=np.sum( wdev**2 )
-            #lnl1=ne.evaluate("sum((where(wdev==wdev, wdev,0))**2)")
+                                                # lnl1=ne.evaluate("sum((where(wdev==wdev, wdev,0))**2)")
             lnl2=ne.evaluate("sum(-log(a))",
                              local_dict={'a':models[key.replace('data@','weight@')]})*nchan + \
                  np.log(2.0*np.pi)*uvdata.size
@@ -116,9 +119,10 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
             lnl=-0.5*(lnl1+lnl2)        
             blobs['lnprob']+=lnl
             blobs['chisq']+=lnl1
-            #print(key,lnl1) #!!!!
             blobs['ndata']+=wdev.size
-            #print(key,lnl1,wdev.size)
+            
+
+            logger.debug("{0} {1} {2}".format(key,lnl1,wdev.size))
             
             if  returnwdev==True:
                 blobs['wdev']=np.append(blobs['wdev'],wdev)
@@ -212,9 +216,9 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
         if  'outname_replace' in inp_dct['general'].keys():
             outname_replace=inp_dct['general']['outname_replace']
                                 
-        print(savemodel)
-        print(outname_exclude)
-        print(outname_replace)
+        #print(savemodel)
+        #print(outname_exclude)
+        #print(outname_replace)
         export_model(models,outdir=savemodel,
                      outname_exclude=outname_exclude,
                      outname_replace=outname_replace)
@@ -226,7 +230,7 @@ def model_lnlike(theta,fit_dct,inp_dct,dat_dct,
                 del models[key]
         dct2hdf(models,savemodel+'/'+'models.h5')
         
-        pprint(inp_dct0)
+        #pprint(inp_dct0)
         write_inp(inp_dct0,inpfile=savemodel+'/model.inp',overwrite=True)             
   
     models=None
@@ -353,7 +357,7 @@ def model_chisq(theta,
         print("try ->",theta)
         print("---{0:^10} : {1:<8.5f} seconds ---".format('lnprob',time.time()-start_time))    
     
-    print('-->',lp+blobs['chisq'])
+    #print('-->',lp+blobs['chisq'])
     return lp+blobs['chisq']       
 
 

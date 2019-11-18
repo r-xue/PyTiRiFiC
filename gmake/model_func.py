@@ -23,15 +23,15 @@ from astropy.modeling.models import Sersic2D
 from astropy.convolution import discretize_model
 from astropy.wcs import WCS
 
+from copy import deepcopy
+
 from scipy.interpolate import interp1d
 
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 import numexpr as ne
+#import gc
 
-import gc
-
-from memory_profiler import profile
-@profile
+#from memory_profiler import profile
 def model_disk2d(header,objp,
                  model=None,
                  factor=5):
@@ -147,8 +147,7 @@ def model_disk2d(header,objp,
     else:
         return 
     #return #model_out
-from memory_profiler import profile
-@profile
+
 def model_disk3d(header,objp,
                  model=None,
                  nsamps=100000,decomp=False,fixseed=False,
@@ -315,8 +314,8 @@ def model_disk3d(header,objp,
     voffset=(pz_o_frac)*dv
     
     #start_time = time.time()
-    print(obj)
-    print(cell,xs,ys,vs)
+    #print(obj)
+    #print(cell,xs,ys,vs)
     cube=KinMS(xs,ys,vs,
                cellSize=cell,dv=abs(dv),
                beamSize=1.0,cleanOut=True,
@@ -332,7 +331,7 @@ def model_disk3d(header,objp,
                #nSamps=nsamps,fileName=outname+'_'+tag,
                posAng=obj['pa'],
                intFlux=obj['lineflux'])
-    gc.collect()
+    
     # cube in units of Jy/pixel * km/s or specifici intensity * km/s
     if  'angstrom' in header['CUNIT3']:
         cube=cube*abs(dv)/(header['CDELT3'])
@@ -340,10 +339,11 @@ def model_disk3d(header,objp,
     #   KinMS provide the cube in (x,y,v) shape, but not in the Numpy fasion. transpose required
     #   flip z-axis if dv<0
     #print(cube.shape)
-    size=human_unit(getsizeof(cube)*u.byte)
-    size=human_to_string(size,format_string='{0:3.0f} {1}')
-    print(cube.shape)
-    print(cube.sum())
+    #size=human_unit(get_obj_size(cube[:,:,:])*u.byte)
+    #size=human_to_string(size,format_string='{0:3.0f} {1}')
+    #print(size,get_obj_size(deepcopy(cube[:,:,:])),type(cube))
+    #print(cube.shape)
+    #print(cube.sum())
     
     cube=cube.T
     
@@ -363,8 +363,8 @@ def model_disk3d(header,objp,
     
     size=human_unit(getsizeof(model_out)*u.byte)
     size=human_to_string(size,format_string='{0:3.0f} {1}')
-    print(size)
-    print(model_out.shape)
+    #print(size)
+    #print(model_out.shape)
 
     
     model_prof={}
@@ -657,7 +657,7 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
             ne.evaluate("a+b",
                         local_dict={"a":uvmodel_out[:,i],
                                     "b":sampleImage((xymodel[0,i,:,:]),np.deg2rad(cell),(uvw[:,0]/wv),(uvw[:,1]/wv),                                   
-                                                    dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                                    dRA=dRA,dDec=dDec,PA=0.,check=False,origin='lower')
                                     },
                         casting='same_kind',out=uvmodel_out[:,i])
     else:
@@ -672,12 +672,14 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
                 ne.evaluate("a+b",
                             local_dict={"a":uvmodel_out[:,i],
                                         "b":sampleImage((xymod3d[0,i,:,:]),
-                                                        np.deg2rad(cell),
+                                                        (np.deg2rad(cell)).astype(np.float32),
                                                         (uvw[:,0]/wv),
                                                         (uvw[:,1]/wv),                                   
-                                                        dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                                        dRA=dRA.astype(np.float32),dDec=dDec.astype(np.float32),
+                                                        PA=0.,check=False,origin='lower')
                                         },
                             casting='same_kind',out=uvmodel_out[:,i])
+                #print("    ",np.deg2rad(cell),np.sum(uvw[:,0]/wv),np.sum(uvw[:,1]/wv))
             #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod3d',time.time()-ss))
         
         if  xymod2d is not None:
@@ -688,10 +690,11 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
             cc+=1
             #ss=time.time()
             uvmodel0=sampleImage((xymod2d[0,i0,:,:]),
-                                 np.deg2rad(cell),
+                                 (np.deg2rad(cell)).astype(np.float32),
                                  (uvw[:,0]/wv),
                                  (uvw[:,1]/wv),                                   
-                                 dRA=dRA,dDec=dDec,PA=0,check=False,origin='lower')
+                                 dRA=dRA.astype(np.float32),dDec=dDec.astype(np.float32),
+                                 PA=0.0,check=False,origin='lower')
             #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-uvsample',time.time()-ss))          
             #ss=time.time()
             ne.evaluate('a+b*c',
