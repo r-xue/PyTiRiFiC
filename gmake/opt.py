@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 #from memory_profiler import profile
 #@profile
-def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
+def fit_setup(inp_dct,dat_dct,initial_model=True,save_model=False,copydata=False):
     """
     for method='emcee': sampler is an emcee object
     for method=others: sampler is a dict
@@ -35,10 +35,12 @@ def fit_setup(inp_dct,dat_dct,initial_model=True,copydata=False):
     if  initial_model==True:
 
         start_time = time.time()
-        lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                                                 savemodel=None)
-        
-                                                 #savemodel=outfolder+'/model_0')
+        if  save_model==True:
+            lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                                                 savemodel=outfolder+'/model_0')
+        else:
+            lnl,lnprob,chisq,ndata,npar=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
+                                                 savemodel=None)            
         #lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,packblobs=True,
         #                       savemodel='')     
         logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
