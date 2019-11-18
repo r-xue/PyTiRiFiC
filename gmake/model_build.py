@@ -14,6 +14,7 @@ import scipy.constants as const
 
 from astropy.modeling.models import Gaussian2D
 
+#from memory_profiler import profile
 
 
 def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
@@ -89,11 +90,35 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['chanfreq@'+vis]=dat_dct['chanfreq@'+vis]
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
-                    wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz))
+                    wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz)) # in meter
                     
-                    nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv, verbose=False)
-                    
-                    nxy=128
+                    #
+                    ant_size=12.0 # hard coded in meter
+                    f_max=2.0/2.0
+                    f_min=3.0/3.0
+                    """
+                    f_max: determines the UV grid size, or set a image cell-size upper limit
+                           a valeu of >=2 would be a safe choice
+                    f_min: set the UV cell-size upper limit, or a lower limit of image FOV.                            
+                           a value of >=3 would be translated into a FOV lager than >=3 of interfeormetry sensitive scale
+                    PB:    primary beam size, help set a lower limit of FOV
+                           however, in terms of imaging quality metric, this is not crucial
+                    The rule of thumbs are:
+                        * make sure f_max and f_min are good enought that all spatial frequency information is presented in
+                        the reference models
+                        * the FOV is large enough to covert the object.
+                        * keep the cube size within the memory limit
+                    """
+                    nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv,
+                                              PB=1.22*wv/ant_size*0.0,f_max=f_max,f_min=f_min,
+                                              verbose=False)
+                    print("-->",nxy,np.rad2deg(dxy)*60.*60.,vis)
+                    #print(np.rad2deg(dxy)*60.*60,0.005,nxy)
+                    # note: if dxy is too large, uvsampling will involve extrapolation which is not stable.
+                    #       if nxy is too small, uvsampling should be okay as long as you believe no stucture-amp is above that scale.
+                    #          interplate is more or less stable.  
+                    #dxy=np.deg2rad(0.02/60/60)
+                    #nxy=128
                     
                     header=xymodel_header.copy()
                     header['NAXIS1']=nxy
@@ -184,7 +209,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                 
     return models
 
-
+#@profile
 def model_fill(models,nsamps=100000,decomp=False,verbose=False):
     """
     create reference/intrinsic models and fill them into the model container
@@ -292,7 +317,7 @@ def model_fill(models,nsamps=100000,decomp=False,verbose=False):
     
     return
 
-
+#@profile
 def model_simobs(models,decomp=False,verbose=False):
     """
     Simulate observations (dataset by dataset)
