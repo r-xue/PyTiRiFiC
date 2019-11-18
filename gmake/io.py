@@ -369,7 +369,7 @@ def export_model(models,outdir='./',
                         tmp=(models[key.replace('data@',version+'@')]).copy()
                         if  tmp.ndim==2:
                             tmp=tmp[np.newaxis,np.newaxis,:,:]
-                        fitsname=(outdir+'/'+version+'_'+basename).replace('.ms','.fits')
+                        fitsname=outdir+'/'+version+'_'+basename+'.fits'
                         logger.debug("write reference model image: ")
                         logger.debug("    "+key.replace('data@',version+'@')+' to '+fitsname)
                         fits.writeto(fitsname,
@@ -382,9 +382,9 @@ def export_model(models,outdir='./',
                 if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
                     outname=prof.replace(key.replace('data@',''),'')
                     outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
-                    fitsname=outdir+'/'+outname+basename.replace('.ms','')   
+                    fitsname=outdir+'/'+outname+basename+'.fits'   
                     logger.debug("write reference model profile: ")
-                    logger.debug("    "+prof+' to '+fitsname+'.fits')
+                    logger.debug("    "+prof+' to '+fitsname)
                     dct2fits(models[prof],outname=fitsname)
             
             ###############
@@ -412,7 +412,7 @@ def export_model(models,outdir='./',
                             datacolumn='corrected',delmod=True)
             
             oldms_path=os.path.abspath(oldms)
-            newms=outdir+'/data_'+basename.replace('.ms','.ms')
+            newms=outdir+'/data_'+basename
             logger.debug("create symlink:")
             logger.debug("    "+oldms_path+'  to  '+newms)
             os.system('rm -rf '+newms) 
