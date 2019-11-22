@@ -7,3 +7,5 @@ galario/
 for mkl_fft:
 
 pip install --user .
+
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES

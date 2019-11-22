@@ -5,8 +5,7 @@ export LDFLAGS="-L/opt/local/lib -L/opt/casacore/lib"
 export LD_LIBRARY_PATH="-L/opt/local/lib -L/opt/casacore/lib"
 # likely you want to use the Apple cc instead (so don;t use the below line and make sure > port seletc gcc none)
 #export CC=/opt/local/bin/gcc 
-python3 setup.py install --user build_ext -I/opt/casacore/include:/opt/local/include -L/opt/casacore/lib:/opt/local/lib
-
+python setup.py install --user build_ext -I/opt/casacore/include:/opt/local/include -L/opt/casacore/lib:/opt/local/lib
 
 #################
 
