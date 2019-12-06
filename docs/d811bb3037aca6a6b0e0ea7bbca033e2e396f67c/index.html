@@ -91,6 +91,7 @@
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
@@ -294,13 +295,19 @@ optional arguments:
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#archive-query">Archive Query:</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#using-the-beta-version-of-casa-6">Using the beta-version of CASA 6</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#reduce-raw-data-size">Reduce Raw Data Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#data-calibration">Data Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#prepare-visibiity-data-from-the-calibrated-ms-from-the-modified-vla-scripted-pipeline">Prepare visibiity data from the calibrated MS from the modified VLA scripted pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#prep-calibrated-data">Prep Calibrated Data:</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
@@ -331,9 +338,9 @@ optional arguments:
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#s">2013.1.00059.S</a></li>
-<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id3">2017.1.01045.S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id1">2017.1.01045.S</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#s-2017-1-01045-s">2013.1.00059.S+2017.1.01045.S</a></li>
-<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id8">2015.1.00250.S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id6">2015.1.00250.S</a></li>
 </ul>
 </li>
 </ul>
@@ -359,6 +366,12 @@ optional arguments:
 <li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#b-044-12a-201">11B-044 / 12A-201</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#reduce-raw-data-size">Reduce Raw Data SIze</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#data-calibration-with-the-modified-vla-scripted-pipeline-rxpipeline">Data Calibration with the modified VLA scripted pipeline (rxpipeline)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#frame-transfer-topo-lsrk-spw-combine-time-averging">Frame-Transfer (TOPO-&gt;LSRK) &amp; SPW-combine &amp; Time-Averging</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#s-band-6-cycle-3-xue-et-al-2018">2015.1.00723.S (Band 6, Cycle-3, Xue et al. 2018)</a><ul>
