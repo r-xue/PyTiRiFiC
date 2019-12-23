@@ -29,9 +29,12 @@ from scipy.interpolate import interp1d
 
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 import numexpr as ne
+import fast_histogram
+import time
 #import gc
 
-#from memory_profiler import profile
+from memory_profiler import profile
+
 def model_disk2d(header,objp,
                  model=None,
                  factor=5):
@@ -114,7 +117,7 @@ def model_disk2d(header,objp,
                              (px_o_int,px_o_int+2*xs_hz+1),
                              (py_o_int,py_o_int+2*ys_hz+1),
                              mode='oversample',factor=factor)
-    model2d=model2d/model2d.sum()
+    model2d/=model2d/model2d.sum()
     model2d=model2d[np.newaxis,np.newaxis,:,:]*intflux_z[np.newaxis,:,np.newaxis,np.newaxis]
 
     if  model is None:
@@ -147,6 +150,7 @@ def model_disk2d(header,objp,
     else:
         return 
     #return #model_out
+
 
 def model_disk3d(header,objp,
                  model=None,
@@ -363,7 +367,7 @@ def model_disk3d(header,objp,
     
     size=human_unit(getsizeof(model_out)*u.byte)
     size=human_to_string(size,format_string='{0:3.0f} {1}')
-    #print(size)
+    #print('<<-',size)
     #print(model_out.shape)
 
     
@@ -608,9 +612,12 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
           the return variable is just a reference of mutable <uvmodel>
 
     """
-
+    #verbose=True
     #print('3d:',xymod3d is not None)
     #print('2d:',xymod2d is not None)
+    
+    #print('xymod3d',np.sum(xymod3d))
+    #print('xymod2d',np.sum(xymod2d))
     
     cell=np.sqrt(abs(xyheader['CDELT1']*xyheader['CDELT2']))
     nchan=xyheader['NAXIS3']
@@ -639,6 +646,15 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
     #       https://mtazzari.github.io/galario/tech-specs.html     
     dRA=np.deg2rad(+(xyheader['CRVAL1']-phasecenter[0].to_value(u.deg)))
     dDec=np.deg2rad(+(xyheader['CRVAL2']-phasecenter[1].to_value(u.deg)))
+    #print('<--',dRA,dDec)
+    
+    phasecenter_sc = SkyCoord(phasecenter[0], phasecenter[1], frame='icrs')
+    refimcenter_sc = SkyCoord(xyheader['CRVAL1']*u.deg,xyheader['CRVAL2']*u.deg, frame='icrs')
+    dra, ddec = phasecenter_sc.spherical_offsets_to(refimcenter_sc)
+    
+    dRA=dra.to_value(u.rad)
+    dDec=ddec.to_value(u.rad)
+    #print('-->',dRA,dDec)
     
     cc=0
     
@@ -675,7 +691,7 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
                                                         (np.deg2rad(cell)).astype(np.float32),
                                                         (uvw[:,0]/wv),
                                                         (uvw[:,1]/wv),                                   
-                                                        dRA=dRA.astype(np.float32),dDec=dDec.astype(np.float32),
+                                                        dRA=dRA,dDec=dDec,
                                                         PA=0.,check=False,origin='lower')
                                         },
                             casting='same_kind',out=uvmodel_out[:,i])
@@ -697,6 +713,7 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
                                  PA=0.0,check=False,origin='lower')
             #print("---{0:^10} : {1:<8.5f} seconds ---".format('xymod2d-uvsample',time.time()-ss))          
             #ss=time.time()
+            print(np.sum(xymod2d[0,i0,:,:]),uvmodel0,dRA.astype(np.float32),dDec.astype(np.float32))
             ne.evaluate('a+b*c',
                         local_dict={"a":uvmodel_out,
                                     "b":np.broadcast_to(uvmodel0[:,np.newaxis],(nrecord,nchan)),
@@ -778,8 +795,6 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
     ss=time.time()
     print("---{0:^10} : {1:<8.5f} seconds ---".format('timeit',time.time()-ss))                                
     """
-
-
 
 
 def model_convol(data,header,beam=None,psf=None,returnkernel=False,verbose=True,average=False):

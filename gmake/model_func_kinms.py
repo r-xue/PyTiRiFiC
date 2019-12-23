@@ -58,6 +58,7 @@ from astropy.convolution import convolve_fft
 
 # coding: utf-8
 import numpy as np
+from .utils import get_obj_size
 
 def makebeam(xpixels,ypixels,st_dev,rot=0,cent=0):
     if not cent: cent=[xpixels/2.,ypixels/2]
@@ -519,7 +520,7 @@ def KinMS(xs,ys,vs,cellSize,dv,beamSize,inc,gasSigma=0,sbProf=[],sbRad=[],velRad
     # Normalise by the known integrated flux
     if intFlux > 0:
         if not cleanOut:
-            cube *= ((intFlux * psf.sum()) / (cube.sum() * dv))
+            cube *= c
         else:
             cube *= ((intFlux) / (cube.sum() * dv))
     else:
@@ -567,3 +568,269 @@ def KinMS(xs,ys,vs,cellSize,dv,beamSize,inc,gasSigma=0,sbProf=[],sbRad=[],velRad
         return cube, retClouds, los_vel
     else:
         return cube
+
+
+
+def KinMS2(xs,ys,vs,cellSize,dv,beamSize,inc,gasSigma=0,sbProf=[],sbRad=[],velRad=[],velProf=[],fileName=False,diskThick=0,cleanOut=False,ra=0,dec=0,nSamps=100000,posAng=0.0,intFlux=0,inClouds=[],vLOS_clouds=[],flux_clouds=0,vSys=0,restFreq=115.271e9,phaseCen=np.array([0.,0.]),vOffset=0,fixSeed=False,vRadial=0,vPosAng=0,vPhaseCen=np.array([0.,0.]),returnClouds=False,gasGrav=False):
+    """
+
+    The main KinMS function. Takes inputs specifing the observing parameters and type of model.
+    Returns the created model cube.
+
+    Parameters
+    ----------
+    xs : float
+        X-axis size for resultant cube (in arcseconds)
+
+    ys : float
+        Y-axis size for resultant cube (in arcseconds)
+
+    vs : float
+        Velocity axis size for resultant cube (in km/s)
+
+    cellsize : float
+        Pixel size required (arcsec/pixel)
+
+    dv : float
+        Channel size in velocity direction (km/s/channel)
+
+    beamsize : float or list of float
+        Scalar or three element list for size of convolving
+        beam (in arcseconds).  If a scalar then beam is assumed
+        to be circular. If a vector then denotes beam major
+        axis size in element zero, and the beam minor axis in
+        element one. The beam position angle should be given in
+        element two. I.e. [bmaj,bmin,bpa].
+
+    inc :   double or np.ndarray of double
+        Inclination angle of the gas disc on the sky
+        (degrees). Can input a constant or a vector,
+        giving the inclination as a function of the
+        radius vector `velrad` (in order to model warps etc)
+
+    gassigma : double or np.ndarray of double, optional
+         (Default value = 0)
+        Velocity dispersion of the gas. Units of km/s.
+        Can be either a double, or an array of doubles. If single valued
+        then the velocity dispersion is constant throughout the disc.
+        If an array is passed then it should describe how the velocity
+        dispersion changes as a function of `velrad`.
+
+    sbprof : np.ndarray of double, optional
+         (Default value = [])
+        Surface brightness profile (arbitrarily scaled) as a function of `sbrad`.
+
+    sbrad : np.ndarray of double, optional
+         (Default value = [])
+        Radius vector for surface brightness profile (units of arcseconds).
+
+    velrad : np.ndarray of double, optional
+         (Default value = [])
+        Radius vector for velocity profile (units of arcseconds).
+
+    velprof : np.ndarray of double, optional
+         (Default value = [])
+        Circular velocity profile (in km/s) as a function of `velrad`.
+
+    diskthick : double or np.ndarray of double, optional
+         (Default value = 0)
+        The disc scaleheight in arcseconds. If a single value then this is used at all radii.
+        If a ndarray then it should have the same length as `sbrad`, and will be
+        the disc thickness as a function of `sbrad`.
+
+    cleanout : bool, optional
+         (Default value = False)
+        If set then do not convolve with the beam, and output the
+        "clean components". Useful to create input for other
+        simulation tools (e.g sim_observe in CASA).
+
+    nsamps : int, optional
+         (Default value = 100000)
+        Number of cloudlets to use to create the model. Large numbers
+        will reduce numerical noise (especially in large cubes),
+        at the cost of increasing runtime.
+
+    posang : double or np.ndarray of double, optional
+         (Default value = 0.0)
+        Position angle of the disc, using the usual astronomical convention.
+        Can be either a double, or an array of doubles. If single valued
+        then the disc major axis is straight. If an array is passed then it should
+        describe how the position angle changes as a function of `velrad`.
+        Used to create position angle warps.
+
+    intflux : double, optional
+         (Default value = 0)
+        Total integrated flux you want the output gas to
+        have. (In Jy/km/s).
+
+    inclouds : np.ndarray of double, optional
+         (Default value = [])
+        If your required gas distribution is not symmetric you
+        may input vectors containing the position of the
+        clouds you wish to simulate. This 3-vector should
+        contain the X, Y and Z positions, in units of arcseconds
+        from the phase centre. If this variable is used, then
+        `diskthick`, `sbrad` and `sbprof` are ignored.
+        Example: INCLOUDS=[[0,0,0],[10,-10,2],...,[xpos,ypos,zpos]]
+
+    vlos_clouds : np.ndarray of double, optional
+         (Default value = [])
+        This vector should contain the LOS velocity for
+        each point defined in INCLOUDS, in units of km/s. If
+        not supplied then INCLOUDS is assumed to be the -face
+        on- distribution and that VELPROF/VELRAD should be
+        used, and the distribution projected. If this
+        variable is used then GASSIGMA/INC are ignored.
+
+    flux_clouds : np.ndarray of double, optional
+         (Default value = 0)
+        This vector can be used to supply the flux of each
+        point in INCLOUDS. If used alone then total flux in the model is equal
+        to total(FLUX_INCLOUDS). If INTFLUX used then this vector denotes
+        the relative brightness of the points in
+        INCLOUDS.
+
+
+    phasecen : np.ndarray of double, optional
+         (Default value = np.array([0., 0.])
+        This two dimensional array specifies the morphological centre of the
+        disc structure you create with respect to the central pixel of the
+        generated cube.
+
+    returnclouds: bool, optional
+        (Default value= False)
+        If set True then KinMS returns the created `inclouds` and `vlos_clouds`
+        in addition to the cube.
+
+    Other Parameters
+    ----------------
+
+    filename : string or bool, optional
+         (Default value = False)
+        If you wish to save the resulting model to a fits file, set this variable.
+        The output filename will be `filename`_simcube.fits
+
+    ra : float, optional
+         (Default value = 0)
+        RA to use in the header of the output cube (in degrees).
+
+    dec : float, optional
+         (Default value = 0)
+        DEC to use in the header of the output cube (in degrees).
+
+    restfreq : double, optional
+         (Default value = 115.271e9)
+        Rest-frequency of spectral line of choice (in Hz). Only
+        matters if you are outputting a FITS file  Default: 12CO(1-0)
+
+    vsys : double, optional
+         (Default value = 0)
+        Systemic velocity (km/s).
+
+    Returns
+    -------
+
+    cube : np.ndarray of double
+        Returns the created cube as a 3 dimensional array
+
+    inclouds: np.ndarray of double
+        If `returnclouds` is set then this is returned, containing
+        the cloudlets generated by KinMS
+
+    vlos_clouds: np.ndarray of double
+        If `returnclouds` is set then this is returned, containing
+        the LOS velocities of cloudlets generated by KinMS
+
+    """
+
+
+    nSamps = int(nSamps)
+    # Generate seeds for use in future calculations
+    if fixSeed:
+        fixSeed = [100,101,102,103]
+    else:
+        fixSeed = np.random.randint(0,100,4)
+
+    # If beam profile not fully specified, generate it:
+    if not isinstance(beamSize, (list, tuple, np.ndarray)):
+        beamSize = np.array([beamSize,beamSize,0])
+
+    # work out images sizes
+    xSize = float(round(xs/cellSize))
+    ySize = float(round(ys/cellSize))
+    vSize = float(round(vs/dv))
+    cent = [(xSize/2.) + (phaseCen[0] / cellSize),(ySize / 2.) + (phaseCen[1] / cellSize),(vSize / 2.) + (vOffset / dv)]
+    vPhaseCent = (vPhaseCen) / [cellSize,cellSize]
+
+    #If cloudlets not previously specified, generate them
+    if not len(inClouds):
+        inClouds = kinms_sampleFromArbDist_oneSided(sbRad,sbProf,nSamps,fixSeed,diskThick=diskThick)
+    xPos = (inClouds[:,0] / cellSize)
+    yPos = (inClouds[:,1] / cellSize)
+    zPos = (inClouds[:,2] / cellSize)
+    r_flat = np.sqrt((xPos * xPos) + (yPos * yPos))
+
+    #Find the los velocity and cube position of the clouds
+    if len(vLOS_clouds):
+        #As los velocity specified assume that the clouds have already been projected correctly.
+        los_vel = vLOS_clouds
+        x2 = xPos
+        y2 = yPos
+        z2 = zPos
+    else:
+        # As los velocities not specified, calculate them
+        if np.any(gasGrav):
+            # ;;; include the potential of the gas
+            gasGravVel = gasGravity_velocity(xPos * cellSize,yPos * cellSize,zPos * cellSize,gasGrav,velRad)
+            velProf = np.sqrt((velProf * velProf) + (gasGravVel * gasGravVel))
+
+
+
+        posAng = 90 - posAng
+        if isinstance(posAng, (list, tuple, np.ndarray)):
+            posAngRadInterFunc = interpolate.interp1d(velRad,posAng,kind='linear')
+            posAng_rad = posAngRadInterFunc(r_flat*cellSize)
+        else:
+            posAng_rad = np.full(len(r_flat),posAng,np.double)
+
+        if isinstance(inc, (list, tuple, np.ndarray)):
+            incRadInterFunc = interpolate.interp1d(velRad,inc,kind='linear')
+            inc_rad = incRadInterFunc(r_flat*cellSize)
+        else:
+            inc_rad = np.full(len(r_flat),inc,np.double)
+
+        # Calculate the los velocity
+        los_vel = kinms_create_velField_oneSided(velRad / cellSize,velProf,r_flat,inc,posAng,gasSigma,fixSeed,xPos,yPos,vPhaseCent=vPhaseCent,vPosAng=vPosAng,vRadial=vRadial,inc_rad=inc_rad,posAng_rad=posAng_rad)
+
+        # Project the clouds to take into account inclination
+        c = np.cos(np.radians(inc_rad))
+        s = np.sin(np.radians(inc_rad))
+        x2 =  xPos
+        y2 = (c * yPos) + (s * zPos)
+        z2 = (-s * yPos) + (c * zPos)
+
+        # Correct orientation by rotating by position angle
+        ang = posAng_rad
+        c = np.cos(np.radians(ang))
+        s = np.sin(np.radians(ang))
+        x3 = (c * x2) + (s * y2)
+        y3 = (-s * x2) + (c * y2)
+        x2 = x3
+        y2 = y3
+    # now add the flux into the cube
+    # Centre the clouds in the cube on the centre of the object
+    los_vel_dv_cent2 = np.round((los_vel / dv) + cent[2])
+    x2_cent0 = np.round(x2 + cent[0])
+    y2_cent1 = np.round(y2 + cent[1])
+
+    #Find the reduced set of clouds that lie inside the cube
+    subs = np.where(((x2_cent0 >= 0) & (x2_cent0 < xSize) & (y2_cent1 >= 0) & (y2_cent1 < ySize) & (los_vel_dv_cent2 >= 0) & (los_vel_dv_cent2 < vSize)))
+    nsubs = subs[0].size
+    clouds2do = np.empty((nsubs,3))
+    clouds2do[:,0] = x2_cent0[subs]
+    clouds2do[:,1] = y2_cent1[subs]
+    clouds2do[:,2] = los_vel_dv_cent2[subs]
+
+    scale=intFlux / ((clouds2do.size/3.) * dv)
+    
+    return (clouds2do,xSize,ySize,vSize,scale)

@@ -14,7 +14,7 @@ import scipy.constants as const
 
 from astropy.modeling.models import Gaussian2D
 
-#from memory_profiler import profile
+from memory_profiler import profile
 
 
 def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
@@ -30,7 +30,7 @@ def model_api(mod_dct,dat_dct,nsamps=100000,decomp=False,verbose=False):
     return models
 
 
-def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
+def model_init(mod_dct,dat_dct,decomp=False,verbose=False,save_uvmodel=True):
     """
     create model container 
         this function can be ran only once before starting fitting iteration, so that
@@ -78,14 +78,17 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
             
             for vis in vis_list:
                 
-                if  'data@'+vis not in models.keys():
+                if  'type@'+vis not in models.keys():
                     
                     #   pass the data reference (no memory penalty)
                     
-                    models['data@'+vis]=dat_dct['data@'+vis]
+                    
                     models['type@'+vis]=dat_dct['type@'+vis]
-                    models['weight@'+vis]=dat_dct['weight@'+vis]   
-                    models['uvw@'+vis]=dat_dct['uvw@'+vis]
+                    
+                    if  save_uvmodel==True:
+                        models['data@'+vis]=dat_dct['data@'+vis]
+                        models['weight@'+vis]=dat_dct['weight@'+vis]   
+                        models['uvw@'+vis]=dat_dct['uvw@'+vis]
                     
                     models['chanfreq@'+vis]=dat_dct['chanfreq@'+vis]
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
@@ -94,7 +97,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     
                     #
                     ant_size=12.0 # hard coded in meter
-                    f_max=2.0/2.0
+                    f_max=2.0
                     f_min=3.0/3.0
                     """
                     f_max: determines the UV grid size, or set a image cell-size upper limit
@@ -109,10 +112,10 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                         * the FOV is large enough to covert the object.
                         * keep the cube size within the memory limit
                     """
-                    nxy, dxy = get_image_size(models['uvw@'+vis][:,0]/wv, models['uvw@'+vis][:,1]/wv,
+                    nxy, dxy = get_image_size(dat_dct['uvw@'+vis][:,0]/wv, dat_dct['uvw@'+vis][:,1]/wv,
                                               PB=1.22*wv/ant_size*0.0,f_max=f_max,f_min=f_min,
                                               verbose=False)
-                    print("-->",nxy,np.rad2deg(dxy)*60.*60.,vis)
+                    #print("-->",nxy,np.rad2deg(dxy)*60.*60.,vis)
                     #print(np.rad2deg(dxy)*60.*60,0.005,nxy)
                     # note: if dxy is too large, uvsampling will involve extrapolation which is not stable.
                     #       if nxy is too small, uvsampling should be okay as long as you believe no stucture-amp is above that scale.
@@ -124,8 +127,11 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     header['NAXIS1']=nxy
                     header['NAXIS2']=nxy
                     header['NAXIS3']=np.size(models['chanfreq@'+vis])
-                    header['CRVAL1']=models['phasecenter@'+vis][0].to_value(u.deg)
-                    header['CRVAL2']=models['phasecenter@'+vis][1].to_value(u.deg)
+                    #header['CRVAL1']=models['phasecenter@'+vis][0].to_value(u.deg)
+                    #header['CRVAL2']=models['phasecenter@'+vis][1].to_value(u.deg)
+                    header['CRVAL1']=obj['xypos'].ra.to_value(u.deg)
+                    header['CRVAL2']=obj['xypos'].dec.to_value(u.deg)
+                                         
                     crval3=models['chanfreq@'+vis].to_value(u.Hz)
                     if  not np.isscalar(crval3):
                         crval3=crval3[0]
@@ -137,14 +143,16 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
                     header['CRPIX2']=np.floor(nxy/2)+1
                     
                     models['header@'+vis]=header.copy()
-                    naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
+                    
                     models['pbeam@'+vis]=((makepb(header)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
+                    naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
+                    models['imod3d@'+vis]=np.zeros(naxis,dtype=np.float32)     # 1 * nz * ny * nx
+                    #naxis=(header['NAXIS4'],1,header['NAXIS2'],header['NAXIS1'])
+                    models['imod2d@'+vis]=np.zeros(naxis,dtype=np.float32)     # 1 * 1  * ny * nx
                     
-                    models['imod2d@'+vis]=np.zeros(naxis,dtype=np.float32)     # ny * nx
-                    models['imod3d@'+vis]=np.zeros(naxis,dtype=np.float32)     # nz * ny * nx
                     
-                                    
-                    models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
+                    if  save_uvmodel==True:
+                        models['uvmodel@'+vis]=np.zeros((models['data@'+vis].shape)[0:2],
                                                     dtype=models['data@'+vis].dtype,
                                                     order='F')
                     if  decomp==True:
@@ -208,6 +216,8 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False):
         print(">>>>>{0:^10} : {1:<8.5f} seconds ---\n".format('initialize-total',time.time() - start_time))
                 
     return models
+
+
 
 #@profile
 def model_fill(models,nsamps=100000,decomp=False,verbose=False):
@@ -378,15 +388,24 @@ def model_simobs(models,decomp=False,verbose=False):
                     models[tag.replace('imod3d@','uvmod2d@')]=uvmodel.copy() 
                     models[tag.replace('imod3d@','uvmodel@')]+=uvmodel.copy()                                          
                 else:
-                    uvmodel=model_uvsample(models[tag]*models[tag.replace('imod3d@','pbeam@')],
-                                           models[tag.replace('imod3d@','imod2d@')]*models[tag.replace('imod3d@','pbeam@')],
+                    if  np.sum(models[tag])==0.0:
+                        xymod3d=None
+                    else:
+                        xymod3d=models[tag]*models[tag.replace('imod3d@','pbeam@')]
+                    if  np.sum(models[tag.replace('imod3d@','imod2d@')]*models[tag.replace('imod3d@','pbeam@')])==0.0:
+                        xymod2d=None
+                    else:
+                        xymod2d=models[tag.replace('imod3d@','imod2d@')]*models[tag.replace('imod3d@','pbeam@')]
+                    uvmodel=model_uvsample(xymod3d,
+                                           xymod2d,
                                            models[tag.replace('imod3d@','header@')],
                                            models[tag.replace('imod3d@','uvw@')],
                                            models[tag.replace('imod3d@','phasecenter@')],
                                            uvmodel=models[tag.replace('imod3d@','uvmodel@')],
                                            uvdtype=models[tag.replace('imod3d@','data@')].dtype,
                                            average=True,
-                                           verbose=verbose)                                   
+                                           verbose=verbose)
+                    #print('-->',uvmodel)                                   
             if  models[tag.replace('imod3d@','type@')]=='image':
                 cmodel,kernel=model_convol(models[tag],
                                      models[tag.replace('imod3d@','header@')],

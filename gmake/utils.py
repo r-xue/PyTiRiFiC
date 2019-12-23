@@ -44,7 +44,7 @@ from unittest.mock import patch
 
 import scipy.integrate
 from scipy import interpolate
-
+from spectral_cube import SpectralCube
 
 """
 import ast, operator
@@ -489,11 +489,22 @@ def paste_slice(tup):
     make slice for the overlapping region
     """
     pos, w, max_w = tup
-    wall_min = max(pos, 0)
-    wall_max = min(pos+w, max_w)
-    block_min = -min(pos, 0)
-    block_max = max_w-max(pos+w, max_w)
-    block_max = block_max if block_max != 0 else None
+    
+    #wall_min = max(pos, 0)
+    #wall_max = min(pos+w, max_w)
+    #block_min = -min(pos, 0)
+    #block_max = max_w-max(pos+w, max_w)
+    #block_max = block_max if block_max != 0 else None
+    
+    wall_min=+pos
+    wall_max=+pos+w
+    wall_min=min(max(wall_min,0),max_w)
+    wall_max=min(max(wall_max,0),max_w)
+    
+    block_min=-pos
+    block_max=-pos+max_w
+    block_min=min(max(block_min,0),w)
+    block_max=min(max(block_max,0),w)
     
     return slice(wall_min, wall_max), slice(block_min, block_max)
 
@@ -502,14 +513,20 @@ def paste_array(wall, block, loc,method='replace'):
     past a small array into a larger array with shifting
     works for high dimension or off-edge cases
     wall/block requires in the same dimension number 
+    loc: the index of left-bottom pixel of block in wall. 
     """
     loc_zip = zip(loc, block.shape, wall.shape)
+    #print(loc,block.shape,wall.shape)
     wall_slices, block_slices = zip(*map(paste_slice, loc_zip))
-    if  method=='replace':
-        wall[wall_slices] = block[block_slices].copy()
-    if  method=='add':
-        wall[wall_slices] += block[block_slices]
-
+    #print(wall_slices, block_slices)
+    if  block[block_slices].size!=0:
+        if  method=='replace':
+            wall[wall_slices] = block[block_slices].copy()
+        if  method=='add':
+            wall[wall_slices] += block[block_slices]
+    else:
+        logger.info('no overlapping region')
+        
     return wall
 
 def make_slice(expr):
@@ -904,7 +921,7 @@ def check_deps(package_name='gmake'):
 
     return
 
-def get_obj_size(obj):
+def get_obj_size(obj,to_string=False):
     marked = {id(obj)}
     obj_q = [obj]
     sz = 0
@@ -926,6 +943,10 @@ def get_obj_size(obj):
         obj_q = new_refr.values()
         marked.update(new_refr.keys())
 
+    if  to_string==True:
+        sz=human_unit(sz*u.byte)
+        sz=human_to_string(sz,format_string='{0:3.0f} {1}')
+        
     return sz
 
 def check_setup():

@@ -1,0 +1,1 @@
+plotms('bb4.ms',xaxis='uvdist',yaxis='amp',averagedata=True,avgtime="10000",avgscan=True,avgfield=True)

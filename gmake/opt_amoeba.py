@@ -1,5 +1,6 @@
 
 from .model_eval import * 
+from .model_eval2 import *
 
 import numpy as np
 import copy
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 from galario.single import threads as galario_threads
 import os
 
+from memory_profiler import profile
 
 def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
     """
@@ -30,7 +32,7 @@ def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
     galario_threads(host_nthread)
     os.environ["OMP_NUM_THREADS"] = str(host_nthread)
 
-    p_amoeba=amoeba_sa(model_chisq,fit_dct['p_start'],fit_dct['p_scale'],
+    p_amoeba=amoeba_sa(model_chisq2,fit_dct['p_start'],fit_dct['p_scale'],
                        p_lo=fit_dct['p_lo'],p_up=fit_dct['p_up'],
                        funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
                        ftol=1e-10,temperature=0,
@@ -77,7 +79,9 @@ def amoeba_analyze(outfolder,
     
     blobs=p_amoeba['blobs']
     ndp=blobs['ndata']
-    chi2=p_amoeba['chi2']/blobs['ndata']
+    if  ndp==0:
+        ndp=1000
+    chi2=p_amoeba['chi2']/ndp
     pars=p_amoeba['pars']
     p_best=p_amoeba['p_best']
     
@@ -89,6 +93,7 @@ def amoeba_analyze(outfolder,
     
     ndim=(pars.shape)[0]
     niter=(pars.shape)[1]
+
     if  burnin is None:
         burnin=int(niter*0.8)
     
@@ -152,7 +157,9 @@ def amoeba_analyze(outfolder,
             
             show_labels=''
             axes[i,j].legend(loc='upper right')
+
             chi2_selected=chi2[step_start:]
+
             ymin=np.min(chi2_selected[np.isfinite(chi2_selected)])
             ymax=np.max(chi2_selected[np.isfinite(chi2_selected)])    
             axes[i,j+2].set_ylim(ymin, ymax)
@@ -190,7 +197,6 @@ def amoeba_analyze(outfolder,
     plt.close()       
     logger.debug("analyzing outfolder:"+outfolder)
     logger.debug("plotting..."+figname)      
-
 
 def amoeba_sa(func,p0,scale, 
               p_lo=None,p_up=None,

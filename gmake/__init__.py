@@ -20,7 +20,8 @@ from .utils import *
 from .logger import *
 from .meta import *
 from .io import *
-from .model_eval import * 
+from .model_eval import *
+from .model_eval2 import *  
 from .opt import *
 from .model_dynamics import *
 

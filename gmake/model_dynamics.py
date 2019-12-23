@@ -13,10 +13,14 @@ mpl.rcParams['ytick.direction'] = 'in'
 mpl.rcParams.update({'font.size': 12})
 mpl.rcParams["font.family"] = "serif"
 mpl.rcParams["image.origin"]="lower"
-mpl.rcParams['agg.path.chunksize'] = 10000
+
+#mpl.rcParams['agg.path.chunksize'] = 10000
 #mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 #mpl.rc('font',**{'family':'serif','serif':['Palatino']})
 #mpl.rc('text',usetex=True)
+#from memory_profiler import profile
+#import gc
+#@profile
 
 def model_vcirc(pot_dct):
     """
@@ -69,6 +73,8 @@ def model_vcirc(pot_dct):
         
         vcirc_np=npot.vcirc(rad)
         vcirc_np[0]=0
+        
+        del npot
     
     if  'disk_sd' in pot_dct and 'disk_rs' in pot_dct:
 
@@ -80,19 +86,21 @@ def model_vcirc(pot_dct):
         vcirc_dp[0]=0
         rad[0]=0*u.kpc
         
+        del dpot
+        
     #pot=npot+dpot
     vcirc=np.sqrt(vcirc_np**2.0+vcirc_dp**2.0)
     
     #cmass=npot.mass(R=10*u.kpc,z=None)
     #print(cmass)
     #print(vcirc_tt)
-    #pot=npot+dpot
+    #pot=npot+dpot 
     #vcirc_ga=pot.vcirc(rad*u.kpc)
     #cmass=npot.mass(R=np.array([10,2]))
     #print(cmass)
     #cmass=kpot.mass(R=10)
     #print(cmass)    
-    
+
     
     rc={'rad':rad,
         'vcirc_np':vcirc_np,
@@ -131,7 +139,8 @@ def model_vrot_plot(mod_obj_disk3d,figname='vrot_plt.pdf'):
     #ax1.loglog(rad,vcirc_tp,color='black')
     #ax2.loglog(rad,cmass_tp)
     fig.savefig(figname)   
-    
+
+#@profile    
 def model_vrot(mod_dct):
     
     """

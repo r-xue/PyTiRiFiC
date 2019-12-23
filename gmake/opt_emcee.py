@@ -1,5 +1,6 @@
 
 from .model_eval import * 
+from .model_eval2 import *
 
 import builtins
 from multiprocessing import Pool
@@ -75,7 +76,7 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=100,
         with Pool(processes=fit_dct['nthreads']) as pool:
             #   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  
             sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
-                                        model_lnprob_global,backend=backend,blobs_dtype=dtype,
+                                        model_lnprob_global2,backend=backend,blobs_dtype=dtype,
                                         args=(fit_dct,inp_dct),
                                         runtime_sortingfn=sort_on_runtime,pool=pool)
             sampler.run_mcmc(fit_dct['pos_last'],fit_dct['nstep'],progress=True)            
