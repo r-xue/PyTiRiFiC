@@ -103,7 +103,7 @@ def model_lnlike2(theta,fit_dct,inp_dct,dat_dct,
 
        
     model_fill2(models,decomp=decomp,nsamps=nsamps,verbose=verbose)
-    print(get_obj_size(models,to_string=True))
+    #print(get_obj_size(models,to_string=True))
     #print('before',process.memory_info().rss/1024/1024)
       
     
@@ -153,7 +153,7 @@ def model_lnlike2(theta,fit_dct,inp_dct,dat_dct,
                                      verbose=verbose)
                 #print(chi2)
                 blobs['chisq']+=chi2
-                logger.debug("{0} {1}".format(tag,chi2))
+                #logger.debug("{0} {1}".format(tag,chi2))
     
     lnl=blobs['lnprob']
     #print('after',process.memory_info().rss/1024/1024)

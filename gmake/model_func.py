@@ -651,7 +651,6 @@ def model_uvsample(xymod3d,xymod2d,xyheader,
     phasecenter_sc = SkyCoord(phasecenter[0], phasecenter[1], frame='icrs')
     refimcenter_sc = SkyCoord(xyheader['CRVAL1']*u.deg,xyheader['CRVAL2']*u.deg, frame='icrs')
     dra, ddec = phasecenter_sc.spherical_offsets_to(refimcenter_sc)
-    
     dRA=dra.to_value(u.rad)
     dDec=ddec.to_value(u.rad)
     #print('-->',dRA,dDec)

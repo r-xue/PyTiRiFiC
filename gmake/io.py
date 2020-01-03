@@ -1,4 +1,4 @@
-from .ms import read_ms
+from .vis_utils import read_ms
 from sys import getsizeof
 import logging
 import time
@@ -7,9 +7,7 @@ import os
 from astropy.io import fits 
 from astropy.table import Table
 from astropy.table import Column
-import casacore.tables as ctb
-
-
+from .vis_utils import write_ms
 
 logger = logging.getLogger(__name__)
 
@@ -282,47 +280,7 @@ def dct2fits(dct,outname='dct2fits'):
     
     return
 
-def add_uvmodel(vis,uvmodel,
-                datacolumn='corrected',
-                delwt=True,
-                delmod=False,delcal=False):
-    """
-    + add corrected column to vis
-    + remove model_data column in vis
-    + remove imaging_weight in vis
-    
-    """
-    
-    ctb.addImagingColumns(vis, ack=False)
-    #ctb.removeImagingColumns(vis)
-    
-    t=ctb.table(vis,ack=False,readonly=False)
-    tmp=t.getcol('DATA')
-    
-    if  'corrected' in datacolumn.lower():
-        t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
-    if  'data' in datacolumn.lower():
-        #print(tmp.flags)
-        #print(uvmodel.dtype.byteorder)
-        tmp0=np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape)
 
-        t.putcol('DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
-    if  'model' in datacolumn.lower():
-        t.putcol('MODEL_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
-                    
-    #print('add_uvmodel',vis)
-    #print(np.sum(uvmodel,axis=0))
-    if  delwt==True:
-        t.removecols('IMAGING_WEIGHT')
-    if  delmod==True:
-        t.removecols('MODEL_DATA')
-    if  delcal==True:
-        t.removecols('MODEL_DATA')
-        t.removecols('CORRECTED_DATA')
-    
-    t.unlock()
-
-    return 
 
 def export_model(models,outdir='./',
                  includedata=False,
@@ -404,11 +362,11 @@ def export_model(models,outdir='./',
             logger.debug("write ms column: ")
             if  includedata==False:
                 logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'data@'+newms)
-                add_uvmodel(newms,models[key.replace('data@','uvmodel@')],
+                write_ms(newms,models[key.replace('data@','uvmodel@')],
                             datacolumn='data',delcal=True)
             else:
                 logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'corrected@'+newms)
-                add_uvmodel(newms,models[key.replace('data@','uvmodel@')],
+                write_ms(newms,models[key.replace('data@','uvmodel@')],
                             datacolumn='corrected',delmod=True)
             
             oldms_path=os.path.abspath(oldms)
@@ -424,34 +382,34 @@ def export_model(models,outdir='./',
             os.system("rm -rf "+newms)
             os.system('cp -rf '+oldms+' '+newms)
             logger.debug("write ms column: "+key.replace('data@','uvmod3d@')+' to '+'corrected@'+newms)
-            add_uvmodel(newms,models[key.replace('data@','uvmod3d@')],
+            write_ms(newms,models[key.replace('data@','uvmod3d@')],
                         datacolumn='corrected',delmod=False)
             logger.debug("write ms column: "+key.replace('data@','uvmod2d@')+' to '+'data@'+newms)
-            add_uvmodel(newms,models[key.replace('data@','uvmod2d@')],
+            write_ms(newms,models[key.replace('data@','uvmod2d@')],
                         datacolumn='data',delmod=True)
             """
             
-            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])             
+            #write_ms(newms,models[key.replace('data@','uvmod3d@')])             
             
             
             #logger.debug("copy "+key.replace('data@','uvmod2d@')+' to '+'model@'+newms)
-            #add_uvmodel(newms,models[key.replace('data@','uvmod2d@')],
+            #write_ms(newms,models[key.replace('data@','uvmod2d@')],
             #            datacolumn='model')
             #logger.debug("copy "+key.replace('data@','uvmod3d@')+' to '+'corrected@'+newms)
-            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')],
+            #write_ms(newms,models[key.replace('data@','uvmod3d@')],
             #            datacolumn='corrected')            
             
             #newms=outdir+'/data_'+basename.replace('.fits','.ms.cont')
             #logger.debug("copy "+oldms+'  to  '+newms)
             #os.system("rm -rf "+newms)
             #os.system('cp -rf '+oldms+' '+newms)
-            #add_uvmodel(newms,models[key.replace('data@','uvmod2d@')])         
+            #write_ms(newms,models[key.replace('data@','uvmod2d@')])         
             
             #newms=outdir+'/data_'+basename.replace('.fits','.ms.contsub')
             #logger.debug("copy "+oldms+'  to  '+newms)
             #os.system("rm -rf "+newms)
             #os.system('cp -rf '+oldms+' '+newms)
-            #add_uvmodel(newms,models[key.replace('data@','uvmod3d@')])       
+            #write_ms(newms,models[key.replace('data@','uvmod3d@')])       
             
         if  models[key.replace('data@','type@')]=='image':
             

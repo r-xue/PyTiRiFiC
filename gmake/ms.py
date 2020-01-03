@@ -48,7 +48,7 @@ def getcolnp(t,colname):
     return arr
        
 #@profile
-def read_ms(vis='',
+def read_ms0(vis='',
             polaverage=True,dataflag=False,saveflag=False,memorytable=False,
             dat_dct=None):
     """
@@ -93,8 +93,12 @@ def read_ms(vis='',
     
     
     with ctb.table(vis,ack=False,memorytable=memorytable) as t:
-        
+        uvw=t.getcol('UVW')
+        print(uvw.shape)
+        print(np.isfortran(uvw))
+        print(uvw.flags)       
         dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).astype(np.float32,order='F')
+        
         dat_dct_out['type@'+vis]='vis'
         
         if  polaverage==False:
@@ -151,8 +155,10 @@ def read_ms(vis='',
     
     tf=ctb.table(vis+'/FIELD',ack=False) 
     phase_dir=tf.getcol('PHASE_DIR')
+    print(phase_dir)
     tf.close()
     phase_dir=phase_dir[-1][0]
+    
     phase_dir=Angle(phase_dir*u.rad).to(unit=u.deg)
     phase_dir[0]=phase_dir[0].wrap_at(360.0*u.deg)
     dat_dct_out['phasecenter@'+vis]=phase_dir
@@ -252,7 +258,47 @@ def ms_read(vis,datacolumn='corrected',
     
     return (uvw_kl,uvdata)
 
+def add_uvmodel(vis,uvmodel,
+                datacolumn='corrected',
+                delwt=True,
+                delmod=False,delcal=False):
+    """
+    + add corrected column to vis
+    + remove model_data column in vis
+    + remove imaging_weight in vis
+    
+    """
+    
+    ctb.addImagingColumns(vis, ack=False)
+    #ctb.removeImagingColumns(vis)
+    
+    t=ctb.table(vis,ack=False,readonly=False)
+    tmp=t.getcol('DATA')
+    
+    if  'corrected' in datacolumn.lower():
+        t.putcol('CORRECTED_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    if  'data' in datacolumn.lower():
+        #print(tmp.flags)
+        #print(uvmodel.dtype.byteorder)
+        tmp0=np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape)
 
+        t.putcol('DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+    if  'model' in datacolumn.lower():
+        t.putcol('MODEL_DATA',np.broadcast_to(uvmodel[:,:,np.newaxis],tmp.shape))
+                    
+    #print('add_uvmodel',vis)
+    #print(np.sum(uvmodel,axis=0))
+    if  delwt==True:
+        t.removecols('IMAGING_WEIGHT')
+    if  delmod==True:
+        t.removecols('MODEL_DATA')
+    if  delcal==True:
+        t.removecols('MODEL_DATA')
+        t.removecols('CORRECTED_DATA')
+    
+    t.unlock()
+
+    return 
  
 
 if  __name__=="__main__":
