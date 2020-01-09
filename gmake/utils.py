@@ -293,75 +293,7 @@ def cr_tanh(r,r_in=0.0,r_out=1.0,theta_out=30.0):
 
     return tanh_fun
 
-def pdf2rv_nd(pdf,size=100000,
-              sort=False,interp=True,seed=None):
-    """
-    provide random sampling variables approxnimately following an arbitrary nd-dimension discrete PDF 
-    without expensive MC
-    
-    An over-sampled PDF (with pdf_sort/pdf_interp=True) is preferred for accuracy.
-    output:
-        nx*ny PDF is in (ny,nx) shape (matching in the FITS convention)
-        xpos=sample[0,:]
-        ypos=sample[1,:]
-        ...
-        in 0-based pixel index units.
-        xypos=[0,0] means the first pixel center.
-    """
 
-    pdf_shape=pdf.shape
-    pdf_flat=pdf.ravel()
-    
-    if  sort==True:
-        sortindex=np.argsort(pdf, axis=None)
-        pdf_flat=pdf_flat[sortindex]
-    cdf=np.cumsum(pdf_flat)
-
-    choice = np.random.uniform(high=cdf[-1],size=size)
-    
-    index = np.searchsorted(cdf, choice)
-
-    if  sort==True:
-        index=sortindex[index]
-    index = np.vstack(np.unravel_index(index,pdf_shape))
-
-    if  interp==True:
-        sample=np.flip(index,axis=0)-0.5+np.random.uniform(size=index.shape)
-    else:
-        sample=np.flip(index,axis=0)
-
-    return sample
-
-
-def cdf2rv(x,cdf,size=100000,seed=None):
-    """
-    generate a cheap random variable set following a target distribution described by the CDF
-    using the inverse transform / pesudo-random number sampling method
-    
-    Assume that cdf has been sorted mono increasing
-    
-    the result will be in the range of cdf_x
-    """
-
-    y_cdf=cdf-cdf[0]
-    y_cdf/=np.max(y_cdf)
-    rng = np.random.RandomState(seed=seed)  
-    pick =rng.random_sample(size)
-    interpfunc=interpolate.interp1d(y_cdf,x,kind='linear')
-    
-    return interpfunc(pick)
-
-def pdf2rv(x,pdf,size=100000,seed=None):
-    """
-    generate cheap random variable set following a target distribution described by the PDF
-    using the inverse transform / pesudo-random number sampling method
-    
-    the resut will be in teh range of pdf_x
-    """
-
-    cdf=scipy.integrate.cumtrapz(pdf,x,initial=0.)
-    
-    return cdf2rv(x,cdf,size=size,seed=seed)
 
 def sort_on_runtime(p):
     p = np.atleast_2d(p)
@@ -823,18 +755,13 @@ def human_unit(quantity, return_unit=False, base_index=0, scale_range=None):
     powers=human_unit.powers.copy()
     base=bases[base_index]
     candidate_list=(base).compose(include_prefix_units=True,max_depth=1)
-
-    if  not base.is_equivalent(u.byte):
-        base_factor=1e3     # SI
-    else:
-        base_factor=2**10   # Binary
-
+    
     if  base.is_equivalent(u.byte):
         base_factor=2**10
     elif    base.is_equivalent(u.s):
         base_factor=60
     else:
-        base_factor=2**10
+        base_factor=1e3
 
     for candidate in candidate_list:
     

@@ -84,7 +84,7 @@ sbvp                    [None,0]    '.2f'   [str,Number]   ''          #   disk 
 
 vrad                    [0.0,0.1]   '.2f'   Quantity    'arcsec'    #   radial knots in galactocentric distance (for velocity and dispersion vector)
 
-vrot                    [100,100]   '.2f'   Quantity,str    'km/s'      #   rotational velocity radial profile
+vrot                    [100,100]   '.2f'   Quantity,str,tuple    'km/s'      #   rotational velocity radial profile
                                                                 #
                                                                 #   some "advanced" options available:
                                                                 #
