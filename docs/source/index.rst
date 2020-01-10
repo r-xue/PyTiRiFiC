@@ -133,16 +133,24 @@ Getting Started
     maxdepth: 1
     :caption: Tutorials
     
-    
-    demos/demo_hxmm01_prep
-    demos/demo_hxmm01_simulate
+    demos/demo_gn20_prep
+    demos/demo_gn20_imaging
     
     demos/demo_bx610_prep
     demos/demo_bx610_imaging
     demos/demo_bx610_display
-    demos/demo_bx610_amoeba
-    demos/demo_bx610_emcee
+    
+    demos/demo_bx610_b4c2_uv_ab
     demos/demo_bx610_b4c5_uv_ab
+    demos/demo_bx610_b6c3_uv_ab
+    
+    demos/demo_bx610_model_1dspec
+    
+    demos/demo_bx610_emcee
+    
+    demos/demo_hxmm01_prep
+    demos/demo_hxmm01_simulate
+    demos/demo_hxmm01_dynamics
 
 .. toctree::
     maxdepth: 1
