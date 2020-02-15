@@ -18,7 +18,7 @@ note                    ''          ''      str     ''          #   comments on 
 image                   ''          ''      str     ''          #   data image name (separated by a comma if more than one are supplied)
 error                   ''          ''      str     ''          #   error image name (separated by a comma if more than one are supplied)
 mask                    ''          ''      str     ''          #   mask image name (separated by a comma if more than one are supplied)
-psf                     ''          ''      str     ''          #   psf image name (separated by a comma if more than one are supplied)
+psf                     ''          ''      (str,tuple)     ''          #   psf image name (separated by a comma if more than one are supplied)
 bmaj                    None        ''      Quantity   'arcsec'    #   bmaj, for overriding whatever in the image header # can be parsed by astropy.units, e.g. u.Unit('km/s')
 bmin                    None        ''      Quantity   'arcsec'    #   bmaj, for overriding whatever in the image header
 bpa                     None        ''      Quantity   'deg'       #   bmaj, for overriding whatever in the image header

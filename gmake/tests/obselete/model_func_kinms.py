@@ -502,7 +502,8 @@ def KinMS(xs,ys,vs,cellSize,dv,beamSize,inc,gasSigma=0,sbProf=[],sbRad=[],velRad
     # a relative flux
     if nsubs > 0:
         if not isinstance(flux_clouds, (list, tuple, np.ndarray)):
-            cube,edges = np.histogramdd(clouds2do,bins=(xSize,ySize,vSize),range=((0,xSize),(0,ySize),(0,vSize)))
+            cube,edges = np.histogramdd(clouds2do,bins=(int(xSize),int(ySize),int(vSize)),
+                                        range=((0,int(xSize)),(0,int(ySize)),(0,int(vSize))))
         else:
             cube = np.zeros((np.int(xSize),np.int(ySize),np.int(vSize)))
             flux_clouds = flux_clouds[subs]

@@ -1,4 +1,5 @@
 from .vis_utils import read_ms
+#from .ms import read_ms0
 from sys import getsizeof
 import logging
 import time
@@ -22,7 +23,7 @@ warnings.filterwarnings("ignore",category=SerializedWarning)
 def read_data(inp_dct,
               save_data=False,
               fill_mask=False,fill_error=False,                                   # for FITS/image
-              memorytable=False,polaverage=True,dataflag=False,saveflag=False):     # for MS/visibilities
+              polaverage=True,dataflag=False,saveflag=True):     # for MS/visibilities
     """
     read FITS/image or MS/visibilities into the dictionary
     
@@ -79,9 +80,15 @@ def read_data(inp_dct,
             if  'sample' in obj:
                 sp_list=obj['sample'].split(",")
             if  'psf' in obj:
-                pf_list=obj['psf'].split(",")          
-            
-            
+                if  isinstance(obj['psf'],str):
+                    pf_list=obj['psf'].split(",")          
+                else:
+                    if  isinstance(obj['psf'],tuple):
+                        pf_list=[]
+                        pf_list.append(obj['psf'])
+                    else:
+                        pf_list=obj['psf']
+                        
             if  'pmodel' in obj:
                 
                 data,hd=fits.getdata(obj['pmodel'],header=True,memmap=False) 
@@ -101,7 +108,7 @@ def read_data(inp_dct,
                     dat_dct['type@'+im_list[ind]]='image'
                     
                     logger.debug('loading: '+im_list[ind]+' to ')
-                    logger.debug('data@'+im_list[ind],'header@'+im_list[ind])
+                    logger.debug('data@'+im_list[ind]+' '+'header@'+im_list[ind])
                     logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                     
                 if  ('error@'+im_list[ind] not in dat_dct) and 'error' in obj:
@@ -128,12 +135,14 @@ def read_data(inp_dct,
                     logger.debug('sample@'+im_list[ind])
                     logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
-                    data=fits.getdata(pf_list[ind],memmap=False)                
-                    dat_dct['psf@'+im_list[ind]]=data
-                    logger.debug('loading: '+pf_list[ind]+' to ')
-                    logger.debug('psf@'+im_list[ind])       
-                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
-                        
+                    if  isinstance(pf_list[ind],str):
+                        data=fits.getdata(pf_list[ind],memmap=False)                
+                        dat_dct['psf@'+im_list[ind]]=data
+                        logger.debug('loading: '+pf_list[ind]+' to ')
+                        logger.debug('psf@'+im_list[ind])       
+                        logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
+                    else:
+                        dat_dct['psf@'+im_list[ind]]=pf_list[ind]
                      
                             
                 tag='data@'+im_list[ind]
@@ -363,11 +372,11 @@ def export_model(models,outdir='./',
             if  includedata==False:
                 logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'data@'+newms)
                 write_ms(newms,models[key.replace('data@','uvmodel@')],
-                            datacolumn='data',delcal=True)
+                            datacolumn='data')
             else:
                 logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'corrected@'+newms)
                 write_ms(newms,models[key.replace('data@','uvmodel@')],
-                            datacolumn='corrected',delmod=True)
+                            datacolumn='corrected')
             
             oldms_path=os.path.abspath(oldms)
             newms=outdir+'/data_'+basename

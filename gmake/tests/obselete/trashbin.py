@@ -1,0 +1,441 @@
+   with open(package_dir+"/config.yaml", 'r') as stream: 
+        cfg=yaml.load(stream)
+
+class MultilineFormatter(logging.Formatter):
+    """
+       customized logging formatter
+    """
+    def format(self, record: logging.LogRecord):
+        save_msg = record.msg
+        output = []
+        
+        for line in save_msg.splitlines():
+            record.msg = line
+            output.append(super().format(record))
+
+        output='\n'.join(output)
+        record.msg = save_msg
+        record.message = output
+
+        return output
+    
+def logging_config(debug=True,logfile=None,reset=True):
+    """
+    set up a customized root logger
+    
+    note:
+        logging levels:
+            logging.debug('This is a debug message')
+            logging.info('This is an info message')
+            logging.warning('This is a warning message')
+            logging.error('This is an error message')
+            logging.critical('This is a critical message')
+        default level is "warning"
+    Note:
+        If reset=False, redundant handlers may be added to the root logger    
+    """
+    
+    #   check if handlers exist:
+    #       len(logging.getLogger().handlers)!=0:
+    if  reset:
+        logging.getLogger().handlers=[]
+    
+    logging.shutdown()
+    logging.getLogger().setLevel(logging.DEBUG)
+    
+    #file logging handler 
+    #   + customize logfile formatter
+    #   + add logfile to the RootLogger (messages from all loggers will be propagated to the master logfile)
+    
+    if  logfile is not None:
+        logfile_handler=logging.FileHandler(logfile,mode='a')
+        #format="%(asctime)s "+"{:<40}".format("%(name)s.%(funcName)s")+" [%(levelname)s] ::: %(message)s"
+        #logfile_formatter=MultilineFormatter(format)
+        logfile_formatter=CustomFormatter()
+        logfile_handler.setFormatter(logfile_formatter)
+        logfile_handler.setLevel(logging.DEBUG)
+        logging.getLogger().addHandler(logfile_handler)
+    
+    #console logging handler
+    
+    consol_handler = logging.StreamHandler()
+    if  debug==False:
+        consol_handler.setLevel(logging.INFO)
+    else:
+        consol_handler.setLevel(logging.DEBUG)
+    logging.getLogger().addHandler(consol_handler)
+    
+    return     
+
+"""
+import cap_mpfit
+"""
+
+
+    """
+    emcee v2
+    for i,(pos_i,lnprob_i,rstat_i,blobs_i) in \
+        enumerate(sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],progress=True)):
+        #   WRITE ASCII TABLE
+        tic0=time.time() 
+        f = open(fit_dct['chainfile'], "a")
+        for k in range(pos_i.shape[0]):
+            output='{0:<5}'.format(fit_dct['step_last'])+' '
+            output+='{0:<5}'.format(k)+' '
+            output+=' '.join(('{0:'+fit_dct['p_format'][x]+'}').format(pos_i[k][x]) for x in range(len(pos_i[k])))+' '
+            output+='{0:<10.1f} {1:<8.1f}'.format(lnprob_i[k],blobs_i[k]['chisq'])
+            output+='\n'
+            f.write(output)
+        f.close()
+        dt+=float(time.time()-tic0)
+
+        if  mctest==True:
+            print("iteration: ",i+1)
+            print('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))
+            continue
+            
+        if  (i+1) % int(fit_dct['nstep']/10.0) == 0 :
+            
+            print("")
+            print("Completion: {0:8.1f}%".format(float(i+1)/fit_dct['nstep']*100.0))
+            print("TimeElapse: {0:8.1f}m".format(float(time.time()-tic)/float(60.)))
+            
+            fit_dct['acceptfraction']=deepcopy(sampler.acceptance_fraction)
+            
+        #   WRITE FITS TABLE
+        
+            tic0=time.time()
+            #astable=ascii.read(fit_dct['chainfile'])
+            #astable.write(fit_dct['fitstable'],format='fits',overwrite=True)
+            #dt+=float(time.time()-tic0)            
+            
+            #   WRITE NEW-STYLE FITS FILE
+            emcee_savechain(sampler,fit_dct['outfolder']+"/emcee_chain",metadata=fit_dct)
+            
+            np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)
+            
+            #p_median,p_error1,p_error2=gmake_emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False)
+            
+            fit_tab=emcee_analyze(fit_dct['outfolder'],plotsub=None,burnin=int((i+1)/2.0),plotcorner=False,
+                            verbose=False)
+            
+            
+            dt+=float(time.time()-tic0)        
+        http://emcee.readthedocs.io/en/stable/api.html#emcee.EnsembleSampler.sample
+            pos    (nwalkers,ndim)
+            lnprob (nwalkers,)
+            blobs  (nwalkers,)  
+            
+    fit_dct['chainfile']=fit_dct['outfolder']+'/emcee_chain.dat'
+    f=open(fit_dct['chainfile'], "w")
+    output='{0:<5}'.format('it')+' '
+    output+='{0:<5}'.format('wk')+' '
+    output+=' '.join(('{0:'+fit_dct['p_format_keys'][x]+'}').format(fit_dct['p_name'][x]) for x in range(len(fit_dct['p_name'])))+' '
+    output+='{0:<10} {1:<8}'.format('lnprob','chisq')
+    output+='\n'
+    f.write(output)
+    f.close()            
+            
+                  
+    def emcee_savechain(sampler,fitsname,metadata={}):
+        """
+        save the chains from the emcee sampler
+            metadata is a Python dict.
+        
+        """
+        
+        t=Table()
+        
+        blobs=sampler.blobs
+        for key in blobs[0][0].keys():
+            tmp0=list(map(lambda v: list(map(lambda w: w[key], v)), blobs))
+            t.add_column(Column(name='blobs_'+key, data=[    tmp0    ]))
+            #print(key,(np.array(tmp0)).shape)
+            (nstep,nwalker)=(np.array(tmp0)).shape
+            
+        t.add_column(Column(name='chain', data=[    sampler.chain[:,:nstep,:]    ]))                  # nwalker x nstep x npar
+        t.add_column(Column(name='acceptance_fraction', data=[    sampler.acceptance_fraction    ]))    # nwalker
+        t.add_column(Column(name='lnprobability', data=[    sampler.lnprobability[:,:nstep]    ]))    # nwalker x nstep
+            
+        if  metadata!={}:
+            for key in metadata:
+                #print(key,metadata[key])
+                t.add_column(Column(name=key, data=[    metadata[key]    ]))
+        
+        dir=os.path.dirname(fitsname)
+        if  (not os.path.exists(dir)) and os.path.dirname(dir)!='':
+            os.makedirs(dir)
+        t.write(fitsname+".fits", overwrite=True)    
+    
+    """
+    
+    
+    
+        
+    
+    t=Table.read(outfolder+'/'+'emcee_chain.fits')
+    chain_array=t['chain'].data[0]
+    acceptfraction=t['acceptance_fraction'].data[0]
+    lnprobability=t['lnprobability'].data[0]
+    
+    blobs_lnprob=t['blobs_lnprob'].data[0]
+    blobs_chisq=t['blobs_chisq'].data[0]
+    blobs_ndata=t['blobs_ndata'].data[0]
+    blobs_npar=t['blobs_npar'].data[0]
+    
+    if  burnin is None:
+        burnin=int((lnprobability.shape)[1]*0.8)
+    
+    #print('##',chain_array.shape) #nwalker x nstep x npar
+    #print('##',lnprobability.shape) #nwalker x nstep
+    #print('##',blobs_lnprob.shape)  #nstep x nwalker
+    #print('##',blobs_chisq.shape)   #nstep x nwalker
+    #print('##',blobs_ndata.shape)   #nstep x nwalker
+    #print('##',blobs_npar.shape)    #nstep x nwalker
+    
+    #fit_dct=np.load(outfolder+'/fit_dct.npy').item()
+    p_format=list((t['p_format'].data[0]).astype(str))
+    p_name=list((t['p_name'].data[0]).astype(str))
+    p_scale=t['p_scale'].data[0]
+    p_lo=t['p_lo'].data[0]
+    p_up=t['p_up'].data[0]
+    p_start=t['p_start'].data[0]
+    
+    if  verbose==True:
+        print("Mean acceptance fraction: ",np.mean(acceptfraction))
+    
+    #   DO SOME STATS
+    
+    samples = chain_array[:,burnin:,:].reshape((-1, chain_array.shape[2]))
+    fullsamples = chain_array[:,:, :].reshape((-1, chain_array.shape[2]))
+    if  verbose==True:
+        print('sample shape: ',samples.shape)
+        print("MCMC initialize scale / MCMC result:")
+    
+    p_ptiles=list(map(lambda v: v,zip(*np.percentile(samples,[2.5,16.,50.,84.,97.5],axis=0))))
+    p_median=p_error1=p_error2=p_error3=p_error4=p_int1=p_int2=p_mode=np.array([])    
+    
+    if  verbose==True:
+        print('+'*90)
+    
+    for index in range(len(p_ptiles)):
+        
+        #tmp0=stats.mode(np.around(samples[:,index],decimals=3))
+        hist,bin_edges=np.histogram(samples[:,index],modebin)
+        bin_cent=.5*(bin_edges[:-1] + bin_edges[1:])
+        tmp0=bin_cent[np.argmax(hist)]
+        
+        p_mode=np.append(p_mode,tmp0)
+        p_median=np.append(p_median,p_ptiles[index][2])
+        p_error1=np.append(p_error1,p_ptiles[index][1]-p_ptiles[index][2])
+        p_error2=np.append(p_error2,p_ptiles[index][3]-p_ptiles[index][2])
+        p_error3=np.append(p_error3,p_ptiles[index][0]-p_ptiles[index][2])
+        p_error4=np.append(p_error4,p_ptiles[index][4]-p_ptiles[index][2])        
+        p_int1=np.append(p_int1,p_ptiles[index][3]-p_ptiles[index][1])
+        p_int2=np.append(p_int2,p_ptiles[index][4]-p_ptiles[index][0])
+        p_ptiles[index]=list(p_ptiles[index])
+        if  verbose==True:
+            print(">>>  "+p_name[index]+":")
+            print((" median(sigma) = {0:"+p_format[index]+"}"+\
+                                 " {1:"+p_format[index]+"}"+\
+                                 " {2:"+p_format[index]+"}"+\
+                                 " {3:"+p_format[index]+"}"+\
+                                 " {4:"+p_format[index]+"}").\
+                  format(     p_median[index],p_error3[index],p_error1[index],p_error2[index],p_error4[index]))
+            print((" median(ptile) = {0:"+p_format[index]+"}"+\
+                                 " {1:"+p_format[index]+"}"+\
+                                 " {2:"+p_format[index]+"}"+\
+                                 " {3:"+p_format[index]+"}"+\
+                                 " {4:"+p_format[index]+"}").\
+                  format(     p_ptiles[index][2],p_ptiles[index][0],p_ptiles[index][1],p_ptiles[index][3],p_ptiles[index][4]))            
+            print((" start(iscale) ="+\
+                                 " {0:"+p_format[index]+"}/{1:"+p_format[index]+"}").\
+                  format(        p_start[index],p_scale[index]))            
+            print((" mode          ="+\
+                                 " {0:"+p_format[index]+"}").\
+                  format(        p_mode[index])) 
+    
+    if  verbose==True:
+        print('-'*90)    
+
+
+    #   ITERATION PARAMETR PLOTS
+
+    figsize=(8.,(len(p_name))*2.5)
+    ncol=1
+    pl.clf()
+    picki=range(len(p_name))
+    nrow=int(np.ceil(len(picki)*1.0/ncol))
+    fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
+    cc=0
+    for i in picki:
+        iy=int(cc % nrow)
+        ix=int((cc - iy)/nrow)
+        if  plotburnin==False:
+            axes[iy,ix].plot(chain_array[:, burnin:, i].T, color="gray", alpha=0.4)
+        else:
+            axes[iy,ix].plot(chain_array[:, :, i].T, color="gray", alpha=0.4)
+            axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
+        axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
+        ymin, ymax = axes[iy,ix].get_ylim()
+        xmin, xmax = axes[iy,ix].get_xlim()
+        bfrac=(burnin-xmin)/(xmax-xmin)
+        axes[iy,ix].axhline(p_start[i],xmax=bfrac, color="b", lw=2,ls='-')
+        axes[iy,ix].axhline(p_start[i]+p_scale[i],xmax=bfrac, color="b", lw=2,ls='--')
+        axes[iy,ix].axhline(p_start[i]-p_scale[i],xmax=bfrac, color="b", lw=2,ls='--')
+        axes[iy,ix].set_ylim(ymin, ymax)
+        axes[iy,ix].axhline(p_lo[i], color="r", lw=0.8,ls='-')
+        axes[iy,ix].axhline(p_up[i], color="r", lw=0.8,ls='-')
+        axes[iy,ix].axhline(p_median[i]+p_error1[i],xmin=bfrac, color="g", lw=2,ls='--')
+        axes[iy,ix].axhline(p_median[i]+p_error2[i],xmin=bfrac, color="g", lw=2,ls='--')
+        axes[iy,ix].axhline(p_median[i]+p_error3[i],xmin=bfrac, color="g", lw=2,ls=':')
+        axes[iy,ix].axhline(p_median[i]+p_error4[i],xmin=bfrac, color="g", lw=2,ls=':')
+        axes[iy,ix].axhline(p_median[i],xmin=bfrac, color="g", lw=3,ls='-')
+        axes[iy,ix].axhline(p_mode[i],xmin=bfrac, color="cyan", lw=3,ls='-')
+        axes[iy,ix].set_ylabel(p_name[i])
+        if  i==len(p_start)-1:
+            axes[iy,ix].set_xlabel("step number")
+        cc+=1
+    if  cc==(nrow*2-1):
+        axes[-1,-1].axis('off')
+
+    fig.tight_layout(h_pad=0.0)
+    figname=outfolder+"/emcee-iteration.pdf"
+    fig.savefig(figname)
+    pl.close()
+    if  verbose==True:
+        print("analyzing outfolder:"+outfolder)
+        print("plotting..."+figname)
+
+    #   ITERATION METADATA PLOTS
+    
+    m_name=['blobs_lnprob','blobs_chisq']
+    figsize=(8.,8.)
+    ncol=1
+    pl.clf()
+    picki=range(len(m_name))
+    nrow=int(np.ceil(len(picki)*1.0/ncol))
+    fig, axes = pl.subplots(nrow,ncol,sharex=True,figsize=figsize,squeeze=False)
+    cc=0
+    for i in picki:
+        iy=int(cc % nrow)
+        ix=int((cc - iy)/nrow)
+        if  plotburnin==False:
+            axes[iy,ix].plot(t[m_name[i]].data[0][burnin:,:], color="k", alpha=0.4)
+        else:
+            axes[iy,ix].plot(t[m_name[i]].data[0][:,:], color="gray", alpha=0.4)
+            axes[iy,ix].axvline(burnin, color="c", lw=2,ls=':')
+        axes[iy,ix].yaxis.set_major_locator(MaxNLocator(5))
+        ymin, ymax = axes[iy,ix].get_ylim()
+        xmin, xmax = axes[iy,ix].get_xlim()
+        bfrac=(burnin-xmin)/(xmax-xmin)
+        axes[iy,ix].set_ylim(ymin, ymax)
+        axes[iy,ix].set_ylabel(m_name[i])
+        
+        if  m_name[i]=='blobs_chisq':
+            axes[iy,ix].axhline(np.mean(t['blobs_ndata'].data[0][:,:]), color="r", lw=0.8,ls='-')
+        if  i==len(m_name)-1:
+            axes[iy,ix].set_xlabel("step number")
+        cc+=1
+    if  cc==(nrow*2-1):
+        axes[-1,-1].axis('off')
+
+    fig.tight_layout(h_pad=0.0)
+    figname=outfolder+"/emcee-iteration-blobs.pdf"
+    fig.savefig(figname)
+    pl.close()
+    if  verbose==True:
+        print("analyzing outfolder:"+outfolder)
+        print("plotting..."+figname)    
+
+    
+    
+    #   CORNER PLOTS
+    
+    if  plotcorner==True:
+        if  verbose==True:
+            print("plotting..."+outfolder+"/line-triangle.pdf")
+            print("input data size:"+str(np.shape(samples)))
+        tic=time.time()
+        quantiles=None
+        if  plotqtile==True:
+            quantiles=[0.16, 0.5, 0.84]
+        levels=None
+        if  plotlevel==True:
+            levels=(1-np.exp(-0.5),)        
+        fig = corner.corner(samples, labels=p_name,truths=p_start,quantiles=quantiles,levels=levels)
+        
+        ndim=len(p_start)
+        axes = np.array(fig.axes).reshape((ndim, ndim))
+        
+        # Loop over the diagonal
+        value1=p_start
+        value2=p_median
+        for i in range(ndim):
+            ax = axes[i, i]
+            ax.axvline(value1[i], color="b")
+            ax.axvline(value2[i], color="g")
+        
+        # Loop over the histograms
+        for yi in range(ndim):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                ax.axvline(value1[xi], color="b")
+                ax.axvline(value2[xi], color="g")
+                ax.axhline(value1[yi], color="b")
+                ax.axhline(value2[yi], color="g")
+                ax.plot(value1[xi], value1[yi], "sg")
+                ax.plot(value2[xi], value2[yi], "sr")
+        
+        fig.savefig(outfolder+"/emcee-corner.pdf")
+        pl.close()
+        if  verbose==True:
+            print('Took {0} seconds'.format(float(time.time()-tic)))
+    
+    # Make the triangle plot.
+    if  plotsub!=None:
+        #plotsub is the parameter index array
+        if  verbose==True:
+            print("plotting..."+outfolder+"/line-triangle-sub.pdf")
+        subsamples = chain_array[:, burnin:, plotsub].reshape((-1, len(plotsub)))
+        tic=time.time()
+        quantiles=None
+        if  plotqtile==True:
+            quantiles=[0.16, 0.5, 0.84]
+        levels=None
+        if  plotlevel==True:
+            levels=(1-np.exp(-0.5),)        
+        fig = corner.corner(subsamples, labels=p_name[plotsub],truths=p_start[plotsub],quantiles=quantiles,levels=levels)
+        fig.savefig(outfolder+"/line-triangle-sub.pdf")
+        pl.close()
+        if  verbose==True:
+            print('Took {0} seconds'.format(float(time.time()-tic)))    
+    
+    #fit_dct['p_median']=p_median
+    #fit_dct['p_error1']=p_error1
+    #fit_dct['p_error2']=p_error2
+    #fit_dct['p_error3']=p_error3
+    #fit_dct['p_error4']=p_error4
+    #fit_dct['p_burnin']=burnin
+    #np.save(outfolder+'/fit_dct_analyzed.npy',fit_dct)
+    
+    t['p_median']=[p_median]
+    t['p_error1']=[p_error1]
+    t['p_error2']=[p_error2]
+    t['p_error3']=[p_error3]
+    t['p_error4']=[p_error4]
+    t['p_burnin']=[burnin]
+    #t.add_column(Column(name='flatchain_samples', data=[  samples  ]),index=0)
+    t['flatchain_samples']=[samples]
+    t['p_ptiles']=[p_ptiles]
+    t['p_mode']=[p_mode]
+    
+    outname=outfolder+"/emcee_chain_analyzed.fits"
+    t.write(outname, overwrite=True)
+
+    
+    if  verbose==True:
+        print(samples.shape)   
+        print('File successfully saved as %s'%(outname))
+    
+    

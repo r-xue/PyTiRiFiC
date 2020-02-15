@@ -91,6 +91,7 @@ def model_init(mod_dct,dat_dct,decomp=False,verbose=False,save_uvmodel=True):
                         models['uvw@'+vis]=dat_dct['uvw@'+vis]
                     
                     models['chanfreq@'+vis]=dat_dct['chanfreq@'+vis]
+                    models['flag@'+vis]=dat_dct['flag@'+vis]
                     models['chanwidth@'+vis]=dat_dct['chanwidth@'+vis]
                     models['phasecenter@'+vis]=dat_dct['phasecenter@'+vis]
                     wv=np.mean(const.c/models['chanfreq@'+vis].to_value(u.Hz)) # in meter
@@ -430,4 +431,82 @@ def model_simobs(models,decomp=False,verbose=False):
     if  verbose==True:            
         print(">>>>>{0:^10} : {1:<8.5f} seconds ---".format('simulate-total',time.time() - start_time))
         
+    return
+
+
+def model_fill2(models,nsamps=100000,decomp=False,verbose=False):
+    """
+    create reference/intrinsic models and fill them into the model container
+
+    Notes (on evaluating efficiency):
+    
+        While building the intrinsic data-model from a physical model can be expensive,
+        the simulated observation (2D/3D convolution or UV sampling) is usually the bottle-neck.
+        
+        some tips to improve the effeciency:
+            + exclude empty (masked/flux=0) region for the convolution
+            + joint all objects in the intrinsic model before the convolution, e.g.
+                overlapping objects, lines
+            + use to low-dimension convolution when possible (e.g. for the narrow-band continumm) 
+            
+        before splitting line & cont models:
+            --- apicall   : 2.10178  seconds ---
+        after splitting line & cont models:
+            --- apicall   : 0.84662  seconds ---
+    
+    
+    """
+    
+    if  verbose==True:
+        start_time = time.time()    
+
+    mod_dct=models['mod_dct']
+    
+    #   add ref models OBJECT by OBJECT
+                
+    for tag in list(mod_dct.keys()):
+
+        #   skip if no "type" or the item is not a physical model
+        
+        obj=mod_dct[tag]
+        
+        if  verbose==True:
+            print("+"*40); print('@',tag); print('type:',obj['type']) ; print("-"*40)
+
+        if  'vis' in mod_dct[tag].keys():
+            
+            vis_list=mod_dct[tag]['vis'].split(",")
+            
+            for vis in vis_list:
+                
+                test_time = time.time()
+                
+                if  'disk2d' in obj['type'].lower():
+                    #test_time = time.time()
+
+                    model_disk2d2(models['header@'+vis],obj,
+                                        model=models['imodel@'+vis],
+                                        factor=5)
+                    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk2d',time.time() - test_time))
+                    #print(imodel.shape)
+                    #models['imod2d@'+vis]+=imodel
+                    #models['imodel@'+vis]+=imodel
+                    
+                if  'disk3d' in obj['type'].lower():
+                    #pprint(obj)
+                    #test_time = time.time()              
+                    imodel_prof=model_disk3d2(models['header@'+vis],obj,
+                                                    model=models['imodel@'+vis],
+                                                    nsamps=nsamps,fixseed=False,mod_dct=mod_dct)
+                    #print("---{0:^10} : {1:<8.5f} seconds ---".format('fill:  '+tag+'-->'+vis+' disk3d',time.time() - test_time))
+                    #print(imodel.shape)
+                    #models['imod3d@'+vis]+=imodel
+                    models['imod3d_prof@'+tag+'@'+vis]=imodel_prof.copy()
+                    #models['imodel@'+vis]+=imodel     
+                    
+          
+                    
+    if  verbose==True:            
+        print(">>>>>{0:^10} : {1:<8.5f} seconds ---\n".format('fill-total',time.time() - start_time))
+    
     return

@@ -1,6 +1,6 @@
 
-from .model_eval import * 
-from .model_eval2 import *
+
+from .evaluate import *
 
 import builtins
 from multiprocessing import Pool

@@ -1,0 +1,16 @@
+test:
+  image: examples/bx610/alma/band6/bx610.bb2.cube128x128.iter0.image.fits
+  error: examples/bx610/alma/band6/bx610.bb2.cube128x128.iter0.unc.fits
+  mask: examples/bx610/alma/band6/bx610.bb2.cube128x128.iter0.hex_im.fits
+  sample: examples/bx610/alma/band6/bx610.bb2.cube128x128.iter0.hex_tb.fits
+  psf: examples/bx610/alma/band6/bx610.bb2.cube128x128.iter0.psf.fits
+  samp: None
+  bmaj: None
+  bmin: None
+  bpa: None
+  rad:
+  - 1
+  - 2
+  - 3
+  - 4
+  test: true

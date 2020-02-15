@@ -1,0 +1,3 @@
+CommentSecs:    ['comments','skip','ignore','changelog']
+OptimizeSec:    'optimize'
+DynamicsSec:    'dynamics'

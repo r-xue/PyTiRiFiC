@@ -75,6 +75,44 @@ def arithmeticEval (s):
     return _eval(node.body)
 """
 
+
+def eval_func(vs_func_ps,var_dict):
+    """
+    Do an inline calculation from a string expression in a lambda function-like syntax
+    
+
+        1st: element
+    expr    :    expected to be a tuple
+        expr[0]   string: 
+            lamabda function-like syntax defining a anonymous function and its variable(s)
+            the variables' name and content should exist in the dictionary "locals" 
+        expr[1],expr[2],expr[3]
+            function parameters
+    output:
+        the function's value at each points of variables under the given parameters
+    
+    example: 
+        eval_func(('rho : minimum(rho/p2,1.0)*p1',200*u.km/u.s,5*u.kpc),locals())
+        
+        the function call will calculate "minimum(rho/p2,1.0)*p1" assuming 
+        p1=200*u.km/u.s & p2=5*u.kpc at each "rho" value. 
+        Here, "rho" is a local-scope variable containing a numpy array 
+    """
+    
+    vs=vs_func_ps[0].split(" : ")[0].split(",")
+    func=vs_func_ps[0].split(" : ")[1].strip()
+
+    # add variable into the symtable
+    for v in vs:
+        aeval.symtable[v.strip()]=var_dict[v.strip()]
+    
+    # add parameters (p1,p2,p3..) into the symtable
+    for ind in range(1,len(vs_func_ps)):
+        aeval.symtable["p"+str(ind)]=vs_func_ps[ind]
+
+    return aeval(func)
+    
+
 def repr_parameter(v):
     """
     Similiar to the built-in repr(), but can handle Quantity / SkyCoord
@@ -280,18 +318,6 @@ def gal_flat(im,ang,inc,cen=None,interp=True,
 
     return im_wraped    
 
-def cr_tanh(r,r_in=0.0,r_out=1.0,theta_out=30.0):
-    """
-    """
-    
-    cdef=0.23
-    A=2*cdef/(np.abs(theta_out)+cdef)-1.00001
-    B=(2.-np.arctanh(A))*r_out/(r_out-r_in)
-
-    tanh_fun=np.tanh(B*(r/r_out-1)+2.)+1.
-    tanh_fun=0.5*tanh_fun
-
-    return tanh_fun
 
 
 
@@ -567,7 +593,12 @@ def write_par(inp_dct,par_name,par_value,verbose=False):
         if  isinstance(inp_dct[o_key][p_key][make_slice(i_key)],list) and \
             not isinstance(par_value,list):
             par_value=[par_value]*len(inp_dct[o_key][p_key][make_slice(i_key)])
-        inp_dct[o_key][p_key][make_slice(i_key)]=par_value
+        if  isinstance(inp_dct[o_key][p_key],tuple):
+            tmp=list(inp_dct[o_key][p_key])
+            tmp[make_slice(i_key)]=par_value
+            inp_dct[o_key][p_key]=tuple(tmp)
+        else:
+            inp_dct[o_key][p_key][make_slice(i_key)]=par_value
 
     
     if  verbose==True:
@@ -666,7 +697,6 @@ def gmake_pformat(fit_dct):
         p_up=fit_dct['p_up'][ind]
         p_up=fit_dct['p_up'][ind]
         p_scale=fit_dct['p_scale'][ind]
-        p_unit=fit_dct['p_unit'][ind]
         
         smin=len(p_key)        
         for keyword in pars_def.keys():
@@ -678,7 +708,6 @@ def gmake_pformat(fit_dct):
         #  same widths for all parameters in one trial
         textout=' {:{align}{width}} '.format(ind,align='<',width=2)
         textout+=' {:{align}{width}} '.format(p_key,align='<',width=maxlen)
-        textout+=' {:{align}{width}} '.format(p_unit,align='<',width=maxlen)
         textout+=' {:{align}{width}{prec}} '.format(p_start,align='^',width=13,prec=p_format0_prec)
         textout+=' ( {:{align}{width}{prec}}, '.format(p_lo,align='^',width=13,prec=p_format0_prec)
         textout+=' {:{align}{width}{prec}} )'.format(p_up,align='^',width=13,prec=p_format0_prec)

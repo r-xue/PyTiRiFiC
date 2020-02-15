@@ -8,63 +8,21 @@ from .opt_emcee import *
 from .opt_lmfit import *
 from .io import *
 from .meta import read_inp
-
+from .evaluate import calc_chisq,log_probability
+from .model import model_setup
 from pprint import pformat
 
 import logging
 logger = logging.getLogger(__name__)
 
 #from .utils import *
-
 #import os
 #import gmake.meta as meta
 
 #from memory_profiler import profile
 #@profile
-def fit_setup(inp_dct,dat_dct,initial_model=False,save_model=False,copydata=False):
-    """
-    for method='emcee': sampler is an emcee object
-    for method=others: sampler is a dict
-    """
 
-    fit_dct=opt_setup(inp_dct,dat_dct)
-    
-    outfolder=fit_dct['outfolder']
-    
-    if  copydata==True:
-    
-        dat_dct_path=outfolder+'/data.h5'
-        dct2hdf(dat_dct,outname=dat_dct_path)    
-    
-    if  initial_model==True:
-
-        start_time = time.time()
-        if  save_model==True:
-            savemodel=outfolder+'/model_0'
-        else:
-            savemodel=None
-        
-        lnl,lnprob,chisq,ndata,npar=model_lnprob2(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                                             savemodel=savemodel)          
-        #lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,packblobs=True,
-        #                       savemodel=savemodel)
-             
-        logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
-        
-        #logger.debug('ndata->'+str(ndata))
-        #logger.debug('chisq->'+str(chisq))
-        """
-        lnl,blobs=model_lnprob(fit_dct['p_start'],fit_dct,inp_dct,dat_dct,
-                               savemodel=fit_dct['outfolder']+'/model_0')
-        logger.debug('p_start:    ')
-        logger.debug(pformat(blobs))
-        """    
-
-    dct2hdf(fit_dct,outname=outfolder+'/fit.h5')
-
-    return fit_dct
-
-def opt_setup(inp_dct,dat_dct):
+def opt_setup(inp_dct,dat_dct,initial_model=False,copydata=False):
     """
     Notes:
         + nthreads
@@ -105,8 +63,17 @@ def opt_setup(inp_dct,dat_dct):
         emcee-threading will require more memory and carefully arrange input parameter to avoid heavy pickling
         
         if memory allowed, using emcee-threading may be the better option generally 
-            
+
+    for method='emcee': sampler is an emcee object
+    for method=others: sampler is a dict
+    
+    generate:
+        fit_dct:    fitting metadata
+        models:     model container + initilize some modeling metadata (header for vis; psf model; PB model etc.)
+                    so we don't repeat it during iteration.
+                
     """
+
     
     opt_dct=inp_dct['optimize']
     gen_dct=inp_dct['general']
@@ -121,34 +88,22 @@ def opt_setup(inp_dct,dat_dct):
     fit_dct['p_unit']=[]
     
     for p_name in opt_dct.keys():
+        
         if  '@' not in p_name:
             continue
+        
+        p_value=read_par(inp_dct,p_name)
         fit_dct['p_name'].append(p_name)
-        p_value,p_unit=read_par(inp_dct,p_name,to_value=True)
-        fit_dct['p_unit'].append(p_unit)
-        #print(p_name,p_unit,p_value)
-        fit_dct['p_start']=np.append(fit_dct['p_start'],np.mean(p_value))
+        fit_dct['p_start'].append(np.mean(p_value))
         
         mode=opt_dct[p_name][0]
         lims=opt_dct[p_name][1]
-        
-        if  isinstance(lims[0],u.Quantity):
-            p_lo_value=(lims[0]).to_value(unit=p_unit)
-        else:
-            p_lo_value=lims[0]
-        fit_dct['p_lo']=np.append(fit_dct['p_lo'],
-                                  read_range(center=fit_dct['p_start'][-1],
-                                                   delta=p_lo_value,
-                                                   mode=mode))
-        if  isinstance(lims[1],u.Quantity):
-            p_up_value=(lims[1]).to_value(unit=p_unit)
-        else:
-            p_up_value=lims[1]
-        
-        fit_dct['p_up']=np.append(fit_dct['p_up'],
-                                  read_range(center=fit_dct['p_start'][-1],
-                                                   delta=p_up_value,
-                                                   mode=mode))                                  
+        fit_dct['p_lo'].append(read_range(center=fit_dct['p_start'][-1],
+                                          delta=lims[0],
+                                          mode=mode))
+        fit_dct['p_up'].append(read_range(center=fit_dct['p_start'][-1],
+                                          delta=lims[1],
+                                          mode=mode))                         
         
         scale_def=max((abs(fit_dct['p_lo'][-1]-fit_dct['p_start'][-1]),abs(fit_dct['p_up'][-1]-fit_dct['p_start'][-1])))
         if  len(lims)<=2:
@@ -163,14 +118,10 @@ def opt_setup(inp_dct,dat_dct):
             if  mode=='r':
                 scale=abs(fit_dct['p_start'][-1]*scale_value)
             scale=min(scale_def,scale)
-        fit_dct['p_scale']=np.append(fit_dct['p_scale'],scale)
-
+        fit_dct['p_scale'].append(scale)
 
     gmake_pformat(fit_dct)
-    #print(fit_dct['p_name'])
-    #print(fit_dct['p_start'])
-    #print(fit_dct['p_format'])
-    #print(fit_dct['p_format_keys'])
+
     
     fit_dct['ndim']=len(fit_dct['p_start'])
     #   turn off mutiple-processing since mkl_fft has been threaded.
@@ -198,43 +149,51 @@ def opt_setup(inp_dct,dat_dct):
         os.makedirs(fit_dct['outfolder'])
 
     fit_dct['step_last']=0
-    
-    #np.save(fit_dct['outfolder']+'/dat_dct.npy',dat_dct)
-    #np.save(fit_dct['outfolder']+'/fit_dct.npy',fit_dct)   #   fitting metadata
-    #np.save(fit_dct['outfolder']+'/inp_dct.npy',inp_dct)   #   input metadata
-    
-    # setup backend
 
     
-    """
-    sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
-                                    model_lnprob,backend=backend,blobs_dtype=dtype,
-                                    args=(fit_dct,inp_dct,dat_dct),
-                                    runtime_sortingfn=sort_on_runtime)
-                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads'],threads=fit_dct['nthreads'])
-    """
+    models=model_setup(inp2mod(inp_dct),dat_dct)
+    ndata=0
+    for tag in list(models.keys()):
+        if  'imodel@' in tag:
+            if  models[tag.replace('imodel@','type@')]=='vis':
+                ndata+=np.sum(~dat_dct[tag.replace('imodel@','flag@')]) 
+            if  models[tag.replace('imodel@','type@')]=='image':
+                ndata+=dat_dct[tag.replace('imodel@','data@')].size                                
+    npar=len(fit_dct['p_start'])
+    
+    fit_dct['ndata']=ndata
+    fit_dct['npar']=npar
+    logger.debug('npar ->'+str(npar))        
+    logger.debug('ndata->'+str(ndata))        
+    
+    if  initial_model==True:
+        
+        start_time = time.time()
+        lnl,chisq=log_probability(fit_dct['p_start'],
+                                                    fit_dct,inp_dct,dat_dct,
+                                                    models=models)
+        logger.debug('chisq->'+str(chisq))
+        logger.debug('lnl  ->'+str(lnl))
+        logger.debug("{0:50} : {1:<8.5f} seconds".format('one trial',time.time()-start_time))
+
+
+    dct2hdf(fit_dct,outname=fit_dct['outfolder']+'/fit.h5')    
 
     meta.dat_dct_global=dat_dct
-    #print(dat_dct_global)
     
-                               
-
-                                    #args=(data,imsets,disks,fit_dct),threads=fit_dct['nthreads']threads=fit_dct['nthreads'],)                                    
-    #"""
-
-    return fit_dct
-
-def fit_iterate(fit_dct,inp_dct,dat_dct):
+    if  copydata==True:
     
-    if  'amoeba' in fit_dct['method']:
-        amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
-        return
-    if  'emcee' in fit_dct['method']:
-        emcee_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
-        return
-    if  'lmfit' in fit_dct['method']:
-        lmfit_iterate(fit_dct,inp_dct,dat_dct,nstep=inp_dct['optimize']['niter'])
-        return
+        dat_dct_path=outfolder+'/data.h5'
+        dct2hdf(dat_dct,outname=dat_dct_path)    
+
+    return fit_dct,models
+
+def fit_iterate(fit_dct,inp_dct,dat_dct,models):
+    
+    globals()[fit_dct['method']+'_iterate'](fit_dct,inp_dct,dat_dct,models,
+                                            nstep=inp_dct['optimize']['niter'])
+
+    return
 
 def fit_analyze(inpfile,burnin=None,copydata=True,export=False):
     

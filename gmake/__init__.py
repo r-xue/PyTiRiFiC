@@ -1,7 +1,4 @@
 import os
-
-
-
 import pkg_resources
 
 """
@@ -20,10 +17,11 @@ from .utils import *
 from .logger import *
 from .meta import *
 from .io import *
-from .model_eval import *
-from .model_eval2 import *  
+from .evaluate import *  
 from .opt import *
+from .opt_amoeba import *
 from .model_dynamics import *
+from .discretizer import *
 
 __all__ = []
 

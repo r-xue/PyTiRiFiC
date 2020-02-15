@@ -26,7 +26,6 @@ def model_vcirc(pot_dct):
     """
     take a dictionary describing the potential and calculaet rotation curve
     """
-    
     #mpot=MiyamotoNagaiPotential(amp=pot_dct[''*u.Msun,a=3.*u.kpc,b=300.*u.pc)
     #kpot=KeplerPotential(amp=5e10*u.Msun)
     #npot=NFWPotential(amp=pot_dct['halo_ms']*u.Msun,a=pot_dct['halo_a']*u.kpc)
@@ -130,7 +129,8 @@ def model_vrot_plot(mod_obj_disk3d,figname='vrot_plt.pdf'):
     """
     plt.clf()
     fig,ax=plt.subplots(1,1,figsize=(5,3))
-    ax.plot(mod_obj_disk3d['vrad'],mod_obj_disk3d['vcirc'],color='red',label='Vcirc')
+    if 'vcirc' in mod_obj_disk3d:
+        ax.plot(mod_obj_disk3d['vrad'],mod_obj_disk3d['vcirc'],color='red',label='Vcirc')
     ax.plot(mod_obj_disk3d['vrad'],mod_obj_disk3d['vrot'],color='black',label='Vrot')
     ax.set_xlabel('Radius [arcsec]')
     ax.set_ylabel('Vcirc or Vrot [km/s]')

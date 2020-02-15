@@ -1,6 +1,6 @@
 
-from .model_eval import * 
-from .model_eval2 import *
+
+from .evaluate import *
 
 import numpy as np
 import copy
@@ -17,12 +17,13 @@ from galario.single import threads as galario_threads
 import os
 
 from memory_profiler import profile
+from .evaluate import calc_chisq
+from .evaluate import log_likelihood
 
-def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
+def amoeba_iterate(fit_dct,inp_dct,dat_dct,models,nstep=20):
     """
     calling amoeba
-    """
-    
+    """    
     logger.debug(" ")
     logger.debug("Running AMOEBA...")
     logger.debug(">>"+fit_dct['outfolder']+"/amoeba_chain.h5")
@@ -32,13 +33,20 @@ def amoeba_iterate(fit_dct,inp_dct,dat_dct,nstep=100):
     galario_threads(host_nthread)
     os.environ["OMP_NUM_THREADS"] = str(host_nthread)
 
-    p_amoeba=amoeba_sa(model_chisq2,fit_dct['p_start'],fit_dct['p_scale'],
-                       p_lo=fit_dct['p_lo'],p_up=fit_dct['p_up'],
-                       funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct},
+    p_amoeba=amoeba_sa(calc_chisq,
+                       [q.value for q in fit_dct['p_start']],
+                       [q.value for q in fit_dct['p_scale']],
+                       p_lo=[q.value for q in fit_dct['p_lo']],
+                       p_up=[q.value for q in fit_dct['p_up']],
+                       funcargs={'fit_dct':fit_dct,'inp_dct':inp_dct,'dat_dct':dat_dct,'models':models},
                        ftol=1e-10,temperature=0,
                        maxiter=nstep,verbose=True)
-    lnl,blobs=model_lnlike(p_amoeba['p_best'],fit_dct,inp_dct,dat_dct)
-    p_amoeba['blobs']=blobs
+    
+    theta=[p_amoeba['p_best'][i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
+    lnl,chisq=log_probability(theta,fit_dct,inp_dct,dat_dct)
+    p_amoeba['blobs']={'ndata':fit_dct['ndata'],'npar':fit_dct['npar']}
+    p_amoeba['p_best']=theta
+    
     dct2hdf(p_amoeba,outname=fit_dct['outfolder']+'/amoeba_chain.h5')
     
     return
@@ -67,7 +75,7 @@ def amoeba_analyze(outfolder,
     p_up=fit_dct['p_up']
     p_start=fit_dct['p_start']
     p_format=fit_dct['p_format']
-    p_unit=fit_dct['p_unit']
+    p_unit=[q.unit for q in fit_dct['p_start']]
     p_format_prec=fit_dct['p_format_prec']
     
     #t=Table.read(outfolder+'/'+'amoeba_chain.fits')
@@ -124,7 +132,7 @@ def amoeba_analyze(outfolder,
         scale=1
         p_unit_display=p_unit[i]
         if  'xypos.ra' in p_name[i] or 'xypos.dec' in p_name[i]:
-            offset=p_start[i]
+            offset=p_start[i].value
             scale=3600 # deg -> sec
             p_unit_display=u.arcsec
         
@@ -140,8 +148,8 @@ def amoeba_analyze(outfolder,
             if  j==1:
                 axes[i,j-1].axvspan(step_start,niter,color='whitesmoke')
             
-            axes[i,j].axhline((p_lo[i]-offset)*scale, color="r", lw=0.8,ls='-')
-            axes[i,j].axhline((p_up[i]-offset)*scale, color="r", lw=0.8,ls='-')
+            axes[i,j].axhline(((p_lo[i].value-offset)*scale), color="r", lw=0.8,ls='-')
+            axes[i,j].axhline(((p_up[i].value-offset)*scale), color="r", lw=0.8,ls='-')
             
             label_start=label_best=''
             if  j==0:
@@ -149,8 +157,8 @@ def amoeba_analyze(outfolder,
             else:
                 label_best='Optimized:'+("{0:"+p_format[i]+"}").format(p_best[i]*p_unit[i])
             
-            axes[i,j].axhline((p_start[i]-offset)*scale,color="b", lw=9,ls='-',label=label_start,alpha=0.4)
-            axes[i,j].axhline((p_best[i]-offset)*scale,color="g", lw=3,ls='-',label=label_best)
+            axes[i,j].axhline(((p_start[i].value-offset)*scale),color="b", lw=9,ls='-',label=label_start,alpha=0.4)
+            axes[i,j].axhline(((p_best[i].value-offset)*scale),color="g", lw=3,ls='-',label=label_best)
             #axes[i,0].set_ylabel(("{0:"+p_format[i]+"}").format(p_start[i]*p_unit[i]),color="b")
             if  j==0:
                 axes[i,j].set_title(p_name[i]+' ['+(p_unit_display.to_string())+']')
@@ -173,8 +181,8 @@ def amoeba_analyze(outfolder,
             axes[i,j+2].plot((pars[i,pick_ind].T-offset)*scale,chi2[pick_ind],'o',color="gray", alpha=0.4,)        
             
             
-            axes[i,j+2].axvline((p_start[i]-offset)*scale, ls='-', color='b',lw=9,alpha=0.4)
-            axes[i,j+2].axvline((p_best[i]-offset)*scale, ls='-', color='g',lw=3)
+            axes[i,j+2].axvline(((p_start[i].value-offset)*scale), ls='-', color='b',lw=9,alpha=0.4)
+            axes[i,j+2].axvline(((p_best[i].value-offset)*scale), ls='-', color='g',lw=3)
             axes[i,j+2].set_xlabel(p_name[i]+' ['+(p_unit_display.to_string())+']')
                      
 

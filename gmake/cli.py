@@ -15,7 +15,7 @@ import sys
 from gmake import read_inp
 from gmake import read_data
 from gmake import __version__
-from gmake import fit_setup
+from gmake import opt_setup
 from gmake import fit_iterate
 from gmake import fit_analyze
 
@@ -137,7 +137,7 @@ def proc_inpfile(args):
     if  args.fit==True:
         
         dat_dct=read_data(inp_dct,fill_mask=True,fill_error=True)
-        fit_dct=fit_setup(inp_dct,dat_dct)
+        fit_dct.models=opt_setup(inp_dct,dat_dct)
         fit_iterate(fit_dct,inp_dct,dat_dct)
         
     if  args.analyze==True:
