@@ -103,7 +103,7 @@ def read_data(inp_dct,
                 
                 if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
                     data,hd=fits.getdata(im_list[ind],header=True,memmap=False)
-                    dat_dct['data@'+im_list[ind]]=data
+                    dat_dct['data@'+im_list[ind]]=np.squeeze(data)
                     dat_dct['header@'+im_list[ind]]=hd
                     dat_dct['type@'+im_list[ind]]='image'
                     
@@ -137,7 +137,7 @@ def read_data(inp_dct,
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     if  isinstance(pf_list[ind],str):
                         data=fits.getdata(pf_list[ind],memmap=False)                
-                        dat_dct['psf@'+im_list[ind]]=data
+                        dat_dct['psf@'+im_list[ind]]=np.squeeze(data)
                         logger.debug('loading: '+pf_list[ind]+' to ')
                         logger.debug('psf@'+im_list[ind])       
                         logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
@@ -438,7 +438,7 @@ def export_model(models,outdir='./',
             if  not os.path.exists(outdir):
                 os.makedirs(outdir)
             versions=['data','imodel','cmodel','error','mask','kernel','psf','residual',
-                      'imod2d','imod3d','cmod2d','cmod3d']
+                      'imod2d','imod3d','cmod2d','cmod3d','model']
             hd=models[key.replace('data@','header@')]
             for version in versions:
                 if  version=='residual' and key.replace('data@','cmodel@') in models.keys():
@@ -450,6 +450,7 @@ def export_model(models,outdir='./',
                 if  key.replace('data@',version+'@') in models.keys():
                     if  models[key.replace('data@',version+'@')] is not None:
                         tmp=(models[key.replace('data@',version+'@')]).copy()
+                        #print(tmp)
                         if  tmp.ndim==2:
                             tmp=tmp[np.newaxis,np.newaxis,:,:]
                         fits.writeto(outdir+'/'+version+'_'+basename,

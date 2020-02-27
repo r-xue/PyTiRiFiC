@@ -3,6 +3,7 @@
     usage:
         
         >gmake_cli -a bx610/uvb6_ab.inp -d -l uvb6_ab.log
+        >gmake_cli --fit uv11_mc.inp --debug
 
 """
 
@@ -16,8 +17,8 @@ from gmake import read_inp
 from gmake import read_data
 from gmake import __version__
 from gmake import opt_setup
-from gmake import fit_iterate
-from gmake import fit_analyze
+from gmake import opt_iterate
+from gmake import opt_analyze
 
 import casa_proc
 
@@ -137,14 +138,14 @@ def proc_inpfile(args):
     if  args.fit==True:
         
         dat_dct=read_data(inp_dct,fill_mask=True,fill_error=True)
-        fit_dct.models=opt_setup(inp_dct,dat_dct)
-        fit_iterate(fit_dct,inp_dct,dat_dct)
+        fit_dct,models=opt_setup(inp_dct,dat_dct)
+        opt_iterate(fit_dct,inp_dct,dat_dct,models,resume=False)
         
     if  args.analyze==True:
         
-        #fit_analyze(args.inpfile)
+        opt_analyze(args.inpfile)
         
-        #"""
+        """
         casa_script_dir=os.path.dirname(os.path.abspath(__file__))+'/casa/'
         ms2im=casa_script_dir+'/ms2im_script.py'
         loglevel='DEBUG' if args.debug==True else 'INFO'
@@ -170,7 +171,7 @@ def proc_inpfile(args):
                         imagename=vis.replace('.ms','').replace('data_','data_'),
                         cell=0.04,imsize=64,
                         datacolumn='data',preload=ms2im)         
-        """
+
         ms_names=inp_dct['general']['outdir']+'/p_*/*.ms.contsub'
         logger.debug("\nlooking up ms: "+ms_names+'\n')
         mslist=glob.glob(ms_names)        
@@ -188,7 +189,7 @@ def proc_inpfile(args):
                         imagename=vis.replace('.ms.contsub','').replace('data_','cmod3d_'),
                         cell=0.04,imsize=64,
                         datacolumn='corrected',preload=ms2im)
-        """   
+        #"""   
             
     if  args.plot==True:
         

@@ -19,9 +19,11 @@ from .meta import *
 from .io import *
 from .evaluate import *  
 from .opt import *
-from .opt_amoeba import *
+from .analyze import *
 from .model_dynamics import *
-from .discretizer import *
+from .discretize import *
+from .model import *
+from .vis_utils import *
 
 __all__ = []
 

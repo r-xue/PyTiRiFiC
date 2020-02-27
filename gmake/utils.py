@@ -27,16 +27,16 @@ from astropy.coordinates import Angle
 from astropy.coordinates import SkyCoord
 from astropy.units import Quantity
 from numbers import Number
-
+import numpy as np
 from io import StringIO
 from asteval import Interpreter
-
 aeval = Interpreter(err_writer=StringIO())
 aeval.symtable['u']=u
 aeval.symtable['SkyCoord']=SkyCoord
 aeval.symtable['Angle']=Angle
 aeval.symtable['Number']=Number
 aeval.symtable['Quantity']=Quantity
+aeval.symtable['np']=np
 
 import sys
 import gc
@@ -46,6 +46,14 @@ import scipy.integrate
 from scipy import interpolate
 from spectral_cube import SpectralCube
 
+import pyfftw
+import os
+import datetime
+from galario.single import threads as galario_threads
+import multiprocessing
+import emcee
+from radio_beam import Beams
+from astropy.io import fits
 """
 import ast, operator
 
@@ -372,10 +380,11 @@ def inp2mod(inp_dct):
     par_list=[]
     for sec_name in objs.keys():
         for key_name in objs[sec_name].keys():
-            par_list+=[key_name+'@'+sec_name]
+            if '@' not in key_name:
+                par_list+=[key_name+'@'+sec_name] 
     
     secs_imported=[]
-    
+
     for tag in list(objs.keys()):
         
         #   remove sections not related to model component properties
@@ -383,50 +392,49 @@ def inp2mod(inp_dct):
         if  any(section in tag.lower() for section in ids_ignore):            
             tmp=objs.pop(tag,None)
             continue
-
+        
         for key in list(objs[tag].keys()):
 
-            #value=objs[tag][key]
-            #for value0 in value:
-            #    if  isinstance(value0,str):
-            #        if  '@' in value:
-            #            key_nest=value0.split("@")
-            #            objs[tag][key]=objs[key_nest[1]][key_nest[0]]
+            # fill the cross reference keyword-value
  
-            value=objs[tag][key]
-            if  isinstance(value, str):
+            if  isinstance(objs[tag][key],(list,tuple)):
+                value_list=[value for value in objs[tag][key]]
+            else:
+                value_list=[objs[tag][key]]
+            
+            for idx,value in enumerate(value_list):
+                if  isinstance(value, str):
+                    pars=[par for par in par_list if par in value]
+                    if  pars!=[]:
+                        value_expr=value
+                        for idp,par in enumerate(pars):
+                            #par=max(pars, key=len) 
+                            keyobjname=par.split("@")
+                            aeval.symtable["t"+str(idp)]=objs[keyobjname[1]][keyobjname[0]]
+                            value_expr=value_expr.replace(par,"t"+str(idp))
+                        value_list[idx]=aeval(value_expr)
+                        
+            if  isinstance(objs[tag][key],tuple):
+                objs[tag][key]=tuple(value_list)
+            elif  isinstance(objs[tag][key],list):
+                objs[tag][key]=value_list
+            else:
+                objs[tag][key]=value_list[0]
                 
-                pars=[par for par in par_list if par in value] 
-                if  pars!=[]:   # a string expression for parameter tie is detected
-                    par=max(pars, key=len) 
-                    key_nest=par.split("@")
-                    tmp0=objs[key_nest[1]][key_nest[0]]
-                    if  isinstance(tmp0, str):  # copy string
-                        objs[tag][key]=tmp0
-                        #print(tmp0,'-->',objs[tag][key])
-                    else:                       # math expression evluation
-                        value_expr=value.replace(par,"tmp0")
-                        aeval.symtable["tmp0"]=objs[key_nest[1]][key_nest[0]]
-                        #print(value_expr,value)
-                        #objs[tag][key]=ne.evaluate(value_expr).tolist()
-                        objs[tag][key]=aeval(value_expr)
-                        #print(value,'-->',objs[tag][key])
-                values=value.split(',')
-                if  key.lower() == 'import':
-                    del objs[tag][key]
-                    for value0 in values:
-                        if  value0 in list(objs.keys()):
-                            #   value: the section to be imported
-                            secs_imported+=[value0]
-                            for import_key in list(objs[value0].keys()):
-                                objs[tag][import_key]=objs[value0][import_key]
+            # fill "import" sections
+
+            if  key.lower() == 'import' and isinstance(objs[tag][key],str):
+                
+                import_list=(objs[tag][key]).split(',')
+                del objs[tag][key]
+                for value0 in import_list:
+                    if  value0 in list(objs.keys()):
+                        secs_imported+=[value0]
+                        for import_key in list(objs[value0].keys()):
+                            objs[tag][import_key]=objs[value0][import_key]
                     
                     #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
-                """
-                if  '@' in value:
-                    key_nest=value.split("@")
-                    objs[tag][key]=objs[key_nest[1]][key_nest[0]]
-                """
+    
     
     #   for "imported" parameter group sections, we delete them one by one
     
@@ -945,5 +953,126 @@ def h5ls(filename,logfile=None):
     #offset=[20,20,100]
     #data=gmake_insertmodel(data,model,offset=offset)
     #fits.writeto('test.fits',data.T,overwrite=True)
+
+
+def set_omp_threads(num=None):
+    """
+    some underline alrgoithm library can use OMP
+    turn on OMP is beneficial for iteration optimizwer but not for parallele optimizer
+    this function can turn on / turn off OMP in modelling alrothjm
+    """
+    if  num is None:
+        num=multiprocessing.cpu_count()
+    
+    logger.info('set OpenMP threading: {0}'.format(num))
+    galario_threads(num)
+    os.environ["OMP_NUM_THREADS"] = str(num)
+    pyfftw.config.NUM_THREADS=num
+    
+    return 
+
+
+def backup(filename,move=True):
+    """
+    backup file / dirwectiory to be overwrite
+    """
+    if  os.path.exists(filename):
+        mt=os.path.getmtime(filename)
+        newname=filename+\
+            datetime.datetime.fromtimestamp(mt).strftime("-%Y-%m%d-%H%M%S")  
+        if  move==True:
+            os.system('mv '+filename+' '+newname)
+        else:
+            os.system('cp -rf '+filename+' '+newname)
+            
+def get_autocoor_time(h5name):
+    
+    reader = emcee.backends.HDFBackend(h5name,read_only=True)
+    tau=reader.get_autocorr_time(quiet=True)
+    
+    return tau
+
+def rotate_xy(x,y,angle,xo=0,yo=0):
+    """
+    rotate points in a 2D coordinate system
+    angle:    rotate points by angle in CCW
+    ref:    rotate_xy.pro rot_3d.pro
+    performance consideration:
+        https://gist.github.com/LyleScott/e36e08bfb23b1f87af68c9051f985302
+        https://stackoverflow.com/questions/33004551/why-is-b-numpy-dota-x-so-much-slower-looping-through-doing-bi-numpy
+        https://en.wikipedia.org/wiki/Rotation_matrix
+    """
+    cs=np.cos(angle)
+    sn=np.sin(angle)
+    
+    xd=x-xo
+    yd=y-yo
+    
+    X2 = xd*cs - yd*sn + xo
+    Y2 = xd*sn + yd*cs + yo    
+    
+    return xd*cs-yd*sn+xo, xd*sn+yd*cs+yo
+
+
+def one_beam(fitsname):
+    
+    try:
+        header = fits.getheader(fitsname)  
+        one_beam = Beam.from_fits_header(header) 
+    except:
+        table_beam = fits.open(fitsname)[1]
+        beams = Beams.from_fits_bintable(table_beam) 
+        one_beam = beams.largest_beam()
+        
+    return one_beam
+
+
+def sample_grid(spacing,xrange=[-100,100],yrange=[-100,100],center=None,
+                ratio=1,angle=0):
+    """
+    this is loosely based on my sample_grid.pro in IDL with improvement on defining x-/y-range
+    angle in rad 
+    ratio=major/minor
+    
+    """
+    
+    if  center is None:
+        center=[(xrange[0]+xrange[1])/2,(yrange[0]+yrange[1])/2]
+    
+    # calculate x_lim/y_lim in a homoegnoused coordinates
+    xx,yy=np.meshgrid(xrange,yrange)
+    xx_tr,yy_tr=rotate_xy(xx,yy,-angle,xo=center[0],yo=center[1])
+    xx_tr=(xx_tr-center[0])*ratio+center[0]
+    
+    xrange_tr=[np.min(xx_tr)-spacing,np.max(xx_tr)+spacing]
+    yrange_tr=[(np.min(yy_tr)-center[1])/np.sin(np.deg2rad(60))+center[1]-spacing,
+               (np.max(yy_tr)-center[1])/np.sin(np.deg2rad(60))+center[1]+spacing]
+    
+    x_tr=np.arange(xrange_tr[0],xrange_tr[1],spacing)
+    y_tr=np.arange(yrange_tr[0],yrange_tr[1],spacing)
+    x_idx=np.argmin(np.abs(x_tr-center[0]))
+    y_idx=np.argmin(np.abs(y_tr-center[1]))
+    x_tr-=x_tr[x_idx]-center[0]
+    y_tr-=y_tr[y_idx]-center[1]
+
+    xx_tr,yy_tr=np.meshgrid(x_tr,y_tr)
+    
+    xx_tr=xx_tr+0.5*np.mod(np.abs(yy_tr-center[0]),2*spacing)
+    yy_tr=(yy_tr-center[1])*np.sin(np.deg2rad(60))+center[1]
+
+    xx_tr=(xx_tr-center[0])/ratio+center[0]
+    
+    xx_grid,yy_grid=rotate_xy(xx_tr,yy_tr,angle,xo=center[0],yo=center[1])
+    idx=np.where(np.logical_and( np.logical_and(xx_grid>xrange[0], xx_grid<xrange[1]), 
+                                 np.logical_and(yy_grid>yrange[0], yy_grid<yrange[1])) )
+    xx_grid=xx_grid[idx]
+    yy_grid=yy_grid[idx]
+
+    return xx_grid,yy_grid
+
+def chi2red_to_lognsigma(chi2red):
+    
+    return np.log(np.sqrt(1./chi2red))
     
     
+        

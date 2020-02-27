@@ -46,12 +46,15 @@ cfg.read(package_path+"/default.cfg")
 
 
 dat_dct_global={}
+models_global={}
 
 __all__ = ['read_inp']
 
 def create_header(file=None):
     """
     ref: https://docs.astropy.org/en/stable/io/fits/api/headers.html
+        xymodel_header=create_header(file=metadata_path+'xymodel.header')
+        xymodel_header=create_header(
     """
     if  file is None:
         hdr=fits.Header.fromstring("""\
@@ -235,9 +238,6 @@ def pars_interp(key,value):
     return value_int
 
 inp_def=read_inp(metadata_path+'input_def.inp',log=False)
-#xymodel_header=create_header(file=metadata_path+'xymodel.header')
-xymodel_header=create_header()
-
 
 
 

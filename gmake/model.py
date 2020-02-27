@@ -7,6 +7,9 @@ import astropy.units as u
 import fast_histogram as fh
 import pprint
 from .utils import eval_func
+from .utils import one_beam
+from .utils import sample_grid
+
 import time
 from astropy.coordinates.matrix_utilities import rotation_matrix,matrix_product,matrix_transpose
 from astropy.coordinates.representation import SphericalRepresentation, CylindricalRepresentation, CartesianRepresentation
@@ -20,17 +23,26 @@ from numpy.random import Generator,SFC64,PCG64
 from astropy._erfa import ufunc as erfa_ufunc
 from astropy import constants as const
 from galario.single import get_image_size
-#from .meta import xymodel_header
 from astropy.modeling.models import Gaussian2D
 from astropy.convolution import discretize_model
 from .meta import create_header
 from astropy.stats import sigma_clipped_stats
+from astropy.stats import gaussian_fwhm_to_sigma
+from astropy.wcs import WCS
+from scipy.interpolate import interpn
+
+import logging
+logger = logging.getLogger(__name__)
+
 """
     Note: 
         performance on Quanitu/Units
         https://docs.astropy.org/en/stable/units/#performance-tips
         https://docs.astropy.org/en/stable/units/quantity.html#astropy-units-quantity-no-copy
         https://docs.astropy.org/en/stable/units/quantity.html (add functiomn argument check)
+        
+    .xyz / .d_xyz is not effecient as it's combined on-the-fly
+    .d_xyz
 """
 
 
@@ -506,20 +518,16 @@ def cloudlet_moms(cloudlet,
     return dm_i,dm_v,dm_vsigma,dm_ierr
 
 
-
 ###################################################################################################
-
-
 
 def clouds_fromobj(obj,
                    nc=100000,nv=20,seeds=[None,None,None,None]):
     """
     This is a wrapper function to create a cloudlet model from a object dict 
     """
-   
     car,meta=clouds_morph(sbProf=obj['sbProf'],
-                          rotPhi=obj['rotAz'],
-                          sbQ=obj['sbQ'],
+                          rotPhi=obj['rotAz'] if  'rotAz' in obj else None,
+                          sbQ=obj['sbQ'] if  'sbQ' in obj else None,
                           vbProf=obj['vbProf'],
                           seeds=seeds[0:3],size=nc)    
 
@@ -557,11 +565,38 @@ def clouds_fill(mod_dct,
 
 ###################################################################################################  
 
+def model_update(mod_dct,models):
+    """
+    not used. related to likelihood
+    update some model parameters related to likelihood calculation
+        In the model properties, we have some keywords related to configing the likelihood
+    model and calculate log_propeorbaility:
+        lognsigma: used to scale noise level (in case it's overunder estimated)
+    They are actually related to data (one value per dataset)
+    But it's setup per object due to the input file layout (repeated for different objects, like PSF)
+    """
+    
+    for tag in list(mod_dct.keys()):
+         obj=mod_dct[tag]
+         if  'vis' in mod_dct[tag].keys():
+             vis_list=mod_dct[tag]['vis'].split(",")
+             for vis in vis_list:
+                if  'lognsigma' not in obj['lognsigma']:
+                    models['lognsigma@'+vis]=0.0
+                else:
+                    models['lognsigma@'+vis]=obj['lognsigma']
+                  
+    return
+    
+
 def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
     """
     create model container 
         this function can be ran only once before starting fitting iteration, so that
         the memory allocation/ allication will happen once during a fitting run.
+        The output will provide the dataframework where the reference model can be mapped into.
+        
+    it will also initilize some informationed used for modeling (e.g. sampling array / header / WCS)
 
     notes on evaluating efficiency:
     
@@ -608,63 +643,19 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['type@'+vis]=dat_dct['type@'+vis]
                     #   pass the data reference (no memory penalty)
                     
-                    wv=np.mean((const.c/dat_dct['chanfreq@'+vis]).to_value('m')) # in meter
+                    #or [obj['xypos'].ra,obj['xypos'].dec]
+                    #center=dat_dct['phasecenter@'+vis]
+                    center=[obj['xypos'].ra,obj['xypos'].dec]
+                    models['header@'+vis]=makeheader(dat_dct['uvw@'+vis],center,
+                                                     dat_dct['chanfreq@'+vis],
+                                                     dat_dct['chanwidth@'+vis])
+                    models['wcs@'+vis]=WCS(models['header@'+vis])
+                    models['pbeam@'+vis]=((makepb(models['header@'+vis],
+                                                  phasecenter=dat_dct['phasecenter@'+vis],
+                                                  antsize=25*u.m)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
+                    #naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
                     
-                    #
-                    ant_size=12.0 # hard coded in meter
-                    f_max=2.0
-                    f_min=3.0/3.0
-                    """
-                    f_max: determines the UV grid size, or set a image cell-size upper limit
-                           a valeu of >=2 would be a safe choice
-                    f_min: set the UV cell-size upper limit, or a lower limit of image FOV.                            
-                           a value of >=3 would be translated into a FOV lager than >=3 of interfeormetry sensitive scale
-                    PB:    primary beam size, help set a lower limit of FOV
-                           however, in terms of imaging quality metric, this is not crucial
-                    The rule of thumbs are:
-                        * make sure f_max and f_min are good enought that all spatial frequency information is presented in
-                        the reference models
-                        * the FOV is large enough to covert the object.
-                        * keep the cube size within the memory limit
-                    """
-                    nxy, dxy = get_image_size(dat_dct['uvw@'+vis][:,0]/wv, dat_dct['uvw@'+vis][:,1]/wv,
-                                              PB=1.22*wv/ant_size*0.0,f_max=f_max,f_min=f_min,
-                                              verbose=False)
-                    #print("-->",nxy,np.rad2deg(dxy)*60.*60.,vis)
-                    #print(np.rad2deg(dxy)*60.*60,0.005,nxy)
-                    # note: if dxy is too large, uvsampling will involve extrapolation which is not stable.
-                    #       if nxy is too small, uvsampling should be okay as long as you believe no stucture-amp is above that scale.
-                    #          interplate is more or less stable.  
-                    #dxy=np.deg2rad(0.02/60/60)
-                    #nxy=128
-                    
-                    header=create_header()
-                    header['NAXIS1']=nxy
-                    header['NAXIS2']=nxy
-                    header['NAXIS3']=np.size(dat_dct['chanfreq@'+vis])
-                    
-                    header['CRVAL1']=dat_dct['phasecenter@'+vis][0].to_value(u.deg)
-                    header['CRVAL2']=dat_dct['phasecenter@'+vis][1].to_value(u.deg)
-                    
-                    header['CRVAL1']=obj['xypos'].ra.to_value(u.deg)
-                    header['CRVAL2']=obj['xypos'].dec.to_value(u.deg)                 
-                    
-                    crval3=dat_dct['chanfreq@'+vis].to_value(u.Hz)
-                    if  not np.isscalar(crval3):
-                        crval3=crval3[0]
-                    header['CRVAL3']=crval3
-                    header['CDELT1']=-np.rad2deg(dxy)
-                    header['CDELT2']=np.rad2deg(dxy)
-                    header['CDELT3']=np.mean(dat_dct['chanwidth@'+vis].to_value(u.Hz))   
-                    header['CRPIX1']=np.floor(nxy/2)+1
-                    header['CRPIX2']=np.floor(nxy/2)+1
-                    
-                    models['header@'+vis]=header.copy()
-                    
-                    models['pbeam@'+vis]=((makepb(header)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
-                    naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
-                    
-                    models['imodel@'+vis]=[]
+                    models['imodel@'+vis]=None
                     models['objs@'+vis]=[]                  
                 
                 models['objs@'+vis].append(tag)
@@ -687,11 +678,12 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['type@'+image]=dat_dct['type@'+image]
                     #test_time = time.time()
                     models['header@'+image]=dat_dct['header@'+image]
+                    models['wcs@'+image]=WCS(models['header@'+image])
                     models['data@'+image]=dat_dct['data@'+image]
                     
                     if  'error@'+image not in dat_dct:
                         models['error@'+image]=(sigma_clipped_stats(dat_dct['data@'+image], sigma=3, maxiters=1))[2]+\
-                            dat_dct['data@'+image]*0.0
+                            dat_dct['data@'+image]*0.0                
                     else:
                         models['error@'+image]=dat_dct['error@'+image]
                     
@@ -699,11 +691,7 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                         models['mask@'+image]=dat_dct['mask@'+image]
                     else:
                         models['mask@'+image]=None
-                    
-                    if  'sample@'+image in dat_dct.keys():
-                        models['sample@'+image]=dat_dct['sample@'+image]
-                    else:
-                        models['sample@'+image]=None                                        
+                                    
                     
                     
                     dshape=dat_dct['data@'+image].shape
@@ -712,22 +700,45 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     if  'psf@'+image in dat_dct.keys():
                         if  isinstance(dat_dct['psf@'+image],tuple):
                             beam=dat_dct['psf@'+image]
-                            models['psf@'+image]=makekernel(dshape[-1],dshape[-2],
-                                                        [beam[0].to_value(u.deg)/cell,beam[1].to_value(u.deg)/cell],pa=beam[2].to_value(u.deg),
-                                                        mode=None)
+                            models['psf@'+image]=makepsf(header,beam=dat_dct['psf@'+image])
                         else:
                             models['psf@'+image]=dat_dct['psf@'+image]
                     else:
-                        models['psf@'+image]=makekernel(dshape[-1],dshape[-2],
-                                                        [header['BMAJ']/cell,header['BMIN']/cell],pa=header['BPA'],
-                                                        mode=None)
+                        models['psf@'+image]=makepsf(header)
                         
+                    #   sampling array
+                    
+                    if  'sample@'+image in dat_dct.keys():
+                        models['sample@'+image]=dat_dct['sample@'+image]
+                    else:
+                        beam0=one_beam(image)
+                        bmaj=beam0.major.to_value(u.deg)
+                        bmin=beam0.minor.to_value(u.deg)
+                        bpa=beam0.pa
+                        xx_hexgrid,yy_hexgrid=sample_grid(bmaj/cell,
+                                                          xrange=[0,dshape[-1]-1],
+                                                          yrange=[0,dshape[-2]-1],
+                                                          ratio=bmaj/bmin,angle=bpa)
+                        nsp=xx_hexgrid.size
+                        xx_hexgrid=(np.broadcast_to( xx_hexgrid[:,None], (nsp,dshape[-3]))).flatten()
+                        yy_hexgrid=(np.broadcast_to( yy_hexgrid[:,None], (nsp,dshape[-3]))).flatten()
+                        zz_hexgrid=(np.broadcast_to( (np.arange(dshape[-3]))[None,:], (nsp,dshape[-3]) )).flatten()
+                        models['sample@'+image]=( np.vstack((xx_hexgrid,yy_hexgrid,zz_hexgrid)) ).T
+                        
+                        sp=models['sample@'+image]
+                    if  models['sample@'+image] is not None:
+                        models['data-sp@'+image]=interpn( (np.arange(dshape[-3]),np.arange(dshape[-2]),np.arange(dshape[-1])),
+                                                          np.squeeze(models['data@'+image]),
+                                                          models['sample@'+image][:,::-1],method='linear')
+                        models['error-sp@'+image]=interpn( (np.arange(dshape[-3]),np.arange(dshape[-2]),np.arange(dshape[-1])),
+                                                          np.squeeze(models['error@'+image]),
+                                                          models['sample@'+image][:,::-1],method='linear')                        
                         
                     naxis=models['data@'+image].shape
                     if  len(naxis)==3:
                         naxis=(1,)+naxis
                         
-                    models['imodel@'+image]=[]
+                    models['imodel@'+image]=None
                     models['objs@'+image]=[]
                     
                 models['objs@'+image].append(tag) 
@@ -747,8 +758,127 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
 
 ###################################################################################################
 
+def makeheader(uv,center,chanfreq,chanwidth,antsize=None):
+    """
+    create a header template for discreating cloudlet model before uv sampling
+        using accroding to UV sampling and primary beam FOV
+        uv.shape (nrecord,2) in units of meter
+        chanfreq quantity frequency array
+        center this could be phasecenter or somewhere near your target
+        antsize=12*u.m
+        
+    f_max: determines the UV grid size, or set a image cell-size upper limit
+           a valeu of >=2 would be a safe choice
+           (set a upper limit of cellsize)
+    f_min: set the UV cell-size upper limit, or a lower limit of image FOV.                            
+           a value of >=3 would be translated into a FOV lager than >=3 of interfeormetry sensitive scale
+           ***set a lower limit of imsize
+    PB:    primary beam size, help set a lower limit of FOV
+           however, in terms of imaging quality metric, this is not crucial
+           ***set a lower limit of imsize
+    The rule of thumbs are:
+        * make sure f_max and f_min are good enought that all spatial frequency information is presented in
+        the reference models
+        * the FOV is large enough to covert the object.
+        * keep the cube size within the memory limit    
+    # note: if dxy is too large, uvsampling will involve extrapolation which is not stable.
+    #       if nxy is too small, uvsampling should be okay as long as you believe no stucture-amp is above that scale.
+    #          interplate is more or less stable.             
+    """
 
-def makepb(header):
+    f_max=2.0
+    f_min=2.0
+    wv=np.mean(chanfreq).to(u.m,equivalencies=u.spectral())
+    if  antsize is None:
+        pb=0    # no restrictin from PB
+    else:
+        pb=1.22*wv/antsize*1.0
+    
+    nxy, dxy = get_image_size(uv[:,0]/wv.value, uv[:,1]/wv.value,
+                              PB=pb,f_max=f_max,f_min=f_min,
+                              verbose=False)
+    logger.debug('make fits-header for vis')
+    logger.debug('nxy:  '+str(nxy))
+    logger.debug('dxy:  '+(dxy<<u.rad).to(u.arcsec).to_string())
+
+ 
+
+    header=create_header()
+    header['NAXIS1']=nxy
+    header['NAXIS2']=nxy
+    header['NAXIS3']=np.size(chanfreq)
+    
+    header['CRVAL1']=center[0].to_value(u.deg)
+    header['CRVAL2']=center[1].to_value(u.deg)
+                   
+    crval3=chanfreq.to_value(u.Hz)
+    if  not np.isscalar(crval3):
+        crval3=crval3[0]
+    header['CRVAL3']=crval3
+    header['CDELT1']=-np.rad2deg(dxy)
+    header['CDELT2']=np.rad2deg(dxy)
+    header['CDELT3']=np.mean(chanwidth.to_value(u.Hz))   
+    header['CRPIX1']=np.floor(nxy/2)+1
+    header['CRPIX2']=np.floor(nxy/2)+1
+    
+    return header
+    
+def makepsf(header,
+            beam=None,size=None,
+            mode='oversample',factor=None,norm='peak'):
+    """
+    make a 2D Gaussian image as PSF, warapping around makekernel()
+    beam: tuple (bmaj,bmin,bpa) quatity in fits convention
+         otherwise, use header bmaj/bmin/bpa
+    size:  (nx,ny) <-- in the FITS convention (not other way around, or so called ij)
+    
+    norm='peak' would be godo for Jy/pix->Jy/beam 
+    output 
+    
+    Note: we choose not use Gaussian2DKernel as we want to handle customzed PSF case in upstream (as dirty beam)
+    """
+    #   get size
+    if  size is None:
+        size=(header['NAXIS1'],header['NAXIS2'])
+    cell=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
+    #   get beam
+    beam_pix=None
+    if  isinstance(beam,tuple):
+        beam_pix=(beam[0].to_value(u.deg)/cell,
+                  beam[1].to_value(u.deg)/cell,
+                  beam[2].to_value(u.deg))
+    else:
+        if  'BMAJ' in header:
+            if  header['BMAJ']>0 and header['BMIN']>0: 
+                beam_pix=(header['BMAJ']/cell,
+                          header['BMIN']/cell,
+                          header['BPA'])
+    #   get psf
+    psf=None
+    if  beam_pix is not None:
+        if  factor is None:
+            factor=max(int(10./beam_pix[1]),1)
+        if  factor==1:
+            mode='center'
+        psf=makekernel(size[0],size[1],
+                       [beam_pix[0],beam_pix[1]],pa=beam_pix[2],
+                       mode=mode,factor=factor)
+        if  norm=='peak':
+            psf/=np.max(psf)
+        if  norm=='sum':
+            psf/=np.sum(psf)
+        """
+        # kernel object:
+        psf=Gaussian2DKernel(x_stddev=beam_pix[1]*gaussian_fwhm_to_sigma,
+                             y_stddev=beam_pix[0]*gaussian_fwhm_to_sigma,
+                             x_size=int(size[0]),y_size=int(size[1]),
+                             theta=np.radians(beam_pix[2]),
+                             mode=mode,factor=factor)          
+        """
+    return psf
+    
+
+def makepb(header,phasecenter=None,antsize=12*u.m):
     """
     make a 2D Gaussian image approximated to the ALMA primary beam
         https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90
@@ -758,18 +888,27 @@ def makepb(header):
     
     """
     
+    if  phasecenter is None:
+        xc=header['CRPIX1']
+        yc=header['CRPIX2']
+    else:
+        w=WCS(header)
+        xc,yc=w.celestial.wcs_world2pix(phasecenter[0],phasecenter[1],0)
+    #w.
+    
     #   PB size in pixel
-    beam=1.13*np.rad2deg(const.c.to_value('m/s')/(header['CDELT3']*0+header['CRVAL3'])/12.0)/np.abs(header['CDELT2'])
+    beam=1.13*np.rad2deg(const.c.to_value('m/s')/(header['CDELT3']*0+header['CRVAL3'])/antsize.to_value(u.m))
+    beam*=1/np.abs(header['CDELT2'])
     sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
     mod=Gaussian2D(amplitude=1.,
-                   x_mean=header['CRPIX1'],y_mean=header['CRPIX2'],
+                   x_mean=xc,y_mean=yc,
                    x_stddev=beam/sigma2fwhm,y_stddev=beam/sigma2fwhm,theta=0)
     pb=discretize_model(mod,(0,int(header['NAXIS1'])),(0,int(header['NAXIS1'])))
 
     return pb
 
 def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
-               mode=None,
+               mode='center',factor=10,
                verbose=True):
     """
     mode: 'center','linear_interp','oversample','integrate'
@@ -826,12 +965,10 @@ def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
     mod=Gaussian2D(amplitude=1.,x_mean=cent[0],y_mean=cent[1],
                x_stddev=beam[1]/sigma2fwhm,y_stddev=beam[0]/sigma2fwhm,
                theta=np.deg2rad(pa))
-    if  mode==None:
-        x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels),indexing='xy')
-        psf=mod(x,y)
-    else:
-        psf=discretize_model(mod,(0,int(xpixels)),(0,int(ypixels)),
-                             mode=mode)
+    psf=discretize_model(mod,(0,int(xpixels)),(0,int(ypixels)),
+                         mode=mode,factor=factor)
+    #x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels),indexing='xy')
+    #psf=mod(x,y)
     
     return psf
     

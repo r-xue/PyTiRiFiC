@@ -13,6 +13,7 @@ from astropy.coordinates import Angle
 from ast import literal_eval    
 
 logger = logging.getLogger(__name__)
+import os
 
 """
 ref: about taql:
@@ -28,6 +29,7 @@ ref:
 from casatools import table
 from casatools import msmetadata
 from casatools import calibrater
+from casatools import simulator 
 
 def read_ms(vis='',
              polaverage=True,dataflag=False,saveflag=True,
@@ -75,7 +77,12 @@ def read_ms(vis='',
         dat_dct_out['data@'+vis]=np.mean(dat_dct_out['data@'+vis],axis=-1)
         dat_dct_out['weight@'+vis]=np.sum(dat_dct_out['weight@'+vis],axis=-1)
         dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)    
-        
+    
+    # flag all data with zero weight
+    dat_dct_out['flag@'+vis][dat_dct_out['weight@'+vis]==0,:]=1
+    # set weight=0 record with weight=1 for speeding log(wt)
+    dat_dct_out['weight@'+vis][dat_dct_out['weight@'+vis]==0]=1
+    
     #   use the "last" and "only" spw in the SPECTRAL_WINDOW table
     #   We don't handle mutipl-spw MS here.
     ts=table()
@@ -99,7 +106,7 @@ def read_ms(vis='',
     count_flag=np.count_nonzero(dat_dct_out['flag@'+vis])
     count_record=np.size(dat_dct_out['data@'+vis])
     logger.debug('flagging fraction: {0:.0%}'.format(count_flag*1./count_record))    
-    
+
     
     vars=['data','uvw','weight','flag']
     for var in vars:
@@ -140,16 +147,13 @@ def read_ms(vis='',
     logger.debug('{:60} {:10}'.format('phasecenter@'+vis,radec))    
     logger.debug('-'*118)
 
-
-    
-    
     if  dat_dct is None:
         return dat_dct_out
     else:
         return 
 
 def write_ms(vis,value,
-                  datacolumn='corrected'):
+             datacolumn='corrected',inputvis=None):
     """
     attach new visibility data/model values into an MS
     
@@ -162,6 +166,11 @@ def write_ms(vis,value,
         (assumed to be RR, LL, XX, or YY) 
     
     """
+    
+    if  inputvis is not None:
+        
+        os.system("rm -rf "+vis)
+        os.system('cp -rf '+inputvis+' '+vis)
     
     addcorr=addmodel=False
     if  datacolumn=='data':
@@ -197,6 +206,25 @@ def write_ms(vis,value,
     tb.close()
 
     return 
+
+def corrupt_ms(vis,
+               mode='simplenoise',simplenoise='1mJy',
+               inputvis=None):
+    """
+    use simulated tool
+    """
+    if  inputvis is not None:    
+        os.system("rm -rf "+vis)
+        os.system('cp -rf '+inputvis+' '+vis)
+
+    sm=simulator()    
+    sm.openfromms(vis)
+    sm.setnoise(mode=mode,simplenoise=simplenoise)
+    sm.corrupt()
+    sm.done()
+    
+    return                
+               
 
 if  __name__=="__main__":
 

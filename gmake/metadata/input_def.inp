@@ -36,7 +36,7 @@ xypos_kin               [0.0,0.0]   '.7f'   (str,SkyCoord)    'deg'       #   [r
 
 z                       0.0         '.3f'   Number   1.0         #   redshift
 vsys                    0.0         '.2f'   Quantity   'km/s'      #   km/s galaxy systematic velocity in respective to the redshift
-
+vsini                    0.0         '.2f'   Quantity   'km/s'      #   km/s galaxy systematic velocity in respective to the redshift
 
 sbrp                    [1.0,1.0]   '.2f'   [Quantity,Number]    ['arcsec',1]#   surface brightness radial profile in the disk plane (method='kinmspy') or sky-plane (method='disk2d')
                                                                 #   if a list is provided:
