@@ -35,7 +35,6 @@ aeval.symtable['Number']=Number
 aeval.symtable['Quantity']=Quantity
 
 
-
 package_path=os.path.dirname(os.path.abspath(__file__))
 metadata_path=os.path.dirname(os.path.abspath(__file__))+'/metadata/'
 
@@ -43,12 +42,13 @@ cfg=ConfigParser(interpolation=ExtendedInterpolation())
 cfg.read(package_path+"/default.cfg") 
 
 
-
-
-dat_dct_global={}
-models_global={}
-
 __all__ = ['read_inp']
+
+
+try:
+    db_global
+except NameError:
+    db_global={'dat_dct':{},'models':{}}
 
 def create_header(file=None):
     """

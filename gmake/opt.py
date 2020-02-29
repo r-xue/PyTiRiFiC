@@ -18,12 +18,13 @@ from numpy.random import Generator,SFC64,PCG64
 from lmfit import Parameters
 #from .utils import *
 #import os
-#import gmake.meta as meta
+import gmake.meta as meta
 
 #from memory_profiler import profile
 #@profile
 
-
+#from .meta import db_global
+#print('opt',hex(id(db_global)))
 
 from .evaluate import *
 
@@ -35,7 +36,11 @@ from lmfit import report_fit
 from galario.single import threads as galario_threads
 import copy
 import emcee
-from multiprocessing import Pool
+#from multiprocessing import Pool
+#import pickle
+#pickle.DEFAULT_PROTOCOL=3
+import multiprocessing as mp
+Pool = mp.get_context('fork').Pool
 
 def opt_setup(inp_dct,dat_dct,initial_model=False,copydata=False):
     """
@@ -229,9 +234,9 @@ def opt_setup(inp_dct,dat_dct,initial_model=False,copydata=False):
     #######################################################
     
     dct2hdf(fit_dct,outname=fit_dct['outfolder']+'/fit.h5')    
-    meta.dat_dct_global=dat_dct
-    meta.models_global=models
-    
+    meta.db_global['dat_dct']=dat_dct
+    meta.db_global['models']=models
+
     if  copydata==True:
         dat_dct_path=outfolder+'/data.h5'
         dct2hdf(dat_dct,outname=dat_dct_path)    
@@ -399,7 +404,7 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,models,nstep=100,resume=False):
     logger.info('CPU No. :      {0}'.format(multiprocessing.cpu_count()))
     logger.info('nthreads:      {0}'.format(fit_dct['nthreads']))
     logger.info('nwalkers:      {0}'.format(fit_dct['nwalkers']))            
-
+    
     """
     emcee v3
         https://emcee.readthedocs.io/en/latest/tutorials/monitor/
@@ -426,7 +431,7 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,models,nstep=100,resume=False):
         set_omp_threads()
         sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
                                     calc_lnprob,backend=backend,blobs_dtype=dtype,
-                                    args=(fit_dct,inp_dct,models),
+                                    args=(fit_dct,inp_dct),
                                     runtime_sortingfn=sort_on_runtime)
         sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)
     else:
@@ -543,7 +548,6 @@ def amoeba_sa(func,p0,scale,
     # list holding your trying route
     pars=copy.deepcopy(p)    # p: (ndim,ndim+1) positions of each simplex vertex
     chi2=copy.deepcopy(y)    # y: (ndim+1) chi2 at each simplex vertex
-    print(p)
     
     niter=0
     psum=np.sum(p, axis=1)

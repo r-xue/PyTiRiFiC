@@ -15,7 +15,6 @@ __demo__ = os.path.dirname(os.path.abspath(__file__))
 
 from .utils import *
 from .logger import *
-from .meta import *
 from .io import *
 from .evaluate import *  
 from .opt import *
@@ -24,6 +23,7 @@ from .model_dynamics import *
 from .discretize import *
 from .model import *
 from .vis_utils import *
+from .meta import *
 
 __all__ = []
 

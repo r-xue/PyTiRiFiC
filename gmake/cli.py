@@ -5,12 +5,14 @@
         >gmake_cli -a bx610/uvb6_ab.inp -d -l uvb6_ab.log
         >gmake_cli --fit uv11_mc.inp --debug
 
+    Here we include:
+        workflow for CLI
+        workflow for routine tasks
 """
 
 import os
 import argparse
 import glob
-import logging
 import sys
 
 from gmake import read_inp
@@ -20,13 +22,13 @@ from gmake import opt_setup
 from gmake import opt_iterate
 from gmake import opt_analyze
 
-import casa_proc
 
 from .plts import plt_spec1d
 from .plts import plt_mom0xy
 from .plts import plt_makeslice
 from .plts import plt_slice
 from .plts import plt_radprof
+from types import SimpleNamespace
 
 from .utils import *
 from .logger import *
@@ -130,14 +132,19 @@ Note:
 
     return
 
-def proc_inpfile(args):
+def proc_inpfile(args=None):
     
-
+    if  args is None:
+        args.inpfile='example.inp'
+        args.fit=False
+        args.analyze=True
+        args.plot=False
+        
     inp_dct=read_inp(args.inpfile)
     
     if  args.fit==True:
         
-        dat_dct=read_data(inp_dct,fill_mask=True,fill_error=True)
+        dat_dct=read_data(inp_dct)
         fit_dct,models=opt_setup(inp_dct,dat_dct)
         opt_iterate(fit_dct,inp_dct,dat_dct,models,resume=False)
         

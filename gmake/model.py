@@ -144,7 +144,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
     # radial structure
     ###################################
     weights=1
-    meta={}
+    cloudmeta={}
     
     if  isinstance(sbProf,(tuple,list)):
         # you'better have sbRad begin with zero, otherwise, the center may have a "hole" spot.
@@ -157,7 +157,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
             rho = rho*sbProf[1]
         if  cmode==1:
             rho = custom_rvs(sbProf[0],size=size,sersic_n=sbProf[-1],seed=seeds[0])*sbProf[1]
-            meta['localSB']=custom_pdf(sbProf[0].replace('2d',''),rho/sbProf[1],sersic_n=sbProf[-1])
+            cloudmeta['localSB']=custom_pdf(sbProf[0].replace('2d',''),rho/sbProf[1],sersic_n=sbProf[-1])
         if  cmode==2:
             rho = custom_rvs(sbProf[0],size=size,sersic_n=sbProf[-1],seed=seeds[0])*sbProf[1]
             # the exp dependency makes the scaling equiavelent to addition weight on PDF  
@@ -301,17 +301,17 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
     
     if  weights is 1:
         weights=None
-    meta['weight']=weights
-    return car,meta
+    cloudmeta['weight']=weights
+    return car,cloudmeta
 
 #@profile
 def clouds_kin(car,rcProf=None,
                vSigma=None,vRadial=None,nV=10,seed=3,
-               return_meta=False):
+               return_cloudmeta=False):
     """
     attached 3D velocity components to a cloudlet model
 
-    return meta data will slow thing down and use more memory
+    return cloudmeta data will slow thing down and use more memory
     
     Rotation Curve, e.g.
             rcProf=('table',r_quantity,vrot_quantity)
@@ -341,7 +341,7 @@ def clouds_kin(car,rcProf=None,
     """
     
     size=len(car)
-    meta={}
+    cloudmeta={}
     #   add ordered motion
     
     #start_time = time.time()
@@ -381,8 +381,8 @@ def clouds_kin(car,rcProf=None,
         cyl=cyl.with_differentials(cyl_diff)
         car=cyl.represent_as(CartesianRepresentation,differential_class=CartesianDifferential)
         
-        if  return_meta==True:
-            meta['v_ordered']=car.differentials['s']    # (3,ncloud)
+        if  return_cloudmeta==True:
+            cloudmeta['v_ordered']=car.differentials['s']    # (3,ncloud)
     
     #print("---{0:^10} : {1:<8.5f} seconds ---".format('clouds_test',time.time()-start_time))
     # add random motion
@@ -395,8 +395,8 @@ def clouds_kin(car,rcProf=None,
         #vdisp = rng.standard_normal(size=(3,nV,size))*vSigma
         vdisp=rng.normal(scale=vSigma.value,size=(3,nV,size))<<vSigma.unit # vSigma,1D dispersion not 3D dispersion        
         #np.broadcast_to(car_diff_ordered.d_xyz[:,np.newaxis,:],(3,nV,size),subok=True)
-        if  return_meta==True:
-            meta['v_random']=CartesianDifferential(vdisp,copy=True)    # (3,nv,ncloud)
+        if  return_cloudmeta==True:
+            cloudmeta['v_random']=CartesianDifferential(vdisp,copy=True)    # (3,nv,ncloud)
             
         vdisp+=car.differentials['s'].d_xyz[:,np.newaxis,:]
         car=CartesianRepresentation(np.broadcast_to(car.xyz[:,np.newaxis,:],(3,nV,size),subok=True),
@@ -404,10 +404,10 @@ def clouds_kin(car,rcProf=None,
                                     differentials=CartesianDifferential(vdisp,copy=True),copy=True)
 
     
-    if  return_meta==False:
+    if  return_cloudmeta==False:
         return car
     else:
-        return car,meta
+        return car,cloudmeta
 
 
 def clouds_tosky(car,inc,pa,inplace=True):
@@ -525,7 +525,7 @@ def clouds_fromobj(obj,
     """
     This is a wrapper function to create a cloudlet model from a object dict 
     """
-    car,meta=clouds_morph(sbProf=obj['sbProf'],
+    car,cloudmeta=clouds_morph(sbProf=obj['sbProf'],
                           rotPhi=obj['rotAz'] if  'rotAz' in obj else None,
                           sbQ=obj['sbQ'] if  'sbQ' in obj else None,
                           vbProf=obj['vbProf'],

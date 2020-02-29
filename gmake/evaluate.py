@@ -4,8 +4,7 @@ import gc
 import os
 import psutil
 process = psutil.Process(os.getpid())
-#from .meta import dat_dct_global
-import gmake.meta as meta
+
 from .utils import pprint
 from .model import clouds_fill
 from .model_dynamics import *
@@ -30,6 +29,8 @@ from .discretize import model_mapper
 from lmfit import Parameters
 from scipy.interpolate import interpn
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
+
+import gmake.meta as meta
 
 """
 Cores Functions
@@ -67,7 +68,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
     theta can be quanitity here
     
     """
-
+    #logger.debug(str(theta))
     
     ll=0
     chisq=0
@@ -93,7 +94,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
     
     if  models is None:
         models=model_setup(inp2mod(mod_dct),dat_dct,decomp=decomp,verbose=verbose)
-
+        
     # calculate chisq 
            
     for tag in list(models.keys()):
@@ -115,7 +116,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
             ll+=ll_one
             
     # lnl is not implementaed yet
-    
+    print('-->',ll)
     if  returnwdev==True:
         return ll,chisq,np.hstack(wdev)
     else:
@@ -148,7 +149,7 @@ def log_probability(theta,
 Convinient Functions, which
 
     + require argument is number rather quantities
-    + large dataset is from meta.X
+    + large dataset is from X
     
 """
 
@@ -158,12 +159,13 @@ def calc_lnprob(p,fit_dct,inp_dct,
                 verbose=False):
     """
     this is the evaluating function for emcee
-    use internal read-only database (meta.dat_dct_global/models_global) to avoid coping during threading
+    use internal read-only database (meta.db_global['dat_dct']/meta.db_global['models']) to avoid coping during threading
     """
+    #print('1',meta.db_global['dat_dct'])
+    #print('2',meta.db_global['models'])
     theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
-    
-    ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.dat_dct_global,
-                             models=meta.models_global,
+    ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
+                             models=meta.db_global['models'],
                              savemodel=savemodel)
     return ll,chisq    
 
@@ -187,7 +189,7 @@ def calc_chisq(p,
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
     logger.debug(str(theta))
 
-    ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.dat_dct_global,
+    ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
                               savemodel=savemodel)
     if  isinstance(blobs,dict):
@@ -197,7 +199,6 @@ def calc_chisq(p,
             blobs['logp'].append(ll)
         if  'pars' in blobs:
             blobs['pars'].append(pars)
-
     return chisq
 
 def calc_wdev(p,
@@ -220,15 +221,15 @@ def calc_wdev(p,
     logger.debug(str(theta))
     
     models,inp_dct0,mod_dct0=model_mapper(theta,fit_dct,inp_dct,
-                                          meta.dat_dct_global,
+                                          meta.db_global['dat_dct'],
                                           models=models)
     wdev=[]
     for tag in list(models.keys()):
         if  'imodel@' in tag:
             dname=tag.replace('imodel@','')
             if  models['type@'+dname]=='vis':
-                wdev_one=np.abs(models['model@'+dname]-meta.dat_dct_global['data@'+dname])*np.sqrt(meta.dat_dct_global['weight@'+dname][:,None])
-                wdev.append(wdev_one[meta.dat_dct_global['flag@'+dname]==False].ravel())
+                wdev_one=np.abs(models['model@'+dname]-meta.db_global['dat_dct']['data@'+dname])*np.sqrt(meta.db_global['dat_dct']['weight@'+dname][:,None])
+                wdev.append(wdev_one[meta.db_global['dat_dct']['flag@'+dname]==False].ravel())
             if  models['type@'+dname]=='image':
                 if  'sample@'+dname in models:
                     naxis=models['wcs@'+dname]._naxis
@@ -245,12 +246,12 @@ def calc_wdev(p,
                 wdev.append(wdev_one.ravel())           
     
     wdev=np.hstack(wdev)
-    
+
     return wdev
 
     """
     #obselet: only works for xy-optimiztion
-    ll,chisq,wdev=log_likelihood(theta,fit_dct,inp_dct,meta.dat_dct_global,
+    ll,chisq,wdev=log_likelihood(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
                               savemodel=savemodel,returnwdev=True) 
     return wdev   
