@@ -425,10 +425,12 @@ def model_mapper(theta,fit_dct,inp_dct,dat_dct,
                                     dat_dct['uvw@'+dname],
                                     dat_dct['phasecenter@'+dname],
                                     dat_dct['weight@'+dname],
-                                    dat_dct['flag@'+dname])
+                                    dat_dct['flag@'+dname],
+                                    pb=models['pbeam@'+dname])
             if  models[tag.replace('imodel@','type@')]=='image':
                 imodel,model_one=xy_mapper(objs,w,
-                                    psf=models['psf@'+dname],normalize_kernel=False)
+                                    psf=models['psf@'+dname],normalize_kernel=False,
+                                    pb=models['pbeam@'+dname])
 
             models['model@'+dname]=model_one
 

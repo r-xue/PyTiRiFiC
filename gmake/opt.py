@@ -309,23 +309,38 @@ def chisq_iterate(fit_dct,inp_dct,dat_dct,models,nstep=20,resume=None):
         # https://docs.scipy.org/doc/scipy/reference/optimize.minimize-neldermead.html#optimize-minimize-neldermead
         p_lo=np.array([q.value for q in fit_dct['p_lo']])
         p_up=np.array([q.value for q in fit_dct['p_up']])
-        #p0=np.array([q.value for q in fit_dct['p_start']])
-        #scale=np.array([q.value for q in fit_dct['p_scale']])
+        
+        p0=np.array([q.value for q in fit_dct['p_start']])
+        scale=np.array([q.value for q in fit_dct['p_scale']])
+        
         p0=(p_lo+p_up)/2.0
         scale=(p_up-p_lo)/2.0
+        
+        """
+        note: 
+            do not set intial_simplex and min/max at the same time due to prameter mapping in lmfit
+            two workaround methods:
+                + remove min/max (commented out)
+                + also mapping initial_simplex (used below)
+                  see: https://lmfit.github.io/lmfit-py/bounds.html
         p = np.outer(p0, np.ones(fit_dct['npar']+1))
         for i in range(fit_dct['npar']):
-            p[i][i+1]+=scale[i]
-        # note: 
-        #   do not set intial_simplex and min/max at the same time due to prameter mapping in lmfit
-        #   two workaround methods:
-        #       + remove min/max
-        #       + also mapping initial_simplex
+            p[i][i+1]+=scale[i]        
         for i in range(len(fit_dct['p_name'])):
             fit_dct['lmfit_params']['p_'+str(i+1)].set(min=-np.inf)
             fit_dct['lmfit_params']['p_'+str(i+1)].set(max=+np.inf)
-        fit_kws={'options':{'maxiter':nstep,'adaptive':True,'fatol':1e-10,
-                            'disp':True,'initial_simplex':p.T}} #'maxfev':nstep,,
+        """
+        
+        p0_internal=np.arcsin(2*(p0-p_lo)/(p_up-p_lo)-1)
+        p1_internal=np.arcsin(2*(p0+scale-p_lo)/(p_up-p_lo)-1)
+        sim = np.zeros((fit_dct['npar'] + 1, fit_dct['npar']), dtype=p0.dtype)
+        sim[0] = p0_internal
+        for k in range(fit_dct['npar']):
+            y = np.array(p0_internal, copy=True)
+            y[k] = p1_internal[k]
+            sim[k + 1] = y        
+        fit_kws={'options':{'maxiter':nstep,'adaptive':False,'fatol':1e-7,
+                            'disp':True,'initial_simplex':sim}} #'maxfev':nstep,,
         func=calc_chisq
     
     if  '-leastsq' in fit_dct['method']:

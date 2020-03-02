@@ -133,7 +133,6 @@ def log_probability(theta,
     """
     
     lp = log_prior(theta,fit_dct)
-    
     if  not np.isfinite(lp):
         return -np.inf,+np.inf
 
@@ -221,7 +220,6 @@ def calc_chisq(p,
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
     logger.debug(str(theta))
-
     ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
                               savemodel=savemodel)
@@ -232,6 +230,7 @@ def calc_chisq(p,
             blobs['logp'].append(ll)
         if  'pars' in blobs:
             blobs['pars'].append(pars)
+
     return chisq
 
 def calc_wdev(p,
