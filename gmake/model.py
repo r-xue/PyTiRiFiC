@@ -646,13 +646,20 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     #or [obj['xypos'].ra,obj['xypos'].dec]
                     #center=dat_dct['phasecenter@'+vis]
                     center=[obj['xypos'].ra,obj['xypos'].dec]
-                    models['header@'+vis]=makeheader(dat_dct['uvw@'+vis],center,
-                                                     dat_dct['chanfreq@'+vis],
-                                                     dat_dct['chanwidth@'+vis])
+                    
+                    if  'pbeam@'+vis not in dat_dct:
+                        models['header@'+vis]=makeheader(dat_dct['uvw@'+vis],center,
+                                                         dat_dct['chanfreq@'+vis],
+                                                         dat_dct['chanwidth@'+vis])
+                        models['pbeam@'+vis]=((makepb(models['header@'+vis],
+                                                      phasecenter=dat_dct['phasecenter@'+vis],
+                                                      antsize=25*u.m)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
+                    else:
+                        models['header@'+vis]=dat_dct['header@'+vis]
+                        models['pbeam@'+vis]=dat_dct['pbeam@'+vis]
+                    
                     models['wcs@'+vis]=WCS(models['header@'+vis])
-                    models['pbeam@'+vis]=((makepb(models['header@'+vis],
-                                                  phasecenter=dat_dct['phasecenter@'+vis],
-                                                  antsize=25*u.m)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
+                    
                     #naxis=(header['NAXIS4'],header['NAXIS3'],header['NAXIS2'],header['NAXIS1'])
                     
                     models['imodel@'+vis]=None
@@ -692,7 +699,10 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     else:
                         models['mask@'+image]=None
                                     
-                    
+                    if  'pbeam@'+image in dat_dct.keys():
+                        models['pbeam@'+image]=dat_dct['pbeam@'+image]
+                    else:
+                        models['pbeam@'+image]=None                    
                     
                     dshape=dat_dct['data@'+image].shape
                     header=dat_dct['header@'+image]

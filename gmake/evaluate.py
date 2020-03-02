@@ -220,7 +220,7 @@ def calc_chisq(p,
     else:
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
-    #logger.debug(str(theta))
+    logger.debug(str(theta))
 
     ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
@@ -312,6 +312,7 @@ def uv_chisq(objs,dname,dat_dct,models):
     phasecenter=dat_dct['phasecenter@'+dname]
     uvweight=dat_dct['weight@'+dname]
     uvflag=dat_dct['flag@'+dname]
+    pb=models['pbeam@'+dname]
     
     cc=0
     
@@ -340,17 +341,23 @@ def uv_chisq(objs,dname,dat_dct,models):
         for i in range(len(objs)): 
             if  x_list[i][iz].size!=0:
                 wt=wt_list[i][iz] if wt_list[i] is not None else None
+                if  pb.ndim==2:
+                    planepb=pb
+                if  pb.ndim==3:
+                    planepb=pb[iz,:,:]
+                if  pb.ndim==4:
+                    planepb=pb[0,iz,:,:]  
                 if  blank==True:
                     plane=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]
+                                         weights=wt)*fluxscale_list[i]*planepb
                     blank=False
                 else:
                     plane+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]                    
+                                         weights=wt)*fluxscale_list[i]*planepb                    
         if  blank==False:
             uvdiff=ne.evaluate('a-b',
                      local_dict={'a':sampleImage(plane.astype(np.float32),
@@ -394,6 +401,7 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
     imdata=dat_dct['data@'+dname]
     psf=models['psf@'+dname]
     error=models['error@'+dname]
+    pb=models['pbeam@'+dname]
     
     convol_fft_pad=False
     convol_psf_pad=False
@@ -422,17 +430,23 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
             obj=objs[i]
             if  x_list[i][iz+1].size!=0:
                 wt=wt_list[i][iz] if wt_list[i] is not None else None
+                if  pb.ndim==2:
+                    planepb=pb
+                if  pb.ndim==3:
+                    planepb=pb[iz,:,:]
+                if  pb.ndim==4:
+                    planepb=pb[0,iz,:,:]                  
                 if  blank==True:
                     plane=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]
+                                         weights=wt)*fluxscale_list[i]*planepb
                     blank=False
                 else:
                     plane+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]
+                                         weights=wt)*fluxscale_list[i]*planepb
         if  blank==False :
             if  psf.ndim==2:
                 planepsf=psf

@@ -31,6 +31,9 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
     
     inp_dct=read_inp(inpfile)
     outfolder=inp_dct['general']['outdir']
+    if  'analyze' in inp_dct:
+        if  'burnin' in inp_dct['analyze']:
+            burnin=inp_dct['analyze']['burnin']
     
     if  'amoeba' in inp_dct['optimize']['method']:
         chisq_analyze(outfolder,burnin=burnin)

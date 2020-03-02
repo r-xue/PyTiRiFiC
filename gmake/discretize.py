@@ -209,7 +209,7 @@ def lognsigma_lookup(objs,dname):
 
 ##########################################################################
 
-def xy_mapper(objs,w,psf=None,normalize_kernel=False):
+def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
            
     """
     map a cloudlets-based model into a gridd data model (i.a FITS image-like for exporting or XY->UV tranform)
@@ -253,10 +253,19 @@ def xy_mapper(objs,w,psf=None,normalize_kernel=False):
             if  x_list[i][iz+1].size!=0:
                 blank=False
                 wt=wt_list[i][iz] if wt_list[i] is not None else None
+                if  pb is not None:
+                    if  pb.ndim==2:
+                        planepb=pb
+                    if  pb.ndim==3:
+                        planepb=pb[iz,:,:]
+                    if  pb.ndim==4:
+                        planepb=pb[0,iz,:,:]
+                else:
+                    planepb=1                  
                 cube[iz,:,:]+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],                                             
                                              range=[yrange_list[i],xrange_list[i]],
                                              bins=(naxis[1],naxis[0]),
-                                             weights=wt)*fluxscale_list[i]
+                                             weights=wt)*fluxscale_list[i]*planepb
                                              
         if  psf is not None and blank==False :
             if  psf.ndim==2:
@@ -284,7 +293,7 @@ def xy_mapper(objs,w,psf=None,normalize_kernel=False):
 
 
 def uv_mapper(objs,w,
-              uvdata,uvw,phasecenter,uvweight,uvflag):
+              uvdata,uvw,phasecenter,uvweight,uvflag,pb=None):
     """
     map mutiple component into one header and calculate chisq
     
@@ -320,17 +329,26 @@ def uv_mapper(objs,w,
         for i in range(len(objs)): 
             if  x_list[i][iz].size!=0:
                 wt=wt_list[i][iz] if wt_list[i] is not None else None
+                if  pb is not None:
+                    if  pb.ndim==2:
+                        planepb=pb
+                    if  pb.ndim==3:
+                        planepb=pb[iz,:,:]
+                    if  pb.ndim==4:
+                        planepb=pb[0,iz,:,:]                      
+                else:
+                    planepb=1
                 if  blank==True:
                     plane=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]
+                                         weights=wt)*fluxscale_list[i]*planepb
                     blank=False
                 else:
                     plane+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
                                          range=[yrange_list[i],xrange_list[i]],
                                          bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]                    
+                                         weights=wt)*fluxscale_list[i]*planepb                    
         if  blank==False:
             vis[:,iz]=sampleImage(plane.astype(np.float32),
                                   cell,

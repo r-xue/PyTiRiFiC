@@ -60,6 +60,8 @@ def read_data(inp_dct,
             
             obj=inp_dct[tag]
             vis_list=obj['vis'].split(",")
+            if  'pb' in obj:
+                pb_list=obj['pb'].split(",")
             
             for ind in range(len(vis_list)):
                 
@@ -68,13 +70,24 @@ def read_data(inp_dct,
                     read_ms(vis_list[ind],
                             polaverage=polaverage,dataflag=dataflag,saveflag=saveflag,
                             dat_dct=dat_dct)
-                        
+                    
+                if  ('pbeam@'+vis_list[ind] not in dat_dct) and 'pb' in obj:
+                    
+                    dat_dct['pbeam@'+vis_list[ind]],dat_dct['header@'+vis_list[ind]]=\
+                        fits.getdata(pb_list[ind],header=True)
+                    
+                    logger.debug('reading pb model')
+                    logger.debug('{:60} {:15}'.format(pb_list[ind],str(dat_dct['pbeam@'+vis_list[ind]].shape)))
+                    
+   
         if  'image' in inp_dct[tag].keys():
         
             obj=inp_dct[tag]
             im_list=obj['image'].split(",")
             if  'mask' in obj:
                 mk_list=obj['mask'].split(",")
+            if  'pb' in obj:
+                pb_list=obj['pb'].split(",")                
             if  'error' in obj:
                 em_list=obj['error'].split(",")
             if  'sample' in obj:
@@ -126,6 +139,7 @@ def read_data(inp_dct,
                     logger.debug('loading: '+mk_list[ind]+' to ')
                     logger.debug('mask@'+im_list[ind])
                     logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
+                
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
@@ -134,6 +148,7 @@ def read_data(inp_dct,
                     logger.debug('loading: '+sp_list[ind]+' to ')
                     logger.debug('sample@'+im_list[ind])
                     logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
+                
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     if  isinstance(pf_list[ind],str):
                         data=fits.getdata(pf_list[ind],memmap=False)                
@@ -143,6 +158,15 @@ def read_data(inp_dct,
                         logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
                     else:
                         dat_dct['psf@'+im_list[ind]]=pf_list[ind]
+                     
+                
+                if  ('pbeam@'+im_list[ind] not in dat_dct) and 'pb' in obj:
+                    data=fits.getdata(pb_list[ind],header=False) 
+                    dat_dct['pbeam@'+im_list[ind]]=data
+                    
+                    logger.debug('loading: '+pb_list[ind]+' to ')
+                    logger.debug('pbeam@'+im_list[ind])
+                    logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))                                   
                      
                             
                 tag='data@'+im_list[ind]
@@ -156,6 +180,7 @@ def read_data(inp_dct,
                         data=dat_dct[tag]
                         dat_dct[tag.replace('data@','error@')]=data*0.0+np.std(data)
                         logger.debug('fill '+tag.replace('data@','error@')+str(np.std(data)))                
+                        
                         
                         
     
