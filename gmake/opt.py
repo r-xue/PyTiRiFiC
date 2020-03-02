@@ -42,6 +42,8 @@ import emcee
 import multiprocessing as mp
 Pool = mp.get_context('fork').Pool
 
+
+
 def opt_setup(inp_dct,dat_dct,initial_model=False,copydata=False):
     """
     Notes:
@@ -436,13 +438,39 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,models,nstep=100,resume=False):
         sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)
     else:
         set_omp_threads(1)
+        """
+        from .evaluate import calc_lnprob2_initializer
+        from .evaluate import calc_lnprob2
+        with Pool(processes=fit_dct['nthreads'],initializer=calc_lnprob2_initializer,initargs=(dat_dct,models)) as pool:
+            #   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  
+            sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+                                        calc_lnprob2,backend=backend,blobs_dtype=dtype,
+                                        args=(fit_dct,inp_dct),
+                                        runtime_sortingfn=sort_on_runtime,pool=pool)
+            sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)        
+        """
+    
         with Pool(processes=fit_dct['nthreads']) as pool:
             #   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  
             sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
                                         calc_lnprob,backend=backend,blobs_dtype=dtype,
                                         args=(fit_dct,inp_dct),
                                         runtime_sortingfn=sort_on_runtime,pool=pool)
-            sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)            
+            sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)
+        
+        
+        """    
+        with mp.Manager() as manager:
+            mg_dat_dct = manager.dict(dat_dct)
+            mg_models=manager.dict(models)            
+            with manager.Pool(processes=fit_dct['nthreads']) as pool:
+                sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
+                                            calc_lnprob,backend=backend,blobs_dtype=dtype,
+                                            args=(fit_dct,inp_dct,mg_dat_dct,mg_models),
+                                            runtime_sortingfn=sort_on_runtime,pool=pool)
+                sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)                
+        """
+                        
     """    
     for sample in sampler.sample(fit_dct['pos_last'],iterations=fit_dct['nstep'],
                                  progress=True,store=True):

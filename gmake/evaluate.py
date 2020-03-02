@@ -116,7 +116,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
             ll+=ll_one
             
     # lnl is not implementaed yet
-    print('-->',ll)
+
     if  returnwdev==True:
         return ll,chisq,np.hstack(wdev)
     else:
@@ -153,8 +153,17 @@ Convinient Functions, which
     
 """
 
+def calc_lnprob2_initializer(dat_dct,models):
+    
+    global global_dat_dct
+    global global_models
+    
+    global_dat_dct=dat_dct
+    global_models=models
+    
+    return
 
-def calc_lnprob(p,fit_dct,inp_dct,
+def calc_lnprob2(p,fit_dct,inp_dct,#dat_dct,models,
                 savemodel=None,decomp=False,nsamps=1e5,
                 verbose=False):
     """
@@ -163,9 +172,33 @@ def calc_lnprob(p,fit_dct,inp_dct,
     """
     #print('1',meta.db_global['dat_dct'])
     #print('2',meta.db_global['models'])
+    #print('-->',hex(id(global_dat_dct)))
     theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
-    ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
+    ll,chisq=log_probability(theta,fit_dct,inp_dct,
+                             global_dat_dct,
+                             models=global_models,
+                             #dat_dct,
+                             #models=models,
+                             savemodel=savemodel)
+    return ll,chisq 
+
+
+def calc_lnprob(p,fit_dct,inp_dct,#dat_dct,models,
+                savemodel=None,decomp=False,nsamps=1e5,
+                verbose=False):
+    """
+    this is the evaluating function for emcee
+    use internal read-only database (meta.db_global['dat_dct']/meta.db_global['models']) to avoid coping during threading
+    """
+    #print('1',meta.db_global['dat_dct'])
+    #print('2',meta.db_global['models'])
+    #print('-->',hex(id(meta.db_global['dat_dct'])))
+    theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
+    ll,chisq=log_probability(theta,fit_dct,inp_dct,
+                             meta.db_global['dat_dct'],
                              models=meta.db_global['models'],
+                             #dat_dct,
+                             #models=models,
                              savemodel=savemodel)
     return ll,chisq    
 
@@ -187,7 +220,7 @@ def calc_chisq(p,
     else:
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
-    logger.debug(str(theta))
+    #logger.debug(str(theta))
 
     ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
