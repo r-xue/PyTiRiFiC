@@ -228,6 +228,9 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
     #   x/y_sky is along x/y_pix
     #   here we directly map x/y_gal into x/y_pix without considering RA/DEC
         
+    pb must match wcs
+    
+    the outcome is a noise-flatten images (the one before pbcor)
     """
     
     convol_fft_pad=False
@@ -290,7 +293,34 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
     else:
         return cube,scube
 
-
+def sample_prep(w,phasecenter):
+    """
+    do some prep for galario.sampleImage()
+    uvdata phasecenter
+    w    model image wcs
+    """
+    naxis=w._naxis    
+    if  (naxis[0] % 2)!=0 or (naxis[1] % 2)!=0:
+        logger.debug("the input image must have even number of pixels along x-/y-dimensions")
+        return    
+    
+    refimcenter_ra,refimcenter_dec=w.celestial.wcs_pix2world(naxis[0]/2,naxis[1]/2,0)
+    phasecenter_sc = SkyCoord(phasecenter[0], phasecenter[1], frame='icrs')
+    refimcenter_sc = SkyCoord(refimcenter_ra*u.deg,refimcenter_dec*u.deg, frame='icrs')
+    dra, ddec = phasecenter_sc.spherical_offsets_to(refimcenter_sc)    
+    dRA=dra.to_value(u.rad)
+    dDec=ddec.to_value(u.rad)
+    cell=np.mean(proj_plane_pixel_scales(w.celestial))
+    cell=(np.deg2rad(cell)).astype(np.float32)
+    wspec=w.sub(['spectral'])  
+    wv=wspec.pixel_to_world(np.arange(naxis[2])).to(u.m,equivalencies=u.spectral()).value.astype(np.float32)     
+    
+    #   dRA (rad)
+    #   dDec (rad)
+    #   cell (rad)
+    #   wv (meter)
+    
+    return dRA,dDec,cell,wv
 
 def uv_mapper(objs,w,
               uvdata,uvw,phasecenter,uvweight,uvflag,pb=None):
@@ -301,22 +331,16 @@ def uv_mapper(objs,w,
     header:    pesudo fits header
     uv...:     visibility data 
     
+    pb must match wcs
     """
     
     cc=0
     chi2=0
-    naxis=w._naxis    
-    
-    phasecenter_sc = SkyCoord(phasecenter[0], phasecenter[1], frame='icrs')
-    refimcenter_sc = SkyCoord(w.wcs.crval[0]*u.deg,w.wcs.crval[1]*u.deg, frame='icrs')
-    dra, ddec = phasecenter_sc.spherical_offsets_to(refimcenter_sc)    
-    dRA=dra.to_value(u.rad)
-    dDec=ddec.to_value(u.rad)
-    cell=np.mean(proj_plane_pixel_scales(w.celestial))
-    cell=(np.deg2rad(cell)).astype(np.float32)
-    wspec=w.sub(['spectral'])  
-    wv=wspec.pixel_to_world(np.arange(naxis[2])).to(u.m,equivalencies=u.spectral()).value.astype(np.float32) 
-    
+    naxis=w._naxis
+
+    #   prep for sampleImage()    
+    dRA,dDec,cell,wv=sample_prep(w,phasecenter)
+
     #   gather information per object before going into the channel loop,
     #   so it won't need to reapt for each chanel
     fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=\
@@ -359,6 +383,7 @@ def uv_mapper(objs,w,
             
     return vis
 
+               
 ##########################################################################
 
 def model_mapper(theta,fit_dct,inp_dct,dat_dct,

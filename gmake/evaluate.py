@@ -19,6 +19,7 @@ from memory_profiler import profile
 from .model import model_setup
 from .discretize import uv_mapper,xy_mapper
 from .discretize import channel_split
+from .discretize import sample_prep
 from .discretize import lognsigma_lookup
 import fast_histogram as fh
 import numexpr as ne
@@ -314,18 +315,10 @@ def uv_chisq(objs,dname,dat_dct,models):
     pb=models['pbeam@'+dname]
     
     cc=0
-    
     naxis=w._naxis    
-    
-    phasecenter_sc = SkyCoord(phasecenter[0], phasecenter[1], frame='icrs')
-    refimcenter_sc = SkyCoord(w.wcs.crval[0]*u.deg,w.wcs.crval[1]*u.deg, frame='icrs')
-    dra, ddec = phasecenter_sc.spherical_offsets_to(refimcenter_sc)    
-    dRA=dra.to_value(u.rad)
-    dDec=ddec.to_value(u.rad)
-    cell=np.mean(proj_plane_pixel_scales(w.celestial))
-    cell=(np.deg2rad(cell)).astype(np.float32)
-    wspec=w.sub(['spectral'])  
-    wv=wspec.pixel_to_world(np.arange(naxis[2])).to(u.m,equivalencies=u.spectral()).value.astype(np.float32) 
+
+    #   prep for sampleImage()    
+    dRA,dDec,cell,wv=sample_prep(w,phasecenter)
 
     #   gather information per object before going into the channel loop,
     #   so it won't need to reapt for each chanel

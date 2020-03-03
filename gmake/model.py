@@ -890,10 +890,10 @@ def makepsf(header,
 
 def makepb(header,phasecenter=None,antsize=12*u.m):
     """
-    make a 2D Gaussian image approximated to the ALMA primary beam
+    make a 2D Gaussian image approximated to the ALMA (or VLA?) primary beam
         https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90
     
-    note: this is just a temp solution, assuming the the pointing is towards the reference pixel in the header 
+    note: this is just a apprximate solution, assuming the the pointing is towards the reference pixel in the header 
           and use the first channel as the reference frequency.
     
     """
