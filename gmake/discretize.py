@@ -229,8 +229,8 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
     #   here we directly map x/y_gal into x/y_pix without considering RA/DEC
         
     pb must match wcs
-    
-    the outcome is a noise-flatten images (the one before pbcor)
+        if    pb is set
+        the outcome is a images with a fluxscale of true_flux x pb
     """
     
     convol_fft_pad=False

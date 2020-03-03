@@ -185,7 +185,9 @@ def write_ms(vis,value,
     """
     
     if  inputvis is not None:
-        
+        if  inputvis==vis:
+            logger.debug("vis and inputvis must be different!")
+            return          
         os.system("rm -rf "+vis)
         os.system('cp -rf '+inputvis+' '+vis)
     
@@ -231,6 +233,9 @@ def corrupt_ms(vis,
     use simulated tool
     """
     if  inputvis is not None:    
+        if  inputvis==vis:
+            logger.debug("vis and inputvis must be different!")
+            return          
         os.system("rm -rf "+vis)
         os.system('cp -rf '+inputvis+' '+vis)
 
@@ -250,10 +255,14 @@ def cpredict_ms(vis,
         + insert it into the data column of MS
         
     the fits image is expected to have the correct flux scaling (true flux)
-    pbcor=True will do pbeam rescaling before sending images to FFT
+    pbcor=True will do pbeam rescaling before sending images to FFT; 
+        which assume fitsimage is in absolute flux scale
     """
     
     if  inputvis is not None:    
+        if  inputvis==vis:
+            logger.debug("vis and inputvis must be different!")
+            return         
         os.system("rm -rf "+vis)
         os.system('cp -rf '+inputvis+' '+vis)    
     """
@@ -288,8 +297,14 @@ def gpredict_ms(vis,
     
     ****pb is assumed to have the same WCS as fitsimage*****
     
+    pb!=None or antsize!=None will do pbeam rescaling before sending images to FFT; 
+        which assume fitsimage is in absolute flux scale    
+    
     """
-    if  inputvis is not None:    
+    if  inputvis is not None:   
+        if  inputvis==vis:
+            logger.debug("vis and inputvis must be different!")
+            return 
         os.system("rm -rf "+vis)
         os.system('cp -rf '+inputvis+' '+vis)    
     
@@ -352,7 +367,7 @@ def gpredict_ms(vis,
                                   (uvw[:,1]/wv[iz]),                               
                                   dRA=dRA,dDec=dDec,
                                   PA=0.,check=False,origin='lower')
-
+        
     write_ms(vis,uvmodel,datacolumn='data')
     
     return

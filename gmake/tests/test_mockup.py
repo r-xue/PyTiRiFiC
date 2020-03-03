@@ -16,6 +16,7 @@ from rxutils.casa.proc import setLogfile
 from astropy.cosmology import Planck13
 import astropy.units as u
 from copy import deepcopy
+from gmake.vis_utils import gpredict_ms,cpredict_ms
 
 def create_mockup_xy(inpname='mockup_baisc.inp'):
 
@@ -169,6 +170,8 @@ def create_mockup_uv_old(inpname='mockup_baisc.inp'):
 def create_mockup_uv(inpname='mockup_baisc.inp'):
     """
     https://casaguides.nrao.edu/index.php/Simulating_Observations_in_CASA_5.4
+    run within:
+        /Users/Rui/Resilio/Workspace/projects/GMaKE/gmake/tests/data
     """
 
     inpfile=gmake.__demo__+'/../gmake/tests/data/'+inpname
@@ -178,8 +181,10 @@ def create_mockup_uv(inpname='mockup_baisc.inp'):
     z=inp_dct['basics']['z']
     kps=Planck13.kpc_proper_per_arcmin(z).to(u.kpc/u.arcsec)
     r_beam=1.8*u.arcsec*kps
+    
+    # galaxy size: [ 3.20225876,  9.60677627, 16.01129378] kpc
     reff_list=np.array([0.25,0.75,1.25])*r_beam
-    # [ 3.20225876,  9.60677627, 16.01129378] kpc
+    # noise per vis record per channel:  [0.05,0.1,0.5] Jy
     sigm_list=np.array([0.05,0.1,0.5])#in Jy
 
     
@@ -193,69 +198,73 @@ def create_mockup_uv(inpname='mockup_baisc.inp'):
     setLogfile('casa.log')
     #invert(msname,version+'/dm',cell=0.20,imsize=[384,384],datacolumn='data',start=0,nchan=-1,width=1,onlydm=False)
     dat_dct=gmake.read_ms(vis=msname)
+
+    # anotehr way top get the reference xy header / pb model
+    #header=gmake.makeheader(dat_dct['uvw@'+msname],
+    #                        center,
+    #                        dat_dct['chanfreq@'+msname],
+    #                        dat_dct['chanwidth@'+msname],
+    #                        antsize=25*u.m)
+    #pb=gmake.makepb(header,antsize=25*u.m) # this is just for checking the accuracy of built-in gaussian PB model
+    #fits.writeto(version1+'.ms/im_pb.fits',pb,header,overwrite=True)
+    
+    # we borrow a header from PB genertated by tclean here   
+    # note: dm.pb.fits must have the same channel config as MS or we have to set pbaverage=True in gpredict_ms()   
+    pb,header=fits.getdata(version+'/dm.pb.fits',header=True)
+    w=WCS(header)
     
     for i in range(3):
+        
+        mod_dct=gmake.inp2mod(inp_dct)
+        gmake.utils.write_par(mod_dct,'sbProf[1]@co21',reff_list[i])
+        
+        # generate cloudlets model 
+        gmake.clouds_fill(mod_dct,nc=1000000,nv=30)
+        
+        # get noiseless uvmodel
+        pprint(mod_dct['co21'])
+        version1=version+'/'+str(i)
+        
+        #"""
+        #center=[obj['xypos'].ra,obj['xypos'].dec]
+        #center=dat_dct['phasecenter@'+msname]
+        uvmodel=gmake.uv_mapper([mod_dct['co21']],w,
+                                dat_dct['data@'+msname],
+                                dat_dct['uvw@'+msname],
+                                dat_dct['phasecenter@'+msname],
+                                dat_dct['weight@'+msname],
+                                dat_dct['flag@'+msname],
+                                pb=pb)
+        gmake.write_ms(version1+'.ms',uvmodel,datacolumn='data',inputvis=msname)
+        
+        # get noiseless xycube at the absolute scale (no pb needed)
+        cube=gmake.xy_mapper([mod_dct['co21']],w)
+        header['BUNIT']='Jy/pixel'
+        #del header['BPA']
+        #del header['BMIN']
+        #del header['BMAJ']        
+        fits.writeto(version1+'.ms/im.fits',cube,header,overwrite=True)
+        
+        # invert
+        invert(version1+'.ms',version1+'.ms/dm',cell=0.2,imsize=[384,384],datacolumn='data',start=0,nchan=120,width=1,onlydm=False) 
+        #"""        
+        gpredict_ms(version1+'g.ms',fitsimage=version1+'.ms/im.fits',inputvis=msname,pb=version+'/dm.pb.fits')
+        cpredict_ms(version1+'c.ms',fitsimage=version1+'.ms/im.fits',inputvis=msname,pbcor=True)
+
+        #  create noisy MS / cube
         for j in range(3):
-    
-            mod_dct=gmake.inp2mod(inp_dct)
-            #if  j!=0 or i!=0: 
-            #    continue
-            
-            gmake.utils.write_par(mod_dct,'sbProf[1]@co21',reff_list[i])
+
             simplenoise=str(sigm_list[j])+'Jy'
             
             version1=version+'/'+str(i)+str(j)
-            pprint(mod_dct)
-            
-            # generate cloudlets model 
-            gmake.clouds_fill(mod_dct,nc=1000000,nv=30)
-            
-            #   get a "pesodo" header (we borrow a header from PB genertated by tclean here)
-            
-            obj=mod_dct['co21']
-            #center=[obj['xypos'].ra,obj['xypos'].dec]
-            #center=dat_dct['phasecenter@'+msname]
-            #header=gmake.makeheader(dat_dct['uvw@'+msname],
-            #                        center,
-            #                        dat_dct['chanfreq@'+msname],
-            #                        dat_dct['chanwidth@'+msname],
-            #                        antsize=25*u.m)
-            pb,header=fits.getdata(version+'/dm.pb.fits',header=True)
-            
-            #   get uvmodel data
-            
-            w=WCS(header)    
-            uvmodel=gmake.uv_mapper([mod_dct['co21']],w,
-                                    dat_dct['data@'+msname],
-                                    dat_dct['uvw@'+msname],
-                                    dat_dct['phasecenter@'+msname],
-                                    dat_dct['weight@'+msname],
-                                    dat_dct['flag@'+msname],
-                                    pb=pb)
-            #   write out model MS
-            if  j==0:
-                gmake.write_ms(version1+'.ms',uvmodel,datacolumn='data',inputvis=msname) 
-                invert(version1+'.ms',version1+'.ms/dm',cell=0.2,imsize=[384,384],datacolumn='data',start=0,nchan=120,width=1,onlydm=False)               
-                
-                #   write intrinsic model
-                cube=gmake.xy_mapper([mod_dct['co21']],w,pb=pb)
-                header['BUNIT']='Jy/pixel'
-                #del header['BPA']
-                #del header['BMIN']
-                #del header['BMAJ']
-                fits.writeto(version1+'.ms/im.fits',cube,header,overwrite=True)
-                
-                #   write PB model
-                pb=gmake.makepb(header,antsize=25*u.m) # this is just for checking the accuracy of built-in gaussian PB model
-                fits.writeto(version1+'.ms/im_pb.fits',pb,header,overwrite=True)    
-                              
+            versionp=version+'/'+str(i)
             #   do invert  
-            version1_noiseless=version1.replace('/01','/00').replace('/02','/00')
-            gmake.corrupt_ms(version1+'_sn.ms',inputvis=version1_noiseless+'.ms',
+            gmake.corrupt_ms(version1+'.ms',inputvis=versionp+'.ms',
                  mode='simplenoise',simplenoise=simplenoise)
             
-            invert(version1+'_sn.ms',version1+'_sn.ms/dm',cell=0.25,imsize=[256,256],datacolumn='data',start=0,nchan=120,width=1,onlydm=False)    
-    
+            invert(version1+'.ms',version1+'.ms/dm',cell=0.2,imsize=[384,384],datacolumn='data',start=0,nchan=120,width=1,onlydm=False)    
+ 
+        
     return
     
 if  __name__=="__main__":
