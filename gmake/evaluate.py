@@ -220,7 +220,7 @@ def calc_chisq(p,
     else:
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
-    logger.debug(str(theta))
+    
     ll,chisq=log_probability(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
                               savemodel=savemodel)
@@ -232,6 +232,7 @@ def calc_chisq(p,
         if  'pars' in blobs:
             blobs['pars'].append(pars)
 
+    logger.debug(str(theta)+' '+str(chisq))
     return chisq
 
 def calc_wdev(p,
@@ -279,7 +280,8 @@ def calc_wdev(p,
                 wdev.append(wdev_one.ravel())           
     
     wdev=np.hstack(wdev)
-
+    
+    logger.debug(str(theta)+' '+str(np.sum(wdev**wdev))+' '+str(wdev.size))
     return wdev
 
     """

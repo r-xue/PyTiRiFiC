@@ -24,6 +24,8 @@ from .model_dynamics import model_vrot
 from .model import clouds_fill
 from .model import model_setup
 from .model import clouds_discretize_2d
+from .utils import write_par
+from .utils import inp2mod
 
 """
 *mapper / *chisq share some degrees of coding;
