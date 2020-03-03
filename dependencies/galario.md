@@ -1,11 +1,11 @@
 
 https://mtazzari.github.io/galario/install.html#
 
-install fftw-3 gcc8 py27-cpython py37-SPHINX
+install fftw-3 gcc8 py38-cython py38-SPHINX
 
-sudo port install py37-sphinx fftw-3 fftw-3-single fftw-3-long py37-cython
-sudo port select --set sphinx py37-sphinx
-sudo port select --set cython cython37
+sudo port install py38-sphinx fftw-3 fftw-3-single fftw-3-long py38-cython
+sudo port select --set sphinx py38-sphinx
+sudo port select --set cython cython38
 
 # using HPC gcc: /usr/local/bin/gcc 
 #    sudo port select gcc none
@@ -14,7 +14,7 @@ sudo port select --set cython cython37
 #    also pip uninstall gmake doesn;t really remove bin/gmake 
 rm -rf build && mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/opt/galario \
-      -DPython_ADDITIONAL_VERSIONS=3.7 \
+      -DPython_ADDITIONAL_VERSIONS=3.8 \
       -Wno-dev \
       -DCMAKE_C_COMPILER=gcc \
       -DCMAKE_CXX_COMPILER=g++ ..
@@ -35,7 +35,7 @@ option 2 (may not work in a non-interative model call)
 
 option 3 (preferred)
     add this to .bashrc:
-        export PYTHONPATH=$PYTHONPATH:/opt/galario/lib/python3.7/site-packages
+        export PYTHONPATH=$PYTHONPATH:/opt/galario/lib/python3.8/site-packages
         #https://stackoverflow.com/questions/3146274/is-it-ok-to-use-dyld-library-path-on-mac-os-x-and-whats-the-dynamic-library-s
         export DYLD_FALLBACK_LIBRARY_PATH=$DYLD_FALLBACK_LIBRARY_PATH:/opt/galario/lib/
         
