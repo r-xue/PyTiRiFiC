@@ -88,18 +88,13 @@ def read_ms(vis='',
     t.close()
     
     if  polaverage==True:
-        dat_dct_out['data@'+vis]=np.mean(dat_dct_out['data@'+vis],axis=-1)
-        dat_dct_out['weight@'+vis]=np.sum(dat_dct_out['weight@'+vis],axis=-1)
-        dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)    
         
-        for colname in ['data','weight','flag']:
-            if  colname+'@'+vis in dat_dct_out:
-                if  colname=='data':
-                    dat_dct_out[colname+'@'+vis]=np.mean(dat_dct_out[colname+'@'+vis],axis=-1)
-                if  colname=='flag':
-                    dat_dct_out[colname+'@'+vis]=np.any(dat_dct_out[colname+'@'+vis],axis=-1)
-                if  colname=='weight':
-                    dat_dct_out[colname+'@'+vis]=np.sum(dat_dct_out[colname+'@'+vis],axis=-1)                    
+        if  'data@'+vis in dat_dct_out:
+            dat_dct_out['data@'+vis]=np.mean(dat_dct_out['data@'+vis],axis=-1)
+        if  'weight@'+vis in dat_dct_out:
+            dat_dct_out['weight@'+vis]=np.sum(dat_dct_out['weight@'+vis],axis=-1)
+        if  'flag@'+vis in dat_dct_out:
+            dat_dct_out['flag@'+vis]=np.any(dat_dct_out['flag@'+vis],axis=-1)                    
     
     # flag all data with zero weight
     dat_dct_out['flag@'+vis][dat_dct_out['weight@'+vis]==0,:]=1
