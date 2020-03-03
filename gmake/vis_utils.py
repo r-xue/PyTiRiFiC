@@ -19,6 +19,7 @@ from astropy.coordinates import SkyCoord
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 from galario.single import sampleImage
 from .discretize import sample_prep
+from .model import makepb
 
 """
 ref: about taql:
@@ -277,14 +278,16 @@ def cpredict_ms(vis,
     return
 
 def gpredict_ms(vis,
-               fitsimage=None,inputvis=None,pb=None,pbaverage=True):
+               fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=None):
     """
     Using galario to:
         + generate UV model from a FITS image with primary beam model applied
         + insert it into the data column of MS
             
     the fits image is expected to have the correct flux scaling (true flux)
-    pb should have the same WCS as fitsimage
+    
+    ****pb is assumed to have the same WCS as fitsimage*****
+    
     """
     if  inputvis is not None:    
         os.system("rm -rf "+vis)
@@ -308,9 +311,16 @@ def gpredict_ms(vis,
     if  pb is not None:
         pbeam=fits.getdata(pb,header=False)
         if  pbaverage==True:
-            pbeam=np.mean(pbeam,axis=(0,1))
+            if  pbeam.ndim==3:
+                pbeam=np.mean(pbeam,axis=(0))
+            if  pbeam.ndim==4:
+                pbeam=np.mean(pbeam,axis=(0,1))
     else:
         pbeam=None
+
+    if  antsize is not None:
+        # just one plane
+        pbeam=makepb(header,phasecenter=phasecenter,antsize=antsize)
         
     for iz in range(naxis[2]):
         blank=True  
@@ -319,7 +329,7 @@ def gpredict_ms(vis,
             if  pbeam.ndim==2:
                 planepb=pbeam
             if  pbeam.ndim==3:
-                planepb=pbean[iz,:,:]
+                planepb=pbeam[iz,:,:]
             if  pbeam.ndim==4:
                 planepb=pbeam[0,iz,:,:]   
         else:

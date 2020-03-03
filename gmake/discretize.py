@@ -298,6 +298,9 @@ def sample_prep(w,phasecenter):
     do some prep for galario.sampleImage()
     uvdata phasecenter
     w    model image wcs
+    
+    ref:
+        https://mtazzari.github.io/galario/tech-specs.html specifically the "lower" option
     """
     naxis=w._naxis    
     if  (naxis[0] % 2)!=0 or (naxis[1] % 2)!=0:

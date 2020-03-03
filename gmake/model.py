@@ -143,7 +143,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
     ###################################
     # radial structure
     ###################################
-    weights=1
+    weights=None
     cloudmeta={}
     
     if  isinstance(sbProf,(tuple,list)):
@@ -153,7 +153,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
         if  cmode==0:
             rho_max=5
             rho = custom_rvs('uniform2d',size=size,seed=seeds[0])*rho_max # got out to r_e*rho_max
-            weights*= custom_pdf(sbProf[0].replace('2d',''),rho,sersic_n=sbProf[-1])
+            weights= custom_pdf(sbProf[0].replace('2d',''),rho,sersic_n=sbProf[-1])
             rho = rho*sbProf[1]
         if  cmode==1:
             rho = custom_rvs(sbProf[0],size=size,sersic_n=sbProf[-1],seed=seeds[0])*sbProf[1]
@@ -164,7 +164,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
             if  sbProf[0]=='expon2d':   rho*=0.5    
             if  sbProf[0]=='sersic2d':  rho*=0.5**sbProf[-1]
             if  sbProf[0]=='norm2d':  rho*=0.5**0.5   
-            weights/= custom_pdf(sbProf[0].replace('2d',''),rho/sbProf[1],sersic_n=sbProf[-1])
+            weights=1/custom_pdf(sbProf[0].replace('2d',''),rho/sbProf[1],sersic_n=sbProf[-1])
     else:
         # likely vector sampling array
         if  cmode==0:
@@ -298,9 +298,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
     if  sbPA is not None:
         cyl=CylindricalRepresentation(cyl.rho,sbPA+cyl.phi,cyl.z)
         car=cyl.represent_as(CartesianRepresentation) 
-    
-    if  weights is 1:
-        weights=None
+
     cloudmeta['weight']=weights
     return car,cloudmeta
 
