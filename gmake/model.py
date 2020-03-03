@@ -663,6 +663,7 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['imodel@'+vis]=None
                     models['objs@'+vis]=[]                  
                 
+                # get a lookup table when looping over dataset.
                 models['objs@'+vis].append(tag)
                 
                 """

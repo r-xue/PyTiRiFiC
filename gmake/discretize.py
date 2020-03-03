@@ -216,6 +216,7 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
     """
     map a cloudlets-based model into a gridd data model (i.a FITS image-like for exporting or XY->UV tranform)
     
+    objs:       componnet list 
     obj:        target metadata (galactic center position (ra,dec), redshift, vsys, etc.)
                 whatever information nesscarity to convert WCS units to physical units
     header:     data frame
@@ -331,7 +332,7 @@ def uv_mapper(objs,w,
               uvdata,uvw,phasecenter,uvweight,uvflag,pb=None):
     """
     map mutiple component into one header and calculate chisq
-    
+    objs:       componnet list
     models:    a list of model to be mapped into the visibility model for the chisq calculation
     header:    pesudo fits header
     uv...:     visibility data 

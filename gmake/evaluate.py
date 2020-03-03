@@ -261,8 +261,12 @@ def calc_wdev(p,
     for tag in list(models.keys()):
         if  'imodel@' in tag:
             dname=tag.replace('imodel@','')
+            
+            objs=[mod_dct0[obj] for obj in models['objs@'+dname]]
+            lognsigma=lognsigma_lookup(objs,dname)
+            
             if  models['type@'+dname]=='vis':
-                wdev_one=np.abs(models['model@'+dname]-meta.db_global['dat_dct']['data@'+dname])*np.sqrt(meta.db_global['dat_dct']['weight@'+dname][:,None])
+                wdev_one=np.abs(models['model@'+dname]-meta.db_global['dat_dct']['data@'+dname])*np.sqrt(meta.db_global['dat_dct']['weight@'+dname][:,None])/np.exp(lognsigma)
                 wdev.append(wdev_one[meta.db_global['dat_dct']['flag@'+dname]==False].ravel())
             if  models['type@'+dname]=='image':
                 if  'sample@'+dname in models:
@@ -276,12 +280,12 @@ def calc_wdev(p,
                     scube=models['model@'+dname]
                     error=models['error@'+dname]
                     imdata=models['data@'+dname]
-                wdev_one=(scube-imdata)/error
+                wdev_one=(scube-imdata)/error/np.exp(lognsigma)
                 wdev.append(wdev_one.ravel())           
     
     wdev=np.hstack(wdev)
     
-    logger.debug(str(theta)+' '+str(np.sum(wdev**wdev))+' '+str(wdev.size))
+    logger.debug(str(theta)+' '+str(np.sum(wdev**2))+' '+str(wdev.size))
     return wdev
 
     """
