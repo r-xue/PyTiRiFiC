@@ -16,12 +16,44 @@ import re
 
 from .meta import cfg
 from .meta import inp_def
+from scipy._build_utils.compiler_helper import try_add_flag
 
 logger = logging.getLogger(__name__)
 # get a logger named after a function name
 # logger=logging.getLogger(inspect.stack()[0][3])
 
 
+#   Choice of the FFT implementation 
+#   mkl could cut the evluate time by 40% in single-thread tests
+#       mkl 8-thread    1.27s
+#       mkl 1-thread    1.40s
+#       pyfftw 8-thread 1.50s
+#       pyfftw 1-thread 2.00s
+
+try:
+    import mkl_fft._numpy_fft as fft_use
+    import mkl
+    import mkl_random
+    # we must do a trial at least once to avoid downstream problem from galario
+    # not sure why at this moment 
+    #fft_use.fftn(1)# doesn't work
+    #import mkl_random # work
+    #fft_use.fftn(np.ones(1)) # work
+    logger.debug("use MKL_FFT for convolve_fft")
+    logger.debug("use MKL_RANDOM for RNG")
+except:
+    try:
+        import pyfftw.interfaces.numpy_fft as fft_use
+        logger.debug("use pyfftw for convolve_fft")
+        logger.debug("use numpy.random for RNG")
+    except:
+        import numpy.fft as fft_use
+        logger.debug("use numpy.fft for convolve_fft")
+        logger.debug("use numpy.random for RNG")
+        
+        
+from numpy.random import Generator,SFC64,PCG64
+        
 import astropy.units as u
 from astropy.coordinates import Angle
 from astropy.coordinates import SkyCoord
@@ -84,6 +116,19 @@ def arithmeticEval (s):
 """
 
 
+def rng_seeded(seed=None):
+    """
+    return a seeded RNG plus is_mkl
+    mkl_random is preferrred over numpy.random 
+    """
+
+    try:
+        mkl_random
+    except NameError:
+        return Generator(SFC64(seed)),False
+    else:
+        return mkl_random.RandomState(seed),True #, brng = brng_algo
+    
 def eval_func(vs_func_ps,var_dict):
     """
     Do an inline calculation from a string expression in a lambda function-like syntax
@@ -955,18 +1000,36 @@ def h5ls(filename,logfile=None):
     #fits.writeto('test.fits',data.T,overwrite=True)
 
 
-def set_omp_threads(num=None):
+def set_threads(num=None):
     """
     some underline alrgoithm library can use OMP
     turn on OMP is beneficial for iteration optimizwer but not for parallele optimizer
     this function can turn on / turn off OMP in modelling alrothjm
+    
+    ref:
+        looks like os.environ will only work before import packages
+        after the packages are imported, changing os.environ can not dynamically
+        switching nthreads
+    https://software.intel.com/en-us/mkl-linux-developer-guide-mkl-domain-num-threads
+    http://www.diracprogram.org/doc/release-17/installation/mkl.html
+    https://software.intel.com/en-us/blogs/2018/10/18/mkl-service-package-controlling-mkl-behavior-through-python-interfaces
+    
     """
     if  num is None:
         num=multiprocessing.cpu_count()
+
+    #os.environ["OMP_NUM_THREADS"] = str(num)
+    #os.environ["MKL_NUM_THREADS"] = str(num)
+    #os.environ['MKL_DOMAIN_NUM_THREADS']="MKL_DOMAIN_FFT="+str(num)
+    #os.environ["NUMEXPR_NUM_THREADS"] = str(num) # OMP_NUM_THREADS will override NUMEXPR_NUM_THREADS
     
     logger.info('set OpenMP threading: {0}'.format(num))
     galario_threads(num)
-    os.environ["OMP_NUM_THREADS"] = str(num)
+
+    mkl.domain_set_num_threads(num, domain='fft')
+    mkl.set_num_threads(num)
+    #mkl.domain_set_num_threads(num, domain='all')
+    mkl.set_dynamic(True)   # default=True; set to False will give worse performance for small array when threading turned on
     pyfftw.config.NUM_THREADS=num
     
     return 

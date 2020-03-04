@@ -46,6 +46,15 @@ Pool = mp.get_context('fork').Pool
 
 def opt_setup(inp_dct,dat_dct,initial_model=False,copydata=False):
     """
+    method choice guideline:
+    
+    amoeba and lmfit-nelder is essentially the same algorithm 
+    if there is no clear proior, one will have higher chance to find global minimal for high-dimension problems
+    
+    leastsq or least_square requires some tunning for the step of numerical directive calculation
+    
+    brute:    expensive one.
+    
     Notes:
         + nthreads
             if the calling function uses the CPU multiple-threading functon for calculations, 
@@ -345,12 +354,12 @@ def chisq_iterate(fit_dct,inp_dct,dat_dct,models,nstep=20,resume=None):
     
     if  '-leastsq' in fit_dct['method']:
         # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html
-        fit_kws={'epsfcn':0.01,'maxfev':100}
+        fit_kws={'epsfcn':0.1,'maxfev':100}
         func=calc_wdev
         
     if  '-least_squares' in fit_dct['method']:
         # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
-        fit_kws={'diff_step':np.ones(len(fit_dct['p_name']))*0.01,'max_nfev':nstep}
+        fit_kws={'diff_step':np.ones(len(fit_dct['p_name']))*0.1,'max_nfev':nstep}
         func=calc_wdev
         
     if  '-brute' in fit_dct['method']:
@@ -363,11 +372,11 @@ def chisq_iterate(fit_dct,inp_dct,dat_dct,models,nstep=20,resume=None):
     kws={'fit_dct':fit_dct,'inp_dct':inp_dct,'models':models,'blobs':blobs}
     
     # turn on/off mutiple-threading
-    set_omp_threads()
+    set_threads()
     if  '-brute' in fit_dct['method']:
         if  fit_kws['workers']>=2 or fit_kws['workers']==-1:
             del kws['blobs']
-            set_omp_threads(1)
+            set_threads(1)
     
     if  'lmfit-' in fit_dct['method']:
         result=minimize(func,fit_dct['lmfit_params'],
@@ -445,14 +454,14 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,models,nstep=100,resume=False):
     
     dtype = [("chisq",float)] 
     if  fit_dct['nthreads']==1:
-        set_omp_threads()
+        set_threads()
         sampler = emcee.EnsembleSampler(fit_dct['nwalkers'],fit_dct['ndim'],
                                     calc_lnprob,backend=backend,blobs_dtype=dtype,
                                     args=(fit_dct,inp_dct),
                                     runtime_sortingfn=sort_on_runtime)
         sampler.run_mcmc(last_state,fit_dct['nstep'],progress=True)
     else:
-        set_omp_threads(1)
+        set_threads(1)
         """
         from .evaluate import calc_lnprob2_initializer
         from .evaluate import calc_lnprob2
@@ -507,7 +516,7 @@ def emcee_iterate(fit_dct,inp_dct,dat_dct,models,nstep=100,resume=False):
         old_tau = tau
     """
     
-    set_omp_threads()
+    set_threads()
 
     logger.debug("Done.")
     logger.debug('Took {0} minutes'.format(float(time.time()-tic)/float(60.)))

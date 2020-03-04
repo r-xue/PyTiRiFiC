@@ -153,6 +153,8 @@ def chisq_analyze(outfolder,burnin=None):
 
     if  burnin is None:
         burnin=int(niter*0.8)
+    if  burnin>=niter:
+        burnin=niter-10
     
     #   print out parameter shifting
     

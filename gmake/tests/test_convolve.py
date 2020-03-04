@@ -1,19 +1,81 @@
 import numpy as np
 import multiprocessing
+import os
+
+
+try:
+    import mkl_fft
+    import mkl_fft._numpy_fft
+    import mkl_fft._scipy_fft
+    import mkl
+    tmp=mkl_fft.fftn(np.ones(1))
+except:
+    pass
+import galario
+
 import pyfftw
+
+
 from gmake.model import makekernel
+
+#import numpy as np
+#from .stats import pdf2rv
+#from .stats import cdf2rv
+#from .stats import custom_rvs
+#from .stats import custom_pdf
+import astropy.units as u
+#import fast_histogram as fh
+import pprint
+#from .utils import eval_func
+#from .utils import one_beam
+#from .utils import sample_grid
+
+import time
+from astropy.coordinates.matrix_utilities import rotation_matrix,matrix_product,matrix_transpose
+from astropy.coordinates.representation import SphericalRepresentation, CylindricalRepresentation, CartesianRepresentation
+from astropy.coordinates.representation import SphericalDifferential, CylindricalDifferential, CartesianDifferential
+from io import StringIO
+#from asteval import Interpreter
+#aeval = Interpreter(err_writer=StringIO())
+#aeval = Interpreter()
+#aeval.symtable['u']=u
+#from numpy.random import Generator,SFC64,PCG64
+from astropy._erfa import ufunc as erfa_ufunc
+from astropy import constants as const
+
+#from galario.double import get_image_size
+#from galario.double import sampleImage
+import galario
+import numpy as np
+
+from astropy.modeling.models import Gaussian2D
+from astropy.convolution import discretize_model
+#from .meta import create_header
+from astropy.stats import sigma_clipped_stats
+from astropy.stats import gaussian_fwhm_to_sigma
+from astropy.wcs import WCS
+from scipy.interpolate import interpn
+
+#import logging
+#logger = logging.getLogger(__name__)
+
+
+
+
+
 import time
 from astropy.convolution import convolve_fft
 from astropy.io import fits 
 import scipy
 import scipy.signal
-import mkl_fft._numpy_fft
-import mkl_fft._scipy_fft
-import cluda
 
-pyfftw.config.NUM_THREADS=8 
-pyfftw.interfaces.cache.enable()
-pyfftw.interfaces.cache.set_keepalive_time(5)
+
+
+#import cluda
+
+#pyfftw.config.NUM_THREADS=8 
+#pyfftw.interfaces.cache.enable()
+#pyfftw.interfaces.cache.set_keepalive_time(5)
 
 def fftw_fftn(input_data): 
     
@@ -30,8 +92,6 @@ def fftw_ifftn(input_data):
     ifftn_obj = pyfftw.builders.ifftn(input_data)
     
     return ifftn_obj()
-
-
 
 
 #pyfftw.config.NUM_THREADS=1
@@ -129,6 +189,98 @@ def reikna_ifftn(input_data):
 def test_convolve_performance(imsize=128,knsize=128,nloop=1,fftpad=False,complex_dtype=np.complex64,nd=2):
     """
     test different options to improve convol effciency) 
+    
+    New summary:
+hyperion:Downloads Rui$ python /Users/Rui/Resilio/Workspace/projects/GMaKE/gmake/tests/test_convolve.py
+------------------------------
+core: 8 64
+
+
+---fft_pad=False/numpy : 0.01573  seconds ---
+---fft_pad=False/scipy : 0.01781  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.01211  seconds ---
+---fft_pad=False/mkl : 0.00821  seconds ---
+---fft_pad=False/pyfftw-build : 0.02241  seconds ---
+core: 1 64
+
+
+---fft_pad=False/numpy : 0.01578  seconds ---
+---fft_pad=False/scipy : 0.01995  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.00980  seconds ---
+---fft_pad=False/mkl : 0.01070  seconds ---
+---fft_pad=False/pyfftw-build : 0.01948  seconds ---
+------------------------------
+core: 8 128
+
+
+---fft_pad=False/numpy : 0.07980  seconds ---
+---fft_pad=False/scipy : 0.06774  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.03930  seconds ---
+---fft_pad=False/mkl : 0.02288  seconds ---
+---fft_pad=False/pyfftw-build : 0.06307  seconds ---
+core: 1 128
+
+
+---fft_pad=False/numpy : 0.07151  seconds ---
+---fft_pad=False/scipy : 0.06872  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.06733  seconds ---
+---fft_pad=False/mkl : 0.02647  seconds ---
+---fft_pad=False/pyfftw-build : 0.06610  seconds ---
+------------------------------
+core: 8 256
+
+
+---fft_pad=False/numpy : 0.36860  seconds ---
+---fft_pad=False/scipy : 0.30269  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.16756  seconds ---
+---fft_pad=False/mkl : 0.12859  seconds ---
+---fft_pad=False/pyfftw-build : 0.22736  seconds ---
+core: 1 256
+
+
+---fft_pad=False/numpy : 0.35906  seconds ---
+---fft_pad=False/scipy : 0.30761  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.31902  seconds ---
+---fft_pad=False/mkl : 0.13502  seconds ---
+---fft_pad=False/pyfftw-build : 0.35638  seconds ---
+------------------------------
+core: 8 512
+
+
+---fft_pad=False/numpy : 1.37095  seconds ---
+---fft_pad=False/scipy : 1.69786  seconds ---
+---fft_pad=False/pyfftw-interfaces : 0.76424  seconds ---
+---fft_pad=False/mkl : 0.46024  seconds ---
+---fft_pad=False/pyfftw-build : 0.83339  seconds ---
+core: 1 512
+
+
+---fft_pad=False/numpy : 1.32977  seconds ---
+---fft_pad=False/scipy : 1.57104  seconds ---
+---fft_pad=False/pyfftw-interfaces : 1.25384  seconds ---
+---fft_pad=False/mkl : 0.56665  seconds ---
+---fft_pad=False/pyfftw-build : 1.42633  seconds ---
+------------------------------
+core: 8 1024
+
+
+---fft_pad=False/numpy : 7.31928  seconds ---
+---fft_pad=False/scipy : 7.08326  seconds ---
+---fft_pad=False/pyfftw-interfaces : 3.51487  seconds ---
+---fft_pad=False/mkl : 1.79977  seconds ---
+---fft_pad=False/pyfftw-build : 4.45799  seconds ---
+core: 1 1024
+
+
+---fft_pad=False/numpy : 7.92551  seconds ---
+---fft_pad=False/scipy : 8.17085  seconds ---
+---fft_pad=False/pyfftw-interfaces : 7.29244  seconds ---
+---fft_pad=False/mkl : 2.15090  seconds ---
+---fft_pad=False/pyfftw-build : 7.44018  seconds --
+
+
+
+    
     
     References:
         https://docs.scipy.org/doc/scipy/reference/tutorial/fftpack.html
@@ -289,10 +441,8 @@ In [32]: test_convolve_performance(imsize=1024,knsize=256,nloop=128,fftpad=False
     
     start_time = time.time()
     for i in range(nloop):
-        print(im.flags,kn.flags)
-        print(im.dtype,kn.dtype)
-        sm=convolve_fft(im,kn,#fft_pad=fftpad,#complex_dtype=complex_dtype,
-                        fftn=mkl_fft._numpy_fft.fftn, ifftn=mkl_fft._numpy_fft.ifftn)        
+        sm=convolve_fft(im,kn,fft_pad=fftpad,complex_dtype=complex_dtype,
+                        fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn)        
         #scipy.fftpack=mkl_fft._scipy_fft
         #sm=scipy.signal.fftconvolve(im,kn)
     print("---{0:^17} : {1:<8.5f} seconds ---".format('fft_pad='+str(fftpad)+'/mkl',time.time()-start_time))
@@ -334,22 +484,36 @@ def test_mkl():
     """
     mkl is rather buggy
     """
-    im=np.ones(100)
-    print(np.sum(np.fft.fftn(im.astype(np.float32))))  
-    print(np.sum(mkl_fft.fftn(im.astype(np.complex64))))   
-    im=np.ones((100,100))
-    #print(im.astype(np.float32).dtype)
-    print(np.sum(np.fft.fftn(im)))
 
-    print(np.sum( mkl_fft.fftn(im,overwrite_x=False) ) )
-    print(im)
-    r=mkl_fft.fftn(im,overwrite_x=False)
-    print(np.sum( r ) )
-    print(np.sum( mkl_fft.fftn(im) ) )
+    print("--")
+    im=np.ones((100,1000))
+    fftn=np.fft.fftn(im)
+    print(np.min(fftn),np.max(fftn),np.median(fftn),np.sum(fftn))
+    im=np.ones((100,1000))
+    fftn=mkl_fft._numpy_fft.fftn(im)    
+    print(np.min(fftn),np.max(fftn),np.median(fftn),np.sum(fftn))
+
     return 
     
 if  __name__=="__main__":  
-    
-    #pyfftw.config.NUM_THREADS = multiprocessing.cpu_count()
-    #test_convolve_performance(imsize=128,knsize=128,nloop=2,fftpad=False,complex_dtype=np.complex64,nd=2)
-    test=test_mkl()
+    # python /Users/Rui/Resilio/Workspace/projects/GMaKE/gmake/tests/test_convolve.py
+    # https://software.intel.com/en-us/mkl-linux-developer-guide-mkl-domain-num-threads
+    # http://www.diracprogram.org/doc/release-17/installation/mkl.html
+    for imsize in [64,128,256,512,1024]:
+        print("-"*30)
+        for num in [8,1]:
+            #os.environ["OMP_NUM_THREADS"]=str(num)
+            #os.environ["MKL_NUM_THREADS"]=str(num)
+            #os.environ['MKL_DOMAIN_NUM_THREADS']="MKL_DOMAIN_FFT="+str(num)
+            mkl.domain_set_num_threads(num, domain='all')
+            mkl.set_num_threads(num)
+            mkl.set_dynamic(True)
+            pyfftw.config.NUM_THREADS=num
+            
+            # for single-core comparison / mkl
+            #pyfftw.config.NUM_THREADS = multiprocessing.cpu_count()
+            print('core:',num,imsize)
+            test_convolve_performance(imsize=imsize,knsize=imsize,nloop=10,fftpad=False,complex_dtype=np.complex64,nd=2)
+            
+            
+    #test=test_mkl()

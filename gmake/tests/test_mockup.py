@@ -213,7 +213,7 @@ def create_mockup_uv(inpname='mockup_baisc.inp'):
     pb,header=fits.getdata(version+'/dm.pb.fits',header=True)
     w=WCS(header)
     
-    for i in range(3):
+    for i in [2]:
         
         mod_dct=gmake.inp2mod(inp_dct)
         gmake.utils.write_par(mod_dct,'sbProf[1]@co21',reff_list[i])
@@ -247,7 +247,9 @@ def create_mockup_uv(inpname='mockup_baisc.inp'):
         
         # invert
         invert(version1+'.ms',version1+'.ms/dm',cell=0.2,imsize=[384,384],datacolumn='data',start=0,nchan=120,width=1,onlydm=False) 
-        #"""        
+        
+        # alternative solution (using gpredict_ms & cpredict_ms)
+        #   note: gpredict shares the same codebase with uv_mapper/xy_mapper so their results should be the same      
         gpredict_ms(version1+'g.ms',fitsimage=version1+'.ms/im.fits',inputvis=msname,pb=version+'/dm.pb.fits')
         cpredict_ms(version1+'c.ms',fitsimage=version1+'.ms/im.fits',inputvis=msname,pbcor=True)
 

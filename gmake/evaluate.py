@@ -1,4 +1,4 @@
-from .model_dynamics import model_vrot
+from .dynamics import model_vrot
 import builtins
 import gc
 import os
@@ -7,7 +7,7 @@ process = psutil.Process(os.getpid())
 
 from .utils import pprint
 from .model import clouds_fill
-from .model_dynamics import *
+from .dynamics import *
 from .io import *
 from astropy.wcs import WCS
 #from galario.double import get_image_size
@@ -23,7 +23,12 @@ from .discretize import sample_prep
 from .discretize import lognsigma_lookup
 import fast_histogram as fh
 import numexpr as ne
+
+
+from .utils import fft_use
+
 from galario.single import sampleImage
+
 from astropy.convolution import convolve_fft
 import pyfftw
 from .discretize import model_mapper
@@ -252,7 +257,6 @@ def calc_wdev(p,
     else:
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
-    logger.debug(str(theta))
     
     models,inp_dct0,mod_dct0=model_mapper(theta,fit_dct,inp_dct,
                                           meta.db_global['dat_dct'],
@@ -403,7 +407,8 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
     
     convol_fft_pad=False
     convol_psf_pad=False
-    convol_complex_dtype=np.complex64 
+    convol_complex_dtype=np.complex64
+    convol_boundary='wrap'
         
     cc=0
     naxis=w._naxis
@@ -454,12 +459,10 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
                 planepsf=psf[0,iz,:,:]            
             scube[iz,:,:]=convolve_fft(plane,planepsf,
                                       fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
-                                      #complex_dtype=convol_complex_dtype,
-                                      #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
-                                      #fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
+                                      boundary=convol_boundary,
+                                      complex_dtype=convol_complex_dtype,
                                       #nan_treatment='fill',fill_value=0.0,
-                                      #fftn=scipy.fftpack.fftn, ifftn=scipy.fftpack.ifftn,
-                                      fftn=pyfftw.interfaces.numpy_fft.fftn, ifftn=pyfftw.interfaces.numpy_fft.ifftn,
+                                      fftn=fft_use.fftn, ifftn=fft_use.ifftn,
                                       normalize_kernel=False)
             cc+=1
   
@@ -512,7 +515,8 @@ def xy_chisq0(objs,dname,dat_dct,models):
     
     convol_fft_pad=False
     convol_psf_pad=False
-    convol_complex_dtype=np.complex64    
+    convol_complex_dtype=np.complex64
+    convol_boundary='wrap'    
         
     cc=0
     naxis=w._naxis
@@ -552,14 +556,12 @@ def xy_chisq0(objs,dname,dat_dct,models):
                 planepsf=psf[0,iz,:,:]            
             imdiff=ne.evaluate('a-b',
                      local_dict={'a':convolve_fft(plane,planepsf,
-                                                    fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
-                                                    #complex_dtype=convol_complex_dtype,
-                                                    #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
-                                                    #fftn=mkl_fft.fft2, ifftn=mkl_fft.ifft2,
-                                                    #nan_treatment='fill',fill_value=0.0,
-                                                    #fftn=scipy.fftpack.fftn, ifftn=scipy.fftpack.ifftn,
-                                                    fftn=pyfftw.interfaces.numpy_fft.fftn, ifftn=pyfftw.interfaces.numpy_fft.ifftn,
-                                                    normalize_kernel=False),
+                                                  fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
+                                                  boundary=convol_boundary,
+                                                  complex_dtype=convol_complex_dtype,
+                                                  #nan_treatment='fill',fill_value=0.0,
+                                                  fftn=fft_use.fftn, ifftn=fft_use.ifftn,
+                                                  normalize_kernel=False),
                                  'b':imdata[iz,:,:]})
             cc+=1
         else:

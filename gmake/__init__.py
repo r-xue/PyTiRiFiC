@@ -19,7 +19,7 @@ from .io import *
 from .evaluate import *  
 from .opt import *
 from .analyze import *
-from .model_dynamics import *
+from .dynamics import *
 from .discretize import *
 from .model import *
 from .vis_utils import *
@@ -49,4 +49,5 @@ __all__ = []
 # from .plt_utils import * 
 # 
 logger_config(logfile=None,loglevel='DEBUG',logfilelevel='DEBUG',reset=True)
+
 

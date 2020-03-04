@@ -1,5 +1,5 @@
 import numpy as np
-
+import scipy
 
 import astropy.units as u
 from astropy.wcs import WCS
@@ -8,19 +8,25 @@ from astropy.cosmology import Planck13
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 from astropy.io import fits 
 from astropy.coordinates import SkyCoord
-import numexpr as ne
-from galario.single import sampleImage
 from astropy.convolution import convolve_fft
+
+import numexpr as ne
+
+
 import pyfftw
-from scipy.sparse import csr_matrix
-import fast_histogram as fh
-import mkl_fft
-import scipy
 pyfftw.interfaces.cache.enable()
 pyfftw.interfaces.cache.set_keepalive_time(5)
+
+from scipy.sparse import csr_matrix
+import fast_histogram as fh
+
+from .utils import fft_use
+
+from galario.single import sampleImage
+
 from copy import deepcopy
 from .io import *
-from .model_dynamics import model_vrot
+from .dynamics import model_vrot
 from .model import clouds_fill
 from .model import model_setup
 from .model import clouds_discretize_2d
@@ -238,7 +244,8 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
     
     convol_fft_pad=False
     convol_psf_pad=False
-    convol_complex_dtype=np.complex64    
+    convol_complex_dtype=np.complex64   
+    convol_boundary='wrap' 
     
     cc=0
     naxis=w._naxis
@@ -282,12 +289,10 @@ def xy_mapper(objs,w,psf=None,pb=None,normalize_kernel=False):
                 planepsf=psf[0,iz,:,:]               
             scube[iz,:,:]=convolve_fft(cube[iz,:,:],planepsf,
                                       fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
+                                      boundary=convol_boundary,
                                       complex_dtype=convol_complex_dtype,
-                                      #fftn=np.fft.fftn, ifftn=np.fft.ifftn,
-                                      #fftn=mkl_fft.fftn, ifftn=mkl_fft.ifftn,
                                       #nan_treatment='fill',fill_value=0.0,
-                                      #fftn=scipy.fftpack.fftn, ifftn=scipy.fftpack.ifftn,
-                                      fftn=pyfftw.interfaces.numpy_fft.fftn, ifftn=pyfftw.interfaces.numpy_fft.ifftn,
+                                      fftn=fft_use.fftn, ifftn=fft_use.ifftn,
                                       normalize_kernel=normalize_kernel)
             cc+=1       
             

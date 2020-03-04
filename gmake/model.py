@@ -19,10 +19,17 @@ from asteval import Interpreter
 #aeval = Interpreter(err_writer=StringIO())
 aeval = Interpreter()
 aeval.symtable['u']=u
-from numpy.random import Generator,SFC64,PCG64
+
+from .utils import rng_seeded
 from astropy._erfa import ufunc as erfa_ufunc
 from astropy import constants as const
+
+
+from .utils import fft_use
 from galario.single import get_image_size
+
+
+
 from astropy.modeling.models import Gaussian2D
 from astropy.convolution import discretize_model
 from .meta import create_header
@@ -205,7 +212,7 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
         sbProf stll represent the mean flux density along rings although a perturbation in brightness is introduced
         This phi_Fourier Modes were used in TiriFic (also or see D. Zarisky+2013)
     """
-    rng1 = Generator(SFC64(seeds[1]))
+    rng,is_mkl = rng_seeded(seeds[1])
     if  fmPhi is not None:
         m=fmPhi[0]
         am=fmPhi[1]        
@@ -214,8 +221,10 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
         cdf_tb=1/2/np.pi*(phi_tb+am/m*np.sin(m*phi_tb))
         phi=cdf2rv(phi_tb,cdf_tb,size=size,seed=seeds[2])*u.rad+phim
     else:
-        phi = rng1.random(size)*2*np.pi*u.rad
-        
+        if  is_mkl:
+            phi = rng.uniform(low=0,high=2*np.pi,size=size)<<u.rad
+        else:
+            phi = (2*np.pi)*rng.random(size)<<u.rad
     """
     Generalized ellipse + Fourier Modes along Rho (see Galfit3)
 
@@ -354,11 +363,10 @@ def clouds_kin(car,rcProf=None,
         z=cyl.z
        
         # get v_rot table
-        
+        if  ' : ' in rcProf[0]:
+            v_rot=eval_func(rcProf,locals())            
         if  rcProf[0]=='table':
             v_rot=np.interp(rho,rcProf[1],rcProf[2])
-        if  ' : ' in rcProf[0]:
-            v_rot=eval_func(rcProf,locals())    
         if  rcProf[0].lower()=='arctan':
             v_rot=rcProf[1]*2.0/np.pi*np.arctan(rho/rcProf[2]*u.rad)
         if  rcProf[0].lower()=='expon':
@@ -389,10 +397,17 @@ def clouds_kin(car,rcProf=None,
 
         # (3,n_subcloudlets,n_cloudlets)
         # C-order, last dimension goes first
-        rng=Generator(SFC64(seed))
+        #rng=Generator(SFC64(seed))
+        rng,is_mkl= rng_seeded(seed)
         #vdisp = rng.standard_normal(size=(3,nV,size))*vSigma
-        vdisp=rng.normal(scale=vSigma.value,size=(3,nV,size))<<vSigma.unit # vSigma,1D dispersion not 3D dispersion        
+        if  is_mkl:
+            vdisp=rng.normal(scale=vSigma.value,size=(3,nV,size))<<vSigma.unit # vSigma,1D dispersion not 3D dispersion        
+        else:
+            vdisp=rng.standard_normal(size=(3,nV,size))*vSigma.value<<vSigma.unit
+        
         #np.broadcast_to(car_diff_ordered.d_xyz[:,np.newaxis,:],(3,nV,size),subok=True)
+        
+        
         if  return_cloudmeta==True:
             cloudmeta['v_random']=CartesianDifferential(vdisp,copy=True)    # (3,nv,ncloud)
             
