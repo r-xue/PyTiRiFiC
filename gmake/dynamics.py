@@ -22,6 +22,9 @@ mpl.rcParams["image.origin"]="lower"
 #import gc
 #@profile
 
+
+   
+
 def model_vcirc(pot_dct):
     """
     take a dictionary describing the potential and calculaet rotation curve

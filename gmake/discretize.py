@@ -435,7 +435,7 @@ def model_mapper(theta,fit_dct,inp_dct,dat_dct,
         write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind],verbose=False)
     
     mod_dct=inp2mod(inp_dct0)   # in physical units
-    model_vrot(mod_dct)         # in natural (default internal units)
+    #model_vrot(mod_dct)         # in natural (default internal units)
 
     # attach the cloudlet (reference) model to mod_dct
     

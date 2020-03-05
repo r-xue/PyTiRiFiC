@@ -133,7 +133,7 @@ def read_ms(vis='',
         if  var+'@'+vis not in dat_dct_out.keys():
             continue
         size=human_unit(get_obj_size(dat_dct_out[var+'@'+vis])*u.byte)
-        size=human_to_string(size,format_string='{0:3.0f} {1}')
+        size=human_to_string(size,format_string='{0.value:3.0f} {0.unit:shortname}')
         textout='{:60} {:15} {:20} {:20}'.format(
             var+'@'+vis,str(dat_dct_out[var+'@'+vis].dtype),str(dat_dct_out[var+'@'+vis].shape),
             size)

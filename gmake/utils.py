@@ -41,12 +41,12 @@ try:
     #fft_use.fftn(np.ones(1)) # work
     logger.debug("use MKL_FFT for convolve_fft")
     logger.debug("use MKL_RANDOM for RNG")
-except:
+except NameError:
     try:
         import pyfftw.interfaces.numpy_fft as fft_use
         logger.debug("use pyfftw for convolve_fft")
         logger.debug("use numpy.random for RNG")
-    except:
+    except NameError:
         import numpy.fft as fft_use
         logger.debug("use numpy.fft for convolve_fft")
         logger.debug("use numpy.random for RNG")
@@ -866,12 +866,41 @@ def human_unit(quantity, return_unit=False, base_index=0, scale_range=None):
     else:
         return human_unit
         
-        
-def human_to_string(quantity,
-                     nospace=True,shortname=True,
-                     format='generic',format_string='{0:0.2f} {1}'):
-                
+def unit_shortname(unit,nospace=True,options=False):
     """
+    convert unit to shortest name
+    e.g.: (unit_shortname(u.Jy*u.km/u.s,nospace=False)
+    
+    In [5]: unit_shortname(u.Jy*u.km/u.s,nospace=False)                                                                 
+    Out[5]: 'Jy km / s'
+
+    In [6]: unit_shortname(u.Jy*u.km/u.s,nospace=True)                                                                  
+    Out[6]: 'Jykm/s'    
+    
+    ref:
+    https://docs.astropy.org/en/stable/units/format.html#astropy-units-format
+    """
+    
+    format_all=['generic', 'unscaled', 'cds', 'console', 'latex', 'latex_inline', 'ogip', 'unicode', 'vounit']
+    unit_names=[]
+    try:
+        unit_names+=unit.names
+    except AttributeError as error:
+        unit_names+=[unit.to_string(format=f) for f in format_all]    
+    if  options==True:
+        print(unit_names)
+    unit_string=min(unit_names,key=len)
+    if  nospace==True:
+        unit_string=unit_string.replace(' ','')
+    
+    return unit_string
+
+def human_to_string(q,format_string='{0.value:0.2f} {0.unit:shortname}',nospace=True):
+    """
+    A slightly more fancy version of quality.to_string()
+    add the option of 0.units:shortname in formating string syntax
+    # https://docs.astropy.org/en/stable/units/format.html#astropy-units-format
+    
     format: forwarded to .to_string(format):
         options: generic, unscaled, cds, console, fits, latex, latex_inline, ogip, unicode, vounit
     
@@ -885,24 +914,19 @@ def human_to_string(quantity,
     For time:           try built-in astropy.utils.console.human_time()
     For file size:      one may also use astropy.utils.concolse.human_file_size()
 
+    print(human_to_string(q,format_string='{0.value:0.2f} {0.unit:shortname}',nospace=False))
+    print(human_to_string(q,format_string='{0.value:0.2f}{0.unit:shortname}',nospace=True))
+    print(human_to_string(q,format_string='{0.value:0.2f}{0.unit:cds}',nospace=True))
+    print(human_to_string(q,format_string='{0.value:0.2f} in {0.unit:shortname}',nospace=True))
+    print(human_to_string(q,format_string='{0.value:0.2f} in {0.unit:cds}',nospace=True))
     
     """
-    format_all=['generic', 'unscaled', 'cds', 'console', 'latex', 'latex_inline', 'ogip', 'unicode', 'vounit']
-
-    unit_string=quantity.unit.to_string(format=format)
-    if  shortname==True and format=='generic':
-        unit_names=[]
-        try:
-            unit_names+=quantity.unit.names
-        except AttributeError as error:
-            unit_names+=[quantity.unit.to_string(format=f) for f in format_all]
-        unit_string=min(unit_names,key=len)
-    if  nospace==True and format=='generic':
-        unit_string=unit_string.replace(' ','')
-    quantity_str=format_string.format(quantity.value,unit_string)
-
-    return quantity_str
-
+    format_use=format_string
+    if  '0.unit:shortname' in format_use:
+        format_use=format_string.replace("0.unit:shortname",'1')
+        return format_use.format(q,unit_shortname(q.unit,nospace=nospace))
+    else:
+        return format_string.format(q)
 
     
     #if  'lmfit' in inp_dct['optimize']['method']:
@@ -954,7 +978,7 @@ def get_obj_size(obj,to_string=False):
 
     if  to_string==True:
         sz=human_unit(sz*u.byte)
-        sz=human_to_string(sz,format_string='{0:3.0f} {1}')
+        sz=human_to_string(sz,format_string='{0.value:3.0f} {0.unit:shortname}')
         
     return sz
 
@@ -1023,7 +1047,7 @@ def set_threads(num=None):
     #os.environ['MKL_DOMAIN_NUM_THREADS']="MKL_DOMAIN_FFT="+str(num)
     #os.environ["NUMEXPR_NUM_THREADS"] = str(num) # OMP_NUM_THREADS will override NUMEXPR_NUM_THREADS
     
-    logger.info('set OpenMP threading: {0}'.format(num))
+    logger.info('set modeling threading: {0}'.format(num))
     galario_threads(num)
 
     mkl.domain_set_num_threads(num, domain='fft')

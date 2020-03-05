@@ -25,6 +25,9 @@ mpl.rcParams['agg.path.chunksize'] = 10000
 #mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 #mpl.rc('font',**{'family':'serif','serif':['Palatino']})
 #mpl.rc('text',usetex=True)
+import astropy.units as u
+import numpy as np
+from .model import pots_to_vcirc
 
 def calc_ppbeam(header):
     """
@@ -804,6 +807,42 @@ def plt_radprof(fn):
             
         fig.savefig(odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf')
         logger.debug("plt_radprof >>> "+odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
+
+
+def plt_rc(pots,
+           pscorr=None,
+           rrange=[0,10]*u.kpc,num=50,
+           figname='plt_rc.pdf'):
+    """
+    plot rc from galpy.potential
+    also try:
+        https://galpy.readthedocs.io/en/v1.5.0/getting_started.html
+        from galpy.potential import plotRotcurve
+        
+    pscorr=(80*u.km/u.s,10*u.kpc)
+    """
+    
+    rho=np.linspace(rrange[0],rrange[1],num=num)
+    rho=rho[np.where(rho>0)]
+    
+    vcirc,vname=pots_to_vcirc(pots,rho,pscorr=pscorr)
+    
+    plt.clf()
+    fig,ax=plt.subplots(1,1,figsize=(10,10))
+    
+    nc=vcirc.shape[0]
+    for i in range(nc): 
+        ax.plot(rho,vcirc[i,:],label=vname[i])
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_dp'],color='blue',label='ThinExpDisk')
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_tt'],color='black',label='All')
+    ax.set_xlabel('Radius [kpc]')
+    ax.set_ylabel('V [km/s]')
+    ax.legend()
+    #ax1.loglog(rad,vcirc_tp)
+    #ax1.loglog(rad,vcirc_tp,color='black')
+    #ax2.loglog(rad,cmass_tp)
+    fig.savefig(figname)    
+    
 
 if  __name__=="__main__":
 

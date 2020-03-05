@@ -24,7 +24,6 @@ from .discretize import lognsigma_lookup
 import fast_histogram as fh
 import numexpr as ne
 
-
 from .utils import fft_use
 
 from galario.single import sampleImage
@@ -74,7 +73,6 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
     theta can be quanitity here
     
     """
-    #logger.debug(str(theta))
     
     ll=0
     chisq=0
@@ -88,7 +86,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
         write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind],verbose=False)
     
     mod_dct=inp2mod(inp_dct0)   # in physical units
-    model_vrot(mod_dct)         # in natural (default internal units)
+    #model_vrot(mod_dct)         # in natural (default internal units)
     
     # attach the cloudlet (reference) model to mod_dct
     
@@ -146,7 +144,7 @@ def log_probability(theta,
                              models=models,returnwdev=False,
                              savemodel=savemodel,decomp=decomp,nsamps=nsamps,
                              verbose=verbose)
-    #logger.debug(str(theta))
+    
     return ll+lp,chisq
 
 
@@ -237,7 +235,8 @@ def calc_chisq(p,
         if  'pars' in blobs:
             blobs['pars'].append(pars)
 
-    logger.debug(str(theta)+' '+str(chisq))
+    theta_str=' '.join([human_to_string(theta[i],format_string='{0.value:0.2f}{0.unit:cds}') for i in range(len(fit_dct['p_start']))])
+    logger.debug(theta_str+' '+str(chisq))
     return chisq
 
 def calc_wdev(p,
@@ -288,8 +287,8 @@ def calc_wdev(p,
                 wdev.append(wdev_one.ravel())           
     
     wdev=np.hstack(wdev)
-    
-    logger.debug(str(theta)+' '+str(np.sum(wdev**2))+' '+str(wdev.size))
+    theta_str=' '.join([human_to_string(theta[i],format_string='{0.value:0.2f}{0.unit:cds}') for i in range(len(fit_dct['p_start']))])
+    logger.debug(theta_str+' '+str(np.sum(wdev**2))+' '+str(wdev.size))
     return wdev
 
     """

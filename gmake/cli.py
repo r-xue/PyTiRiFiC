@@ -8,6 +8,13 @@
     Here we include:
         workflow for CLI
         workflow for routine tasks
+        
+    check mkl
+
+import gmake
+from gmake.utils import rng_seeded 
+print(gmake.fft_use)
+print(rng_seeded(None))
 """
 
 import os

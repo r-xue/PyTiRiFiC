@@ -38,6 +38,9 @@ from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.wcs import WCS
 from scipy.interpolate import interpn
 
+import galpy.potential as galpy_pot
+from astropy.cosmology import Planck13
+from scipy.interpolate import interp1d
 import logging
 logger = logging.getLogger(__name__)
 
@@ -362,17 +365,26 @@ def clouds_kin(car,rcProf=None,
         phi=cyl.phi
         z=cyl.z
        
-        # get v_rot table
+        # get v_rot
+        
+        #       lambda function mode
         if  ' : ' in rcProf[0]:
             v_rot=eval_func(rcProf,locals())            
+        #       table mode
         if  rcProf[0]=='table':
             v_rot=np.interp(rho,rcProf[1],rcProf[2])
+        #       arctan mode
         if  rcProf[0].lower()=='arctan':
             v_rot=rcProf[1]*2.0/np.pi*np.arctan(rho/rcProf[2]*u.rad)
+        #       expon mode
         if  rcProf[0].lower()=='expon':
             v_rot=rcProf[1]*(1-np.exp(-rho/rcProf[2]))
+        #       tanh mode
         if  rcProf[0].lower()=='tanh':
-            v_rot=rcProf[1]*np.tanh(rho/rcProf[2]*u.rad)        
+            v_rot=rcProf[1]*np.tanh(rho/rcProf[2]*u.rad)
+        if  rcProf[0].lower()=='potential':
+            v_rot=(pots_to_vcirc(rcProf[1],rho))[0][0,:]
+            
         
         # get d_phi/d_z/d_rho
         
@@ -533,26 +545,130 @@ def cloudlet_moms(cloudlet,
 
 ###################################################################################################
 
+def potential_fromobj(obj):
+    """
+    create a abstract galpy.potential object (defined in the galactic plane frame)
+    which can be used to calculate circular velocity once cloud position is defined. 
+    
+    obj:    type='poyential'
+    return a list of galpy.potential
+    
+    https://galpy.readthedocs.io/en/v1.5.0/potential.html
+    
+    """
+
+    # note: the normalizaton factor doesn't really matter if 
+    #       we use astropy.quality when building potentials
+    
+    ro=8.*u.kpc         
+    vo=110.*u.km/u.s
+    pots=[]
+    
+    #   NFW like potential
+    
+    if  'nfw_mvir' in obj and 'z' in obj:
+        
+        z=obj['z']
+        h=Planck13.h
+        z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
+        c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
+        m0 = np.array([1.5e19,1.5e17,2.5e15,6.8e13,6.3e12,6.6e11]) / h
+        ikind='linear'
+        if_c=interp1d(np.array(z0),np.array(c0),kind=ikind,bounds_error=False,
+                      fill_value=(c0[0],c0[-1]))
+        if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
+                      fill_value=(m0[0],m0[-1]))        
+        m_vir=obj['nfw_mvir']   # values in units if 10^12msun
+        #   if m_vir is value, then in units of 1e12msun
+        #   https://galpy.readthedocs.io/en/latest/reference/potentialnfw.html
+        m_vir_12msun=(obj['nfw_mvir']).to_value(u.Msun)/1e12
+        c_vir = if_c(z) * (m_vir_12msun*h)**(-0.075) * (1+(m_vir_12msun*1e12/if_m(z))**0.26)
+                                    
+        omega_z=Planck13.Om(z)                                           
+        delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
+        npot=galpy_pot.NFWPotential(conc=c_vir,
+                          mvir=m_vir_12msun,
+                          H=Planck13.H(z).value,
+                          Om=0.3,#dones't matter as wrtcrit=True
+                          overdens=delta_c,wrtcrit=True,
+                          ro=ro,vo=vo)
+        pots.append(npot)
+
+    #   Thin exp diskpotential
+    
+    if  'disk_sd' in obj and 'disk_rs' in obj:
+
+        dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=obj['disk_sd'],
+                                               hr=obj['disk_rs'],ro=ro,vo=vo)
+        pots.append(dpot)
+
+    return pots 
+
+def pots_to_vcirc(pots,rho,pscorr=None):
+    """
+    calculate vcirc and vrot from galactocentric distance and galpy.potential
+    post is a list of ponetials
+    
+    optionally, a dispersion-based pressure correcton can be applied to provide partial support (tehrefore, decrease vrot)
+    pscorr=(vSigma,ExpDisk_scale_length) 
+    note: this is only correct if the non-DM is in a exp-disk
+    
+        vcirc:   no pressure correction
+        vrot:    pressure correction
+    optionall
+    
+    vcirc[0,:] = rotational velocity after the correction
+    vcirc[1,:] = rotatipnal velocity before the correction
+    vcirc{2:,:] = contribution from individial potentials 
+    
+    """
+    
+    vcirc_pot=[]
+    for pot in pots:
+        vcirc_pot.append(pot.vcirc(rho))
+    vcirc_pot=np.vstack(vcirc_pot)
+    vcirc=np.sqrt(np.sum((np.vstack(vcirc_pot))**2,axis=0))
+
+    pots_name=[(pot.__class__.__name__).split(".")[-1] for pot in pots]
+    
+    if  pscorr is not None:
+        vrot=vcirc**2-2*pscorr[0]**2*(rho/pscorr[1])
+        vrot[vrot<0]=0
+        vrot=np.sqrt(vrot)
+        return np.vstack((vrot,vcirc,vcirc_pot)),['Vrot','Vcirc']+pots_name
+    else:          
+        return np.vstack((vcirc,vcirc_pot)),['Vcirc']+pots_name
+
+
 def clouds_fromobj(obj,
                    nc=100000,nv=20,seeds=[None,None,None,None]):
     """
     This is a wrapper function to create a cloudlet model from a object dict 
+    obj type='disk3d'
     """
     car,cloudmeta=clouds_morph(sbProf=obj['sbProf'],
                           rotPhi=obj['rotAz'] if  'rotAz' in obj else None,
                           sbQ=obj['sbQ'] if  'sbQ' in obj else None,
                           vbProf=obj['vbProf'],
                           seeds=seeds[0:3],size=nc)    
-
+    
+    if  'rcProf' in obj:
+        rcProf=list(obj['rcProf'])
+        if  rcProf[0]=='potential':
+            rcProf[1]=obj['pots']
+    else:
+        rcProf=None
     car_k=clouds_kin(car,
-                     rcProf=obj['rcProf'],
-                     vRadial=obj['vRadial'],
-                     vSigma=obj['vSigma'],
+                     rcProf=rcProf,
+                     vRadial=obj['vRadial'] if  'vRadial' in obj else None,
+                     vSigma=obj['vSigma'] if  'vSigma' in obj else None,
                      seed=seeds[3],nV=nv)
     
     clouds_tosky(car_k,obj['inc'],obj['pa'],inplace=True)
     
     return car_k.ravel(),None
+
+###################################################################################################
 
 def clouds_fill(mod_dct,
                 nc=100000,nv=20,seeds=[None,None,None,None]):
@@ -562,45 +678,39 @@ def clouds_fill(mod_dct,
     This is a wrapper function to attached a cloudlet model from a object-group dict  
     """
     
+    # first pass:   build potentials
+    
+    for objname, obj in mod_dct.items():
+        if  'type' not in obj:
+            continue
+        if  obj['type']!='potential':
+            continue
+        obj['pots']=potential_fromobj(obj)
+        
+    # second pass:   attach potential (if requested) and fill cloudlet
+    
     for objname, obj in mod_dct.items():
         if  'type' not in obj:
             continue
         if  obj['type']!='disk3d':
             continue
+        # attach potentials
+        if  'rcProf' in obj:
+            if  obj['rcProf'][0]=='potential':
+                obj['pots']=mod_dct[obj['rcProf'][1]]['pots']
+
         obj['clouds_loc'],obj['clouds_wt']=\
             clouds_fromobj(obj,
                            nc=nc,nv=nv,seeds=seeds)
         for fluxtype in ['lineflux','contflux']:
             if  fluxtype in obj:
                 obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size
-                
-    return  
+        
+    return    
+
 
 ###################################################################################################  
 
-def model_update(mod_dct,models):
-    """
-    not used. related to likelihood
-    update some model parameters related to likelihood calculation
-        In the model properties, we have some keywords related to configing the likelihood
-    model and calculate log_propeorbaility:
-        lognsigma: used to scale noise level (in case it's overunder estimated)
-    They are actually related to data (one value per dataset)
-    But it's setup per object due to the input file layout (repeated for different objects, like PSF)
-    """
-    
-    for tag in list(mod_dct.keys()):
-         obj=mod_dct[tag]
-         if  'vis' in mod_dct[tag].keys():
-             vis_list=mod_dct[tag]['vis'].split(",")
-             for vis in vis_list:
-                if  'lognsigma' not in obj['lognsigma']:
-                    models['lognsigma@'+vis]=0.0
-                else:
-                    models['lognsigma@'+vis]=obj['lognsigma']
-                  
-    return
-    
 
 def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
     """
@@ -658,15 +768,20 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     
                     #or [obj['xypos'].ra,obj['xypos'].dec]
                     #center=dat_dct['phasecenter@'+vis]
+                    # right now we are using the first object RA/DEC to make reference model imaging center
+                    # also we hard-code the antenna size to 25*u.m
                     center=[obj['xypos'].ra,obj['xypos'].dec]
+                    antsize=25*u.m
                     
                     if  'pbeam@'+vis not in dat_dct:
+                        logger.debug('make imaging-header / pb model for:'+vis)
+                        
                         models['header@'+vis]=makeheader(dat_dct['uvw@'+vis],center,
                                                          dat_dct['chanfreq@'+vis],
                                                          dat_dct['chanwidth@'+vis])
                         models['pbeam@'+vis]=((makepb(models['header@'+vis],
                                                       phasecenter=dat_dct['phasecenter@'+vis],
-                                                      antsize=25*u.m)).astype(np.float32))[np.newaxis,np.newaxis,:,:]
+                                                      antsize=antsize)).astype(np.float32)) #[np.newaxis,np.newaxis,:,:]
                     else:
                         models['header@'+vis]=dat_dct['header@'+vis]
                         models['pbeam@'+vis]=dat_dct['pbeam@'+vis]
@@ -679,7 +794,8 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                     models['objs@'+vis]=[]                  
                 
                 # get a lookup table when looping over dataset.
-                models['objs@'+vis].append(tag)
+                if  obj['type']=='disk3d':
+                    models['objs@'+vis].append(tag)
                 
                 """
                 obj['pmodel']=None
@@ -764,8 +880,9 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                         
                     models['imodel@'+image]=None
                     models['objs@'+image]=[]
-                    
-                models['objs@'+image].append(tag) 
+                
+                if  mod_dct[tag]['type']=='disk3d':                    
+                    models['objs@'+image].append(tag) 
                 
                 """           
                 models['imodel@'+image]=np.zeros(naxis)
@@ -821,12 +938,8 @@ def makeheader(uv,center,chanfreq,chanwidth,antsize=None):
     nxy, dxy = get_image_size(uv[:,0]/wv.value, uv[:,1]/wv.value,
                               PB=pb,f_max=f_max,f_min=f_min,
                               verbose=False)
-    logger.debug('make fits-header for vis')
-    logger.debug('nxy:  '+str(nxy))
-    logger.debug('dxy:  '+(dxy<<u.rad).to(u.arcsec).to_string())
-
- 
-
+    logger.debug('nxy:'+str(nxy)+' '+str(np.size(chanfreq))+' '+'dxy:'+(dxy<<u.rad).to(u.arcsec).to_string())
+    
     header=create_header()
     header['NAXIS1']=nxy
     header['NAXIS2']=nxy
