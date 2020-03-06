@@ -811,7 +811,7 @@ def plt_radprof(fn):
 
 def plt_rc(pots,
            pscorr=None,
-           rrange=[0,10]*u.kpc,num=50,
+           rrange=[1e-3,1e1]*u.kpc,num=50,
            figname='plt_rc.pdf'):
     """
     plot rc from galpy.potential
@@ -822,7 +822,7 @@ def plt_rc(pots,
     pscorr=(80*u.km/u.s,10*u.kpc)
     """
     
-    rho=np.linspace(rrange[0],rrange[1],num=num)
+    rho=np.geomspace(rrange[0],rrange[1],num=num)
     rho=rho[np.where(rho>0)]
     
     vcirc,vname=pots_to_vcirc(pots,rho,pscorr=pscorr)

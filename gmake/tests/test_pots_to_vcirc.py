@@ -25,7 +25,30 @@ gmake.clouds_fill(mod_dct)
 
 from gmake.plts import plt_rc
 import astropy.units as u
+import numpy as np
 
-plt_rc(mod_dct['diskdyn']['pots'],rrange=[0,20]*u.kpc,pscorr=(60*u.km/u.s,10*u.kpc))
+from gmake.model import potential_fromobj
 
-# est_plt_rc Rui$ python /Users/Rui/Resilio/Workspace/projects/GMaKE/gmake/tests/test_plt_rc.p
+import astropy.units as u
+import galpy.potential as potential
+
+
+
+def test_makepots():
+    """
+    """
+    pots=potential_fromobj(mod_dct['diskdyn'])
+
+if  __name__=="__main__":  
+    test_makepots()
+
+#print("---")
+#a=pot[0].vcirc(10*u.kpc)+
+#b=pot[1].vcirc(10*u.kpc)
+#vc=(a*2+b**2)**2
+#print((a**2+b**2)**0.5)
+#print(vcirc(pot,10*u.kpc))
+#print("---")
+#import hickle as hkl
+#hkl.dump(pot,'test.h5',mode='w')
+#"""

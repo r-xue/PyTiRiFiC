@@ -42,6 +42,8 @@ import galpy.potential as galpy_pot
 from astropy.cosmology import Planck13
 from scipy.interpolate import interp1d
 import logging
+
+
 logger = logging.getLogger(__name__)
 
 """
@@ -566,9 +568,10 @@ def potential_fromobj(obj):
     
     #   NFW like potential
     
-    if  'nfw_mvir' in obj and 'z' in obj:
+    if  'nfw' in obj:
         
-        z=obj['z']
+        # https://galpy.readthedocs.io/en/v1.5.0/reference/potentialnfw.html
+        z=obj['nfw'][1]
         h=Planck13.h
         z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
         c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
@@ -578,10 +581,10 @@ def potential_fromobj(obj):
                       fill_value=(c0[0],c0[-1]))
         if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
                       fill_value=(m0[0],m0[-1]))        
-        m_vir=obj['nfw_mvir']   # values in units if 10^12msun
+        m_vir=obj['nfw'][0]   # values in units if 10^12msun
         #   if m_vir is value, then in units of 1e12msun
         #   https://galpy.readthedocs.io/en/latest/reference/potentialnfw.html
-        m_vir_12msun=(obj['nfw_mvir']).to_value(u.Msun)/1e12
+        m_vir_12msun=(obj['nfw'][0]).to_value(u.Msun)/1e12
         c_vir = if_c(z) * (m_vir_12msun*h)**(-0.075) * (1+(m_vir_12msun*1e12/if_m(z))**0.26)
                                     
         omega_z=Planck13.Om(z)                                           
@@ -596,13 +599,71 @@ def potential_fromobj(obj):
 
     #   Thin exp diskpotential
     
-    if  'disk_sd' in obj and 'disk_rs' in obj:
+    if  'expdisk' in obj:
 
-        dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=obj['disk_sd'],
-                                               hr=obj['disk_rs'],ro=ro,vo=vo)
+        dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=obj['expdisk'][0],
+                                                         hr=obj['expdisk'][1],
+                                                         ro=ro,vo=vo)
         pots.append(dpot)
+        
+    if  'dexpdisk' in obj:
+
+        dpot=galpy_pot.DoubleExponentialDiskPotential(amp=obj['dexpdisk'][0],
+                                                         hr=obj['dexpdisk'][1],
+                                                         hz=obj['dexpdisk'][2],
+                                                         ro=ro,vo=vo)
+        pots.append(dpot)  
+        
+    if  'nm3expdisk' in obj:
+
+        dpot=galpy_pot.MN3ExponentialDiskPotential(amp=obj['nm3expdisk'][0],
+                                                         hr=obj['nm3expdisk'][1],
+                                                         hz=obj['nm3expdisk'][2],
+                                                         sech=obj['nm3expdisk'][3],
+                                                         ro=ro,vo=vo)
+        pots.append(dpot)                     
+        
+    if  'isochrone' in obj:
+
+        dpot=galpy_pot.IsochronePotential(amp=obj['isochrone'][0],
+                                          b=obj['isochrone'][1],
+                                          ro=ro,vo=vo)
+        pots.append(dpot)
+        
+    if  'kepler' in obj:
+        
+        dpot=galpy_pot.KeplerPotential(amp=obj['kepler'],
+                                          ro=ro,vo=vo)
+        pots.append(dpot)     
+        
+    if  'powerlaw' in obj:
+        # https://galpy.readthedocs.io/en/v1.5.0/reference/potentialpowerspher.html
+        dpot=galpy_pot.PowerSphericalPotential(amp=obj['powerlaw'][0],
+                                               alpha=obj['powerlaw'][1],
+                                               r1=obj['powerlaw'][2],
+                                               ro=ro,vo=vo)
+        pots.append(dpot)          
+        
+        
 
     return pots 
+
+def calc_vcirc(pot,rho,interp=True,logr=True):
+    """
+    use interpolated vcirc to speed up vcirc calculation 
+    decide to not use potential/interpRZPotential.py to avoid some overheads
+    see https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz
+    logr will keep 
+    also see: galpy.poteential.vcirc()
+    """
+    if  interp==True:
+        if  logr==False:
+            rGrid=np.linspace(np.min(rho),np.max(rho),101)
+        else:
+            rGrid=np.geomspace(np.min(rho),np.max(rho),101)
+        return np.interp(rho,rGrid,pot.vcirc(rGrid))
+    else:
+        return pot.vcirc(rho)
 
 def pots_to_vcirc(pots,rho,pscorr=None):
     """
@@ -622,10 +683,12 @@ def pots_to_vcirc(pots,rho,pscorr=None):
     vcirc{2:,:] = contribution from individial potentials 
     
     """
-    
+
     vcirc_pot=[]
     for pot in pots:
-        vcirc_pot.append(pot.vcirc(rho))
+        vcirc_pot.append(calc_vcirc(pot,rho,interp=False,logr=True))        
+
+    
     vcirc_pot=np.vstack(vcirc_pot)
     vcirc=np.sqrt(np.sum((np.vstack(vcirc_pot))**2,axis=0))
 
@@ -637,7 +700,7 @@ def pots_to_vcirc(pots,rho,pscorr=None):
         vrot=np.sqrt(vrot)
         return np.vstack((vrot,vcirc,vcirc_pot)),['Vrot','Vcirc']+pots_name
     else:          
-        return np.vstack((vcirc,vcirc_pot)),['Vcirc']+pots_name
+        return np.vstack((vcirc,vcirc_pot)),['Vrot']+pots_name
 
 
 def clouds_fromobj(obj,
