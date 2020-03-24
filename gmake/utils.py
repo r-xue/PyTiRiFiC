@@ -41,15 +41,28 @@ try:
     #fft_use.fftn(np.ones(1)) # work
     logger.debug("use MKL_FFT for convolve_fft")
     logger.debug("use MKL_RANDOM for RNG")
+    mkl.verbose(0)
+    import mkl_fft._scipy_fft_backend as mkl_be
 except NameError:
     try:
         import pyfftw.interfaces.numpy_fft as fft_use
         logger.debug("use pyfftw for convolve_fft")
         logger.debug("use numpy.random for RNG")
     except NameError:
-        import numpy.fft as fft_use
-        logger.debug("use numpy.fft for convolve_fft")
+        """
+        Note:
+            latestscipy.fft & numpy.fft are using different implementaions of pocketfft
+            scipy.fft seems to be slightly faster and has a more clear interface  
+        refs:
+            https://github.com/scipy/scipy/issues/10175
+            https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.next_fast_len.html
+        """
+        import scipy.fft as fft_use
+        logger.debug("use scipy.fft for convolve_fft")
         logger.debug("use numpy.random for RNG")
+        #import numpy.fft as fft_use
+        #logger.debug("use numpy.fft for convolve_fft")
+        
         
         
 from numpy.random import Generator,SFC64,PCG64
@@ -1161,5 +1174,48 @@ def chi2red_to_lognsigma(chi2red):
     
     return np.log(np.sqrt(1./chi2red))
     
+
+def hextract(data,header,ss):
+    """
+    similar to hextract.pro or hextract3d.pro in idl_moments
+    However, it can also process stokes spectral cube
+    prange can be something like:
+        a list of two element tuple: 
+            [(0,2),(218,220),(218,250),(222,230)]
+        or a list of slice
+            np.s_[1:5,1::5]=(slice(1, 5, None), slice(1, None, 5))
+        or a list of slice expression string (from make_slice)
     
+    e.g. subim,subhd=hextract(im,hd,np.s_[:,:,(256-3):(256+3),(256-3):(256+3)]) 
+    
+    two operations are performed:
+        slice the original data array
+        update the header crpix value
+    """
+    
+    ss_list=[]
+    for s in ss:
+        if  isinstance(s,tuple):
+            ss_list.append(slice(*s))
+        if  isinstance(s,str):
+            ss_list.append(make_slice(s))
+        if  isinstance(s,slice):
+            ss_list.append(s)
+            
+    newdata=data[tuple(ss_list)]
+    newheader=header.copy()
+    
+    # first slice is for the last axis in FITS
+    axisno=1
+    ds=newdata.shape
+    for i in range(len(ss_list))[::-1]:
+        newheader['NAXIS'+str(axisno)]=ds[i]
+        newstart=ss_list[i].start
+        if  ss_list[i].start is None:
+            newstart=0
+        else:
+            newstart=ss_list[i].start
+        newheader['CRPIX'+str(axisno)]=newheader['CRPIX'+str(axisno)]-newstart
+        axisno+=1
         
+    return newdata,newheader
