@@ -79,7 +79,7 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
             if  i==1:
                 theta=theta_end
                 
-            models,inp_dct,mod_dct=model_mapper(theta,fit_dct,inp_dct,dat_dct)
+            models,inp_dct,mod_dct=model_render(theta,fit_dct,inp_dct,dat_dct)
             
             outname_exclude=None
             if  'shortname' in inp_dct['general'].keys():

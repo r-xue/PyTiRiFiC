@@ -6,7 +6,7 @@ import psutil
 process = psutil.Process(os.getpid())
 
 from .utils import pprint
-from .model import clouds_fill
+from .model import model_realize
 from .dynamics import *
 from .io import *
 from astropy.wcs import WCS
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 from astropy.modeling.models import Gaussian2D
 from memory_profiler import profile
 from .model import model_setup
-from .discretize import uv_mapper,xy_mapper
+
 from .discretize import channel_split
 from .discretize import sample_prep
 from .discretize import lognsigma_lookup
@@ -30,13 +30,14 @@ from galario.single import sampleImage
 
 from astropy.convolution import convolve_fft
 import pyfftw
-from .discretize import model_mapper
+from .discretize import model_render
 from lmfit import Parameters
 from scipy.interpolate import interpn
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 
 import gmake.meta as meta
-
+from .discretize import pickplane
+from .discretize import render_component
 """
 Cores Functions
 
@@ -90,7 +91,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
     
     # attach the cloudlet (reference) model to mod_dct
     
-    clouds_fill(mod_dct,
+    model_realize(mod_dct,
                 nc=100000,nv=20,seeds=[None,None,None,None])
     #print(mod_dct['co21']['rcProf'])
     #print(mod_dct['co21']['sbProf'])
@@ -118,9 +119,7 @@ def log_likelihood(theta,fit_dct,inp_dct,dat_dct,
                     chi2_one,ll_one=xy_chisq(objs,dname,dat_dct,models,returnwdev=False)
             chisq+=chi2_one
             ll+=ll_one
-            
-    # lnl is not implementaed yet
-
+    
     if  returnwdev==True:
         return ll,chisq,np.hstack(wdev)
     else:
@@ -257,7 +256,7 @@ def calc_wdev(p,
         theta=[p[i]<<fit_dct['p_start'][i].unit for i in range(len(fit_dct['p_name']))]
         pars=[p[i] for i in range(len(fit_dct['p_name']))]
     
-    models,inp_dct0,mod_dct0=model_mapper(theta,fit_dct,inp_dct,
+    models,inp_dct0,mod_dct0=model_render(theta,fit_dct,inp_dct,
                                           meta.db_global['dat_dct'],
                                           models=models)
     wdev=[]
@@ -292,7 +291,7 @@ def calc_wdev(p,
     return wdev
 
     """
-    #obselet: only works for xy-optimiztion
+    #obselet: another wau of gettig wdev for xy-modking only works for xy-optimiztion
     ll,chisq,wdev=log_likelihood(theta,fit_dct,inp_dct,meta.db_global['dat_dct'],
                               models=models,
                               savemodel=savemodel,returnwdev=True) 
@@ -301,7 +300,7 @@ def calc_wdev(p,
 
 
 #######################################################################################
-# optimized for iteration performance / though sharing codes with xy/uv_mapper
+# optimized for iteration performance / though sharing codes with xy_/uv_render
 #######################################################################################
 
 def uv_chisq(objs,dname,dat_dct,models):
@@ -323,62 +322,98 @@ def uv_chisq(objs,dname,dat_dct,models):
     uvflag=dat_dct['flag@'+dname]
     pb=models['pbeam@'+dname]
     
-    cc=0
+    sample_count=line_count=cont_count=0
     naxis=w._naxis    
 
     #   prep for sampleImage()    
+    
     dRA,dDec,cell,wv=sample_prep(w,phasecenter)
 
     #   gather information per object before going into the channel loop,
-    #   so it won't need to reapt for each chanel
-    fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=\
-        channel_split(objs,w,return_v=False) 
+    
+    fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=channel_split(objs,w) 
     lognsigma=lognsigma_lookup(objs,dname)
     
     chi2=0
+
+    #   Grid Continuum Models (continnuum cloudlets or AP models)
+    #   we save fluxscale frequency depedency as vector
+    
+    im_cache=[]; uv_cache=[]; fluxscale_cache=[]
+    iz=int(naxis[2]/2)
+        
+    for i,obj in enumerate(objs):
+
+        if  obj['type'] not in ['disk2d','point','apmodel']: continue
+        
+        if  obj['type'] in ['disk2d','point']:
+            plane=fh.histogram2d(y_list[i],x_list[i],                                             
+                                 range=[yrange_list[i],xrange_list[i]],
+                                 bins=(naxis[1],naxis[0]),
+                                 weights=wt_list[i])
+        if  obj['type'] in ['apmodel']:
+            xx,yy=np.meshgrid(x_list[i],y_list[i])
+            plane=((objs[i]['apmodel'])(xx,yy)).value        
+            plane=plane/np.sum(plane)
+        
+        im_cache.append(plane)
+        fluxscale_cache.append(fluxscale_list[i]) 
+
+        if  pb is not None: plane=plane*pickplane(pb,iz)
+        uv0=sampleImage(plane.astype(np.float32),
+                        cell,
+                        (uvw[:,0]/wv[iz]),
+                        (uvw[:,1]/wv[iz]),                               
+                        dRA=dRA,dDec=dDec,
+                        PA=0.,check=False,origin='lower')
+        sample_count+=1
+        uv_cache.append(uv0)
+        
+    #   Render Line+Contnuum Model    
+    
     for iz in range(naxis[2]):
         
-        blank=True  
-        for i in range(len(objs)): 
-            if  x_list[i][iz].size!=0:
-                wt=wt_list[i][iz] if wt_list[i] is not None else None
-                if  pb.ndim==2:
-                    planepb=pb
-                if  pb.ndim==3:
-                    planepb=pb[iz,:,:]
-                if  pb.ndim==4:
-                    planepb=pb[0,iz,:,:]  
-                if  blank==True:
-                    plane=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
-                                         range=[yrange_list[i],xrange_list[i]],
-                                         bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]*planepb
-                    blank=False
-                else:
-                    plane+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
-                                         range=[yrange_list[i],xrange_list[i]],
-                                         bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]*planepb                    
-        if  blank==False:
-            uvdiff=ne.evaluate('a-b',
-                     local_dict={'a':sampleImage(plane.astype(np.float32),
-                                            cell,
-                                            (uvw[:,0]/wv[iz]),
-                                            (uvw[:,1]/wv[iz]),
-                                            #ne.evaluate('a/b',local_dict={'a':uvw[:,0],'b':wv[iz]}),
-                                            #ne.evaluate('a/b',local_dict={'a':uvw[:,1],'b':wv[iz]}),                                   
-                                            dRA=dRA,dDec=dDec,
-                                            PA=0.,check=False,origin='lower'),
-                                 'b':uvdata[:,iz]})
-            cc+=1
-        else:
-            uvdiff=uvdata[:,iz]
+        #   render all line emission
         
+        plane=None
+        for i in range(len(objs)): 
+            
+            if  objs[i]['type'] not in ['disk3d']: continue
+            if  x_list[i][iz+1].size==0: continue
+            
+            wt=wt_list[i][iz+1] if wt_list[i] is not None else None
+            plane=render_component(plane,fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],                                             
+                                                         range=[yrange_list[i],xrange_list[i]],
+                                                         bins=(naxis[1],naxis[0]),weights=wt),
+                             scale=fluxscale_list[i])                  
+        
+        uvdiff=uvdata[:,iz].copy()
+        if  plane is not None:
+            
+            render_component(plane,im_cache,
+                                   scale=[fluxscale_cache[j][iz] for j in range(len(uv_cache))])
+            if  pb is not None: plane*=pickplane(pb,iz)
+            uvdiff-=sampleImage(plane.astype(np.float32),cell,
+                                (uvw[:,0]/wv[iz]),
+                                (uvw[:,1]/wv[iz]),
+                                #ne.evaluate('a/b',local_dict={'a':uvw[:,0],'b':wv[iz]}),
+                                #ne.evaluate('a/b',local_dict={'a':uvw[:,1],'b':wv[iz]}),                                   
+                                dRA=dRA,dDec=dDec,
+                                PA=0.,check=False,origin='lower')
+            sample_count+=1; line_count+=1
+        else:
+            render_component(uvdiff,uv_cache,mode='iadd',
+                                    scale=[-fluxscale_cache[j][iz] for j in range(len(uv_cache))])
+            cont_count+=1
         # ll pt1
         chi2+=ne.evaluate('sum( ( (a.real)**2+(a.imag)**2 ) * (~b*c) )', #'sum( abs(a)**2*c)'
                          local_dict={'a':uvdiff,
                                      'b':uvflag[:,iz],
                                      'c':uvweight})/((np.exp(lognsigma))**2)  
+    
+    logger.debug('sampleimage  count: '+str(sample_count))
+    logger.debug('line channel count: '+str(line_count))
+    logger.debug('cont channel count: '+str(cont_count))            
     
     # ll pt2
     uvweight[uvweight==0]=1
@@ -396,7 +431,7 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
     models:    a list of model to be mapped into the visibility model for the chisq calculation
     header:    pesudo fits header
     uv...:     visibility data 
-    
+    the option "returnwdev" is depracated
     """
     w=models['wcs@'+dname]
     imdata=dat_dct['data@'+dname]
@@ -409,64 +444,94 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
     convol_complex_dtype=np.complex64
     convol_boundary='wrap'
         
-    cc=0
+    convol_count=line_count=cont_count=0
     naxis=w._naxis
+    #   we create a model cube here with some memory ppanelty
+    #   however, interpn will work faster in one shot    
+    scube=np.zeros((naxis[2],naxis[1],naxis[0]),dtype=np.float64)
+    chi2=0    
 
     #   gather information per object before going into the channel loop,
-    #   so it won't need to reapt for each chanel
-    fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=\
-        channel_split(objs,w,return_v=False)  
+    
+    fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=channel_split(objs,w)  
     lognsigma=lognsigma_lookup(objs,dname)
     
     # note: DO NOT USE np.float32 here as we are dealing with large numbers in numexpr()
     #   https://stackoverflow.com/questions/12596695/why-does-a-float-variable-stop-incrementing-at-16777216-in-c
     
-    #   we create a model cube here with some memory ppanelty
-    #   however, interpn will work faster in one shot
-    scube=np.zeros((naxis[2],naxis[1],naxis[0]),dtype=np.float64)
-    chi2=0
-    for iz in range(naxis[2]):
-        
-        blank=True                    
-        for i in range(len(objs)): 
-            obj=objs[i]
-            if  x_list[i][iz+1].size!=0:
-                wt=wt_list[i][iz] if wt_list[i] is not None else None
-                if  pb.ndim==2:
-                    planepb=pb
-                if  pb.ndim==3:
-                    planepb=pb[iz,:,:]
-                if  pb.ndim==4:
-                    planepb=pb[0,iz,:,:]                  
-                if  blank==True:
-                    plane=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
-                                         range=[yrange_list[i],xrange_list[i]],
-                                         bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]*planepb
-                    blank=False
-                else:
-                    plane+=fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],
-                                         range=[yrange_list[i],xrange_list[i]],
-                                         bins=(naxis[1],naxis[0]),
-                                         weights=wt)*fluxscale_list[i]*planepb
-        if  blank==False :
-            if  psf.ndim==2:
-                planepsf=psf
-            if  psf.ndim==3:
-                planepsf=psf[iz,:,:]
-            if  psf.ndim==4:
-                planepsf=psf[0,iz,:,:]            
-            scube[iz,:,:]=convolve_fft(plane,planepsf,
-                                      fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
-                                      boundary=convol_boundary,
-                                      complex_dtype=convol_complex_dtype,
-                                      #nan_treatment='fill',fill_value=0.0,
-                                      fftn=fft_use.fftn, ifftn=fft_use.ifftn,
-                                      normalize_kernel=False)
-            cc+=1
-  
-    # assemble comparison pair
+    #   Grid Continuum Models (continnuum cloudlets or AP models)
+    #   we save fluxscale frequency depedency as vector
     
+    im_cache=[]; sm_cache=[]; fluxscale_cache=[]
+    iz=int(naxis[2]/2)
+    
+    for i,obj in enumerate(objs):
+        
+        if  obj['type'] not in ['disk2d','point','apmodel']: continue
+        
+        if  obj['type'] in ['disk2d','point']:
+            plane=fh.histogram2d(y_list[i],x_list[i],                                             
+                                 range=[yrange_list[i],xrange_list[i]],
+                                 bins=(naxis[1],naxis[0]),
+                                 weights=wt_list[i])
+        if  obj['type'] in ['apmodel']:
+            xx,yy=np.meshgrid(x_list[i],y_list[i])
+            plane=((objs[i]['apmodel'])(xx,yy)).value        
+            plane=plane/np.sum(plane)
+
+        im_cache.append(plane)
+        fluxscale_cache.append(fluxscale_list[i])
+        
+        if  psf is None: continue
+        
+        if  pb is not None: plane=plane*pickplane(pb,iz)
+        plane=convolve_fft(plane,pickplane(psf,iz),
+                           fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
+                           boundary=convol_boundary,
+                           complex_dtype=convol_complex_dtype,#nan_treatment='fill',fill_value=0.0,
+                           fftn=fft_use.fftn, ifftn=fft_use.ifftn,
+                           normalize_kernel=False)
+        convol_count+=1
+        sm_cache.append(plane)
+    
+    #   Render Line+Contnuum Model
+    
+    for iz in range(naxis[2]):
+    
+        #   render all line emission
+        
+        plane=None
+        for i in range(len(objs)):
+            
+            if  objs[i]['type'] not in ['disk3d']: continue
+            if  x_list[i][iz+1].size==0: continue
+            wt=wt_list[i][iz+1] if wt_list[i] is not None else None 
+            plane=render_component(plane,fh.histogram2d(y_list[i][iz+1],x_list[i][iz+1],                                             
+                                                         range=[yrange_list[i],xrange_list[i]],
+                                                         bins=(naxis[1],naxis[0]),weights=wt),
+                             scale=fluxscale_list[i])
+     
+        if  plane is not None:   # line+cont          
+            render_component(plane,im_cache,
+                             scale=[fluxscale_cache[j][iz] for j in range(len(im_cache))])
+            if pb is not None: plane*=pickplane(pb,iz)
+            scube[iz,:,:]=convolve_fft(plane,pickplane(psf,iz),
+                                       fft_pad=convol_fft_pad,psf_pad=convol_psf_pad,
+                                       boundary=convol_boundary,
+                                       complex_dtype=convol_complex_dtype,#nan_treatment='fill',fill_value=0.0,
+                                       fftn=fft_use.fftn, ifftn=fft_use.ifftn,
+                                       normalize_kernel=False)
+            convol_count+=1; line_count+=1
+        else:               # cont-only
+            render_component(scube[iz,:,:],sm_cache,
+                             scale=[fluxscale_cache[j][iz] for j in range(len(sm_cache))])
+            cont_count+=1
+     
+    logger.debug('convolve_fft count: '+str(convol_count))
+    logger.debug('line channel count: '+str(line_count))
+    logger.debug('cont channel count: '+str(cont_count))
+        
+        
     if  'sample@'+dname in models:
         scube=interpn(  (np.arange(naxis[2]),np.arange(naxis[1]),np.arange(naxis[0])),
                         np.squeeze(scube),
@@ -488,8 +553,6 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
     else:
         wdev=ne.evaluate('(a-b)/c',local_dict={'a':scube,'b':imdata,'c':error})
         return chi2,ll,wdev
-
-
 
 #######################################################################################
 # obselete 
@@ -523,7 +586,7 @@ def xy_chisq0(objs,dname,dat_dct,models):
     #   gather information per object before going into the channel loop,
     #   so it won't need to reapt for each chanel
     fluxscale_list,xrange_list,yrange_list,x_list,y_list,wt_list=\
-        channel_split(objs,w,return_v=False)  
+        channel_split(objs,w)  
     lognsigma=lognsigma_lookup(objs,dname)   
 
     chi2=0
