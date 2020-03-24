@@ -42,6 +42,7 @@ import galpy.potential as galpy_pot
 from astropy.cosmology import Planck13
 from scipy.interpolate import interp1d
 import logging
+from astropy.modeling import models as apmodels
 
 
 logger = logging.getLogger(__name__)
@@ -707,33 +708,39 @@ def clouds_fromobj(obj,
                    nc=100000,nv=20,seeds=[None,None,None,None]):
     """
     This is a wrapper function to create a cloudlet model from a object dict 
-    obj type='disk3d'
+        it will handle type='disk2d'/'disk3d'/'point'
     """
-    car,cloudmeta=clouds_morph(sbProf=obj['sbProf'],
-                          rotPhi=obj['rotAz'] if  'rotAz' in obj else None,
-                          sbQ=obj['sbQ'] if  'sbQ' in obj else None,
-                          vbProf=obj['vbProf'],
-                          seeds=seeds[0:3],size=nc)    
+    if  'disk2d' in obj['type'] or  'disk3d' in obj['type']:
+        car,cloudmeta=clouds_morph(sbProf=obj['sbProf'],
+                              rotPhi=obj['rotAz'] if  'rotAz' in obj else None,
+                              sbQ=obj['sbQ'] if  'sbQ' in obj else None,
+                              vbProf=obj['vbProf'] if  'vbProf' in obj else None,
+                              seeds=seeds[0:3],size=nc)    
+
+    if  'point' in obj['type']:
+        car=CartesianRepresentation(0*u.kpc,0*u.kpc,0*u.kpc)
+                
+    if  'disk3d' in obj['type']:
+        if  'rcProf' in obj:
+            rcProf=list(obj['rcProf'])
+            if  rcProf[0]=='potential':
+                rcProf[1]=obj['pots']
+        else:
+            rcProf=None        
+        car=clouds_kin(car,
+                       rcProf=rcProf,
+                       vRadial=obj['vRadial'] if  'vRadial' in obj else None,
+                       vSigma=obj['vSigma'] if  'vSigma' in obj else None,
+                       seed=seeds[3],nV=nv)
     
-    if  'rcProf' in obj:
-        rcProf=list(obj['rcProf'])
-        if  rcProf[0]=='potential':
-            rcProf[1]=obj['pots']
-    else:
-        rcProf=None
-    car_k=clouds_kin(car,
-                     rcProf=rcProf,
-                     vRadial=obj['vRadial'] if  'vRadial' in obj else None,
-                     vSigma=obj['vSigma'] if  'vSigma' in obj else None,
-                     seed=seeds[3],nV=nv)
+    if  'disk2d' in obj['type'] or 'disk3d' in obj['type']:
+        clouds_tosky(car,obj['inc'],obj['pa'],inplace=True)
     
-    clouds_tosky(car_k,obj['inc'],obj['pa'],inplace=True)
-    
-    return car_k.ravel(),None
+    return car.ravel(),None
 
 ###################################################################################################
 
-def clouds_fill(mod_dct,
+def model_realize(mod_dct,
                 nc=100000,nv=20,seeds=[None,None,None,None]):
     
     """
@@ -752,10 +759,12 @@ def clouds_fill(mod_dct,
         
     # second pass:   attach potential (if requested) and fill cloudlet
     
+    clouds_types=['disk3d','disk2d','point']
+    
     for objname, obj in mod_dct.items():
         if  'type' not in obj:
             continue
-        if  obj['type']!='disk3d':
+        if  obj['type'] not in clouds_types:
             continue
         # attach potentials
         if  'rcProf' in obj:
@@ -765,9 +774,22 @@ def clouds_fill(mod_dct,
         obj['clouds_loc'],obj['clouds_wt']=\
             clouds_fromobj(obj,
                            nc=nc,nv=nv,seeds=seeds)
+        
         for fluxtype in ['lineflux','contflux']:
             if  fluxtype in obj:
                 obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size
+                
+    # third pass: insert astropy.modelling.models
+    
+    for objname, obj in mod_dct.items():
+        
+        if  'type' not in obj:
+            continue
+        if  obj['type']!='apmodel':
+            continue
+        
+        obj['apmodel']=getattr(apmodels,obj['sbProf'][0])(*((1,)+obj['sbProf'][1:]))
+        obj['apmodel_flux']=obj['contflux']  
         
     return    
 
@@ -827,19 +849,23 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                 if  'type@'+vis not in models.keys():
                     
                     models['type@'+vis]=dat_dct['type@'+vis]
-                    #   pass the data reference (no memory penalty)
-                    
-                    #or [obj['xypos'].ra,obj['xypos'].dec]
-                    #center=dat_dct['phasecenter@'+vis]
-                    # right now we are using the first object RA/DEC to make reference model imaging center
-                    # also we hard-code the antenna size to 25*u.m
-                    center=[obj['xypos'].ra,obj['xypos'].dec]
-                    antsize=25*u.m
                     
                     if  'pbeam@'+vis not in dat_dct:
                         logger.debug('make imaging-header / pb model for:'+vis)
+                        antsize=12*u.m
+                        if  'VLA' in dat_dct['telescope@'+vis]:
+                            antsize=25*u.m
+                        if  'ALMA' in dat_dct['telescope@'+vis]:
+                            antsize=12*u.m
+                        #   pass the data reference (no memory penalty)
                         
-                        models['header@'+vis]=makeheader(dat_dct['uvw@'+vis],center,
+                        #or [obj['xypos'].ra,obj['xypos'].dec]
+                        #center=dat_dct['phasecenter@'+vis]
+                        # right now we are using the first object RA/DEC to make reference model imaging center
+                        # also we hard-code the antenna size to 25*u.m
+                        center=[obj['xypos'].ra,obj['xypos'].dec]                                                    
+                        
+                        models['header@'+vis]=uv_to_header(dat_dct['uvw@'+vis],center,
                                                          dat_dct['chanfreq@'+vis],
                                                          dat_dct['chanwidth@'+vis])
                         models['pbeam@'+vis]=((makepb(models['header@'+vis],
@@ -962,7 +988,7 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
 
 ###################################################################################################
 
-def makeheader(uv,center,chanfreq,chanwidth,antsize=None):
+def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
     """
     create a header template for discreating cloudlet model before uv sampling
         using accroding to UV sampling and primary beam FOV
@@ -1001,7 +1027,8 @@ def makeheader(uv,center,chanfreq,chanwidth,antsize=None):
     nxy, dxy = get_image_size(uv[:,0]/wv.value, uv[:,1]/wv.value,
                               PB=pb,f_max=f_max,f_min=f_min,
                               verbose=False)
-    logger.debug('nxy:'+str(nxy)+' '+str(np.size(chanfreq))+' '+'dxy:'+(dxy<<u.rad).to(u.arcsec).to_string())
+    
+    #logger.debug('nxy:'+str(nxy)+' '+str(np.size(chanfreq))+' '+'dxy:'+(dxy<<u.rad).to(u.arcsec).to_string())
     
     header=create_header()
     header['NAXIS1']=nxy
@@ -1094,16 +1121,19 @@ def makepb(header,phasecenter=None,antsize=12*u.m):
     else:
         w=WCS(header)
         xc,yc=w.celestial.wcs_world2pix(phasecenter[0],phasecenter[1],0)
-    #w.
-    
     #   PB size in pixel
-    beam=1.13*np.rad2deg(const.c.to_value('m/s')/(header['CDELT3']*0+header['CRVAL3'])/antsize.to_value(u.m))
+    freqs=header['CRVAL3']+(np.arange(header['NAXIS3'])+1-header['CRPIX3'])*header['CDELT3'] # in hz
+    beam=1.13*np.rad2deg(const.c.to_value('m/s')/freqs/antsize.to_value(u.m))
     beam*=1/np.abs(header['CDELT2'])
+    
+    pb=np.zeros((header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    
     sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
-    mod=Gaussian2D(amplitude=1.,
-                   x_mean=xc,y_mean=yc,
-                   x_stddev=beam/sigma2fwhm,y_stddev=beam/sigma2fwhm,theta=0)
-    pb=discretize_model(mod,(0,int(header['NAXIS1'])),(0,int(header['NAXIS1'])))
+    for i in range(header['NAXIS3']):
+        mod=Gaussian2D(amplitude=1.,
+                       x_mean=xc,y_mean=yc,
+                       x_stddev=beam[i]/sigma2fwhm,y_stddev=beam[i]/sigma2fwhm,theta=0)
+        pb[i,:,:]=discretize_model(mod,(0,int(header['NAXIS1'])),(0,int(header['NAXIS2'])))
 
     return pb
 

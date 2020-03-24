@@ -8,7 +8,7 @@ from .evaluate import calc_chisq,log_probability
 from .model import model_setup
 from pprint import pformat
 from .utils import pprint
-from .discretize import model_mapper
+from .discretize import model_render
 
 
 import logging
