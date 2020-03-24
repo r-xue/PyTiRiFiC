@@ -2,11 +2,8 @@ import logging
 from astropy import constants as const
 import numpy as np
 
-from galario.single import apply_phase_vis 
 
-from .utils import human_unit
-from .utils import human_to_string
-from .utils import get_obj_size
+from .utils import human_unit,human_to_string,get_obj_size,paste_array
 
 import astropy.units as u
 from astropy.coordinates import Angle
@@ -15,11 +12,15 @@ from astropy.io import fits
 logger = logging.getLogger(__name__)
 import os
 from astropy.wcs import WCS
+from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales 
 from astropy.coordinates import SkyCoord
-from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
-from galario.single import sampleImage
-from .discretize import sample_prep
+
+from rxutils.casa.proc import rmColumns
+from galario.single import get_image_size
+
+from .discretize import sample_prep,uv_sample,pickplane
 from .model import makepb
+
 
 """
 ref: about taql:
@@ -40,7 +41,7 @@ from casatasks import importfits
 
 def read_ms(vis='',
              polaverage=True,dataflag=False,saveflag=True,
-             nodata=False,
+             nodata=False,usedouble=False,
              dat_dct=None):
     """
     Note:
@@ -63,6 +64,13 @@ def read_ms(vis='',
         dat_dct_out={}
     else:
         dat_dct_out=dat_dct    
+        
+    if  usedouble==True:
+        rtype=np.float32
+        ctype=np.complex64
+    else:
+        rtype=np.float64
+        ctype=np.complex128
     
     # set order='F' for the quick access of u/v/w seperately
     # assuming xx/yy, we decide to save data as stokes=I to reduce the data size by x2
@@ -71,16 +79,18 @@ def read_ms(vis='',
 
     textout='\nREADing: '+vis
     logger.debug(textout)
-    logger.debug('-'*len(textout))
+    logger.debug('')
+    logger.debug('-'*90)
         
     t=table()
     t.open(vis)    
-    dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).T.astype(np.float32,order='F')
+    
+    dat_dct_out['uvw@'+vis]=(t.getcol('UVW')).T.astype(rtype,order='F')
     dat_dct_out['type@'+vis]='vis'
     # spectrum_weight is not considered here
-    dat_dct_out['weight@'+vis]=(t.getcol('WEIGHT')).T.astype(np.float32,order='F')
+    dat_dct_out['weight@'+vis]=(t.getcol('WEIGHT')).T.astype(rtype,order='F')
     if  nodata==False:
-        dat_dct_out['data@'+vis]=(t.getcol('DATA')).T.astype(np.complex64,order='F')
+        dat_dct_out['data@'+vis]=(t.getcol('DATA')).T.astype(ctype,order='F')
     
     dat_dct_out['flag@'+vis]=(t.getcol('FLAG')).T
     if  dataflag==True:
@@ -115,17 +125,15 @@ def read_ms(vis='',
     mymsmd.open(vis)
     phasecenter=mymsmd.phasecenter(0)
     radec=[phasecenter['m0']['value'],phasecenter['m1']['value']]
+    telescope=mymsmd.observatorynames()[0]
     mymsmd.close()
     
     phase_dir=Angle(radec*u.rad).to(unit=u.deg)
     phase_dir[0]=phase_dir[0].wrap_at(360.0*u.deg)
     dat_dct_out['phasecenter@'+vis]=phase_dir    
-
-    count_flag=np.count_nonzero(dat_dct_out['flag@'+vis])
-    count_record=np.size(dat_dct_out['flag@'+vis])
-    logger.debug('flagging fraction: {0:.0%}'.format(count_flag*1./count_record))    
-
+    dat_dct_out['telescope@'+vis]=telescope
     
+
     vars=['data','uvw','weight','flag']
     for var in vars:
         if  saveflag==False and var=='flag':
@@ -134,8 +142,8 @@ def read_ms(vis='',
             continue
         size=human_unit(get_obj_size(dat_dct_out[var+'@'+vis])*u.byte)
         size=human_to_string(size,format_string='{0.value:3.0f} {0.unit:shortname}')
-        textout='{:60} {:15} {:20} {:20}'.format(
-            var+'@'+vis,str(dat_dct_out[var+'@'+vis].dtype),str(dat_dct_out[var+'@'+vis].shape),
+        textout='{:15} {:15} {:20} {:20}'.format(
+            var+'@',str(dat_dct_out[var+'@'+vis].dtype),str(dat_dct_out[var+'@'+vis].shape),
             size)
         if  var=='weight':
             pickweight=np.broadcast_to(dat_dct_out['weight@'+vis][:,np.newaxis],dat_dct_out['flag@'+vis].shape)
@@ -143,7 +151,7 @@ def read_ms(vis='',
             pt_select=[0,16,50,84,100]
             pt_level=np.percentile(pickweight,pt_select)
             for pt_ind in range(len(pt_select)):
-                textout+='\n{:60} {:15} {:<20.0%} {:<20f}'.format('','ptile:',pt_select[pt_ind]*0.01,pt_level[pt_ind]) 
+                textout+='\n{:15} {:15} {:<20.0%} {:<20f}'.format('','ptile:',pt_select[pt_ind]*0.01,pt_level[pt_ind]) 
         logger.debug(textout)                                   
     
     vars=['chanfreq','chanwidth']
@@ -151,8 +159,8 @@ def read_ms(vis='',
         tag=vars[ind]+'@'+vis
         if  tag not in dat_dct_out.keys():
             continue
-        textout='{:60} {:10} {:10.4f} {:10.4f}'.format(
-            tag,
+        textout='{:15} {:10} {:10.4f} {:10.4f}'.format(
+            tag.replace('@'+vis,'@'),
             str(dat_dct_out[tag].shape),
             human_unit(np.min(dat_dct_out[tag])),
             human_unit(np.max(dat_dct_out[tag])))
@@ -162,8 +170,14 @@ def read_ms(vis='',
     radec+='  '
     radec+=phase_dir[1].to_string(unit=u.degree,sep='dms') # print(phase_dir[1].dms)
     
-    logger.debug('{:60} {:10}'.format('phasecenter@'+vis,radec))    
-    logger.debug('-'*118)
+    logger.debug('{:15} {:10}'.format('phasecenter@',radec))
+    logger.debug('{:15} {:10}'.format('telescope@',telescope))     
+    
+    count_flag=np.count_nonzero(dat_dct_out['flag@'+vis])
+    count_record=np.size(dat_dct_out['flag@'+vis])
+    logger.debug('-'*90)
+    logger.debug('flagging fraction: {0:.0%}'.format(count_flag*1./count_record))        
+    logger.debug('-'*90)
 
     if  dat_dct is None:
         return dat_dct_out
@@ -249,7 +263,7 @@ def corrupt_ms(vis,
     return                
 
 def cpredict_ms(vis,
-               fitsimage=None,inputvis=None,pbcor=True):
+               fitsimage=None,inputvis=None,pbcor=True,rmcols=True):
     """
     Using casatools.simulator to:
         + generate UV model from a FITS image with primary beam model applied
@@ -258,6 +272,9 @@ def cpredict_ms(vis,
     the fits image is expected to have the correct flux scaling (true flux)
     pbcor=True will do pbeam rescaling before sending images to FFT; 
         which assume fitsimage is in absolute flux scale
+        
+    it DOES check interm of frequency gridding
+    
     """
     
     if  inputvis is not None:    
@@ -285,10 +302,13 @@ def cpredict_ms(vis,
     sm.predict(imagename=fitsimage.replace('.fits','.image'))
     sm.done
     
+    rmColumns(vis,column='MODEL_DATA')
+    rmColumns(vis,column='CORRECTED_DATA')
+    
     return
 
-def gpredict_ms(vis,
-               fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=None):
+def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=None,
+                method='interp2d',ik=5,saveuvgrid=False):
     """
     Using galario to:
         + generate UV model from a FITS image with primary beam model applied
@@ -301,6 +321,11 @@ def gpredict_ms(vis,
     pb!=None or antsize!=None will do pbeam rescaling before sending images to FFT; 
         which assume fitsimage is in absolute flux scale    
     
+    it doesn't check interm of frequency gridding
+    
+    fitsimage:    a list of string or string
+    
+    
     """
     if  inputvis is not None:   
         if  inputvis==vis:
@@ -309,66 +334,98 @@ def gpredict_ms(vis,
         os.system("rm -rf "+vis)
         os.system('cp -rf '+inputvis+' '+vis)    
     
-    im,header=fits.getdata(fitsimage,header=True)
+    #   READ MS
+    
     dat_dct=read_ms(vis=vis,nodata=True)
     uvw=dat_dct['uvw@'+vis]
     phasecenter=dat_dct['phasecenter@'+vis]
     uvweight=dat_dct['weight@'+vis]
     uvflag=dat_dct['flag@'+vis]
+    chanfreq=dat_dct['chanfreq@'+vis]
+    chanwidth=dat_dct['chanwidth@'+vis]
+    wv=chanfreq.to(u.m,equivalencies=u.spectral()).value    # in m
+    uvshape=(uvflag.shape)[0:2]
     
-    w=WCS(header)
-    naxis=w._naxis # this is x-y-z
+    uvmodel=np.zeros((uvflag.shape)[0:2],dtype=np.complex128,order='F')
     
-    #   prep for sampleImage()    
-    dRA,dDec,cell,wv=sample_prep(w,phasecenter)
+    #   READ MODEL IMAGE
     
-    uvmodel=np.zeros((uvflag.shape)[0:2],dtype=np.complex64,order='F')
-    
-    if  pb is not None:
-        pbeam=fits.getdata(pb,header=False)
-        if  pbaverage==True:
-            if  pbeam.ndim==3:
-                pbeam=np.mean(pbeam,axis=(0))
-            if  pbeam.ndim==4:
-                pbeam=np.mean(pbeam,axis=(0,1))
+    fitsimage_list=list()
+    if  isinstance(fitsimage,list):
+        fitsimage_list=fitsimage
     else:
-        pbeam=None
-
-    if  antsize is not None:
-        # just one plane
-        pbeam=makepb(header,phasecenter=phasecenter,antsize=antsize)
+        fitsimage_list=[fitsimage]
         
-    for iz in range(naxis[2]):
-        blank=True  
+    #   Transform Each Image
+    
+    for fitsimage0 in fitsimage_list:
+         
+        im,header=fits.getdata(fitsimage0,header=True)
+        w=WCS(header)
+        naxis=w._naxis # this is x-y-z    
+            
+        #   prep for uv_sample()
         
-        if  pbeam is not None:
-            if  pbeam.ndim==2:
-                planepb=pbeam
-            if  pbeam.ndim==3:
-                planepb=pbeam[iz,:,:]
-            if  pbeam.ndim==4:
-                planepb=pbeam[0,iz,:,:]   
+        dRA,dDec,cell,wv_image=sample_prep(w,phasecenter)
+        
+        print("Image Property: ",fitsimage0)
+        print("Phasecenter vs. Image center: ",np.rad2deg(dRA)*3600,np.rad2deg(dDec)*3600)
+        print("Image Cell Size: ",np.rad2deg(cell)*3600)
+        print("Image Dimension: ",naxis)
+        print("Image Wavelength:",wv_image)
+        
+        iz=int(uvshape[1]/2)
+        f_max=2.5
+        f_max=2.0
+        f_min=5.0
+        f_min=2.0
+        pbrad=1.22*wv[iz]/25*1.0
+        pbrad=0.0
+        nxy, dxy = get_image_size(uvw[:,0]/wv[iz], uvw[:,1]/wv[iz],
+                                  PB=pbrad,f_max=f_max,f_min=f_min,
+                                  verbose=False)    
+        print("UVW uvw shape:       [nrecord]", uvw.shape)
+        print("UVW Sugguested nxy:  [npixel]:", nxy)
+        print("UVW Sugguested cell  [arcsec]:", np.rad2deg(dxy)*3600)
+        print("UVW UVModel Wavelength:",wv)
+        
+        if  pb is not None:
+            pbeam=fits.getdata(pb,header=False)
+            if  pbaverage==True:
+                if  pbeam.ndim==3:
+                    pbeam=np.mean(pbeam,axis=(0))
+                if  pbeam.ndim==4:
+                    pbeam=np.mean(pbeam,axis=(0,1))
         else:
-            planepb=1                
+            pbeam=None
+        if  antsize is not None:
+            # just one plane
+            pbeam=makepb(header,phasecenter=phasecenter,antsize=antsize)
         
-        if  im.ndim==2:
-            plane=im*planepb
-        if  im.ndim==3:
-            plane=im[iz,:,:]*planepb
-        if  im.ndim==4:
-            plane=im[0,iz,:,:]*planepb         
-        
-        if  np.any(plane):
-            blank=False
-                  
-        if  blank==False:
-            uvmodel[:,iz]=sampleImage(plane.astype(np.float32),
-                                  cell,
-                                  (uvw[:,0]/wv[iz]),
-                                  (uvw[:,1]/wv[iz]),                               
-                                  dRA=dRA,dDec=dDec,
-                                  PA=0.,check=False,origin='lower')
-        
+        for iz in range(uvshape[1]):
+            blank=True  
+            
+            if  pbeam is not None:
+                planepb=pickplane(pbeam,iz)  
+            else:
+                planepb=1.   
+            
+            plane=pickplane(im,iz)*planepb
+
+            if  np.any(plane):
+                blank=False
+            if  blank==False:
+                uvmodel[:,iz]+=uv_sample(plane,
+                                      cell,
+                                      (uvw[:,0]/wv[iz]),
+                                      (uvw[:,1]/wv[iz]),                               
+                                      dRA=dRA,dDec=dDec,
+                                      PA=0.,origin='lower',
+                                      method=method,ik=ik,saveuvgrid=saveuvgrid)
+                #print("predicted plane",iz)        
+    
+    
+    
     write_ms(vis,uvmodel,datacolumn='data')
     
     return
