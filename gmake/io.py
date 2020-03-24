@@ -116,7 +116,7 @@ def read_data(inp_dct,
                 
                 if  ('data@'+im_list[ind] not in dat_dct) and 'image' in obj:
                     data,hd=fits.getdata(im_list[ind],header=True,memmap=False)
-                    dat_dct['data@'+im_list[ind]]=np.squeeze(data)
+                    dat_dct['data@'+im_list[ind]]=np.squeeze(data).copy()
                     dat_dct['header@'+im_list[ind]]=hd
                     dat_dct['type@'+im_list[ind]]='image'
                     
@@ -143,7 +143,7 @@ def read_data(inp_dct,
                 if  ('sample@'+im_list[ind] not in dat_dct) and 'sample' in obj:
                     data=fits.getdata(sp_list[ind],memmap=False)                
                     # sp_index; 3xnp array (px index of sampling data points)
-                    dat_dct['sample@'+im_list[ind]]=np.squeeze(data['sp_index'])
+                    dat_dct['sample@'+im_list[ind]]=np.squeeze(data['sp_index']).copy()
                     
                     logger.debug('loading: '+sp_list[ind]+' to ')
                     logger.debug('sample@'+im_list[ind])
@@ -152,7 +152,7 @@ def read_data(inp_dct,
                 if  ('psf@'+im_list[ind] not in dat_dct) and 'psf' in obj:
                     if  isinstance(pf_list[ind],str):
                         data=fits.getdata(pf_list[ind],memmap=False)                
-                        dat_dct['psf@'+im_list[ind]]=np.squeeze(data)
+                        dat_dct['psf@'+im_list[ind]]=np.squeeze(data).copy()
                         logger.debug('loading: '+pf_list[ind]+' to ')
                         logger.debug('psf@'+im_list[ind])       
                         logger.debug(str(data.shape)+str(human_unit(getsizeof(data)*u.byte)))
