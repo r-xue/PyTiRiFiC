@@ -73,9 +73,11 @@ def read_data(inp_dct,
                     
                 if  ('pbeam@'+vis_list[ind] not in dat_dct) and 'pb' in obj:
                     
-                    dat_dct['pbeam@'+vis_list[ind]],dat_dct['header@'+vis_list[ind]]=\
-                        fits.getdata(pb_list[ind],header=True)
-                    
+                    data,header=fits.getdata(pb_list[ind],header=True)
+                    np.nan_to_num(data,copy=False,nan=0.0) 
+                    dat_dct['pbeam@'+vis_list[ind]]=data
+                    dat_dct['header@'+vis_list[ind]]=header
+                        
                     logger.debug('reading pb model')
                     logger.debug('{:60} {:15}'.format(pb_list[ind],str(dat_dct['pbeam@'+vis_list[ind]].shape)))
                     
@@ -161,7 +163,8 @@ def read_data(inp_dct,
                      
                 
                 if  ('pbeam@'+im_list[ind] not in dat_dct) and 'pb' in obj:
-                    data=fits.getdata(pb_list[ind],header=False) 
+                    data=fits.getdata(pb_list[ind],header=False)
+                    np.nan_to_num(data,copy=False,nan=0.0) 
                     dat_dct['pbeam@'+im_list[ind]]=data
                     
                     logger.debug('loading: '+pb_list[ind]+' to ')
@@ -475,7 +478,6 @@ def export_model(models,outdir='./',
                 if  key.replace('data@',version+'@') in models.keys():
                     if  models[key.replace('data@',version+'@')] is not None:
                         tmp=(models[key.replace('data@',version+'@')]).copy()
-                        #print(tmp)
                         if  tmp.ndim==2:
                             tmp=tmp[np.newaxis,np.newaxis,:,:]
                         fits.writeto(outdir+'/'+version+'_'+basename,
