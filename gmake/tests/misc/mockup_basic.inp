@@ -1,0 +1,36 @@
+#
+# this is a single line / single object / asymetric test case
+#
+################################################################################
+@ basics
+################################################################################
+
+object              'gn20'
+z                   4.0548
+
+pa                  -135.00*u.deg
+inc                 44.06*u.deg
+
+xypos               '12h37m11.89s +62d22m11.8s'
+vsys                0*u.km/u.s
+
+vrot_rpcorr         True
+
+rcProf              ('tanh',300*u.km/u.s,10*u.kpc)
+vRadial             -60*u.km/u.s
+vSigma              +60*u.km/u.s
+
+################################################################################
+@ co21                
+################################################################################
+
+type                'disk3d'
+import              'basics'
+
+vis                 '../../../examples/data/gn20/vla/AC974.100409.ms,../../../examples/data/gn20/vla/AC974.100408.ms'
+
+restfreq            230.53800000*u.GHz
+lineflux            1.0*u.Jy*u.km/u.s
+
+sbProf              ('sersic2d',7*u.kpc,2)
+vbProf              ('sech',1*u.kpc)

@@ -10,23 +10,16 @@ from .model import model_realize
 from .dynamics import *
 from .io import *
 from astropy.wcs import WCS
-#from galario.double import get_image_size
-#from galario.double import sampleImage
-#from galario.double import chi2Image
 logger = logging.getLogger(__name__)
 from astropy.modeling.models import Gaussian2D
 from memory_profiler import profile
 from .model import model_setup
 
-from .discretize import channel_split
-from .discretize import sample_prep
-from .discretize import lognsigma_lookup
+from .discretize import channel_split,sample_prep,lognsigma_lookup
 import fast_histogram as fh
 import numexpr as ne
 
 from .utils import fft_use
-
-from galario.single import sampleImage
 
 from astropy.convolution import convolve_fft
 import pyfftw
@@ -36,8 +29,8 @@ from scipy.interpolate import interpn
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 
 import gmake.meta as meta
-from .discretize import pickplane
-from .discretize import render_component
+from .discretize import pickplane,render_component,uv_sample
+
 """
 Cores Functions
 
@@ -325,7 +318,7 @@ def uv_chisq(objs,dname,dat_dct,models):
     sample_count=line_count=cont_count=0
     naxis=w._naxis    
 
-    #   prep for sampleImage()    
+    #   prep for uv_sample()    
     
     dRA,dDec,cell,wv=sample_prep(w,phasecenter)
 
@@ -360,12 +353,12 @@ def uv_chisq(objs,dname,dat_dct,models):
         fluxscale_cache.append(fluxscale_list[i]) 
 
         if  pb is not None: plane=plane*pickplane(pb,iz)
-        uv0=sampleImage(plane.astype(np.float32),
+        uv0=uv_sample(plane.astype(np.float32),
                         cell,
                         (uvw[:,0]/wv[iz]),
                         (uvw[:,1]/wv[iz]),                               
                         dRA=dRA,dDec=dDec,
-                        PA=0.,check=False,origin='lower')
+                        PA=0.,origin='lower')
         sample_count+=1
         uv_cache.append(uv0)
         
@@ -388,18 +381,19 @@ def uv_chisq(objs,dname,dat_dct,models):
                              scale=fluxscale_list[i])                  
         
         uvdiff=uvdata[:,iz].copy()
+
         if  plane is not None:
             
             render_component(plane,im_cache,
                                    scale=[fluxscale_cache[j][iz] for j in range(len(uv_cache))])
             if  pb is not None: plane*=pickplane(pb,iz)
-            uvdiff-=sampleImage(plane.astype(np.float32),cell,
+            uvdiff-=uv_sample(plane.astype(np.float32),cell,
                                 (uvw[:,0]/wv[iz]),
                                 (uvw[:,1]/wv[iz]),
                                 #ne.evaluate('a/b',local_dict={'a':uvw[:,0],'b':wv[iz]}),
                                 #ne.evaluate('a/b',local_dict={'a':uvw[:,1],'b':wv[iz]}),                                   
                                 dRA=dRA,dDec=dDec,
-                                PA=0.,check=False,origin='lower')
+                                PA=0.,origin='lower')
             sample_count+=1; line_count+=1
         else:
             render_component(uvdiff,uv_cache,mode='iadd',
@@ -410,10 +404,10 @@ def uv_chisq(objs,dname,dat_dct,models):
                          local_dict={'a':uvdiff,
                                      'b':uvflag[:,iz],
                                      'c':uvweight})/((np.exp(lognsigma))**2)  
-    
-    logger.debug('sampleimage  count: '+str(sample_count))
-    logger.debug('line channel count: '+str(line_count))
-    logger.debug('cont channel count: '+str(cont_count))            
+        
+    #logger.debug('uv_sample  count: '+str(sample_count))
+    #logger.debug('line channel count: '+str(line_count))
+    #logger.debug('cont channel count: '+str(cont_count))            
     
     # ll pt2
     uvweight[uvweight==0]=1
@@ -527,9 +521,9 @@ def xy_chisq(objs,dname,dat_dct,models,returnwdev=False):
                              scale=[fluxscale_cache[j][iz] for j in range(len(sm_cache))])
             cont_count+=1
      
-    logger.debug('convolve_fft count: '+str(convol_count))
-    logger.debug('line channel count: '+str(line_count))
-    logger.debug('cont channel count: '+str(cont_count))
+    #logger.debug('convolve_fft count: '+str(convol_count))
+    #logger.debug('line channel count: '+str(line_count))
+    #logger.debug('cont channel count: '+str(cont_count))
         
         
     if  'sample@'+dname in models:

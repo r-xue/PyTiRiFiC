@@ -16,7 +16,6 @@ from scipy.sparse import csr_matrix
 import fast_histogram as fh
 from .utils import fft_use
 from galario.single import sampleImage
-from galario.double import sampleImage as d_sampleImage
 from copy import deepcopy
 from .io import *
 from .dynamics import model_vrot
@@ -364,7 +363,7 @@ def pickplane(im,iz):
     
 def sample_prep(w,phasecenter,tol=0.01):
     """
-    do some prep for galario.sampleImage()
+    do some prep for uv_sample()
     uvdata phasecenter
     w    model image wcs
     
@@ -407,6 +406,8 @@ def sample_prep(w,phasecenter,tol=0.01):
 def xy_render(objs,w,psf=None,pb=None,normalize_kernel=False):
            
     """
+    Note: psf/pb should not contain missing data
+    
     map a cloudlets-based model into a gridd data model (i.a FITS image-like for exporting or XY->UV tranform)
     
     objs:       componnet list 
@@ -438,7 +439,7 @@ def xy_render(objs,w,psf=None,pb=None,normalize_kernel=False):
              https://stackoverflow.com/questions/49632993/why-python-broadcasting-in-the-example-below-is-slower-than-a-simple-loop
     """
     
-    if  pb is None:
+    if  pb is None and psf is not None:
         logger.debug("warning: pb is empty!")
         logger.debug("therefore, the primary beam response is not applied to the model image before convolve()")    
     
@@ -541,6 +542,8 @@ def xy_render(objs,w,psf=None,pb=None,normalize_kernel=False):
 
 def uv_render(objs,w,uvw,phasecenter,pb=None,wideband=False):
     """
+    
+    Note: psf/pb should not contain missing data
     map mutiple component into one header and calculate chisq
     objs:       componnet list
     models:    a list of model to be mapped into the visibility model for the chisq calculation
@@ -558,7 +561,7 @@ def uv_render(objs,w,uvw,phasecenter,pb=None,wideband=False):
     vis_shape=(uvw.shape[0],naxis[2])
     vis=np.zeros(vis_shape,dtype=np.complex128,order='F')    
 
-    #   prep for sampleImage()
+    #   prep for uv_sample()
         
     dRA,dDec,cell,wv=sample_prep(w,phasecenter)
 
@@ -637,9 +640,9 @@ def uv_render(objs,w,uvw,phasecenter,pb=None,wideband=False):
                              scale=[fluxscale_cache[j][iz] for j in range(len(uv_cache))])  
             cont_count+=1
             
-    logger.debug('uvsample count: '+str(sample_count))
-    logger.debug('line channel count: '+str(line_count))
-    logger.debug('cont channel count: '+str(cont_count))            
+    #logger.debug('uvsample count: '+str(sample_count))
+    #logger.debug('line channel count: '+str(line_count))
+    #logger.debug('cont channel count: '+str(cont_count))            
             
     return vis
 
@@ -715,7 +718,9 @@ def uv_sample_nufft(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0):
     # Fast Non-uniform FFT
     
     vis=np.zeros((len(uu)),dtype=np.complex128)
-    nufft.nufft2d2(vrot*(cell*2*np.pi),-urot*(cell*2*np.pi),vis,1,1e-3,plane,\
+    nufft.nufft2d2(vrot*(cell*2*np.pi),
+                   -urot*(cell*2*np.pi),
+                   vis,1,1e-3,plane,\
                    debug=0,spread_debug=0,spread_sort=2,fftw=1,modeord=0,\
                    chkbnds=1,upsampfac=1.25)
     return vis  
@@ -725,6 +730,22 @@ def uv_sample_direct(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,dimsum='uv',drange=10)
     runtime scaled with "active" pixel n (loop over active pixel)
     runtime scaled with nrecord (loop over active visibility)
     a run time is only acceptable for limited amount of point source
+    
+    so it's not using direct sm.predict only give 70% flux and high spatial freuqnecy info is loosing
+    
+    sm.predict behavior:
+        If the input image very small 6x6, loosing flux in sm.predict:
+        It seems its using weighted average over a couple of cells arounds and run into issue for large uv cell (small image cell) case
+    
+    casa is likley using oversampling method:
+    
+    https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casa5/code/synthesis/TransformMachines/WTerm.h#114
+    
+    oversampling=20 or 20xPB size
+    will make sure any the most rapid perips case (~pb) will be sapled by 20points.
+    such the phase (from joint source of the entire image) can't change even faster than that.
+    even the nearest neajobour sampling will be good enough and not introduce too much error. 
+    
     """
 
     nxy = plane.shape[0]
@@ -768,6 +789,9 @@ def uv_sample_direct(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,dimsum='uv',drange=10)
 
 def uv_sample_interp2d(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
                 mode='ap',ik=5,saveuvgrid=False):  
+    """
+    ik=1->5; high-order is more accurate
+    """
     
     if origin == 'upper':
         v_origin = 1.
@@ -845,7 +869,7 @@ def uv_sample_interp2d(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
     return vis          
 
 def uv_sample(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
-                method='interp2d',ik=5,saveuvgrid=False):
+                method='nufft',ik=5,saveuvgrid=False):
     """
     #galario: scaled with fft-size
     
@@ -934,8 +958,6 @@ def uv_sample(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
                                    mode=mode,ik=5,saveuvgrid=saveuvgrid)    
         
 
-    
-  
 ##########################################################################
 
 def model_render(theta,fit_dct,inp_dct,dat_dct,

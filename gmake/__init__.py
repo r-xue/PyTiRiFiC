@@ -10,8 +10,9 @@ __version__ = pkg_resources.get_distribution('gmake').version
 __email__ = 'rx.astro@gmail.com'
 __author__ = 'Rui Xue'
 __credits__ = 'University of Iowa'
-__demo__ = os.path.dirname(os.path.abspath(__file__))
-
+__tests__ = os.path.dirname(os.path.abspath(__file__))+'/tests/'
+__demo__ = os.path.dirname(os.path.abspath(__file__))+'/../examples/'
+__demodata__ = os.path.dirname(os.path.abspath(__file__))+'/../examples/data/'
 
 from .utils import *
 from .logger import *

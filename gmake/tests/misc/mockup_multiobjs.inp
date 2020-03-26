@@ -1,0 +1,164 @@
+#
+# this is a single line + continue / single object / asymetric test case
+#
+
+################################################################################
+@ basics
+################################################################################
+
+object              'gn20'
+z                   4.0548
+
+pa                  -135.00*u.deg
+inc                 44.06*u.deg
+
+xypos               '12h37m11.89s +62d22m11.8s'
+vsys                0*u.km/u.s
+
+vrot_rpcorr         True
+
+rcProf              ('tanh',300*u.km/u.s,10*u.kpc)
+vRadial             -60*u.km/u.s
+vSigma              +60*u.km/u.s
+
+################################################################################
+@ co21             
+################################################################################
+
+type                'disk3d'
+import              'basics'
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+restfreq            230.53800000*u.GHz
+lineflux            1.0*u.Jy*u.km/u.s
+
+sbProf              ('sersic2d',7*u.kpc,2)
+vbProf              ('sech',1*u.kpc)
+
+################################################################################
+@ co21-shift                
+################################################################################
+
+type                'disk3d'
+import              'basics'
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+restfreq            230.83800000*u.GHz
+lineflux            1.0*u.Jy*u.km/u.s
+
+sbProf              ('sersic2d',7*u.kpc,2)
+vbProf              ('sech',1*u.kpc)
+
+
+################################################################################
+@cont1 # model components  
+################################################################################
+
+type                 'apmodel'
+
+z                   4.0548
+xypos               '12h37m10.4s  62d22m16s'
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+contfreq             46 * u.Unit('GHz')
+contflux             0.001 * u.Unit('Jy')
+alpha                3.0
+sbProf              ('Sersic2D',10*u.kpc,1)
+
+
+################################################################################
+@cont2 # model components  
+################################################################################
+
+type                 'apmodel'
+
+z                   4.0548
+xypos               '12h37m10.89s +62d21m50.8s'
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+contfreq             46 * u.Unit('GHz')
+contflux             0.001 * u.Unit('Jy')
+alpha                3.0
+sbProf              ('Sersic2D',10*u.kpc,1)
+
+
+################################################################################
+@cont3 # model components 
+################################################################################
+
+type                 'disk2d'
+
+z                   4.0548
+xypos               '12h37m07.89s +62d22m22.8s'
+
+pa                  0.00*u.deg
+inc                 0.00*u.deg
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+contfreq             46 * u.Unit('GHz')
+contflux             0.002 * u.Unit('Jy')
+alpha                -1.0
+sbProf              ('sersic2d',0.1*u.kpc,2)
+
+
+################################################################################
+@point # model components 
+################################################################################
+
+type                 'point'
+z                   4.0548
+
+xypos               '12h37m11.32s +62d22m10.8s'
+
+vis                 '../test_discretize/mockup_multiobjs_withnoise.ms'
+pb                  '../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits'
+#image                '../test_discretize/test_withnoise.ms/dm.image.fits'
+#psf                  '../test_discretize/test_withnoise.ms/dm.psf.fits'
+
+contfreq             46 * u.Unit('GHz')
+contflux             0.0002 * u.Unit('Jy')
+alpha                -1.0
+
+
+
+################################################################################
+@ optimize
+################################################################################
+
+inc@basics              ('a', [10,80]*u.deg)
+vSigma@basics           ('a', [5,200]*u.km/u.s)
+rcProf[1]@basics        ('a', [0,500]*u.km/u.s)
+sbProf[1]@co21          ('a', [1,50]*u.kpc)
+#lognsigma@co21          ('a',[-5,5])
+
+method                  'lmfit-nelder'
+niter                   50
+#nwalkers                40
+
+################################################################################
+@ general
+################################################################################
+
+outdir               './'
+outname_replace      [('../data/gn20/vla/', '')]
+outname_exclude      []
