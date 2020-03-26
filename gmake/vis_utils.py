@@ -16,10 +16,9 @@ from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 from astropy.coordinates import SkyCoord
 
 from rxutils.casa.proc import rmColumns
-from galario.single import get_image_size
 
 from .discretize import sample_prep,uv_sample,pickplane
-from .model import makepb
+from .model import makepb,get_image_size
 
 
 """
@@ -65,7 +64,7 @@ def read_ms(vis='',
     else:
         dat_dct_out=dat_dct    
         
-    if  usedouble==True:
+    if  usedouble==False:
         rtype=np.float32
         ctype=np.complex64
     else:
@@ -243,7 +242,7 @@ def write_ms(vis,value,
 
 def corrupt_ms(vis,
                mode='simplenoise',simplenoise='1mJy',
-               inputvis=None):
+               inputvis=None,delscratch=True):
     """
     use simulated tool
     """
@@ -260,10 +259,14 @@ def corrupt_ms(vis,
     sm.corrupt()
     sm.done()
     
+    if  delscratch==True:
+        rmColumns(vis,column='MODEL_DATA')
+        rmColumns(vis,column='CORRECTED_DATA')
+            
     return                
 
 def cpredict_ms(vis,
-               fitsimage=None,inputvis=None,pbcor=True,rmcols=True):
+               fitsimage=None,inputvis=None,pbcor=True,delscratch=True):
     """
     Using casatools.simulator to:
         + generate UV model from a FITS image with primary beam model applied
@@ -282,7 +285,8 @@ def cpredict_ms(vis,
             logger.debug("vis and inputvis must be different!")
             return         
         os.system("rm -rf "+vis)
-        os.system('cp -rf '+inputvis+' '+vis)    
+        os.system('cp -rf '+inputvis+' '+vis)
+        os.system('rm -rf '+vis+'/dm*fits')    
     """
     data,header=fits.getdata('im.fits',header=True)
     data=np.expand_dims(data,axis=0)
@@ -302,13 +306,14 @@ def cpredict_ms(vis,
     sm.predict(imagename=fitsimage.replace('.fits','.image'))
     sm.done
     
-    rmColumns(vis,column='MODEL_DATA')
-    rmColumns(vis,column='CORRECTED_DATA')
-    
+    if  delscratch==True:
+        rmColumns(vis,column='MODEL_DATA')
+        rmColumns(vis,column='CORRECTED_DATA')
+        os.system("rm -rf "+fitsimage.replace('.fits','.image'))
     return
 
 def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=None,
-                method='interp2d',ik=5,saveuvgrid=False):
+                method='nufft',ik=5,saveuvgrid=False):
     """
     Using galario to:
         + generate UV model from a FITS image with primary beam model applied
@@ -382,8 +387,7 @@ def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=
         pbrad=1.22*wv[iz]/25*1.0
         pbrad=0.0
         nxy, dxy = get_image_size(uvw[:,0]/wv[iz], uvw[:,1]/wv[iz],
-                                  PB=pbrad,f_max=f_max,f_min=f_min,
-                                  verbose=False)    
+                                  pb=pbrad,f_max=f_max,f_min=f_min)    
         print("UVW uvw shape:       [nrecord]", uvw.shape)
         print("UVW Sugguested nxy:  [npixel]:", nxy)
         print("UVW Sugguested cell  [arcsec]:", np.rad2deg(dxy)*3600)
@@ -391,6 +395,7 @@ def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=
         
         if  pb is not None:
             pbeam=fits.getdata(pb,header=False)
+            pbeam=np.nan_to_num(pbeam,nan=0.0)
             if  pbaverage==True:
                 if  pbeam.ndim==3:
                     pbeam=np.mean(pbeam,axis=(0))
@@ -423,8 +428,6 @@ def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=
                                       PA=0.,origin='lower',
                                       method=method,ik=ik,saveuvgrid=saveuvgrid)
                 #print("predicted plane",iz)        
-    
-    
     
     write_ms(vis,uvmodel,datacolumn='data')
     
