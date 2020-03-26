@@ -6,9 +6,6 @@ from .stats import custom_pdf
 import astropy.units as u
 import fast_histogram as fh
 import pprint
-from .utils import eval_func
-from .utils import one_beam
-from .utils import sample_grid
 
 import time
 from astropy.coordinates.matrix_utilities import rotation_matrix,matrix_product,matrix_transpose
@@ -20,15 +17,9 @@ from asteval import Interpreter
 aeval = Interpreter()
 aeval.symtable['u']=u
 
-from .utils import rng_seeded
+from .utils import rng_seeded,fft_fastlen,fft_use,eval_func,one_beam,sample_grid
 from astropy._erfa import ufunc as erfa_ufunc
 from astropy import constants as const
-
-
-from .utils import fft_use
-from galario.single import get_image_size
-
-
 
 from astropy.modeling.models import Gaussian2D
 from astropy.convolution import discretize_model
@@ -1022,13 +1013,13 @@ def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
     if  antsize is None:
         pb=0    # no restrictin from PB
     else:
-        pb=1.22*wv/antsize*1.0
+        pb=(1.22*wv/antsize).value
     
     nxy, dxy = get_image_size(uv[:,0]/wv.value, uv[:,1]/wv.value,
-                              PB=pb,f_max=f_max,f_min=f_min,
-                              verbose=False)
+                              pb=pb,f_max=f_max,f_min=f_min)
     
-    #logger.debug('nxy:'+str(nxy)+' '+str(np.size(chanfreq))+' '+'dxy:'+(dxy<<u.rad).to(u.arcsec).to_string())
+    logger.debug('nxyz:'+str(nxy)+','+str(np.size(chanfreq)))
+    logger.debug('dxyz:'+(dxy<<u.rad).to(u.arcsec).to_string()+','+(np.mean(chanwidth.to(u.MHz))).to_string())
     
     header=create_header()
     header['NAXIS1']=nxy
@@ -1049,6 +1040,64 @@ def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
     header['CRPIX2']=np.floor(nxy/2)+1
     
     return header
+
+def get_image_size(u, v, pb=0, f_min=5., f_max=2.0):
+    """
+    Compute the recommended image size given the (u, v) locations.
+    Typical call signature::
+        nxy, dxy = get_image_size(u, v, PB=0, f_min=5., f_max=2.5, verbose=False)
+    Parameters
+    ----------
+    u : array_like, float
+        u coordinate of the visibility points where the FT has to be sampled.
+        **units**: wavelength
+    v : array_like, float
+        v coordinate of the visibility points where the FT has to be sampled.
+        The length of v must be equal to the length of u.
+        **units**: wavelength
+    PB : float, optional
+        Primary beam of the antenna, e.g. 1.22*wavelength/Diameter for an idealized
+        antenna with uniform illumination.
+        **units**: rad
+    f_min : float
+        Size of the field of view covered by the (u, v) plane grid w.r.t. the field
+        of view covered by the image. Recommended to be larger than 3 for better results.
+        **units**: pure number
+    f_max : float
+        Nyquist rate: numerical factor that ensures the Nyquist criterion is satisfied when sampling
+        the synthetic visibilities at the specified (u, v) locations. Must be larger than 2.
+        The maximum (u, v)-distance covered is `f_max` times the maximum (u, v)-distance
+        of the observed visibilities.
+        **units**: pure number
+    verbose : bool, optional
+        If True, prints information on the criteria to be fulfilled by `nxy` and `dxy`.
+    Returns
+    -------
+    nxy : int
+        Size of the image along x and y direction.
+        **units**: pixel
+    dxy : float
+        Returned only if not provided in input.
+        Size of the image cell, assumed equal and uniform in both x and y direction.
+        **units**: cm
+    """
+    uvdist = np.hypot(u, v) #in units of wavelength
+
+
+    # X2 due to the effective sampling spatial frequency (negative->positive) from FFT is just half of uvplane size 
+    
+    mrs=0.6/np.min(uvdist) # maxmini sensitive scale in radian
+    duv=np.min(uvdist)/0.6/f_min    # required uv cell size (smaller is better)  ;  1/duv is the xy plane size 
+    maxuv = np.max(uvdist)*f_max*2  # required uv plane size (larger is better)  ;  1/maxuv is the xy cell size
+    
+    # if duv is not sufficient to cover PB (off-center source with fast phase changes), make it smaller
+     
+    if  pb>1/duv: duv=1/pb
+    
+    nxy=fft_fastlen(int(maxuv/duv))
+    dxy=1/duv/nxy
+
+    return nxy, dxy
     
 def makepsf(header,
             beam=None,size=None,

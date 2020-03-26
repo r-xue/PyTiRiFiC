@@ -34,6 +34,7 @@ try:
     import mkl_fft._numpy_fft as fft_use
     import mkl
     import mkl_random
+    from scipy.fft import next_fast_len as fft_fastlen
     # we must do a trial at least once to avoid downstream problem from galario
     # not sure why at this moment 
     #fft_use.fftn(1)# doesn't work
@@ -46,6 +47,7 @@ try:
 except NameError:
     try:
         import pyfftw.interfaces.numpy_fft as fft_use
+        import pyfftw.next_fast_len as fft_fastlen
         logger.debug("use pyfftw for convolve_fft")
         logger.debug("use numpy.random for RNG")
     except NameError:
@@ -58,6 +60,7 @@ except NameError:
             https://docs.scipy.org/doc/scipy/reference/generated/scipy.fft.next_fast_len.html
         """
         import scipy.fft as fft_use
+        from scipy.fft import next_fast_len as fft_fastlen
         logger.debug("use scipy.fft for convolve_fft")
         logger.debug("use numpy.random for RNG")
         #import numpy.fft as fft_use
@@ -431,7 +434,10 @@ def inp2mod(inp_dct):
     
     objs=deepcopy(inp_dct)
     
-    ids_ignore=cfg['inp.comment']['id'].split(',')+cfg['inp.optimizer']['id'].split(',')
+    ids_ignore= cfg['inp.comment']['id'].split(',')+\
+                cfg['inp.analyzer']['id'].split(',')+\
+                cfg['inp.general']['id'].split(',')+\
+                cfg['inp.optimizer']['id'].split(',')
 
     #   assemble all parameters
     
