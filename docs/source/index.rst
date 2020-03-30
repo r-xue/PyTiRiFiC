@@ -85,10 +85,13 @@ Changelog
     gmake    
 
 
+..  note::
 
+    GMaKE is an evolving package. 
+    Although we make an effort to maintain backwards compatibility for the parameter file syntax,
+    the Python API can rapidly change at the current alpha development stage.
 
-
-.. automodule:: gmake
+..  automodule:: gmake
     :members:
     :undoc-members:
     :show-inheritance:
@@ -98,3 +101,4 @@ Indices
 
 * :ref:`genindex`
 * :ref:`modindex`
+* :ref:`search`

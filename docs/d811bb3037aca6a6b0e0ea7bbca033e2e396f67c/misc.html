@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gmake package" href="gmake.html" />
-    <link rel="prev" title="Simulated High-z VLA Field" href="tutorials/simvla.html" /> 
+    <link rel="prev" title="Test the performance of the Image-to-MS-related modules" href="tests/test_uvsample_performance.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,24 +114,6 @@
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Background</span></p>
 <ul class="current">
@@ -242,8 +224,16 @@ offer a subset of GMaKE’s capabilities or serve as a backbone of some specific
 Some package offering some similar functions or moldeing capacibilt with what GMaKE offer, although they are mostly specified for specific data form or optimized for
 some user case covered by GMaKE. We list them here as reference for this general topic here:</p>
 <ul>
-<li><p><a class="reference external" href="https://www.astro.rug.nl/~gipsy/tsk/galmod.dc1">galmod</a></p></li>
-<li><p><a class="reference external" href="https://editeodoro.github.io/Bbarolo/">Bbarolo</a></p></li>
+<li><p><a class="reference external" href="https://www.astro.rug.nl/~gipsy/tsk/galmod.dc1">galmod</a></p>
+<blockquote>
+<div><p>Likely the first popular implementation of the tiled-ring algorithm</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="https://editeodoro.github.io/Bbarolo/">Bbarolo</a></p>
+<blockquote>
+<div><p>Improve upon the tiled-ring algorithm from galmod, with full model fitting features (likely for a single-line/disk user case)</p>
+</div></blockquote>
+</li>
 <li><p><a class="reference external" href="https://github.com/TimothyADavis/KinMSpy">KinMS</a></p>
 <blockquote>
 <div><p>another Python and IDL implantation of tilet-ring model method to simulate spectral-cube from a rotating disk galaxy</p>
@@ -284,7 +274,7 @@ some user case covered by GMaKE. We list them here as reference for this general
         <a href="gmake.html" class="btn btn-neutral float-right" title="gmake package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorials/simvla.html" class="btn btn-neutral float-left" title="Simulated High-z VLA Field" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tests/test_uvsample_performance.html" class="btn btn-neutral float-left" title="Test the performance of the Image-to-MS-related modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
