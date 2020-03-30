@@ -4,14 +4,14 @@ Installation
 ~~~~~~~~~~~~
 The package can be installed via::
     
-    pip install --user --upgrade GMaKE                                    # from PyPI
-    pip install --user --upgrade git+https://github.com/r-xue/GMaKE.git   # from GitHub  
-    pip install --user .                                                  # from a local copy     
+    $ pip install --user --upgrade GMaKE                                    # from PyPI
+    $ pip install --user --upgrade git+https://github.com/r-xue/GMaKE.git   # from GitHub  
+    $ pip install --user .                                                  # from a local copy     
 
 Dependencies:
 ~~~~~~~~~~~~~
 
-required: for basic image-based modeling/fitting functions
+**Required**: for basic image-based modeling/fitting functions
 
 - `Python 3 <https://www.python.org>`_
 - `numpy <https://www.numpy.org>`_
@@ -20,27 +20,26 @@ required: for basic image-based modeling/fitting functions
 - `matplotlib <https://matplotlib.org>`_
 - `asteval <https://newville.github.io/asteval/>`_
 - `lmfit <https://lmfit.github.io/lmfit-py//>`_
-- uvrx
 
-optional: for visibility-based capability and advanced diagnostics / analysis
+**Optional**: for visibility-based capability and advanced diagnostics / analysis
 
-- `casa6 <https://scikit-image.org>`_
-- uvrx
-- `python-casacore <https://github.com/casacore/python-casacore>`_ & `casacore <https://github.com/casacore/casacore>`_  *(optional: only used for visibility-based modeling)*
-- `nufft <https://scikit-image.org>`_
+- `casa6 <https://casa.nrao.edu/casadocs/casa-5.6.0/introduction/casa6-installation-and-usage>`_
+- `python-casacore <https://github.com/casacore/python-casacore>`_ & `casacore <https://github.com/casacore/casacore>`_  
+- `uvrx <https://r-xue.github.com/uvrx>`_
+- `FINUFF <https://finufft.readthedocs.io/en/latest/>`_
 - `emcee <http://dfm.io/emcee>`_
 - `corner <https://corner.readthedocs.io/en/latest>`_
 - `spectral-cube <https://spectral-cube.readthedocs.io>`_
 - `pvextractor <https://pvextractor.readthedocs.io>`_
 
-Suggested:
+**Suggested**:
 
 - `numexpr <https://github.com/pydata/numexpr>`_
-- `galario <https://github.com/mtazzari/galario>`_  *(optional: only used for visibility-based modeling)*
-- `galpy <https://github.com/jobovy/galpy>`_ *(optional: only used when the kinmeatic model is built upon the galaxy mass distribution)*
-- `mkl_fft <https://github.com/IntelPython/mkl_fft>`_ *(optional: for improving FFT speed)*
-- `pyfftw <https://pypi.org/project/pyFFTW/>`_ *(optional: for improving FFT speed)*
-- `skimage <https://scikit-image.org>`_
+- `galario <https://github.com/mtazzari/galario>`_  *(used for visibility-based modeling, but may fail in mutiple-source cases)*
+- `galpy <https://github.com/jobovy/galpy>`_ *(only used when the kinematic model is built upon the galaxy mass distribution and potentials)*
+- `mkl_fft <https://github.com/IntelPython/mkl_fft>`_ *(improve FFT speed)*
+- `pyfftw <https://pypi.org/project/pyFFTW/>`_ *(improve FFT speed)*
+- `skimage <https://scikit-image.org>`_ *(image 2D transform)*
 	
 Basic Usage
 ~~~~~~~~~~~

@@ -4,12 +4,11 @@
 .. include:: ../../README.rst
 
 
-
 ..  toctree::
     :maxdepth: 3
     :caption: Quickstart
 
-    install
+    quickstart
 
 ..  toctree::
     :maxdepth: 3
@@ -53,7 +52,7 @@
     tutorials/simvla
 
 Tutorials & Examples
-~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 Additional tutorials are in Jupyter Notebooks:
 
