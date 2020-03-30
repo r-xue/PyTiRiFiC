@@ -33,7 +33,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="/Users/Rui/Documents/Workspace/projects/GMaKE/docs/source/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
@@ -83,11 +82,22 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Quickstart</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../par_def.html">Input File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html#dependencies">Dependencies:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials</span></p>
+<p class="caption"><span class="caption-text">Parameter File</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html#sections">Sections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html#others">Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpfile.html#units">Units</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
@@ -101,10 +111,36 @@
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Tests</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html#design-goals">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html#credit">Credit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html#see-also">See also</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules/Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gmake.html">gmake package</a></li>
 </ul>
 
             
@@ -862,7 +898,7 @@ for i in range(0,4):
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Rui Xue
+        &copy; Copyright 2020, Rui Xue
 
     </p>
   </div>

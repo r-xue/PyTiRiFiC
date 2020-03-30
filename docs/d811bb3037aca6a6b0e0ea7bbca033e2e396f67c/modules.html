@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Options during Setup &mdash; GMaKE 0.2.dev1 documentation</title>
+  <title>gmake &mdash; GMaKE 0.2.dev1 documentation</title>
   
 
   
@@ -186,7 +186,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Options during Setup</li>
+      <li>gmake</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -203,36 +203,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="options-during-setup">
-<span id="options"></span><h1>Options during Setup<a class="headerlink" href="#options-during-setup" title="Permalink to this headline">¶</a></h1>
-<p>To use the package template run <code class="docutils literal notranslate"><span class="pre">cookiecutter</span> <span class="pre">gh:astropy/package-template</span></code>,
-once you have run this command you will be asked a series of questions. Below is
-a description of each of the prompts:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">package_name</span></code>: This is a human readable name for your package, like <code class="docutils literal notranslate"><span class="pre">Astropy</span></code> or <code class="docutils literal notranslate"><span class="pre">SunPy</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code>: This is the name of your python package i.e. <code class="docutils literal notranslate"><span class="pre">astropy</span></code> or <code class="docutils literal notranslate"><span class="pre">sunpy</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">short_description</span></code>: This is a one sentence description of your package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">long_description</span></code>: This is a multi-line description of your package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">author_name</span></code>: The name or names of the authors.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">author_email</span></code>: A contact email for the authors.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">license</span></code>: The license of your package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">project_url</span></code>: Project website.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">project_version</span></code>: The version number for the package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">include_example_code</span></code>: This includes a set of example python files showing you how to use the package template. If you choose <code class="docutils literal notranslate"><span class="pre">n</span></code> then none of this will be included and you will have to populate the directory structure before you can import the package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">include_example_cython_code</span></code>: This includes a set of example Cython code, which demonstrates how to add compiled code to the package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">include_cextern_folder</span></code>: The cextern folder should be used if you are including non-python C code.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">edit_on_github_extension</span></code>: Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to enable the edit on GitHub sphinx extension.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">github_project</span></code>: This is the GitHub identifier for the edit on GitHub extension and the changelog link extension.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">use_travis_ci</span></code>: If <code class="docutils literal notranslate"><span class="pre">'y'</span></code> the template will include an example <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file for the Travis CI service.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">use_appveyor_ci</span></code>: If <code class="docutils literal notranslate"><span class="pre">'y'</span></code> the template will include an example <code class="docutils literal notranslate"><span class="pre">appveyor.yml</span></code> file for the Appveyor CI service.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">use_read_the_docs</span></code>: If <code class="docutils literal notranslate"><span class="pre">'y'</span></code> the <code class="docutils literal notranslate"><span class="pre">read_the_docs.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">.rtd-environment.yml</span></code> files will be included for using conda on Read the Docs.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sphinx_theme</span></code>: The value of the <code class="docutils literal notranslate"><span class="pre">html_theme</span></code> variable in the sphinx configuration file.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">initialize_git_repo</span></code>: If <a class="reference external" href="https://gitpython.readthedocs.io/en/stable/">gitpython</a> is installed this option will turn the rendered package into a git repository and add and initilize the <code class="docutils literal notranslate"><span class="pre">astropy_helpers</span></code> submodule.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">astropy_helpers_version</span></code>: The version number of the <code class="docutils literal notranslate"><span class="pre">astropy_helpers</span></code> submodule to be used, only used if <code class="docutils literal notranslate"><span class="pre">initialize_git_repo</span></code> is true.</p></li>
-</ol>
-<p>Once the project has been set up, any of the values can still be <a class="reference external" href="http://docs.astropy.org/en/latest/development/astropy-package-template.html">manually
-updated</a>.
-In addition, further customization can also be carreid out in the <a class="reference internal" href="nextsteps.html#next-steps"><span class="std std-ref">Next Steps</span></a>.</p>
+  <div class="section" id="gmake">
+<h1>gmake<a class="headerlink" href="#gmake" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gmake.html">gmake package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.analyze">gmake.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#gmake-cli-module">gmake.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.discretize">gmake.discretize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.dynamics">gmake.dynamics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.evaluate">gmake.evaluate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.io">gmake.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.logger">gmake.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.meta">gmake.meta module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.model">gmake.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#gmake-msplot2-module">gmake.msplot2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.opt">gmake.opt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.plts">gmake.plts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.stats">gmake.stats module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.utils">gmake.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.vis_utils">gmake.vis_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
