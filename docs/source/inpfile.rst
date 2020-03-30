@@ -1,5 +1,21 @@
-Input File Format
-=================
+..
+    Input File Format
+    =================
+
+    Parameter File Format
+    ---------------
+
+The basic syntax for the .inp file format is explained in the parameter definition file: `parameters.inp`_ .
+
+After a comparison among several readable plain-text syntaxes potentially suitable for the input file choice (e.g., csv/json/yaml/yanny/xml), I decide to keep using the native .inp format while gradually adding the support the traditional Python config file format (from the `ConfigParser`_ module).
+
+
+.. _ConfigParser: https://docs.python.org/3/library/configparser.html
+.. _parameters.inp: https://github.com/r-xue/GMaKE/blob/master/gmake/parameters.inp
+
+
+
+
 
 Basics
 ~~~~~~

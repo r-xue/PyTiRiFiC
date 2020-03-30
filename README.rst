@@ -1,99 +1,36 @@
 GMaKE: Galaxy Morphology and Kinematics Estimator
-==============================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A Python-based package for evaluating galaxy morphology and kinematics from interferometer and IFU data
-
-
-Major features of this package:
-
-* Generate multi-frequency synthetic visibility or spectral cubes from a galaxy morphology and kinematics model
-* The galaxy model can cooperate mutiple line and continuum components.
-* Performance a joint fit to multi-band interferometer/IFU/imaging datasets from a prior including 
-* Various choices of fitting algorithm
-* Optimized for processing large datasets with minimal memory footprint.
-
-A visibility-domain modeling can work around the non-linear imaging process for typical interferometer data.
-This offers a unique advantage on the marginally-resolved low SNR data (e.g. ALMA high-z observation).
-
-Project links:
-
-* Repo: https://github.com/r-xue/GMaKE
-* PyPI: https://pypi.python.org/pypi/GMaKE
-
-Installation
-~~~~~~~~~~~~
-The command line script can be installed via::
-
-    pip install --user .                                                  # from a local copy 
-    pip install --user --upgrade casa-proc                                # from PyPI
-    pip install --user https://github.com/r-xue/GMaKE/archive/master.zip  # from GitHub
-
-Usage
-~~~~~
-
-Although GMaKe is written as a Python package/module, a user-friendly console command-line interface is provided::
-    
-    hyperion:output Rui$ gmake_cli -h
-    
-    usage: gmake_cli [-h] [-f] [-a] [-p] [-d] [-t] [-l LOGFILE] inpfile
-
-    The GMAKE CL entry point: 
-        gmake path/example.inp
-
-        model fitting:
-            gmake -f path/example.inp
-        analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting  
-            gmake -a path/example.inp 
-        generate diagnostic plots
-            gmake -p path/example.inp 
-
-    Note:
-        for more complicated / customized user cases, one should build a workflow by
-        calling modules/functions directly (e.g. hz_examples.py) 
-            
-        
-    positional arguments:
-      inpfile               A parameter input file
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      -f, --fit             perform parameter optimization
-      -a, --analyze         analyze the fitting results / exporting data+model
-      -p, --plot            generate diagnotisc plots
-      -d, --debug           Debug mode; prints extra statements
-      -t, --test            test mode; run benchmarking scripts
-      -l LOGFILE, --logfile LOGFILE
-                            path to log file
+A Python-based package for evaluating galaxy morphology and kinematics properties 
 
 
-Tutorials
-~~~~~~~~~
+**Major features:**
 
-Additional tutorials are in Jupyter Notebooks:
+*Efficient forward-modeling of Galaxy Emission in Astronomical Data*
 
-* `basic_demo_amoeba.ipynb <http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_amoeba.ipynb>`_
+-   Construct high-precision spatially/spectroscopically-resolved galaxy emission models, from
+    analytical or physical prescriptions of galaxy geometry, emissivity,  kinematics, and dynamics.
+-   Implement various model elements (e.g., line, continuum, sky background) to provide a realistic presentation of expected galaxy sky emission. multi-frequency synthetic visibility or 
+-   The galaxy model can incorporate with multiple line/continuum components.
+-   Perform simulated observations of galaxy emission model and render them within a wide range of astronomical data forms 
+    (e.g. radio interferometer visibility, 
+    radio single-dish or optical IFU spectral cube, 
+    multiple-band photometric images, 
+    1D spectra, etc.)
 
-* `advanced_demo_amoeba.ipynb <http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_amoeba.ipynb>`_
+*Flexible Model Fitting/Optimization Interface*
 
-* `basic_demo_emcee.ipynb <http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb>`_
+-   We offer several model fitting/optimization algorithms under the same interface for a flexible user-friendly modeling experience through either a command-line approach or a serial of Python API functions).
+-   All modeling details are summarized in a single parameter file with a very flexible/readable syntax, which is easy to re-use for progressive modeling iterations.
+-   The package is specially optimized for efficiently performing joint model fitting on large heterogeneous multiple-wavelength datasets, and performance Bayesian-based model sampling for robust statistical error estimation with proper prior assumption. This is done by taking the advantages of multi-threading computation, with careful memory footprint management.
 
-* `advanced_demo_emcee.ipynb <http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb>`_
+GMaKE is originally designed to be a special tool to extract galaxy morphology and kinematics property from large modern interferometer datasets (specifically VLA and ALMA). We integrate some convenient utility-type functions (based on CASA 6's Python modules) for helping process, image, and visualize calibrated viability data from the interferometer data archive, as we realize the importance of properly preparing visibility data, which may require additional effort due to large dataset size and "complex" nature of interferometer visibility data forms.
 
-* `basic_simulate.ipynb <http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb>`_
- 
- 
-Examples
-~~~~~~~~
+On the other hand, although we have demonstrated that visibility-domain modeling can eliminate the non-linear imaging process for interferometer data and offers a unique advantage on the marginally-resolved moderate SNR data (e.g., noteably for high-z observations), we note that GMaKE is still equivalently equipped to analyze imaging or data products under the same modeling and fitting framework.
 
-+ BX610 (CO4-3/CI1-0 & CO7-6/CI2-1 & Continuum)
+Project Links:
+~~~~~~~~~~~~~~
 
-    * high-z object
-    * marginally resolved
-    * demonstrate the joint fitting capability 
-
-+ NGC 2976 (CO / HI )
-
-    * 2D image are used as a prior for emission distribution
-    * only test the kinematic modeling
-    
-+ W0533 (CO)
+- Repo: https://github.com/r-xue/GMaKE
+- PyPI: https://pypi.python.org/pypi/GMaKE
+- Documentation: https://r-xue.github.io/GMaKE

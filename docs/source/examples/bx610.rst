@@ -1,0 +1,11 @@
+Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* high-z object
+* 40&50hrs on-source observation
+* marginally resolved
+* joint fitting of mutiple ALMA observations in two bands (BAND A and B)
+* simutouse modelling of all line (CO4-3/CI1-0 & CO7-6/CI2-1) and continuum emission under the same galaxy kinmetics assumption.    
+
+
+.. include:: ../demos/demo_bx610.rst

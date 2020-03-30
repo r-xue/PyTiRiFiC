@@ -10,8 +10,13 @@ needs_sphinx = '1.2'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     'sphinx.ext.intersphinx']
+
+napoleon_google_docstring = False
+napoleon_use_param = False
+napoleon_use_ivar = True
 
 from gmake import __version__
 
@@ -23,7 +28,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'GMaKE'
-copyright = '2019, Rui Xue'
+copyright = '2020, Rui Xue'
 author = 'Rui Xue'
 
 
@@ -66,6 +71,8 @@ html_theme = "sphinx_rtd_theme"
 html_theme_options = {
     'logotext1': 'GMaKE',  # white,  semi-bold
     'logotext2': '',  # orange, light
+    'navigation_depth': 3,
+    #'collapse_navigation': True,
     'logotext3': ':'+__version__,   # white,  light
     'astropy_project_menubar': False
     }
@@ -75,9 +82,9 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
 
-html_css_files = [
-    '/Users/Rui/Documents/Workspace/projects/GMaKE/docs/source/theme.css',
-]
+#html_css_files = [
+#    '/Users/Rui/Documents/Workspace/projects/GMaKE/docs/source/theme.css',
+#]
 
 html_sidebars = {
     '**': ['localtoc.html'],
@@ -89,12 +96,12 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AstropyPackageTemplatedoc'
+#htmlhelp_basename = 'AstropyPackageTemplatedoc'
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None,
-                       'http://docs.astropy.org/en/stable/': None}
+#intersphinx_mapping = {'https://docs.python.org/': None,
+#                       'http://docs.astropy.org/en/stable/': None}
                        
 verbatimwrapslines = False                       
 html_show_sourcelink = False

@@ -31,7 +31,7 @@ For other setups (specifically, MacOS 10.14/15+Python3.7), a workaround is provi
 Install other components from CASA6
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The other CASA6 components (casatasks,casashell,casaviewer,casaplotms,casampi) are not platform specific and the installation can be done using the standard method.
+The other CASA6 components (``casatasks``,``casashell``,``casaviewer``,``casaplotms``,``casampi``) are not platform specific and the installation can be done using the standard method.
  
 ::
 
