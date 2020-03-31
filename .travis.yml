@@ -1,0 +1,36 @@
+language: python
+sudo: false
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      - libfftw3-dev
+      
+env:
+  global:
+    - OMP_NUM_THREADS=1
+
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+    - python: 3.8
+      dist: xenial
+      sudo: true
+
+
+install:
+    - git clone --depth 1 git://github.com/astropy/ci-helpers.git
+    - source ci-helpers/travis/setup_conda.sh
+    - pip install .
+
+script:
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) || echo 'Codecov failed to upload'
+
+notifications:
+  - email: false
+
