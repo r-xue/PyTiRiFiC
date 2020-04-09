@@ -416,7 +416,9 @@ def gpredict_ms(vis,fitsimage=None,inputvis=None,pb=None,pbaverage=True,antsize=
                 planepb=1.   
             
             plane=pickplane(im,iz)*planepb
-
+            if  method=='nufft':
+                plane=np.asfortranarray(plane)
+                
             if  np.any(plane):
                 blank=False
             if  blank==False:

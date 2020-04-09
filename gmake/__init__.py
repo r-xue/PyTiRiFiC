@@ -14,6 +14,11 @@ __tests__ = os.path.dirname(os.path.abspath(__file__))+'/tests/'
 __demo__ = os.path.dirname(os.path.abspath(__file__))+'/../examples/'
 __demodata__ = os.path.dirname(os.path.abspath(__file__))+'/../examples/data/'
 
+
+
+from .logger import logger_config
+logger_config(logfile=None,loglevel='DEBUG',logfilelevel='DEBUG',reset=True)
+
 from .utils import *
 from .logger import *
 from .io import *
@@ -49,6 +54,6 @@ __all__ = []
 # #from casa_proc import casa_script
 # from .plt_utils import * 
 # 
-logger_config(logfile=None,loglevel='DEBUG',logfilelevel='DEBUG',reset=True)
+
 
 

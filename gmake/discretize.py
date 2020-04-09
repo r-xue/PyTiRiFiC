@@ -699,31 +699,30 @@ def uv_sample_nearest(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,
     
     return vis   
 
-def uv_sample_nufft(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0):
+def uv_sample_nufft(plane,cell,uu,vv,vis,dRA=0.,dDec=0.,PA=0):
     """
     factor:    oversampling factor
     runtime scaled with oversampled plane size
     https://cims.nyu.edu/cmcl/nufft/nufft.html
     """
     
-    dRA  *= 2.*np.pi
-    dDec *= 2.*np.pi
+    #dRA  *= 2.*np.pi
+    #dDec *= 2.*np.pi
+    #cos_PA = np.cos(PA)
+    #sin_PA = np.sin(PA)
+    #urot = uu * cos_PA - vv * sin_PA
+    #vrot = uu * sin_PA + vv * cos_PA
     
-    cos_PA = np.cos(PA)
-    sin_PA = np.sin(PA)
-
-    urot = uu * cos_PA - vv * sin_PA
-    vrot = uu * sin_PA + vv * cos_PA    
+    urot=uu
+    vrot=vv    
 
     # Fast Non-uniform FFT
-    
-    vis=np.zeros((len(uu)),dtype=np.complex128)
     nufft.nufft2d2(vrot*(cell*2*np.pi),
                    -urot*(cell*2*np.pi),
                    vis,1,1e-3,plane,\
-                   debug=0,spread_debug=0,spread_sort=2,fftw=1,modeord=0,\
-                   chkbnds=1,upsampfac=1.25)
-    return vis  
+                   debug=0,spread_debug=0,spread_sort=0,fftw=1,modeord=0,\
+                   chkbnds=0,upsampfac=1.25)
+    return  
      
 def uv_sample_direct(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,dimsum='uv',drange=10):
     """
@@ -932,9 +931,10 @@ def uv_sample(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
                                  dDec=dDec,PA=PA,factor=20,saveuvgrid=saveuvgrid)
         
     if  method=='nufft':
-        
-        return  uv_sample_nufft(plane,cell,uu,vv,dRA=dRA,
-                                 dDec=dDec,PA=PA)        
+            
+        vis=np.zeros((len(uu)),dtype=np.complex128)
+        uv_sample_nufft(plane,cell,uu,vv,vis,dRA=dRA,dDec=dDec,PA=PA)
+        return vis        
     
     if  method=='galario':
 

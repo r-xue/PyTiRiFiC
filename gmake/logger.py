@@ -1,6 +1,9 @@
-import logging
 import os
 import pprint as pp
+import tempfile
+
+from casatools import logsink
+import logging
 
 logger = logging.getLogger('gmake')
 
@@ -42,6 +45,16 @@ def logger_config(logfile=None,
     #console_formatter=CustomFormatter()
     #console_handler.setFormatter(console_formatter)            
     logger.addHandler(console_handler)
+    
+    #   config casa logsink
+    #   https://casa.nrao.edu/docs/CasaRef/logsink-Tool.html#logsink.version.html
+    #   https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu43.html
+    
+    if  logfile is None:
+        fd,logfile=tempfile.mkstemp(suffix='.log')
+    casalogger=logsink(filename=logfile,enable_telemetry=False)
+    casalogger.showconsole(onconsole=True)
+    casalogger.filter(loglevel)
     
     return     
 
