@@ -1041,7 +1041,7 @@ def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
     
     return header
 
-def get_image_size(u, v, pb=0, f_min=5., f_max=2.0):
+def get_image_size(u, v, pb=0, f_min=5., f_max=2.0,even=True):
     """
     Compute the recommended image size given the (u, v) locations.
     Typical call signature::
@@ -1095,6 +1095,10 @@ def get_image_size(u, v, pb=0, f_min=5., f_max=2.0):
     if  pb>1/duv: duv=1/pb
     
     nxy=fft_fastlen(int(maxuv/duv))
+    if  even==True:
+        while (nxy %2 )!=0:
+            nxy=fft_fastlen(nxy+1)
+            
     dxy=1/duv/nxy
 
     return nxy, dxy

@@ -17,6 +17,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/opt/galario \
       -DPython_ADDITIONAL_VERSIONS=3.8 \
       -Wno-dev \
       -DCMAKE_C_COMPILER=gcc \
+      -DCMAKE_CXX_FLAGS='-march=native -ffast-math' \
       -DCMAKE_CXX_COMPILER=g++ ..
 
 make -j12 && make install # hexa-core
