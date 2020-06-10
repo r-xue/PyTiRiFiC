@@ -34,6 +34,7 @@ from astropy.cosmology import Planck13
 from scipy.interpolate import interp1d
 import logging
 from astropy.modeling import models as apmodels
+from .discretize import uv_render, xy_render
 
 
 logger = logging.getLogger(__name__)
@@ -784,11 +785,7 @@ def model_realize(mod_dct,
         
     return    
 
-
-###################################################################################################  
-
-
-def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
+def model_setup(mod_dct,dat_dct,verbose=False):
     """
     create model container 
         this function can be ran only once before starting fitting iteration, so that
@@ -851,10 +848,10 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
                         #   pass the data reference (no memory penalty)
                         
                         #or [obj['xypos'].ra,obj['xypos'].dec]
-                        #center=dat_dct['phasecenter@'+vis]
+                        center=dat_dct['phasecenter@'+vis]
                         # right now we are using the first object RA/DEC to make reference model imaging center
                         # also we hard-code the antenna size to 25*u.m
-                        center=[obj['xypos'].ra,obj['xypos'].dec]                                                    
+                        #center=[obj['xypos'].ra,obj['xypos'].dec]                                                    
                         
                         models['header@'+vis]=uv_to_header(dat_dct['uvw@'+vis],center,
                                                          dat_dct['chanfreq@'+vis],
@@ -976,6 +973,59 @@ def model_setup(mod_dct,dat_dct,decomp=False,verbose=False):
     
     return models
 
+def model_render(mod_dct, dat_dct, models=None,
+                 saveimodel=False,verbose=False):
+    """render component models into the data model container.
+    
+    Parameters
+    ----------
+    mod_dct : dict
+        component container with realized reference models in physical units
+    dat_dct : dict
+        data container
+    models : dict, optional
+        model container
+    
+    Returns
+    -------
+    models : dict
+        model container with rendered model inside
+    
+    """
+    
+    # build the model container (usually skipped during iterative optimization)
+    
+    if  models is None:
+        models=model_setup(mod_dct,dat_dct,verbose=verbose)
+
+    # calculate chisq 
+           
+    for tag in list(models.keys()):
+        
+        if  'imodel@' in tag:
+            
+            dname=tag.replace('imodel@','')
+            objs=[mod_dct[obj] for obj in models[tag.replace('imodel@','objs@')]]
+            w=models['wcs@'+dname]
+            if  models[tag.replace('imodel@','type@')]=='vis':                
+                model_one=uv_render(objs,w,
+                                    dat_dct['uvw@'+dname],
+                                    dat_dct['phasecenter@'+dname],
+                                    pb=models['pbeam@'+dname])
+            if  models[tag.replace('imodel@','type@')]=='image':
+                imodel,model_one=xy_render(objs,w,
+                                    psf=models['psf@'+dname],normalize_kernel=False,
+                                    pb=models['pbeam@'+dname])
+
+            models['model@'+dname]=model_one
+            
+            if  saveimodel==True:
+                if  models[tag.replace('imodel@','type@')]=='vis': 
+                    imodel=xy_render(objs,w,
+                                    normalize_kernel=False)                    
+                models['imodel@'+dname]=imodel
+                
+    return models
 
 ###################################################################################################
 

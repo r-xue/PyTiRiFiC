@@ -20,7 +20,7 @@ from rxutils.casa.proc import rmColumns
 from .discretize import sample_prep,uv_sample,pickplane
 from .model import makepb,get_image_size
 
-
+import numexpr as ne
 """
 ref: about taql:
     https://casacore.github.io/casacore-notes/199.html
@@ -131,8 +131,20 @@ def read_ms(vis='',
     phase_dir[0]=phase_dir[0].wrap_at(360.0*u.deg)
     dat_dct_out['phasecenter@'+vis]=phase_dir    
     dat_dct_out['telescope@'+vis]=telescope
-    
 
+    #   only for unflagged data we calculate the below values
+    #   we precacluate the value to avoid redundant calcualtion during likelihood calculate
+    #   use ne.evaluate(sum(**)) could lead to wrong results due to the weight dtype=float32    
+    uvflag=dat_dct_out['flag@'+vis]
+    uvweight=dat_dct_out['weight@'+vis]
+    dat_dct_out['ndata@'+vis]=np.sum(~uvflag)
+    dat_dct_out['sumwt@'+vis]=np.sum(~uvflag*uvweight[:,np.newaxis])
+    dat_dct_out['sumlogwt@'+vis]=np.sum((~uvflag)*np.log(uvweight[:,np.newaxis]))
+    
+    if  nodata==False:
+        uvdata=dat_dct_out['data@'+vis]
+        dat_dct_out['chanchi2@'+vis]=np.sum( (uvdata.real**2+uvdata.imag**2) *(~uvflag*uvweight[:,np.newaxis]), axis=0 )    
+    
     vars=['data','uvw','weight','flag']
     for var in vars:
         if  saveflag==False and var=='flag':
@@ -164,11 +176,26 @@ def read_ms(vis='',
             human_unit(np.min(dat_dct_out[tag])),
             human_unit(np.max(dat_dct_out[tag])))
         logger.debug(textout)
-
+        
+    vars=['chanchi2']
+    for ind in range(1):
+        tag=vars[ind]+'@'+vis
+        if  tag not in dat_dct_out.keys():
+            continue
+        textout='{:15} {:10} {:10.4f} {:10.4f}'.format(
+            tag.replace('@'+vis,'@'),
+            str(dat_dct_out[tag].shape),
+            np.min(dat_dct_out[tag]),
+            np.max(dat_dct_out[tag]))
+        logger.debug(textout)
+        
     radec=phase_dir[0].to_string(unit=u.hr,sep='hms') # print(phase_dir[0].hms)
     radec+='  '
     radec+=phase_dir[1].to_string(unit=u.degree,sep='dms') # print(phase_dir[1].dms)
     
+    logger.debug('{:15} {:10}'.format('ndata@',dat_dct_out['ndata@'+vis]))
+    logger.debug('{:15} {:10}'.format('sumwt@',dat_dct_out['sumwt@'+vis]))
+    logger.debug('{:15} {:10}'.format('sumlogwt@',dat_dct_out['sumlogwt@'+vis]))
     logger.debug('{:15} {:10}'.format('phasecenter@',radec))
     logger.debug('{:15} {:10}'.format('telescope@',telescope))     
     

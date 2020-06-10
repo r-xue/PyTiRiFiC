@@ -332,13 +332,13 @@ def export_model(models,outdir='./',
     
     for key in list(models.keys()): 
         
-        if  'data@' not in key:
+        if  'type@' not in key:
             continue
 
         
-        if  models[key.replace('data@','type@')]=='vis':
+        if  models[key.replace('type@','type@')]=='vis':
         
-            basename=key.replace('data@','')
+            basename=key.replace('type@','')
             #   name string replacement
             if  outname_replace is not None:
                 for ostring, rstring in outname_replace:
@@ -356,26 +356,26 @@ def export_model(models,outdir='./',
                 os.makedirs(outdir)
             
             versions=['imodel','imod2d','imod3d','pbeam']        
-            hd=models[key.replace('data@','header@')]
+            hd=models[key.replace('type@','header@')]
             for version in versions:             
-                if  key.replace('data@',version+'@') in models.keys():
-                    if  models[key.replace('data@',version+'@')] is not None:
-                        logger.debug(key.replace('data@',version+'@'))
-                        tmp=(models[key.replace('data@',version+'@')]).copy()
+                if  key.replace('type@',version+'@') in models.keys():
+                    if  models[key.replace('type@',version+'@')] is not None:
+                        logger.debug(key.replace('type@',version+'@'))
+                        tmp=(models[key.replace('type@',version+'@')]).copy()
                         if  tmp.ndim==2:
                             tmp=tmp[np.newaxis,np.newaxis,:,:]
                         fitsname=outdir+'/'+version+'_'+basename+'.fits'
                         logger.debug("write reference model image: ")
-                        logger.debug("    "+key.replace('data@',version+'@')+' to '+fitsname)
+                        logger.debug("    "+key.replace('type@',version+'@')+' to '+fitsname)
                         fits.writeto(fitsname,
                                      tmp,
-                                     models[key.replace('data@','header@')],
+                                     models[key.replace('type@','header@')],
                                      overwrite=True)
             
             for prof in list(models.keys()):
                 
-                if  'imod3d_prof@' in prof  and key.replace('data@','') in prof:
-                    outname=prof.replace(key.replace('data@',''),'')
+                if  'imod3d_prof@' in prof  and key.replace('type@','') in prof:
+                    outname=prof.replace(key.replace('type@',''),'')
                     outname=outname.replace('imod3d_prof@','imodrp_').replace('@','_')
                     fitsname=outdir+'/'+outname+basename+'.fits'   
                     logger.debug("write reference model profile: ")
@@ -388,7 +388,7 @@ def export_model(models,outdir='./',
             # mod2d -> data@outms.contsub
             # mod3d -> corrected@outms.contsub
             ###############
-            oldms=key.replace('data@','')
+            oldms=key.replace('type@','')
             newms=outdir+'/model_'+basename.replace('.ms','.ms')
             
             
@@ -398,12 +398,12 @@ def export_model(models,outdir='./',
             os.system('cp -rf '+oldms+' '+newms)
             logger.debug("write ms column: ")
             if  includedata==False:
-                logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'data@'+newms)
-                write_ms(newms,models[key.replace('data@','uvmodel@')],
+                logger.debug("    "+key.replace('type@','model@')+' to '+'data@'+newms)
+                write_ms(newms,models[key.replace('type@','model@')],
                             datacolumn='data')
             else:
-                logger.debug("    "+key.replace('data@','uvmodel@')+' to '+'corrected@'+newms)
-                write_ms(newms,models[key.replace('data@','uvmodel@')],
+                logger.debug("    "+key.replace('type@','model@')+' to '+'corrected@'+newms)
+                write_ms(newms,models[key.replace('type@','model@')],
                             datacolumn='corrected')
             
             oldms_path=os.path.abspath(oldms)

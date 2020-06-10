@@ -19,9 +19,6 @@ from galario.single import sampleImage
 from copy import deepcopy
 from .io import *
 from .dynamics import model_vrot
-from .model import model_realize    
-from .model import model_setup
-from .model import clouds_discretize_2d
 from .utils import write_par
 from .utils import inp2mod
 import operator
@@ -37,6 +34,9 @@ Note:
 """
 import logging
 logger = logging.getLogger(__name__)
+
+
+
 
 def pix2sky(obj,w,px=None,py=None,pz=None):
     """
@@ -956,81 +956,10 @@ def uv_sample(plane,cell,uu,vv,dRA=0.,dDec=0.,PA=0,origin='upper',
         return  uv_sample_interp2d(plane,cell,uu,vv,dRA=dRA,dDec=dDec,PA=PA,
                                    origin=origin,
                                    mode=mode,ik=5,saveuvgrid=saveuvgrid)    
-        
 
-##########################################################################
 
-def model_render(theta,fit_dct,inp_dct,dat_dct,
-                 models=None,
-                 savemodel=None,decomp=False,nsamps=1e5,
-                 verbose=False,test_threading=False):
-    """
-    the likelihood function
-    
-        step:    + fill the varying parameter into inp_dct
-                 + convert inp_dct to mod_dct
-                 + use mod_dct to regenerate RC
-    
-    theta can be quanitity here
-    
-    returnwdev=True is a special mode reserved for lmfit
-    
-    retired option: returnwdev=True
-    models,inp_dct0,mod_dct0=model_render(theta,fit_dct,inp_dct,meta.dat_dct_global,models=models,returnwdev=True)
-    wdev=[]
-    for tag in list(models.keys()):
-        if  'imodel@' in tag:
-            dname=tag.replace('imodel@','')
-            wdev.append(models['model@'+dname].ravel().astype(np.float32))
-    
-    """
+################################################################################
 
-    
-    ll=0
-    chisq=0
-    wdev=np.array([])
-
-    # copy and modify model input dct
-    
-    inp_dct0=deepcopy(inp_dct)
-    p_num=len(fit_dct['p_name']) 
-    for ind in range(p_num):
-        write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind],verbose=False)
-    
-    mod_dct=inp2mod(inp_dct0)   # in physical units
-    #model_vrot(mod_dct)         # in natural (default internal units)
-
-    # attach the cloudlet (reference) model to mod_dct
-    
-    model_realize(mod_dct,
-                nc=100000,nv=20,seeds=[None,None,None,None])
-
-    # build model container (skipped during iteration)
-    if  models is None:
-        models=model_setup(inp2mod(mod_dct),dat_dct,decomp=decomp,verbose=verbose)
-
-    # calculate chisq 
-           
-    for tag in list(models.keys()):
-        
-        if  'imodel@' in tag:
-            
-            dname=tag.replace('imodel@','')
-            objs=[mod_dct[obj] for obj in models[tag.replace('imodel@','objs@')]]
-            w=models['wcs@'+dname]
-            if  models[tag.replace('imodel@','type@')]=='vis':                
-                model_one=uv_render(objs,w,
-                                    dat_dct['uvw@'+dname],
-                                    dat_dct['phasecenter@'+dname],
-                                    pb=models['pbeam@'+dname])
-            if  models[tag.replace('imodel@','type@')]=='image':
-                imodel,model_one=xy_render(objs,w,
-                                    psf=models['psf@'+dname],normalize_kernel=False,
-                                    pb=models['pbeam@'+dname])
-
-            models['model@'+dname]=model_one
-
-    return models,inp_dct0,mod_dct
 
 
 

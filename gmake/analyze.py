@@ -10,7 +10,6 @@ from numpy.lib import recfunctions as rfn
 from matplotlib import cm
 from lmfit import minimize
 from lmfit import report_fit
-from .evaluate import *
 import numpy as np
 import copy
 import sys
@@ -22,10 +21,13 @@ logger = logging.getLogger(__name__)
 from galario.single import threads as galario_threads
 import os
 from memory_profiler import profile
-from .evaluate import calc_chisq
-from .evaluate import log_likelihood
+from .evaluate import calc_chisq, log_likelihood, model_eval, export_model
+from .io import hdf2dct,dct2hdf
+import astropy.units as u 
 import pyfftw
-from .meta import *
+from .utils import write_inp
+from .meta import read_inp
+
 
 def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
     
@@ -38,9 +40,9 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
     if  'amoeba' in inp_dct['optimize']['method']:
         chisq_analyze(outfolder,burnin=burnin)
         #fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
-        #fit_dct=hdf2dct(outfolder+'/fit.h5')
-        #theta_start=fit_dct['p_start']
-        #theta_end=fit_dct['p_best']        
+        fit_dct=hdf2dct(outfolder+'/fit.h5')
+        theta_start=fit_dct['p_start']
+        theta_end=fit_dct['p_best']        
     
     if  'emcee' in inp_dct['optimize']['method']:
         emcee_analyze(outfolder,burnin=burnin)
@@ -52,9 +54,10 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
     if  'lmfit-nelder' in inp_dct['optimize']['method']:
         chisq_analyze(outfolder,burnin=burnin)
         #fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
-        #theta_start=fit_dct['p_start']
-        #theta_end=np.array(list(fit_dct['p_lmfit_result'].params.valuesdict().values()))  
-    
+        fit_dct=hdf2dct(outfolder+'/fit.h5')
+        theta_start=fit_dct['p_start']
+        theta_end=fit_dct['p_best']        
+          
     if  'lmfit-brute' in inp_dct['optimize']['method']:
         brute_analyze(outfolder)
         #fit_dct=np.load(outfolder+'/fit_dct.npy',allow_pickle=True).item()
@@ -79,7 +82,7 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
             if  i==1:
                 theta=theta_end
                 
-            models,inp_dct,mod_dct=model_render(theta,fit_dct,inp_dct,dat_dct)
+            models,inp_dct,mod_dct=model_eval(theta,fit_dct,inp_dct,dat_dct,saveimodel=True)
             
             outname_exclude=None
             if  'shortname' in inp_dct['general'].keys():
@@ -89,7 +92,8 @@ def opt_analyze(inpfile,burnin=None,copydata=True,export=False):
             outname_replace=None
             if  'outname_replace' in inp_dct['general'].keys():
                 outname_replace=inp_dct['general']['outname_replace']
-    
+            
+            print(models.keys())
             export_model(models,outdir=outfolder+'/model_'+str(i),
                          outname_exclude=outname_exclude,
                          outname_replace=outname_replace)

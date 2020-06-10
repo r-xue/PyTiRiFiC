@@ -13,7 +13,7 @@ from astropy.wcs import WCS
 logger = logging.getLogger(__name__)
 from astropy.modeling.models import Gaussian2D
 from memory_profiler import profile
-from .model import model_setup
+from .model import model_setup, model_render
 
 from .discretize import channel_split,sample_prep,lognsigma_lookup
 import fast_histogram as fh
@@ -23,7 +23,6 @@ from .utils import fft_use
 
 from astropy.convolution import convolve_fft
 import pyfftw
-from .discretize import model_render
 from lmfit import Parameters
 from scipy.interpolate import interpn
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
@@ -38,6 +37,14 @@ log_prior + log_likelihood -> log_probability
 :
 ->calc_chisq
 ->calc_lnprob
+
+
+Note:
+
+    using single-precision with ne.evaluate() can be problmeatic when large number is involved:
+        lossing precision:
+        https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+        lead to wrong results
 
 """
 
@@ -138,6 +145,68 @@ def log_probability(theta,
                              verbose=verbose)
     
     return ll+lp,chisq
+
+def model_eval(theta, fit_dct, inp_dct, dat_dct,
+               nsamps=10**5, nv=20,
+               models=None, saveimodel=False):
+    """evaluate/render models under the optimizer framework 
+    
+    Parameters
+    ----------
+    theta : list
+        optimized parameters
+    fit_dct : dict
+        optimizer metadata
+    inp_dct : dict
+        input file metadata
+    dat_dct : dict
+        data container
+    models : dict, optional
+        model container
+        
+    the likelihood function
+    
+        step:    + fill the varying parameter into inp_dct
+                 + convert inp_dct to mod_dct
+                 + use mod_dct to regenerate RC
+    
+    theta can be quanitity here
+    
+    returnwdev=True is a special mode reserved for lmfit
+    
+    retired option: returnwdev=True
+    models,inp_dct0,mod_dct0=model_render(theta,fit_dct,inp_dct,meta.dat_dct_global,models=models,returnwdev=True)
+    wdev=[]
+    for tag in list(models.keys()):
+        if  'imodel@' in tag:
+            dname=tag.replace('imodel@','')
+            wdev.append(models['model@'+dname].ravel().astype(np.float32))
+    
+    """
+
+
+    # copy and modify model input dct
+    
+    inp_dct0=deepcopy(inp_dct)
+    p_num=len(fit_dct['p_name']) 
+    for ind in range(p_num):
+        write_par(inp_dct0,fit_dct['p_name'][ind],theta[ind],verbose=False)
+    
+    mod_dct=inp2mod(inp_dct0)   # in physical units
+    #model_vrot(mod_dct)         # in natural (default internal units)
+
+    # attach the cloudlet (reference) model to mod_dct
+    
+    model_realize(mod_dct,
+                  nc=nsamps, nv=nv,
+                  seeds=[None,None,None,None])
+
+    if  models is None:
+        models=model_setup(mod_dct,dat_dct)
+        
+    models=model_render(mod_dct, dat_dct, models=models, saveimodel=saveimodel)
+                
+    return models,inp_dct0,mod_dct
 
 
 """
@@ -315,7 +384,12 @@ def uv_chisq(objs,dname,dat_dct,models):
     uvflag=dat_dct['flag@'+dname]
     pb=models['pbeam@'+dname]
     
-    sample_count=line_count=cont_count=0
+    ndata=dat_dct['ndata@'+dname]
+    sumwt=dat_dct['sumwt@'+dname]
+    sumlogwt=dat_dct['sumlogwt@'+dname]
+    chanchi2=dat_dct['chanchi2@'+dname]
+    
+    sample_count=line_count=cont_count=blank_count=0
     naxis=w._naxis    
 
     #   prep for uv_sample()    
@@ -366,9 +440,8 @@ def uv_chisq(objs,dname,dat_dct,models):
     
     for iz in range(naxis[2]):
         
-        #   render all line emission
-        
         plane=None
+        
         for i in range(len(objs)): 
             
             if  objs[i]['type'] not in ['disk3d']: continue
@@ -379,42 +452,41 @@ def uv_chisq(objs,dname,dat_dct,models):
                                                          range=[yrange_list[i],xrange_list[i]],
                                                          bins=(naxis[1],naxis[0]),weights=wt),
                              scale=fluxscale_list[i])                  
-        
-        uvdiff=uvdata[:,iz].copy()
 
         if  plane is not None:
-            
             render_component(plane,im_cache,
                                    scale=[fluxscale_cache[j][iz] for j in range(len(uv_cache))])
             if  pb is not None: plane*=pickplane(pb,iz)
-            uvdiff-=uv_sample(plane.astype(np.float32),cell,
-                                (uvw[:,0]/wv[iz]),
-                                (uvw[:,1]/wv[iz]),
-                                #ne.evaluate('a/b',local_dict={'a':uvw[:,0],'b':wv[iz]}),
-                                #ne.evaluate('a/b',local_dict={'a':uvw[:,1],'b':wv[iz]}),                                   
-                                dRA=dRA,dDec=dDec,
-                                PA=0.,origin='lower')
+            uvdiff=uvdata[:,iz]-uv_sample(plane,cell,
+                                          (uvw[:,0]/wv[iz]),
+                                          (uvw[:,1]/wv[iz]),
+                                          #ne.evaluate('a/b',local_dict={'a':uvw[:,0],'b':wv[iz]}),
+                                          #ne.evaluate('a/b',local_dict={'a':uvw[:,1],'b':wv[iz]}),                                   
+                                          dRA=dRA,dDec=dDec,
+                                          PA=0.,origin='lower')
+            chi2+=np.sum( (uvdiff.real**2+uvdiff.imag**2) *(~uvflag[:,iz]*uvweight) )/((np.exp(lognsigma))**2)
             sample_count+=1; line_count+=1
         else:
-            render_component(uvdiff,uv_cache,mode='iadd',
-                                    scale=[-fluxscale_cache[j][iz] for j in range(len(uv_cache))])
-            cont_count+=1
-        # ll pt1
-        chi2+=ne.evaluate('sum( ( (a.real)**2+(a.imag)**2 ) * (~b*c) )', #'sum( abs(a)**2*c)'
-                         local_dict={'a':uvdiff,
-                                     'b':uvflag[:,iz],
-                                     'c':uvweight})/((np.exp(lognsigma))**2)  
+            #   without continuum
+            if  uv_cache==[]:
+                chi2+=chanchi2[iz]/((np.exp(lognsigma))**2)
+                blank_count+=1
+            else:
+                uvdiff=uvdata[:,iz].copy()
+                render_component(uvdiff,uv_cache,mode='iadd',
+                                        scale=[-fluxscale_cache[j][iz] for j in range(len(uv_cache))])
+                chi2+=np.sum( (uvdiff.real**2+uvdiff.imag**2) *(~uvflag[:,iz]*uvweight) )/((np.exp(lognsigma))**2)
+                cont_count+=1
+
         
     #logger.debug('uv_sample  count: '+str(sample_count))
-    #logger.debug('line channel count: '+str(line_count))
-    #logger.debug('cont channel count: '+str(cont_count))            
+    #logger.debug('line  channel count: '+str(line_count))
+    #logger.debug('cont  channel count: '+str(cont_count))  
+    #logger.debug('blank channel count: '+str(blank_count))            
+
+    # Eq7
     
-    # ll pt2
-    uvweight[uvweight==0]=1
-    ll=np.sum(~uvflag)*(np.log(2*np.pi)+2*lognsigma)+\
-        2*(-0.5)*ne.evaluate('sum( ~b*log(wt) )',local_dict={'wt':uvweight[:,np.newaxis],'b':uvflag})    
-    # -1/2*(ll1+ll2)
-    ll=-0.5*(chi2+ll)
+    ll=-0.5*( chi2 + ndata*(np.log(2*np.pi)+2*lognsigma)-sumlogwt )
     
     return chi2,ll
 
