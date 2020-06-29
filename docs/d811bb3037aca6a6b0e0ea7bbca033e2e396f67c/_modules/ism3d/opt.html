@@ -1,0 +1,963 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.opt &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ism3d.opt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ism3d.opt</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A Module used as an abstract layer for different optimization algorithms</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.io</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.meta</span> <span class="kn">import</span> <span class="n">read_inp</span>
+<span class="kn">from</span> <span class="nn">.evaluate</span> <span class="kn">import</span> <span class="n">calc_chisq</span><span class="p">,</span><span class="n">log_probability</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">model_setup</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span><span class="n">SFC64</span><span class="p">,</span><span class="n">PCG64</span>
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="c1">#from .utils import *</span>
+<span class="c1">#import os</span>
+<span class="kn">import</span> <span class="nn">ism3d.meta</span> <span class="k">as</span> <span class="nn">meta</span>
+
+<span class="c1">#from memory_profiler import profile</span>
+<span class="c1">#@profile</span>
+
+<span class="c1">#from .meta import db_global</span>
+<span class="c1">#print(&#39;opt&#39;,hex(id(db_global)))</span>
+
+<span class="kn">from</span> <span class="nn">.evaluate</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span> 
+
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">report_fit</span>
+<span class="kn">from</span> <span class="nn">galario.single</span> <span class="kn">import</span> <span class="n">threads</span> <span class="k">as</span> <span class="n">galario_threads</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">emcee</span>
+<span class="c1">#from multiprocessing import Pool</span>
+<span class="c1">#import pickle</span>
+<span class="c1">#pickle.DEFAULT_PROTOCOL=3</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="n">Pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="s1">&#39;fork&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Pool</span>
+
+
+
+<div class="viewcode-block" id="opt_setup"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.opt_setup.html#ism3d.opt.opt_setup">[docs]</a><span class="k">def</span> <span class="nf">opt_setup</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">initial_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">copydata</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    method choice guideline:</span>
+<span class="sd">    </span>
+<span class="sd">    amoeba and lmfit-nelder is essentially the same algorithm </span>
+<span class="sd">    if there is no clear proior, one will have higher chance to find global minimal for high-dimension problems</span>
+<span class="sd">    </span>
+<span class="sd">    leastsq or least_square requires some tunning for the step of numerical directive calculation</span>
+<span class="sd">    </span>
+<span class="sd">    brute:    expensive one.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">        + nthreads</span>
+<span class="sd">            if the calling function uses the CPU multiple-threading functon for calculations, </span>
+<span class="sd">            turn on threading in emcee may have adverse effects actually</span>
+<span class="sd">            </span>
+<span class="sd">            log:</span>
+<span class="sd">                * didn&#39;t find clear way to turn off threading for mkl_fft</span>
+<span class="sd">                * mkl_num_threads doesn&#39;t apply here</span>
+<span class="sd">                mkl_fft/threads=8 emecee-threads=1</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 1.22294176419576 minutes</span>
+<span class="sd">                mkl_fft/threads=8 emecee-threads=4</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 2.3464738647143046 minutes</span>
+<span class="sd">                mkl_fft/threads=8 emecee-threads=8</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 2.845475753148397 minutes</span>
+<span class="sd">                pyfftw/threads=1 emecee-threads=1</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 2.0895618041356405 minutes</span>
+<span class="sd">                pyfftw/threads=8 emecee-threads=8</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 2.9587043801943462 minutes                  </span>
+<span class="sd">                pyfftw/threads=8 emecee-threads=1</span>
+<span class="sd">                    iteration:  1</span>
+<span class="sd">                    Took 2.0195618041356405 minutes</span>
+<span class="sd">    </span>
+<span class="sd">    20190923:</span>
+<span class="sd">        update the dependency to emcee&gt;3.0rc2</span>
+<span class="sd">        the setup follows the guideline here:</span>
+<span class="sd">            https://emcee.readthedocs.io/en/latest/tutorials/monitor/?highlight=sampler.sample</span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        emcee-threading vs model-threading</span>
+<span class="sd">        model-threading may be ineffecient if the calculation process is not truely/fully parameliized</span>
+<span class="sd">        but some overhead can be avoid</span>
+<span class="sd">        emcee-threading will require more memory and carefully arrange input parameter to avoid heavy pickling</span>
+<span class="sd">        </span>
+<span class="sd">        if memory allowed, using emcee-threading may be the better option generally </span>
+
+<span class="sd">    for method=&#39;emcee&#39;: sampler is an emcee object</span>
+<span class="sd">    for method=others: sampler is a dict</span>
+<span class="sd">    </span>
+<span class="sd">    generate:</span>
+<span class="sd">        fit_dct:    fitting metadata</span>
+<span class="sd">        models:     model container + initilize some modeling metadata (header for vis; psf model; PB model etc.)</span>
+<span class="sd">                    so we don&#39;t repeat it during iteration.</span>
+<span class="sd">                </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="n">opt_dct</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;optimize&#39;</span><span class="p">]</span>
+    <span class="n">gen_dct</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">]</span>
+    
+    <span class="n">fit_dct</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;optimize&#39;</span><span class="p">:</span><span class="n">opt_dct</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
+    <span class="n">fit_dct</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="n">opt_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]}</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>   <span class="c1"># use to normalize the parameter range (roughly (p_max-p_min))</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_unit&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="n">opt_dct</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        
+        <span class="k">if</span>  <span class="s1">&#39;@&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p_name</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1">#   lognsigma doesn&#39;t work with method!=&#39;emcee&#39;</span>
+        <span class="k">if</span>  <span class="p">(</span><span class="s1">&#39;emcee&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">opt_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="s1">&#39;lognsigma&#39;</span> <span class="ow">in</span> <span class="n">p_name</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="n">p_value</span><span class="o">=</span><span class="n">read_par</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">p_name</span><span class="p">)</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_name</span><span class="p">)</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p_value</span><span class="p">)))</span>
+        
+        <span class="n">mode</span><span class="o">=</span><span class="n">opt_dct</span><span class="p">[</span><span class="n">p_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lims</span><span class="o">=</span><span class="n">opt_dct</span><span class="p">[</span><span class="n">p_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
+                                <span class="n">read_range</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">delta</span><span class="o">=</span><span class="n">lims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)))</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">read_range</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">delta</span><span class="o">=</span><span class="n">lims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)))</span>                         
+        
+        <span class="n">scale_def</span><span class="o">=</span><span class="nb">max</span><span class="p">((</span><span class="nb">abs</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="nb">abs</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
+        <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">scale_def</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scale_value</span><span class="o">=</span><span class="p">(</span><span class="n">lims</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">p_unit</span><span class="p">)</span>
+            <span class="k">if</span>  <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;a&#39;</span> <span class="ow">or</span> <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;o&#39;</span><span class="p">:</span>
+                <span class="n">scale</span><span class="o">=</span><span class="n">scale_value</span>
+            <span class="k">if</span>  <span class="n">mode</span><span class="o">==</span><span class="s1">&#39;r&#39;</span><span class="p">:</span>
+                <span class="n">scale</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">scale_value</span><span class="p">)</span>
+            <span class="n">scale</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">scale_def</span><span class="p">,</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">scale</span><span class="p">))</span>
+        
+    <span class="n">ism3d_pformat</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">)</span>
+    
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">])</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">gen_dct</span><span class="p">[</span><span class="s1">&#39;outdir&#39;</span><span class="p">]</span>   
+    <span class="k">if</span>  <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]))</span> <span class="ow">and</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">])</span>         
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ndim:    &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">]))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;outdir:  &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]))</span>
+    
+    <span class="n">models</span><span class="o">=</span><span class="n">model_setup</span><span class="p">(</span><span class="n">inp2mod</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">),</span><span class="n">dat_dct</span><span class="p">)</span>
+    <span class="n">ndata</span><span class="o">=</span><span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">if</span>  <span class="s1">&#39;imodel@&#39;</span> <span class="ow">in</span> <span class="n">tag</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">models</span><span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;type@&#39;</span><span class="p">)]</span><span class="o">==</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span>
+                <span class="n">ndata</span><span class="o">+=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">dat_dct</span><span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;flag@&#39;</span><span class="p">)])</span> 
+            <span class="k">if</span>  <span class="n">models</span><span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;type@&#39;</span><span class="p">)]</span><span class="o">==</span><span class="s1">&#39;image&#39;</span><span class="p">:</span>
+                <span class="k">if</span>  <span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;sample@&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+                    <span class="n">ndata</span><span class="o">+=</span><span class="p">(</span><span class="n">models</span><span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;sample@&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ndata</span><span class="o">+=</span><span class="n">dat_dct</span><span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;imodel@&#39;</span><span class="p">,</span><span class="s1">&#39;data@&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">size</span>                                
+    <span class="n">npar</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">])</span>
+    
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndata&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ndata</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">npar</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;npar -&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">npar</span><span class="p">))</span>        
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ndata-&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ndata</span><span class="p">))</span>     
+    
+    <span class="c1">#   this is optimizer threads</span>
+    <span class="c1">#   if &gt;1, then OMP will be set to one (which is dne in itertion()</span>
+    <span class="k">if</span>  <span class="s1">&#39;nthreads&#39;</span> <span class="ow">in</span> <span class="n">opt_dct</span><span class="p">:</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">opt_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span> <span class="c1"># doens&#39;t reallyt matter if method=&#39;emcee&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="c1"># for emcee/brute, it might be faster to set fit_dct[&#39;nthreads&#39;]=multiprocessing.cpu_count()</span>
+        <span class="k">if</span>  <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;emcee&#39;</span> <span class="ow">or</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;lmfit-brute&#39;</span><span class="p">:</span>
+            <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+    
+    <span class="c1">#######################################################</span>
+    <span class="c1"># pack additional setup for mpfit/lmfit</span>
+    <span class="c1">#######################################################</span>
+    
+    <span class="n">parinfo</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mf">0.</span><span class="p">,</span>
+                <span class="s1">&#39;fixed&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;limited&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;limits&#39;</span><span class="p">:[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">],</span>
+                <span class="s1">&#39;parname&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;relstep&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;mpside&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;mpmaxstep&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;mpminstep&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]))]</span>
+    <span class="n">params</span><span class="o">=</span><span class="n">Parameters</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">])):</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;parname&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;limited&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;step&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;relstep&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">parinfo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;limits&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;p_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">value</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                   <span class="n">vary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="nb">min</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                   <span class="nb">max</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                   <span class="c1">#brute_step=fit_dct[&#39;p_scale&#39;][i].value)</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;mpfit_parinfo&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">parinfo</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;lmfit_params&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">params</span>   
+
+    <span class="c1">#######################################################</span>
+    <span class="c1"># pack additional setup for emcee</span>
+    <span class="c1">#######################################################</span>
+    <span class="k">if</span>  <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;emcee&#39;</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="s1">&#39;nwalkers&#39;</span> <span class="ow">in</span> <span class="n">opt_dct</span><span class="p">:</span>
+            <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">opt_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">10</span>            
+        <span class="c1"># emcee requires the vector position to be an array rather than quanities</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">SFC64</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+        <span class="n">p_start</span><span class="o">=</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">],</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">]))</span>
+        <span class="n">p_start</span><span class="o">*=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mf">0.01</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">]])</span>
+        <span class="n">p_start</span><span class="o">+=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">]])</span>
+        <span class="n">p_start</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">p_start</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]]))</span>
+        <span class="n">p_start</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">p_start</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]]))</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;pos_start&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p_start</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;pos_last&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p_start</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;step_last&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+    
+    
+    <span class="c1">#######################################################</span>
+    
+    <span class="n">dct2hdf</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">outname</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/fit.h5&#39;</span><span class="p">)</span>    
+    <span class="n">meta</span><span class="o">.</span><span class="n">db_global</span><span class="p">[</span><span class="s1">&#39;dat_dct&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">dat_dct</span>
+    <span class="n">meta</span><span class="o">.</span><span class="n">db_global</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">models</span>
+
+    <span class="k">if</span>  <span class="n">copydata</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">dat_dct_path</span><span class="o">=</span><span class="n">outfolder</span><span class="o">+</span><span class="s1">&#39;/data.h5&#39;</span>
+        <span class="n">dct2hdf</span><span class="p">(</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">outname</span><span class="o">=</span><span class="n">dat_dct_path</span><span class="p">)</span>    
+
+    <span class="k">if</span>  <span class="n">initial_model</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">lnl</span><span class="p">,</span><span class="n">chisq</span><span class="o">=</span><span class="n">log_probability</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">],</span>
+                                                    <span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span>
+                                                    <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;chisq-&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chisq</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;lnl  -&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">lnl</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:50}</span><span class="s2"> : </span><span class="si">{1:&lt;8.5f}</span><span class="s2"> seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;one trial&#39;</span><span class="p">,</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">fit_dct</span><span class="p">,</span><span class="n">models</span></div>
+
+<div class="viewcode-block" id="opt_iterate"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.opt_iterate.html#ism3d.opt.opt_iterate">[docs]</a><span class="k">def</span> <span class="nf">opt_iterate</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="n">method</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">if</span>  <span class="n">method</span><span class="o">==</span><span class="s1">&#39;emcee&#39;</span><span class="p">:</span>
+        <span class="n">opt_name</span><span class="o">=</span><span class="s1">&#39;emcee&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">opt_name</span><span class="o">=</span><span class="s1">&#39;chisq&#39;</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;max_iteration:&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;optimize&#39;</span><span class="p">][</span><span class="s1">&#39;niter&#39;</span><span class="p">]))</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="n">opt_name</span><span class="o">+</span><span class="s1">&#39;_iterate&#39;</span><span class="p">](</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">models</span><span class="p">,</span>
+                                   <span class="n">nstep</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;optimize&#39;</span><span class="p">][</span><span class="s1">&#39;niter&#39;</span><span class="p">],</span>
+                                   <span class="n">resume</span><span class="o">=</span><span class="n">resume</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="chisq_iterate"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.chisq_iterate.html#ism3d.opt.chisq_iterate">[docs]</a><span class="k">def</span> <span class="nf">chisq_iterate</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">nstep</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">resume</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    call lmfit or amoeba (scalar optimizer)</span>
+<span class="sd">    </span>
+<span class="sd">    reference: https://docs.scipy.org/doc/scipy/reference/optimize.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running Optimizer: &quot;</span><span class="o">+</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">])</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="o">+</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;/chisq_chain.h5&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>     
+
+    <span class="n">ndim</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">])</span>
+    <span class="n">blobs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;pars&#39;</span><span class="p">:[],</span>            <span class="c1"># matching amoeba_sa.py (ndim+1+niter)</span>
+           <span class="s1">&#39;chi2&#39;</span><span class="p">:[],</span>
+           <span class="s1">&#39;logp&#39;</span><span class="p">:[]}</span>
+    
+    <span class="c1">#   using AMOEBA **obselete built-in method**</span>
+    <span class="k">if</span>  <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;amoeba&#39;</span><span class="p">:</span>
+        <span class="n">p_lo</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]])</span>
+        <span class="n">p_up</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]])</span>
+        <span class="n">p0</span><span class="o">=</span><span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">]]</span>
+        <span class="n">scale</span><span class="o">=</span><span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">]]</span>
+        <span class="c1">#p0=(p_lo+p_up)/2.0</span>
+        <span class="c1">#scale=(p_up-p_lo)/2.0      </span>
+        <span class="n">result</span><span class="o">=</span><span class="n">amoeba_sa</span><span class="p">(</span><span class="n">calc_chisq</span><span class="p">,</span><span class="n">p0</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span>
+                           <span class="n">p_lo</span><span class="o">=</span><span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]],</span>
+                           <span class="n">p_up</span><span class="o">=</span><span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]],</span>
+                           <span class="n">funcargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fit_dct&#39;</span><span class="p">:</span><span class="n">fit_dct</span><span class="p">,</span><span class="s1">&#39;inp_dct&#39;</span><span class="p">:</span><span class="n">inp_dct</span><span class="p">,</span><span class="s1">&#39;dat_dct&#39;</span><span class="p">:</span><span class="n">dat_dct</span><span class="p">,</span><span class="s1">&#39;models&#39;</span><span class="p">:</span><span class="n">models</span><span class="p">,</span><span class="s1">&#39;blobs&#39;</span><span class="p">:</span><span class="n">blobs</span><span class="p">},</span>
+                           <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span><span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                           <span class="n">maxiter</span><span class="o">=</span><span class="n">nstep</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="c1">#   LMFIT https://lmfit.github.io/lmfit-py/fitting.html#lmfit.minimizer.MinimizerResult</span>
+    <span class="c1">#   Essentially it&#39;s a wrapper around: https://docs.scipy.org/doc/scipy/reference/optimize.html</span>
+    
+    <span class="k">if</span>  <span class="s1">&#39;-nelder&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="c1"># https://docs.scipy.org/doc/scipy/reference/optimize.minimize-neldermead.html#optimize-minimize-neldermead</span>
+        <span class="n">p_lo</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_lo&#39;</span><span class="p">]])</span>
+        <span class="n">p_up</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]])</span>
+        
+        <span class="n">p0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">]])</span>
+        <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">q</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_scale&#39;</span><span class="p">]])</span>
+        
+        <span class="n">p0</span><span class="o">=</span><span class="p">(</span><span class="n">p_lo</span><span class="o">+</span><span class="n">p_up</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="n">p_up</span><span class="o">-</span><span class="n">p_lo</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        note: </span>
+<span class="sd">            do not set intial_simplex and min/max at the same time due to prameter mapping in lmfit</span>
+<span class="sd">            two workaround methods:</span>
+<span class="sd">                + remove min/max (commented out)</span>
+<span class="sd">                + also mapping initial_simplex (used below)</span>
+<span class="sd">                  see: https://lmfit.github.io/lmfit-py/bounds.html</span>
+<span class="sd">        p = np.outer(p0, np.ones(fit_dct[&#39;npar&#39;]+1))</span>
+<span class="sd">        for i in range(fit_dct[&#39;npar&#39;]):</span>
+<span class="sd">            p[i][i+1]+=scale[i]        </span>
+<span class="sd">        for i in range(len(fit_dct[&#39;p_name&#39;])):</span>
+<span class="sd">            fit_dct[&#39;lmfit_params&#39;][&#39;p_&#39;+str(i+1)].set(min=-np.inf)</span>
+<span class="sd">            fit_dct[&#39;lmfit_params&#39;][&#39;p_&#39;+str(i+1)].set(max=+np.inf)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">p0_internal</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p0</span><span class="o">-</span><span class="n">p_lo</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">p_up</span><span class="o">-</span><span class="n">p_lo</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">p1_internal</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p0</span><span class="o">+</span><span class="n">scale</span><span class="o">-</span><span class="n">p_lo</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">p_up</span><span class="o">-</span><span class="n">p_lo</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">p0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">sim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">p0_internal</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p0_internal</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">p1_internal</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">sim</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>        
+        <span class="n">fit_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span><span class="n">nstep</span><span class="p">,</span><span class="s1">&#39;adaptive&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s1">&#39;fatol&#39;</span><span class="p">:</span><span class="mf">1e-7</span><span class="p">,</span>
+                            <span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span><span class="s1">&#39;initial_simplex&#39;</span><span class="p">:</span><span class="n">sim</span><span class="p">}}</span> <span class="c1">#&#39;maxfev&#39;:nstep,,</span>
+        <span class="n">func</span><span class="o">=</span><span class="n">calc_chisq</span>
+    
+    <span class="k">if</span>  <span class="s1">&#39;-leastsq&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="c1"># https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html</span>
+        <span class="n">fit_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;epsfcn&#39;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span><span class="s1">&#39;maxfev&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">}</span>
+        <span class="n">func</span><span class="o">=</span><span class="n">calc_wdev</span>
+        
+    <span class="k">if</span>  <span class="s1">&#39;-least_squares&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="c1"># https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html</span>
+        <span class="n">fit_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;diff_step&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]))</span><span class="o">*</span><span class="mf">0.1</span><span class="p">,</span><span class="s1">&#39;max_nfev&#39;</span><span class="p">:</span><span class="n">nstep</span><span class="p">}</span>
+        <span class="n">func</span><span class="o">=</span><span class="n">calc_wdev</span>
+        
+    <span class="k">if</span>  <span class="s1">&#39;-brute&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="c1"># https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brute.html</span>
+        <span class="k">if</span>  <span class="s1">&#39;nthreads&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">:</span>
+            <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">fit_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Ns&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;keep&#39;</span><span class="p">:</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;workers&#39;</span><span class="p">:</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]}</span>
+        <span class="n">func</span><span class="o">=</span><span class="n">calc_chisq</span>
+    
+    <span class="n">kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fit_dct&#39;</span><span class="p">:</span><span class="n">fit_dct</span><span class="p">,</span><span class="s1">&#39;inp_dct&#39;</span><span class="p">:</span><span class="n">inp_dct</span><span class="p">,</span><span class="s1">&#39;models&#39;</span><span class="p">:</span><span class="n">models</span><span class="p">,</span><span class="s1">&#39;blobs&#39;</span><span class="p">:</span><span class="n">blobs</span><span class="p">}</span>
+    
+    <span class="c1"># turn on/off mutiple-threading</span>
+    <span class="n">set_threads</span><span class="p">()</span>
+    <span class="k">if</span>  <span class="s1">&#39;-brute&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="k">if</span>  <span class="n">fit_kws</span><span class="p">[</span><span class="s1">&#39;workers&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">fit_kws</span><span class="p">[</span><span class="s1">&#39;workers&#39;</span><span class="p">]</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kws</span><span class="p">[</span><span class="s1">&#39;blobs&#39;</span><span class="p">]</span>
+            <span class="n">set_threads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span>  <span class="s1">&#39;lmfit-&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="n">result</span><span class="o">=</span><span class="n">minimize</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;lmfit_params&#39;</span><span class="p">],</span>
+                        <span class="n">kws</span><span class="o">=</span><span class="n">kws</span><span class="p">,</span>
+                        <span class="n">calc_covar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">method</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;lmfit-&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+                        <span class="o">**</span><span class="n">fit_kws</span><span class="p">)</span>
+
+    <span class="c1">#   collect the results</span>
+    
+    <span class="n">p_chisq</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">result</span>
+    <span class="c1">#   for amoeba, thereis another copy of chi2/pars</span>
+    <span class="c1">#   result[&#39;chi2&#39;]  (ndim+1+iter)</span>
+    <span class="c1">#   result[&#39;pars&#39;]  (ndim,ndim+1+iter)</span>
+    
+    <span class="k">if</span>  <span class="s1">&#39;lmfit&#39;</span> <span class="ow">in</span> <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]:</span>
+        <span class="n">report_fit</span><span class="p">(</span><span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">])</span>
+        <span class="n">p_best</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">valuesdict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">p_best</span><span class="o">=</span><span class="p">[</span><span class="n">p_best</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]))]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p_best</span><span class="o">=</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;p_best&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_start&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;p_name&#39;</span><span class="p">]))]</span>
+        
+    <span class="n">blobs</span><span class="p">[</span><span class="s1">&#39;chi2&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">blobs</span><span class="p">[</span><span class="s1">&#39;chi2&#39;</span><span class="p">])</span>       <span class="c1"># (ndim)            </span>
+    <span class="n">blobs</span><span class="p">[</span><span class="s1">&#39;pars&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">blobs</span><span class="p">[</span><span class="s1">&#39;pars&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>     <span class="c1"># (ndim,ieval)      </span>
+
+    <span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;blobs&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">blobs</span>                      <span class="c1"># evaluation history for post analysis</span>
+    <span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;ndata&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndata&#39;</span><span class="p">]</span>           <span class="c1"># ndata</span>
+    <span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;npar&#39;</span><span class="p">]</span>             <span class="c1"># npar</span>
+    <span class="n">p_chisq</span><span class="p">[</span><span class="s1">&#39;p_best&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p_best</span>                    <span class="c1"># p_best</span>
+
+    <span class="n">dct2hdf</span><span class="p">(</span><span class="n">p_chisq</span><span class="p">,</span><span class="n">outname</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/chisq_chain.h5&#39;</span><span class="p">)</span>
+    <span class="c1">#lnl,chisq=log_probability(p_best,fit_dct,inp_dct,dat_dct)   </span>
+    
+    <span class="k">return</span> </div>
+
+<div class="viewcode-block" id="emcee_iterate"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.emcee_iterate.html#ism3d.opt.emcee_iterate">[docs]</a><span class="k">def</span> <span class="nf">emcee_iterate</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">,</span><span class="n">dat_dct</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">nstep</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        RUN the sampler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nstep&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">nstep</span>
+    
+    <span class="n">tic</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">dt</span><span class="o">=</span><span class="mf">0.0</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running MCMC...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="o">+</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;/emcee_chain.h5&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hostname:      </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;CPU No. :      </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nthreads:      </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nwalkers:      </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">]))</span>            
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    emcee v3</span>
+<span class="sd">        https://emcee.readthedocs.io/en/latest/tutorials/monitor/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">autocorr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nstep&#39;</span><span class="p">])</span>
+    <span class="n">old_tau</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    
+    <span class="n">h5name</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;outfolder&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/emcee_chain.h5&#39;</span>
+    
+    <span class="k">if</span>  <span class="n">resume</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">backup</span><span class="p">(</span><span class="n">h5name</span><span class="p">,</span><span class="n">move</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">HDFBackend</span><span class="p">(</span><span class="n">h5name</span><span class="p">)</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">],</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">])</span>
+        <span class="n">last_state</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;pos_last&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">HDFBackend</span><span class="p">(</span><span class="n">h5name</span><span class="p">)</span>
+        <span class="n">last_state</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">get_last_sample</span><span class="p">()</span>
+        
+    <span class="c1"># initilize the sampler</span>
+    
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;chisq&quot;</span><span class="p">,</span><span class="nb">float</span><span class="p">)]</span> 
+    <span class="k">if</span>  <span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">set_threads</span><span class="p">()</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">],</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">],</span>
+                                    <span class="n">calc_lnprob</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span><span class="n">blobs_dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">),</span>
+                                    <span class="n">runtime_sortingfn</span><span class="o">=</span><span class="n">sort_on_runtime</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">last_state</span><span class="p">,</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nstep&#39;</span><span class="p">],</span><span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">set_threads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        from .evaluate import calc_lnprob2_initializer</span>
+<span class="sd">        from .evaluate import calc_lnprob2</span>
+<span class="sd">        with Pool(processes=fit_dct[&#39;nthreads&#39;],initializer=calc_lnprob2_initializer,initargs=(dat_dct,models)) as pool:</span>
+<span class="sd">            #   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  </span>
+<span class="sd">            sampler = emcee.EnsembleSampler(fit_dct[&#39;nwalkers&#39;],fit_dct[&#39;ndim&#39;],</span>
+<span class="sd">                                        calc_lnprob2,backend=backend,blobs_dtype=dtype,</span>
+<span class="sd">                                        args=(fit_dct,inp_dct),</span>
+<span class="sd">                                        runtime_sortingfn=sort_on_runtime,pool=pool)</span>
+<span class="sd">            sampler.run_mcmc(last_state,fit_dct[&#39;nstep&#39;],progress=True)        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nthreads&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="c1">#   use model_lnprob_globe without the keyword dat_dct to avoid redundant data pickling  </span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nwalkers&#39;</span><span class="p">],</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;ndim&#39;</span><span class="p">],</span>
+                                        <span class="n">calc_lnprob</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span><span class="n">blobs_dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">fit_dct</span><span class="p">,</span><span class="n">inp_dct</span><span class="p">),</span>
+                                        <span class="n">runtime_sortingfn</span><span class="o">=</span><span class="n">sort_on_runtime</span><span class="p">,</span><span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+            <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">last_state</span><span class="p">,</span><span class="n">fit_dct</span><span class="p">[</span><span class="s1">&#39;nstep&#39;</span><span class="p">],</span><span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        
+        <span class="sd">&quot;&quot;&quot;    </span>
+<span class="sd">        with mp.Manager() as manager:</span>
+<span class="sd">            mg_dat_dct = manager.dict(dat_dct)</span>
+<span class="sd">            mg_models=manager.dict(models)            </span>
+<span class="sd">            with manager.Pool(processes=fit_dct[&#39;nthreads&#39;]) as pool:</span>
+<span class="sd">                sampler = emcee.EnsembleSampler(fit_dct[&#39;nwalkers&#39;],fit_dct[&#39;ndim&#39;],</span>
+<span class="sd">                                            calc_lnprob,backend=backend,blobs_dtype=dtype,</span>
+<span class="sd">                                            args=(fit_dct,inp_dct,mg_dat_dct,mg_models),</span>
+<span class="sd">                                            runtime_sortingfn=sort_on_runtime,pool=pool)</span>
+<span class="sd">                sampler.run_mcmc(last_state,fit_dct[&#39;nstep&#39;],progress=True)                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+                        
+    <span class="sd">&quot;&quot;&quot;    </span>
+<span class="sd">    for sample in sampler.sample(fit_dct[&#39;pos_last&#39;],iterations=fit_dct[&#39;nstep&#39;],</span>
+<span class="sd">                                 progress=True,store=True):</span>
+<span class="sd">        </span>
+<span class="sd">        # Only check convergence every 100 steps</span>
+<span class="sd">        if  sampler.iteration % int(fit_dct[&#39;nstep&#39;]/10.0):</span>
+<span class="sd">            continue</span>
+<span class="sd">    </span>
+<span class="sd">        # Compute the autocorrelation time so far</span>
+<span class="sd">        tau=sampler.get_autocorr_time(tol=0)    # (npar.)</span>
+<span class="sd">        autocorr[index]=np.mean(tau)</span>
+<span class="sd">        index+=1</span>
+<span class="sd">        </span>
+<span class="sd">        # Check convergence</span>
+<span class="sd">        converged = np.all(tau * 100 &lt; sampler.iteration)</span>
+<span class="sd">        converged &amp;= np.all(np.abs(old_tau - tau) / tau &lt; 0.01)</span>
+<span class="sd">        if  converged:</span>
+<span class="sd">            break</span>
+<span class="sd">        old_tau = tau</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">set_threads</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Done.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Took </span><span class="si">{0}</span><span class="s1"> minutes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">tic</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="mf">60.</span><span class="p">)))</span>
+
+    <span class="k">return</span></div>
+
+
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">built-in method obselete</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="amoeba_sa"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.amoeba_sa.html#ism3d.opt.amoeba_sa">[docs]</a><span class="k">def</span> <span class="nf">amoeba_sa</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">p0</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span> 
+              <span class="n">p_lo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">p_up</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">funcargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">ftol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+              <span class="n">maxiter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+              <span class="n">temperature</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+              <span class="n">format_prec</span><span class="o">=</span><span class="s1">&#39;10.0f&#39;</span><span class="p">,</span>
+              <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">    A Python implementation of the AMOEBA / Nelder-Mead downhill-simplex algorithm for</span>
+<span class="sd">    minizing a model function</span>
+<span class="sd">    </span>
+<span class="sd">        loosely based on amoeba_sa.pro (IDL) from E.Rolosky with the improvements from H.Fu</span>
+<span class="sd">    </span>
+<span class="sd">    reference:</span>
+<span class="sd">        https://github.com/fchollet/nelder-mead/blob/master/nelder_mead.py</span>
+<span class="sd">        https://docs.scipy.org/doc/scipy/reference/optimize.html#module-scipy.optimize</span>
+<span class="sd">        https://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html</span>
+<span class="sd">        https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method</span>
+<span class="sd">    </span>
+<span class="sd">    note:</span>
+<span class="sd">        for using it as a module:</span>
+<span class="sd">        &gt;sys.path.append(&quot;/PATH_TO_SCRIPTS/&quot;)</span>
+<span class="sd">        &gt;from amoeba_sa import amoeba_sa</span>
+<span class="sd">    </span>
+<span class="sd">    history:</span>
+<span class="sd">        20171215    RX      introduced</span>
+<span class="sd">        20171216    RX      return the result as dict</span>
+
+<span class="sd">    Keywords:</span>
+<span class="sd">        func:         name of the function to be evaluate</span>
+<span class="sd">        scale:        the search scale for each variable, a list with one</span>
+<span class="sd">                      element for each variable.</span>
+<span class="sd">        funcargs:     unction optional parameters packed (dict)</span>
+<span class="sd">        p0:           initial values (ndarray)</span>
+<span class="sd">        scale:        initial scale (ndarray)</span>
+<span class="sd">        p_lo:         p_lo limit for p (ndarray)</span>
+<span class="sd">        p_up:         p_up limit for p (ndarray)</span>
+<span class="sd">    </span>
+<span class="sd">    return</span>
+<span class="sd">    </span>
+<span class="sd">        dict</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#from scipy.stats.distributions import chi2</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span>  <span class="n">p_lo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">p_lo</span><span class="o">=</span><span class="n">p0</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">if</span>  <span class="n">p_up</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">p_up</span><span class="o">=</span><span class="n">p0</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="c1"># (i,i+1) array for SIMPLEX</span>
+    <span class="c1"># IDL and Python have different indexing orders</span>
+    <span class="c1"># https://docs.scipy.org/doc/numpy/user/basics.indexing.html</span>
+    <span class="n">ndim</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="n">scale</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span><span class="o">**</span><span class="n">funcargs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span><span class="o">**</span><span class="n">funcargs</span><span class="p">)</span>
+    
+    <span class="c1"># list holding your trying route</span>
+    <span class="n">pars</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>    <span class="c1"># p: (ndim,ndim+1) positions of each simplex vertex</span>
+    <span class="n">chi2</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>    <span class="c1"># y: (ndim+1) chi2 at each simplex vertex</span>
+    
+    <span class="n">niter</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">psum</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">niter</span><span class="o">&lt;=</span><span class="n">maxiter</span><span class="p">:</span>
+        
+        <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">-</span><span class="n">temperature</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">ilo</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                            <span class="c1"># index to Lowest chi^2</span>
+        <span class="n">ihi</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>                           <span class="c1"># index to Highest chi^2</span>
+        <span class="n">inhi</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>                          <span class="c1"># index to Next highest chi^2</span>
+        <span class="n">d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">])</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">ilo</span><span class="p">])</span>     <span class="c1"># denominator = interval</span>
+        
+        <span class="k">if</span>  <span class="n">verbose</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="c1">#print(niter,np.abs(y[ilo]),np.abs(y[ihi]))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pars</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">chi2</span><span class="p">)]))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">{0:&gt;6d}</span><span class="s1"> {1:&gt;&#39;</span><span class="o">+</span><span class="n">format_prec</span><span class="o">+</span><span class="s1">&#39;} {2:&gt;&#39;</span><span class="o">+</span><span class="n">format_prec</span><span class="o">+</span><span class="s1">&#39;}&#39;</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">niter</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">ilo</span><span class="p">]),</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">])))</span>
+        
+        <span class="k">if</span>  <span class="n">d</span><span class="o">!=</span><span class="mf">0.0</span><span class="p">:</span>                         <span class="c1"># compute fractional change in chi^2</span>
+            <span class="n">rtol</span><span class="o">=</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="n">ilo</span><span class="p">])</span><span class="o">/</span><span class="n">d</span>
+        <span class="k">else</span><span class="p">:</span>                               <span class="c1"># terminate if denominator is 0</span>
+            <span class="n">rtol</span><span class="o">=</span><span class="n">ftol</span><span class="o">/</span><span class="mf">2.</span>  
+
+        <span class="k">if</span>  <span class="n">rtol</span><span class="o">&lt;</span><span class="n">ftol</span> <span class="ow">or</span> <span class="n">niter</span><span class="o">==</span><span class="n">maxiter</span><span class="p">:</span>
+            <span class="c1">#print rtol,ftol</span>
+            <span class="k">break</span>
+
+        <span class="n">niter</span><span class="o">=</span><span class="n">niter</span><span class="o">+</span><span class="mi">2</span>
+        <span class="c1">#print &#39;-&gt;&#39;,psum</span>
+        <span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="p">,</span><span class="n">ytry</span><span class="o">=</span><span class="n">amotry_sa</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">ihi</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span>
+                       <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+                       <span class="n">p_up</span><span class="o">=</span><span class="n">p_up</span><span class="p">,</span><span class="n">p_lo</span><span class="o">=</span><span class="n">p_lo</span><span class="p">,</span>
+                       <span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="o">=</span><span class="n">chi2</span><span class="p">,</span><span class="n">funcargs</span><span class="o">=</span><span class="n">funcargs</span><span class="p">)</span>
+        <span class="c1">#print &#39;&lt;-&#39;,psum</span>
+        <span class="k">if</span>  <span class="n">ytry</span><span class="o">&lt;=</span><span class="n">y</span><span class="p">[</span><span class="n">ilo</span><span class="p">]:</span>
+            <span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="p">,</span><span class="n">ytry</span><span class="o">=</span><span class="n">amotry_sa</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">ihi</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span>
+                           <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+                           <span class="n">p_up</span><span class="o">=</span><span class="n">p_up</span><span class="p">,</span><span class="n">p_lo</span><span class="o">=</span><span class="n">p_lo</span><span class="p">,</span>
+                           <span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="o">=</span><span class="n">chi2</span><span class="p">,</span><span class="n">funcargs</span><span class="o">=</span><span class="n">funcargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">if</span>  <span class="n">ytry</span><span class="o">&gt;=</span><span class="n">y</span><span class="p">[</span><span class="n">inhi</span><span class="p">]:</span>
+                <span class="n">ysave</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">]</span> 
+                <span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="p">,</span><span class="n">ytry</span><span class="o">=</span><span class="n">amotry_sa</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">ihi</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="n">y</span><span class="p">,</span>
+                               <span class="n">temperature</span><span class="o">=</span> <span class="n">temperature</span><span class="p">,</span>
+                               <span class="n">p_up</span><span class="o">=</span><span class="n">p_up</span><span class="p">,</span><span class="n">p_lo</span><span class="o">=</span><span class="n">p_lo</span><span class="p">,</span>
+                               <span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="o">=</span><span class="n">chi2</span><span class="p">,</span><span class="n">funcargs</span><span class="o">=</span><span class="n">funcargs</span><span class="p">)</span>
+                <span class="k">if</span>  <span class="n">ytry</span><span class="o">&gt;=</span><span class="n">ysave</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span>  <span class="n">i</span><span class="o">!=</span><span class="n">ilo</span><span class="p">:</span>
+                            <span class="n">psum</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[:,</span> <span class="n">ilo</span><span class="p">])</span>
+                            <span class="n">p</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">psum</span>
+                            <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">psum</span><span class="p">,</span><span class="o">**</span><span class="n">funcargs</span><span class="p">)</span>
+                            <span class="n">pars</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">psum</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="n">chi2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chi2</span><span class="p">,</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">niter</span><span class="o">=</span><span class="n">niter</span> <span class="o">+</span> <span class="n">ndim</span>
+                    <span class="n">psum</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">niter</span><span class="o">=</span><span class="n">niter</span><span class="o">-</span><span class="mi">1</span>
+    
+    <span class="nb">dict</span><span class="o">=</span><span class="p">{}</span>
+    <span class="c1">#print chi2</span>
+    <span class="c1">#print chi2[np.argmin(chi2)]</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;p_best&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">pars</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">chi2</span><span class="p">)]</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p0</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">niter</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;maxiter&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">maxiter</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;ftol&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ftol</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;chi2&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">chi2</span>       <span class="c1"># (ndim+1+niter)        chi2 at each simplex vertex</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;pars&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">pars</span>       <span class="c1"># (ndim,ndim+1+niter)   positions of each simplex vertex</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">temperature</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p_up</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="s1">&#39;p_up&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">p_lo</span>
+    
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span>  <span class="nb">dict</span></div>
+
+<div class="viewcode-block" id="amotry_sa"><a class="viewcode-back" href="../../_autosummary/ism3d.opt.amotry_sa.html#ism3d.opt.amotry_sa">[docs]</a><span class="k">def</span> <span class="nf">amotry_sa</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">ihi</span><span class="p">,</span><span class="n">fac</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> 
+              <span class="n">temperature</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> 
+              <span class="n">p_up</span><span class="o">=+</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">p_lo</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+              <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">chi2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">funcargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># we can return modified parameters via mutable variales</span>
+    <span class="c1"># but it&#39;s not safe in general</span>
+    <span class="c1"># we return stack variables instead</span>
+    <span class="n">fac1</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">fac</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">psum</span><span class="p">)</span>
+    <span class="n">fac2</span><span class="o">=</span><span class="n">fac1</span><span class="o">-</span><span class="n">fac</span>
+    <span class="n">ptry</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">psum</span><span class="o">*</span><span class="n">fac1</span><span class="o">-</span><span class="n">p</span><span class="p">[:,</span><span class="n">ihi</span><span class="p">]</span><span class="o">*</span><span class="n">fac2</span><span class="p">,</span><span class="n">p_up</span><span class="p">),</span><span class="n">p_lo</span><span class="p">)</span>
+    
+    <span class="n">ytry</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">ptry</span><span class="p">,</span><span class="o">**</span><span class="n">funcargs</span><span class="p">)</span>
+
+    
+    <span class="n">pars</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ptry</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">chi2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chi2</span><span class="p">,</span><span class="n">ytry</span><span class="p">)</span>
+ 
+    <span class="n">ytry</span> <span class="o">=</span> <span class="n">ytry</span><span class="o">+</span><span class="n">temperature</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>  
+    <span class="k">if</span>  <span class="n">ytry</span><span class="o">&lt;</span><span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">]:</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">ihi</span><span class="p">]</span><span class="o">=</span><span class="n">ytry</span>
+        <span class="c1">#psum=psum+ptry-p[:, ihi] #(don&#39;t use this as we don&#39;t want to change psum id (just modify it) </span>
+        <span class="n">psum</span><span class="o">+=</span><span class="n">ptry</span><span class="o">-</span><span class="n">p</span><span class="p">[:,</span> <span class="n">ihi</span><span class="p">]</span>
+        <span class="n">p</span><span class="p">[:,</span><span class="n">ihi</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptry</span>
+        
+    <span class="k">return</span>  <span class="n">p</span><span class="p">,</span><span class="n">psum</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">chi2</span><span class="p">,</span><span class="n">ytry</span></div>
+           
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GMaKE: Galaxy Morphology and Kinematics Estimator &mdash; GMaKE 0.2.dev1 documentation</title>
+  <title>Welcome to ism3d’s documentation! &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -25,6 +25,8 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,9 +35,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="quickstart.html" /> 
+    <link rel="next" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +52,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> GMaKE
+            <a href="#" class="icon icon-home"> ism3d
           
 
           
@@ -59,7 +62,7 @@
             
             
               <div class="version">
-                0.2.dev1
+                0.3.dev1
               </div>
             
           
@@ -83,22 +86,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quickstart</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#dependencies">Dependencies:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Parameter File</span></p>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#sections">Sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#others">Others</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#units">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
@@ -114,16 +126,31 @@
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Background</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#design-goals">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#credit">Credit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#see-also">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules/Functions</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="gmake.html">gmake package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -138,7 +165,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">GMaKE</a>
+          <a href="#">ism3d</a>
         
       </nav>
 
@@ -169,7 +196,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>GMaKE: Galaxy Morphology and Kinematics Estimator</li>
+      <li>Welcome to ism3d’s documentation!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -186,10 +213,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gmake-galaxy-morphology-and-kinematics-estimator">
-<span id="package-template"></span><h1>GMaKE: Galaxy Morphology and Kinematics Estimator<a class="headerlink" href="#gmake-galaxy-morphology-and-kinematics-estimator" title="Permalink to this headline">¶</a></h1>
-<p>A Python-based package for evaluating galaxy morphology and kinematics properties</p>
-<p><strong>Major features:</strong></p>
+  <div class="section" id="welcome-to-ism3d-s-documentation">
+<h1>Welcome to ism3d’s documentation!<a class="headerlink" href="#welcome-to-ism3d-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ism3d-interferometric-source-modeling-up-to-3d">
+<h2>ISM3D: Interferometric Source Modeling up to 3D<a class="headerlink" href="#ism3d-interferometric-source-modeling-up-to-3d" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/ism3d"><img alt="https://img.shields.io/pypi/v/ism3d.svg" src="https://img.shields.io/pypi/v/ism3d.svg" /></a>
+<a class="reference external image-reference" href="https://travis-ci.com/r-xue/ism3d"><img alt="https://img.shields.io/travis/r-xue/ism3d.svg" src="https://img.shields.io/travis/r-xue/ism3d.svg" /></a>
+<a class="reference external image-reference" href="https://ism3d.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/ism3d/badge/?version=latest" /></a>
+<a class="reference external image-reference" href="https://pyup.io/repos/github/r-xue/ism3d/"><img alt="Updates" src="https://pyup.io/repos/github/r-xue/ism3d/shield.svg" /></a>
+<p>A Python package for simulating and modeling astronomical sources from radio interferometric observations</p>
+<ul class="simple">
+<li><p>Free software: BSD license</p></li>
+<li><p>Documentation: <a class="reference external" href="https://www.magclouds.org/ism3d">https://www.magclouds.org/ism3d</a></p></li>
+<li><p>Repo: <a class="reference external" href="https://github.com/r-xue/ism3d">https://github.com/r-xue/ism3d</a></p></li>
+<li><p>PyPI: <a class="reference external" href="https://pypi.org/project/ism3d">https://pypi.org/project/ism3d</a></p></li>
+</ul>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <p><em>Efficient forward-modeling of Galaxy Emission in Astronomical Data</em></p>
 <ul class="simple">
 <li><p>Construct high-precision spatially/spectroscopically-resolved galaxy emission models, from
@@ -210,103 +250,219 @@ multiple-band photometric images,
 </ul>
 <p>GMaKE is originally designed to be a special tool to extract galaxy morphology and kinematics property from large modern interferometer datasets (specifically VLA and ALMA). We integrate some convenient utility-type functions (based on CASA 6’s Python modules) for helping process, image, and visualize calibrated viability data from the interferometer data archive, as we realize the importance of properly preparing visibility data, which may require additional effort due to large dataset size and “complex” nature of interferometer visibility data forms.</p>
 <p>On the other hand, although we have demonstrated that visibility-domain modeling can eliminate the non-linear imaging process for interferometer data and offers a unique advantage on the marginally-resolved moderate SNR data (e.g., noteably for high-z observations), we note that GMaKE is still equivalently equipped to analyze imaging or data products under the same modeling and fitting framework.</p>
-</div>
-<div class="section" id="project-links">
-<h1>Project Links:<a class="headerlink" href="#project-links" title="Permalink to this headline">¶</a></h1>
+<p>Currently, ism3d is orgnized into several subpackages</p>
 <ul class="simple">
-<li><p>Repo: <a class="reference external" href="https://github.com/r-xue/GMaKE">https://github.com/r-xue/GMaKE</a></p></li>
-<li><p>PyPI: <a class="reference external" href="https://pypi.python.org/pypi/GMaKE">https://pypi.python.org/pypi/GMaKE</a></p></li>
-<li><p>Documentation: <a class="reference external" href="https://r-xue.github.io/GMaKE">https://r-xue.github.io/GMaKE</a></p></li>
+<li><p>arts:      generate artificial sources up to 3d (position-position-frequency/wavelength/velocity) in the sparse array (a.k.a. cloudlet) or regular grid (e.g. spectral cube) (see examples in the yt documents)</p></li>
+<li><p>simuv:     an similator for radio interefmeteric observations</p></li>
+<li><p>simxy:     an similator for spectroscopic imaging observations, as well as photometric imaging and 1D spectroscopy (not fully implemented)</p></li>
+<li><p>modelling: a model fitting / optimizer framwork</p></li>
+<li><p>uvhelper:   help prepare and analyze “uv” data for modelling (using CASA6): A small Python library that provides a collection of utility functions helping process, analyze, and visualize interferometric visibility data.</p></li>
+<li><p>xyhelper:   help prepare and analyze “xy” data for modelling</p></li>
+<li><p>utils:      utilities functions to support other modules</p></li>
+<li><p>maths:      pesuomd random generator / other math related functions</p></li>
+<li><p>plots:      general plotting modules</p></li>
 </ul>
+<p>While the current effort is still a work in progress: incosistent documentation, many non-working function placeholders, etc., fast-paced changes are expected in near future.
+Any comments and suggestions are appreciated and <a class="reference external" href="https://www.magclouds.org/ism3d/html/contributing.html">code/documentation contributions</a> are very welcome.</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Quickstart</span></p>
+<p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#dependencies">Dependencies:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="authors.html#author">Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="history.html#dev1-2020-06-20">0.3.dev1 (2020-06-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#dev2-2020-03-26">0.2.dev2 (2020-03-26)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#dev1-2019-08-07">0.1.dev1 (2019-08-07)</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Parameter File</span></p>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#sections">Sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#others">Others</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#units">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#sections">Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#others">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#units">Units</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#how-to-install">How to install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#verify-the-installation">Verify the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#tips-tricks">Tips &amp; Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#reference">Reference</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/reference.html">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develop/reference.html#casa-related">CASA-related</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/reference.html#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#archive-query">Archive Query:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#using-the-beta-version-of-casa-6">Using the beta-version of CASA 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_gn20_prep.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#reduce-raw-data-size">Reduce Raw Data Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#data-calibration">Data Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#prepare-visibiity-data-from-the-calibrated-ms-from-the-modified-vla-scripted-pipeline">Prepare visibiity data from the calibrated MS from the modified VLA scripted pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_prep.html#prep-calibrated-data">Prep Calibrated Data:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_gn20_imaging.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#general-guideline">general guideline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#spws-setup">Spws Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#export-one-ms-per-baseband">Export one MS per baseband</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#ms-manupilation">MS manupilation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#id1">Spws Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_prep.html#s-band-4-cycle-5-brisbin-l">2017.1.01045.S (Band 4, Cycle-5, Brisbin, L.)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#id2">Spws Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#id3">Export one MS per baseband</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_prep.html#id4">MS manupilation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_imaging.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#s">2013.1.00059.S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id1">2017.1.01045.S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#s-2017-1-01045-s">2013.1.00059.S+2017.1.01045.S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_imaging.html#id6">2015.1.00250.S</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_display.html#plot-mom0-1d-spectra-from-dirty-maps-2013-band4-cycle2-2017-band4-cycle5-band4-cycle2-5-2015-band-6-cycle3">Plot Mom0 + 1D Spectra from Dirty Maps: 2013 Band4 Cycle2 -&gt; 2017 Band4 Cycle5 -&gt; Band4 Cycle2+5 -&gt; 2015 Band 6 Cycle3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_display.html#summary-figure-of-all-spectral-lines-in-1d-spectra-form">Summary Figure of all spectral lines in 1D spectra form</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html#cycle-5-data">Cycle 5 Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html#cycle-2-data">Cycle 2 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html#cycle2-cycle5">Cycle2+Cycle5</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#b-044-12a-201">11B-044 / 12A-201</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#reduce-raw-data-size">Reduce Raw Data SIze</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#data-calibration-with-the-modified-vla-scripted-pipeline-rxpipeline">Data Calibration with the modified VLA scripted pipeline (rxpipeline)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#frame-transfer-topo-lsrk-spw-combine-time-averging">Frame-Transfer (TOPO-&gt;LSRK) &amp; SPW-combine &amp; Time-Averging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#s-band-6-cycle-3-xue-et-al-2018">2015.1.00723.S (Band 6, Cycle-3, Xue et al. 2018)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#spws-setup">Spws Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#export-one-ms-per-baseband">Export one MS per baseband</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#ms-manupilation">MS manupilation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demos/demo_hxmm01_prep.html#s-band-7-cycle-0">2011.0.00539.S (Band 7, Cycle-0)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demos/demo_hxmm01_prep.html#id5">Spws Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="tutorials-examples">
-<h1>Tutorials &amp; Examples<a class="headerlink" href="#tutorials-examples" title="Permalink to this headline">¶</a></h1>
-<p>Additional tutorials are in Jupyter Notebooks:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_amoeba.ipynb">basic_demo_amoeba.ipynb</a></p></li>
-<li><p><a class="reference external" href="http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_amoeba.ipynb">advanced_demo_amoeba.ipynb</a></p></li>
-<li><p><a class="reference external" href="http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb">basic_demo_emcee.ipynb</a></p></li>
-<li><p><a class="reference external" href="http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb">advanced_demo_emcee.ipynb</a></p></li>
-<li><p><a class="reference external" href="http://colab.research.google.com/github/r-xue/GMaKE/blob/master/examples/notebook/basic_demo_emcee.ipynb">basic_simulate.ipynb</a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Background</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#design-goals">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#credit">Credit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#see-also">See also</a></li>
-</ul>
-</div>
-<div class="section" id="changelog">
-<h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>0.4 (2020-05-01)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>First beta release.</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Modules/Functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="gmake.html">gmake package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.analyze">gmake.analyze module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#gmake-cli-module">gmake.cli module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.discretize">gmake.discretize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.dynamics">gmake.dynamics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.evaluate">gmake.evaluate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.io">gmake.io module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.logger">gmake.logger module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.meta">gmake.meta module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.model">gmake.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#gmake-msplot2-module">gmake.msplot2 module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.opt">gmake.opt module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.plts">gmake.plts module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.stats">gmake.stats module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.utils">gmake.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake.vis_utils">gmake.vis_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gmake.html#module-gmake">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/bx610.html#example-bx610-high-z-sfg">Example: BX610 (High-z SFG)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html">GN20:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/gn20.html#example-bx610-high-z-sfg">Example: BX610 (High-z SFG)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html">Simulated High-z VLA Field</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/simvla.html#example-bx610-high-z-sfg">Example: BX610 (High-z SFG)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 </div>
 <div class="admonition note">
@@ -315,16 +471,27 @@ multiple-band photometric images,
 Although we make an effort to maintain backwards compatibility for the parameter file syntax,
 the Python API can rapidly change at the current alpha development stage.</p>
 </div>
-<span class="target" id="module-gmake"></span><div class="section" id="indices">
-<h4>Indices<a class="headerlink" href="#indices" title="Permalink to this headline">¶</a></h4>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ism3d.html#module-ism3d" title="ism3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ism3d</span></code></a></p></td>
+<td><p>Top-level package for ism3d.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -335,7 +502,7 @@ the Python API can rapidly change at the current alpha development stage.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="quickstart.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

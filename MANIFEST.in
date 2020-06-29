@@ -1,9 +1,23 @@
+include AUTHORS.rst
+include CONTRIBUTING.rst
+include HISTORY.rst
+include LICENSE
+include README.rst
+
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
+
+##############
+
 include README.rst
 include CHANGES.rst
 
 include setup.cfg
 include gmake/gmake.cfg
 
-recursive-include gmake/data/ *
-recursive-include gmake/casa/ *
-recursive-include gmake/test/ *
+recursive-include ism3d/resource/ *
+#recursive-include gmake/casa/ *
+#recursive-include gmake/test/ *

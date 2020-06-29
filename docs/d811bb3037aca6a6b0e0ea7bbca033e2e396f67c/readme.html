@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GMaKE: Galaxy Morphology and Kinematics Estimator &mdash; GMaKE 0.2.dev1 documentation</title>
+  <title>ISM3D: Interferometric Source Modeling up to 3D &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -25,6 +25,8 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,6 +35,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -48,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> GMaKE
+            <a href="index.html" class="icon icon-home"> ism3d
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.2.dev1
+                0.3.dev1
               </div>
             
           
@@ -82,22 +85,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quickstart</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Parameter File</span></p>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#sections">Sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#others">Others</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#units">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
@@ -113,7 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
@@ -131,16 +143,13 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Background</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#design-goals">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#credit">Credit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#see-also">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules/Functions</span></p>
+<p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="gmake.html">gmake package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -155,7 +164,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">GMaKE</a>
+          <a href="index.html">ism3d</a>
         
       </nav>
 
@@ -186,7 +195,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>GMaKE: Galaxy Morphology and Kinematics Estimator</li>
+      <li>ISM3D: Interferometric Source Modeling up to 3D</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -203,10 +212,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gmake-galaxy-morphology-and-kinematics-estimator">
-<h1>GMaKE: Galaxy Morphology and Kinematics Estimator<a class="headerlink" href="#gmake-galaxy-morphology-and-kinematics-estimator" title="Permalink to this headline">¶</a></h1>
-<p>A Python-based package for evaluating galaxy morphology and kinematics properties</p>
-<p><strong>Major features:</strong></p>
+  <div class="section" id="ism3d-interferometric-source-modeling-up-to-3d">
+<h1>ISM3D: Interferometric Source Modeling up to 3D<a class="headerlink" href="#ism3d-interferometric-source-modeling-up-to-3d" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/ism3d"><img alt="https://img.shields.io/pypi/v/ism3d.svg" src="https://img.shields.io/pypi/v/ism3d.svg" /></a>
+<a class="reference external image-reference" href="https://travis-ci.com/r-xue/ism3d"><img alt="https://img.shields.io/travis/r-xue/ism3d.svg" src="https://img.shields.io/travis/r-xue/ism3d.svg" /></a>
+<a class="reference external image-reference" href="https://ism3d.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/ism3d/badge/?version=latest" /></a>
+<a class="reference external image-reference" href="https://pyup.io/repos/github/r-xue/ism3d/"><img alt="Updates" src="https://pyup.io/repos/github/r-xue/ism3d/shield.svg" /></a>
+<p>A Python package for simulating and modeling astronomical sources from radio interferometric observations</p>
+<ul class="simple">
+<li><p>Free software: BSD license</p></li>
+<li><p>Documentation: <a class="reference external" href="https://www.magclouds.org/ism3d">https://www.magclouds.org/ism3d</a></p></li>
+<li><p>Repo: <a class="reference external" href="https://github.com/r-xue/ism3d">https://github.com/r-xue/ism3d</a></p></li>
+<li><p>PyPI: <a class="reference external" href="https://pypi.org/project/ism3d">https://pypi.org/project/ism3d</a></p></li>
+</ul>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <p><em>Efficient forward-modeling of Galaxy Emission in Astronomical Data</em></p>
 <ul class="simple">
 <li><p>Construct high-precision spatially/spectroscopically-resolved galaxy emission models, from
@@ -227,14 +247,21 @@ multiple-band photometric images,
 </ul>
 <p>GMaKE is originally designed to be a special tool to extract galaxy morphology and kinematics property from large modern interferometer datasets (specifically VLA and ALMA). We integrate some convenient utility-type functions (based on CASA 6’s Python modules) for helping process, image, and visualize calibrated viability data from the interferometer data archive, as we realize the importance of properly preparing visibility data, which may require additional effort due to large dataset size and “complex” nature of interferometer visibility data forms.</p>
 <p>On the other hand, although we have demonstrated that visibility-domain modeling can eliminate the non-linear imaging process for interferometer data and offers a unique advantage on the marginally-resolved moderate SNR data (e.g., noteably for high-z observations), we note that GMaKE is still equivalently equipped to analyze imaging or data products under the same modeling and fitting framework.</p>
-</div>
-<div class="section" id="project-links">
-<h1>Project Links:<a class="headerlink" href="#project-links" title="Permalink to this headline">¶</a></h1>
+<p>Currently, ism3d is orgnized into several subpackages</p>
 <ul class="simple">
-<li><p>Repo: <a class="reference external" href="https://github.com/r-xue/GMaKE">https://github.com/r-xue/GMaKE</a></p></li>
-<li><p>PyPI: <a class="reference external" href="https://pypi.python.org/pypi/GMaKE">https://pypi.python.org/pypi/GMaKE</a></p></li>
-<li><p>Documentation: <a class="reference external" href="https://r-xue.github.io/GMaKE">https://r-xue.github.io/GMaKE</a></p></li>
+<li><p>arts:      generate artificial sources up to 3d (position-position-frequency/wavelength/velocity) in the sparse array (a.k.a. cloudlet) or regular grid (e.g. spectral cube) (see examples in the yt documents)</p></li>
+<li><p>simuv:     an similator for radio interefmeteric observations</p></li>
+<li><p>simxy:     an similator for spectroscopic imaging observations, as well as photometric imaging and 1D spectroscopy (not fully implemented)</p></li>
+<li><p>modelling: a model fitting / optimizer framwork</p></li>
+<li><p>uvhelper:   help prepare and analyze “uv” data for modelling (using CASA6): A small Python library that provides a collection of utility functions helping process, analyze, and visualize interferometric visibility data.</p></li>
+<li><p>xyhelper:   help prepare and analyze “xy” data for modelling</p></li>
+<li><p>utils:      utilities functions to support other modules</p></li>
+<li><p>maths:      pesuomd random generator / other math related functions</p></li>
+<li><p>plots:      general plotting modules</p></li>
 </ul>
+<p>While the current effort is still a work in progress: incosistent documentation, many non-working function placeholders, etc., fast-paced changes are expected in near future.
+Any comments and suggestions are appreciated and <a class="reference external" href="https://www.magclouds.org/ism3d/html/contributing.html">code/documentation contributions</a> are very welcome.</p>
+</div>
 </div>
 
 

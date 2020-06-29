@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -9,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; GMaKE 0.2.dev1 documentation</title>
+  <title>Index &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -26,6 +25,8 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -34,6 +35,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -49,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> GMaKE
+            <a href="index.html" class="icon icon-home"> ism3d
           
 
           
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.2.dev1
+                0.3.dev1
               </div>
             
           
@@ -83,22 +85,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quickstart</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#dependencies">Dependencies:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Parameter File</span></p>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#sections">Sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#others">Others</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpfile.html#units">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
@@ -114,16 +125,31 @@
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Background</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#design-goals">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#credit">Credit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html#see-also">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules/Functions</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="gmake.html">gmake package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -138,7 +164,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">GMaKE</a>
+          <a href="index.html">ism3d</a>
         
       </nav>
 
@@ -190,7 +216,8 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#A"><strong>A</strong></a>
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
@@ -206,19 +233,45 @@
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  
 </div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.__call__">__call__() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.__call__">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.__call__">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.__call__">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.__call__">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.opt.amoeba_sa">amoeba_sa() (in module gmake.opt)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.amoeba_sa">amoeba_sa() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.amoeba_sa.html#ism3d.opt.amoeba_sa">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.amotry_sa">amotry_sa() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.amotry_sa.html#ism3d.opt.amotry_sa">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.opt.amotry_sa">amotry_sa() (in module gmake.opt)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.apply_phase_array.html#ism3d.tests.galario_utils.apply_phase_array">apply_phase_array() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.apply_rotation.html#ism3d.tests.galario_utils.apply_rotation">apply_rotation() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.assert_allclose.html#ism3d.tests.galario_utils.assert_allclose">assert_allclose() (in module ism3d.tests.galario_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -226,11 +279,11 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.backup">backup() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.backup">backup() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.backup.html#ism3d.utils.backup">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.analyze.brute_analyze">brute_analyze() (in module gmake.analyze)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.analyze.brute_analyze">brute_analyze() (in module ism3d.analyze)</a>, <a href="_autosummary/ism3d.analyze.brute_analyze.html#ism3d.analyze.brute_analyze">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -238,81 +291,119 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.evaluate.calc_chisq">calc_chisq() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.calc_chisq">calc_chisq() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.calc_chisq.html#ism3d.evaluate.calc_chisq">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.calc_lnprob">calc_lnprob() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.calc_lnprob">calc_lnprob() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.calc_lnprob.html#ism3d.evaluate.calc_lnprob">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.calc_lnprob2">calc_lnprob2() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.calc_lnprob2">calc_lnprob2() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.calc_lnprob2.html#ism3d.evaluate.calc_lnprob2">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.calc_lnprob2_initializer">calc_lnprob2_initializer() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.calc_lnprob2_initializer">calc_lnprob2_initializer() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.calc_lnprob2_initializer.html#ism3d.evaluate.calc_lnprob2_initializer">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.calc_ppbeam">calc_ppbeam() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.calc_ppbeam">calc_ppbeam() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.calc_ppbeam.html#ism3d.plts.calc_ppbeam">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.calc_vcirc">calc_vcirc() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.calc_vcirc">calc_vcirc() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.calc_vcirc.html#ism3d.model.calc_vcirc">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.calc_wdev">calc_wdev() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.calc_wdev">calc_wdev() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.calc_wdev.html#ism3d.evaluate.calc_wdev">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.cdf2rv">cdf2rv() (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.casa_version">casa_version() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.casa_version.html#ism3d.uvhelper.proc.casa_version">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.channel_split">channel_split() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.cli.casatools_repack">casatools_repack() (in module ism3d.uvhelper.cli)</a>, <a href="_autosummary/ism3d.uvhelper.cli.casatools_repack.html#ism3d.uvhelper.cli.casatools_repack">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.check_deps">check_deps() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.cdf">cdf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.cdf">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.check_setup">check_setup() (in module gmake.utils)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.cdf">(ism3d.stats.norm2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.chi2red_to_lognsigma">chi2red_to_lognsigma() (in module gmake.utils)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.cdf">(ism3d.stats.sechsq_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.analyze.chisq_analyze">chisq_analyze() (in module gmake.analyze)</a>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.cdf">(ism3d.stats.sersic2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.opt.chisq_iterate">chisq_iterate() (in module gmake.opt)</a>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.cdf2rv">cdf2rv() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.cdf2rv.html#ism3d.stats.cdf2rv">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.cloudlet_moms">cloudlet_moms() (in module gmake.model)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.central_pixel.html#ism3d.tests.galario_utils.central_pixel">central_pixel() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.channel_split">channel_split() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.channel_split.html#ism3d.discretize.channel_split">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.check_deps">check_deps() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.check_deps.html#ism3d.utils.check_deps">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.check_setup">check_setup() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.check_setup.html#ism3d.utils.check_setup">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.checkchflag">checkchflag() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.checkchflag.html#ism3d.uvhelper.proc.checkchflag">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.chi2red_to_lognsigma">chi2red_to_lognsigma() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.chi2red_to_lognsigma.html#ism3d.utils.chi2red_to_lognsigma">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.analyze.chisq_analyze">chisq_analyze() (in module ism3d.analyze)</a>, <a href="_autosummary/ism3d.analyze.chisq_analyze.html#ism3d.analyze.chisq_analyze">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.chisq_iterate">chisq_iterate() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.chisq_iterate.html#ism3d.opt.chisq_iterate">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.model.clouds_discretize_2d">clouds_discretize_2d() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.cloudlet_moms">cloudlet_moms() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.cloudlet_moms.html#ism3d.model.cloudlet_moms">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.clouds_fromobj">clouds_fromobj() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.clouds_discretize_2d">clouds_discretize_2d() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.clouds_discretize_2d.html#ism3d.model.clouds_discretize_2d">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.clouds_kin">clouds_kin() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.clouds_fromobj">clouds_fromobj() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.clouds_fromobj.html#ism3d.model.clouds_fromobj">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.clouds_morph">clouds_morph() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.clouds_kin">clouds_kin() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.clouds_kin.html#ism3d.model.clouds_kin">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.clouds_perchan">clouds_perchan() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.clouds_morph">clouds_morph() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.clouds_morph.html#ism3d.model.clouds_morph">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.clouds_tosky">clouds_tosky() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.clouds_perchan">clouds_perchan() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.clouds_perchan.html#ism3d.discretize.clouds_perchan">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.convert_size">convert_size() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.clouds_tosky">clouds_tosky() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.clouds_tosky.html#ism3d.model.clouds_tosky">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.vis_utils.corrupt_ms">corrupt_ms() (in module gmake.vis_utils)</a>
+      <li><a href="_autosummary/ism3d.tests.plt_compare.comp_dirtymap.html#ism3d.tests.plt_compare.comp_dirtymap">comp_dirtymap() (in module ism3d.tests.plt_compare)</a>
 </li>
-      <li><a href="gmake.html#gmake.vis_utils.cpredict_ms">cpredict_ms() (in module gmake.vis_utils)</a>
+      <li><a href="_autosummary/ism3d.tests.plt_compare.comp_specs.html#ism3d.tests.plt_compare.comp_specs">comp_specs() (in module ism3d.tests.plt_compare)</a>
 </li>
-      <li><a href="gmake.html#gmake.model.cr_tanh">cr_tanh() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.convert_size">convert_size() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.convert_size.html#ism3d.utils.convert_size">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.custom_pdf">custom_pdf() (in module gmake.stats)</a>
+      <li><a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.converter">converter() (ism3d.uvhelper.logger.CustomFormatter method)</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.custom_ppf">custom_ppf() (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.copyimages">copyimages() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.copyimages.html#ism3d.uvhelper.imager.copyimages">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.custom_rvs">custom_rvs() (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.vis_utils.corrupt_ms">corrupt_ms() (in module ism3d.vis_utils)</a>, <a href="_autosummary/ism3d.vis_utils.corrupt_ms.html#ism3d.vis_utils.corrupt_ms">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.custom_sf">custom_sf() (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.vis_utils.cpredict_ms">cpredict_ms() (in module ism3d.vis_utils)</a>, <a href="_autosummary/ism3d.vis_utils.cpredict_ms.html#ism3d.vis_utils.cpredict_ms">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.logger.CustomFormatter">CustomFormatter (class in gmake.logger)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.cr_tanh">cr_tanh() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.cr_tanh.html#ism3d.model.cr_tanh">[1]</a>
 </li>
+      <li><a href="_autosummary/ism3d.meta.create_header.html#ism3d.meta.create_header">create_header() (in module ism3d.meta)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.create_reference_image.html#ism3d.tests.galario_utils.create_reference_image">create_reference_image() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.create_sampling_points.html#ism3d.tests.galario_utils.create_sampling_points">create_sampling_points() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.custom_pdf">custom_pdf() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.custom_pdf.html#ism3d.stats.custom_pdf">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.custom_ppf">custom_ppf() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.custom_ppf.html#ism3d.stats.custom_ppf">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.custom_rvs">custom_rvs() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.custom_rvs.html#ism3d.stats.custom_rvs">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.custom_sf">custom_sf() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.custom_sf.html#ism3d.stats.custom_sf">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.logger.CustomFormatter">CustomFormatter (class in ism3d.logger)</a>
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.logger.CustomFormatter">(class in ism3d.uvhelper.logger)</a>, <a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.io.dct2fits">dct2fits() (in module gmake.io)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.dct2fits">dct2fits() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.dct2fits.html#ism3d.io.dct2fits">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.io.dct2hdf">dct2hdf() (in module gmake.io)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.dct2hdf">dct2hdf() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.dct2hdf.html#ism3d.io.dct2hdf">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.io.dct2npy">dct2npy() (in module gmake.io)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.dct2npy">dct2npy() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.dct2npy.html#ism3d.io.dct2npy">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -320,17 +411,45 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.analyze.emcee_analyze">emcee_analyze() (in module gmake.analyze)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.analyze.emcee_analyze">emcee_analyze() (in module ism3d.analyze)</a>, <a href="_autosummary/ism3d.analyze.emcee_analyze.html#ism3d.analyze.emcee_analyze">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.opt.emcee_iterate">emcee_iterate() (in module gmake.opt)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.emcee_iterate">emcee_iterate() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.emcee_iterate.html#ism3d.opt.emcee_iterate">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.entropy">entropy() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.entropy">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.entropy">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.entropy">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.entropy">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.eval_func">eval_func() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.eval_func.html#ism3d.utils.eval_func">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.eval_func">eval_func() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.expect">expect() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.expect">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.expon2d_gen">expon2d_gen (class in gmake.stats)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.expect">(ism3d.stats.norm2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.io.export_model">export_model() (in module gmake.io)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.expect">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.expect">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.expon2d_gen">expon2d_gen (class in ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.export_model">export_model() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.export_model.html#ism3d.io.export_model">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.exportimages">exportimages() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.exportimages.html#ism3d.uvhelper.imager.exportimages">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.ext_list">ext_list() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.ext_list.html#ism3d.uvhelper.imager.ext_list">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -338,11 +457,67 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.io.fits2dct">fits2dct() (in module gmake.io)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.fit">fit() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.fit">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.fit">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.fit">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.fit">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.fit_loc_scale">fit_loc_scale() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.fit_loc_scale">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.fit_loc_scale">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.fit_loc_scale">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.fit_loc_scale">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.fits2dct">fits2dct() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.fits2dct.html#ism3d.io.fits2dct">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.flagbywt">flagbywt() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.flagbywt.html#ism3d.uvhelper.proc.flagbywt">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.flagchan">flagchan() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.flagchan.html#ism3d.uvhelper.proc.flagchan">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.logger.CustomFormatter.format">format() (gmake.logger.CustomFormatter method)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.flagrow">flagrow() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.flagrow.html#ism3d.uvhelper.proc.flagrow">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.plt_compare.fmt.html#ism3d.tests.plt_compare.fmt">fmt() (in module ism3d.tests.plt_compare)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.logger.CustomFormatter.format">format() (ism3d.logger.CustomFormatter method)</a>
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.logger.CustomFormatter.format">(ism3d.uvhelper.logger.CustomFormatter method)</a>, <a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.format">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.formatException">formatException() (ism3d.uvhelper.logger.CustomFormatter method)</a>
+</li>
+      <li><a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.formatStack">formatStack() (ism3d.uvhelper.logger.CustomFormatter method)</a>
+</li>
+      <li><a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.formatTime">formatTime() (ism3d.uvhelper.logger.CustomFormatter method)</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.freeze">freeze() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.freeze">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.freeze">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.freeze">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.freeze">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.tests.test_globals.fun1.html#ism3d.tests.test_globals.fun1">fun1() (in module ism3d.tests.test_globals)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -350,51 +525,31 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.gal_flat">gal_flat() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.g_sweep_prototype.html#ism3d.tests.galario_utils.g_sweep_prototype">g_sweep_prototype() (in module ism3d.tests.galario_utils)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.get_autocoor_time">get_autocoor_time() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.gal_flat">gal_flat() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.gal_flat.html#ism3d.utils.gal_flat">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.get_dirsize">get_dirsize() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.generate_random_vis.html#ism3d.tests.galario_utils.generate_random_vis">generate_random_vis() (in module ism3d.tests.galario_utils)</a>
 </li>
-      <li><a href="gmake.html#gmake.model.get_image_size">get_image_size() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.get_autocoor_time">get_autocoor_time() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.get_autocoor_time.html#ism3d.utils.get_autocoor_time">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.get_obj_size">get_obj_size() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.get_dirsize">get_dirsize() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.get_dirsize.html#ism3d.utils.get_dirsize">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake">gmake (module)</a>, <a href="index.html#module-gmake">[1]</a>
-</li>
-      <li><a href="gmake.html#module-gmake.analyze">gmake.analyze (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.discretize">gmake.discretize (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.dynamics">gmake.dynamics (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.evaluate">gmake.evaluate (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.io">gmake.io (module)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.get_image_size">get_image_size() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.get_image_size.html#ism3d.model.get_image_size">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#module-gmake.logger">gmake.logger (module)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.get_obj_size">get_obj_size() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.get_obj_size.html#ism3d.utils.get_obj_size">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake.meta">gmake.meta (module)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.getcommonfreqs">getcommonfreqs() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.getcommonfreqs.html#ism3d.uvhelper.proc.getcommonfreqs">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake.model">gmake.model (module)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.getfreqs">getfreqs() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.getfreqs.html#ism3d.uvhelper.proc.getfreqs">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake.opt">gmake.opt (module)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.gmake_listpars">gmake_listpars() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.gmake_listpars.html#ism3d.utils.gmake_listpars">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake.plts">gmake.plts (module)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.gmake_pformat">gmake_pformat() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.gmake_pformat.html#ism3d.utils.gmake_pformat">[1]</a>
 </li>
-      <li><a href="gmake.html#module-gmake.stats">gmake.stats (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.utils">gmake.utils (module)</a>
-</li>
-      <li><a href="gmake.html#module-gmake.vis_utils">gmake.vis_utils (module)</a>
-</li>
-      <li><a href="gmake.html#gmake.utils.gmake_listpars">gmake_listpars() (in module gmake.utils)</a>
-</li>
-      <li><a href="gmake.html#gmake.utils.gmake_pformat">gmake_pformat() (in module gmake.utils)</a>
-</li>
-      <li><a href="gmake.html#gmake.vis_utils.gpredict_ms">gpredict_ms() (in module gmake.vis_utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.vis_utils.gpredict_ms">gpredict_ms() (in module ism3d.vis_utils)</a>, <a href="_autosummary/ism3d.vis_utils.gpredict_ms.html#ism3d.vis_utils.gpredict_ms">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -402,19 +557,19 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.h5ls">h5ls() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.h5ls">h5ls() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.h5ls.html#ism3d.utils.h5ls">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.h5ls_print">h5ls_print() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.h5ls_print">h5ls_print() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.h5ls_print.html#ism3d.utils.h5ls_print">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.io.hdf2dct">hdf2dct() (in module gmake.io)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.hdf2dct">hdf2dct() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.hdf2dct.html#ism3d.io.hdf2dct">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.hextract">hextract() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.hextract">hextract() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.hextract.html#ism3d.utils.hextract">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.human_to_string">human_to_string() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.human_to_string">human_to_string() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.human_to_string.html#ism3d.utils.human_to_string">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.human_unit">human_unit() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.human_unit">human_unit() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.human_unit.html#ism3d.utils.human_unit">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -422,71 +577,543 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.imcontsub">imcontsub() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.imcontsub">imcontsub() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.imcontsub.html#ism3d.utils.imcontsub">[1]</a>
 </li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.inp2mod">inp2mod() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.inp2mod.html#ism3d.utils.inp2mod">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.inp_validate">inp_validate() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.inp_validate.html#ism3d.utils.inp_validate">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.int_bilin_MT.html#ism3d.tests.galario_utils.int_bilin_MT">int_bilin_MT() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.interval">interval() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.interval">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.interval">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.interval">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.interval">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.invert">invert() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.invert.html#ism3d.uvhelper.imager.invert">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ft.invert_ft">invert_ft() (in module ism3d.uvhelper.ft)</a>, <a href="_autosummary/ism3d.uvhelper.ft.invert_ft.html#ism3d.uvhelper.ft.invert_ft">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.isf">isf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.isf">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.isf">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.isf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.isf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d">module</a>, <a href="_autosummary/ism3d.html#module-ism3d">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.analyze
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.analyze">module</a>, <a href="_autosummary/ism3d.analyze.html#module-ism3d.analyze">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.cli_new
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.cli_new">module</a>, <a href="_autosummary/ism3d.cli_new.html#module-ism3d.cli_new">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.discretize
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.discretize">module</a>, <a href="_autosummary/ism3d.discretize.html#module-ism3d.discretize">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.dynamics
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.dynamics">module</a>, <a href="_autosummary/ism3d.dynamics.html#module-ism3d.dynamics">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.evaluate
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.evaluate">module</a>, <a href="_autosummary/ism3d.evaluate.html#module-ism3d.evaluate">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.io
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.io">module</a>, <a href="_autosummary/ism3d.io.html#module-ism3d.io">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.ism3d
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.ism3d">module</a>, <a href="_autosummary/ism3d.ism3d.html#module-ism3d.ism3d">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.logger
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.logger">module</a>, <a href="_autosummary/ism3d.logger.html#module-ism3d.logger">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.meta
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.meta">module</a>, <a href="_autosummary/ism3d.meta.html#module-ism3d.meta">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.model
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.model">module</a>, <a href="_autosummary/ism3d.model.html#module-ism3d.model">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.opt
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.opt">module</a>, <a href="_autosummary/ism3d.opt.html#module-ism3d.opt">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.plts
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.plts">module</a>, <a href="_autosummary/ism3d.plts.html#module-ism3d.plts">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.stats
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.stats">module</a>, <a href="_autosummary/ism3d.stats.html#module-ism3d.stats">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.html#module-ism3d.tests">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.galario_utils
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.galario_utils.html#module-ism3d.tests.galario_utils">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.inp2mod">inp2mod() (in module gmake.utils)</a>
+      <li>
+    ism3d.tests.plt_compare
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.plt_compare.html#module-ism3d.tests.plt_compare">module</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.inp_validate">inp_validate() (in module gmake.utils)</a>
+      </ul></li>
+      <li>
+    ism3d.tests.plt_multisource
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.plt_multisource.html#module-ism3d.tests.plt_multisource">module</a>
 </li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_eval
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_eval.html#module-ism3d.tests.test_eval">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_fft
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_fft.html#module-ism3d.tests.test_fft">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_fft2
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_fft2.html#module-ism3d.tests.test_fft2">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_globals
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_globals.html#module-ism3d.tests.test_globals">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_import
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_import.html#module-ism3d.tests.test_import">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_inpfile_parser
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_inpfile_parser.html#module-ism3d.tests.test_inpfile_parser">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_input_parser
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_input_parser.html#module-ism3d.tests.test_input_parser">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_makepsf
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_makepsf.html#module-ism3d.tests.test_makepsf">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_mkl
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_mkl.html#module-ism3d.tests.test_mkl">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_mkl_bug
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_mkl_bug.html#module-ism3d.tests.test_mkl_bug">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_print
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_print.html#module-ism3d.tests.test_print">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.tests.test_rng_performance
+
+      <ul>
+        <li><a href="_autosummary/ism3d.tests.test_rng_performance.html#module-ism3d.tests.test_rng_performance">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.utils
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.utils">module</a>, <a href="_autosummary/ism3d.utils.html#module-ism3d.utils">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper">module</a>, <a href="_autosummary/ism3d.uvhelper.html#module-ism3d.uvhelper">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.cli
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.cli">module</a>, <a href="_autosummary/ism3d.uvhelper.cli.html#module-ism3d.uvhelper.cli">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.ft
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.ft">module</a>, <a href="_autosummary/ism3d.uvhelper.ft.html#module-ism3d.uvhelper.ft">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.imager
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.imager">module</a>, <a href="_autosummary/ism3d.uvhelper.imager.html#module-ism3d.uvhelper.imager">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.logger
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.logger">module</a>, <a href="_autosummary/ism3d.uvhelper.logger.html#module-ism3d.uvhelper.logger">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.plts
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.plts">module</a>, <a href="_autosummary/ism3d.uvhelper.plts.html#module-ism3d.uvhelper.plts">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.uvhelper.proc
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.proc">module</a>, <a href="_autosummary/ism3d.uvhelper.proc.html#module-ism3d.uvhelper.proc">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.vis_utils
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.vis_utils">module</a>, <a href="_autosummary/ism3d.vis_utils.html#module-ism3d.vis_utils">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.stats.laplace_gen">laplace_gen (class in gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.laplace_gen">laplace_gen (class in ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.log_likelihood">log_likelihood() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.log_likelihood">log_likelihood() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.log_likelihood.html#ism3d.evaluate.log_likelihood">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.log_prior">log_prior() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.log_prior">log_prior() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.log_prior.html#ism3d.evaluate.log_prior">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.log_probability">log_probability() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.log_probability">log_probability() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.log_probability.html#ism3d.evaluate.log_probability">[1]</a>
 </li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.logcdf">logcdf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.logcdf">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.logcdf">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.logcdf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.logcdf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.logger">logger (in module ism3d.model)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.logger.logger_config">logger_config() (in module ism3d.logger)</a>
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.logger.logger_config">(in module ism3d.uvhelper.logger)</a>, <a href="_autosummary/ism3d.uvhelper.logger.logger_config.html#ism3d.uvhelper.logger.logger_config">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.model.logger">logger (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.logger.logger_status">logger_status() (in module ism3d.logger)</a>
+
+      <ul>
+        <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.logger.logger_status">(in module ism3d.uvhelper.logger)</a>, <a href="_autosummary/ism3d.uvhelper.logger.logger_status.html#ism3d.uvhelper.logger.logger_status">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.logger.logger_config">logger_config() (in module gmake.logger)</a>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.lognsigma_lookup">lognsigma_lookup() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.lognsigma_lookup.html#ism3d.discretize.lognsigma_lookup">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.logger.logger_status">logger_status() (in module gmake.logger)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.logpdf">logpdf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.logpdf">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.lognsigma_lookup">lognsigma_lookup() (in module gmake.discretize)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.logpdf">(ism3d.stats.norm2d_gen method)</a>
 </li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.logpdf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.logpdf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.logsf">logsf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.logsf">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.logsf">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.logsf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.logsf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.cli.main">main() (in module gmake.cli)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.cli_new.main">main() (in module ism3d.cli_new)</a>, <a href="_autosummary/ism3d.cli_new.main.html#ism3d.cli_new.main">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.make_slice">make_slice() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ft.make_psf">make_psf() (in module ism3d.uvhelper.ft)</a>, <a href="_autosummary/ism3d.uvhelper.ft.make_psf.html#ism3d.uvhelper.ft.make_psf">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.makekernel">makekernel() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.make_slice">make_slice() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.make_slice.html#ism3d.utils.make_slice">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.makepb">makepb() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.makekernel">makekernel() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.makekernel.html#ism3d.model.makekernel">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.makepsf">makepsf() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.makepb">makepb() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.makepb.html#ism3d.model.makepb">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.model_realize">model_realize() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.makepsf">makepsf() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.makepsf.html#ism3d.model.makepsf">[1]</a>
 </li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.matrix_size.html#ism3d.tests.galario_utils.matrix_size">matrix_size() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.mean">mean() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.mean">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.mean">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.mean">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.mean">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.median">median() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.median">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.median">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.median">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.median">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.model_eval">model_eval() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.model_eval.html#ism3d.evaluate.model_eval">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.model_realize">model_realize() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.model_realize.html#ism3d.model.model_realize">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.model_render">model_render() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.model_render.html#ism3d.model.model_render">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.model_setup">model_setup() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.model_setup.html#ism3d.model.model_setup">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.dynamics.model_vcirc">model_vcirc() (in module ism3d.dynamics)</a>, <a href="_autosummary/ism3d.dynamics.model_vcirc.html#ism3d.dynamics.model_vcirc">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.dynamics.model_vcirc_plot">model_vcirc_plot() (in module ism3d.dynamics)</a>, <a href="_autosummary/ism3d.dynamics.model_vcirc_plot.html#ism3d.dynamics.model_vcirc_plot">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.dynamics.model_vrot">model_vrot() (in module ism3d.dynamics)</a>, <a href="_autosummary/ism3d.dynamics.model_vrot.html#ism3d.dynamics.model_vrot">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.dynamics.model_vrot_plot">model_vrot_plot() (in module ism3d.dynamics)</a>, <a href="_autosummary/ism3d.dynamics.model_vrot_plot.html#ism3d.dynamics.model_vrot_plot">[1]</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d">ism3d</a>, <a href="_autosummary/ism3d.html#module-ism3d">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.analyze">ism3d.analyze</a>, <a href="_autosummary/ism3d.analyze.html#module-ism3d.analyze">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.cli_new">ism3d.cli_new</a>, <a href="_autosummary/ism3d.cli_new.html#module-ism3d.cli_new">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.discretize">ism3d.discretize</a>, <a href="_autosummary/ism3d.discretize.html#module-ism3d.discretize">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.dynamics">ism3d.dynamics</a>, <a href="_autosummary/ism3d.dynamics.html#module-ism3d.dynamics">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.evaluate">ism3d.evaluate</a>, <a href="_autosummary/ism3d.evaluate.html#module-ism3d.evaluate">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.io">ism3d.io</a>, <a href="_autosummary/ism3d.io.html#module-ism3d.io">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.ism3d">ism3d.ism3d</a>, <a href="_autosummary/ism3d.ism3d.html#module-ism3d.ism3d">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.logger">ism3d.logger</a>, <a href="_autosummary/ism3d.logger.html#module-ism3d.logger">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.meta">ism3d.meta</a>, <a href="_autosummary/ism3d.meta.html#module-ism3d.meta">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.model">ism3d.model</a>, <a href="_autosummary/ism3d.model.html#module-ism3d.model">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.opt">ism3d.opt</a>, <a href="_autosummary/ism3d.opt.html#module-ism3d.opt">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.plts">ism3d.plts</a>, <a href="_autosummary/ism3d.plts.html#module-ism3d.plts">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.stats">ism3d.stats</a>, <a href="_autosummary/ism3d.stats.html#module-ism3d.stats">[1]</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.html#module-ism3d.tests">ism3d.tests</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.galario_utils.html#module-ism3d.tests.galario_utils">ism3d.tests.galario_utils</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.plt_compare.html#module-ism3d.tests.plt_compare">ism3d.tests.plt_compare</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.plt_multisource.html#module-ism3d.tests.plt_multisource">ism3d.tests.plt_multisource</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_eval.html#module-ism3d.tests.test_eval">ism3d.tests.test_eval</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_fft.html#module-ism3d.tests.test_fft">ism3d.tests.test_fft</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_fft2.html#module-ism3d.tests.test_fft2">ism3d.tests.test_fft2</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_globals.html#module-ism3d.tests.test_globals">ism3d.tests.test_globals</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_import.html#module-ism3d.tests.test_import">ism3d.tests.test_import</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_inpfile_parser.html#module-ism3d.tests.test_inpfile_parser">ism3d.tests.test_inpfile_parser</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_input_parser.html#module-ism3d.tests.test_input_parser">ism3d.tests.test_input_parser</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_makepsf.html#module-ism3d.tests.test_makepsf">ism3d.tests.test_makepsf</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_mkl.html#module-ism3d.tests.test_mkl">ism3d.tests.test_mkl</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_mkl_bug.html#module-ism3d.tests.test_mkl_bug">ism3d.tests.test_mkl_bug</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_print.html#module-ism3d.tests.test_print">ism3d.tests.test_print</a>
+</li>
+        <li><a href="_autosummary/ism3d.tests.test_rng_performance.html#module-ism3d.tests.test_rng_performance">ism3d.tests.test_rng_performance</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.utils">ism3d.utils</a>, <a href="_autosummary/ism3d.utils.html#module-ism3d.utils">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper">ism3d.uvhelper</a>, <a href="_autosummary/ism3d.uvhelper.html#module-ism3d.uvhelper">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.cli">ism3d.uvhelper.cli</a>, <a href="_autosummary/ism3d.uvhelper.cli.html#module-ism3d.uvhelper.cli">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.ft">ism3d.uvhelper.ft</a>, <a href="_autosummary/ism3d.uvhelper.ft.html#module-ism3d.uvhelper.ft">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.imager">ism3d.uvhelper.imager</a>, <a href="_autosummary/ism3d.uvhelper.imager.html#module-ism3d.uvhelper.imager">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.logger">ism3d.uvhelper.logger</a>, <a href="_autosummary/ism3d.uvhelper.logger.html#module-ism3d.uvhelper.logger">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.plts">ism3d.uvhelper.plts</a>, <a href="_autosummary/ism3d.uvhelper.plts.html#module-ism3d.uvhelper.plts">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.uvhelper.html#module-ism3d.uvhelper.proc">ism3d.uvhelper.proc</a>, <a href="_autosummary/ism3d.uvhelper.proc.html#module-ism3d.uvhelper.proc">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.vis_utils">ism3d.vis_utils</a>, <a href="_autosummary/ism3d.vis_utils.html#module-ism3d.vis_utils">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.discretize.model_render">model_render() (in module gmake.discretize)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.moment">moment() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.moment">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.model.model_setup">model_setup() (in module gmake.model)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.moment">(ism3d.stats.norm2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.dynamics.model_vcirc">model_vcirc() (in module gmake.dynamics)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.moment">(ism3d.stats.sechsq_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.dynamics.model_vcirc_plot">model_vcirc_plot() (in module gmake.dynamics)</a>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.moment">(ism3d.stats.sersic2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.dynamics.model_vrot">model_vrot() (in module gmake.dynamics)</a>
-</li>
-      <li><a href="gmake.html#gmake.dynamics.model_vrot_plot">model_vrot_plot() (in module gmake.dynamics)</a>
-</li>
-      <li><a href="gmake.html#gmake.utils.moments">moments() (in module gmake.utils)</a>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.moments">moments() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.moments.html#ism3d.utils.moments">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -494,11 +1121,23 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.stats.norm2d_gen">norm2d_gen (class in gmake.stats)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.nnlf">nnlf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.nnlf">(ism3d.stats.laplace_gen method)</a>
 </li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.nnlf">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.nnlf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.nnlf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.io.npy2dct">npy2dct() (in module gmake.io)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.norm2d_gen">norm2d_gen (class in ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.npy2dct">npy2dct() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.npy2dct.html#ism3d.io.npy2dct">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -506,17 +1145,17 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.obj_defunit">obj_defunit() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.obj_defunit">obj_defunit() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.obj_defunit.html#ism3d.utils.obj_defunit">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.one_beam">one_beam() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.one_beam">one_beam() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.one_beam.html#ism3d.utils.one_beam">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.analyze.opt_analyze">opt_analyze() (in module gmake.analyze)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.analyze.opt_analyze">opt_analyze() (in module ism3d.analyze)</a>, <a href="_autosummary/ism3d.analyze.opt_analyze.html#ism3d.analyze.opt_analyze">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.opt.opt_iterate">opt_iterate() (in module gmake.opt)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.opt_iterate">opt_iterate() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.opt_iterate.html#ism3d.opt.opt_iterate">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.opt.opt_setup">opt_setup() (in module gmake.opt)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.opt.opt_setup">opt_setup() (in module ism3d.opt)</a>, <a href="_autosummary/ism3d.opt.opt_setup.html#ism3d.opt.opt_setup">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -524,41 +1163,81 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.paste_array">paste_array() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.meta.pars_interp.html#ism3d.meta.pars_interp">pars_interp() (in module ism3d.meta)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.paste_slice">paste_slice() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.paste_array">paste_array() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.paste_array.html#ism3d.utils.paste_array">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.pdf2rv">pdf2rv() (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.paste_slice">paste_slice() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.paste_slice.html#ism3d.utils.paste_slice">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.pdf2rv_nd">pdf2rv_nd() (in module gmake.stats)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.pdf">pdf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.pdf">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.pickplane">pickplane() (in module gmake.discretize)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.pdf">(ism3d.stats.norm2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.pix2sky">pix2sky() (in module gmake.discretize)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.pdf">(ism3d.stats.sechsq_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_makeslice">plt_makeslice() (in module gmake.plts)</a>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.pdf">(ism3d.stats.sersic2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_mom0xy">plt_mom0xy() (in module gmake.plts)</a>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.pdf2rv">pdf2rv() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.pdf2rv.html#ism3d.stats.pdf2rv">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.pdf2rv_nd">pdf2rv_nd() (in module ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.pdf2rv_nd.html#ism3d.stats.pdf2rv_nd">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.pickplane">pickplane() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.pickplane.html#ism3d.discretize.pickplane">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.pix2sky">pix2sky() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.pix2sky.html#ism3d.discretize.pix2sky">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.plotuv_freqtime_amp">plotuv_freqtime_amp() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.plotuv_freqtime_amp.html#ism3d.uvhelper.proc.plotuv_freqtime_amp">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_makeslice">plt_makeslice() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_makeslice.html#ism3d.plts.plt_makeslice">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_mom0xy">plt_mom0xy() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_mom0xy.html#ism3d.plts.plt_mom0xy">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.plt_multisource.plt_multisource.html#ism3d.tests.plt_multisource.plt_multisource">plt_multisource() (in module ism3d.tests.plt_multisource)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_radprof">plt_radprof() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_radprof.html#ism3d.plts.plt_radprof">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.plts.plt_radprof">plt_radprof() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_rc">plt_rc() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_rc.html#ism3d.plts.plt_rc">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_rc">plt_rc() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_slice">plt_slice() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_slice.html#ism3d.plts.plt_slice">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_slice">plt_slice() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_spec1d">plt_spec1d() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_spec1d.html#ism3d.plts.plt_spec1d">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_spec1d">plt_spec1d() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.plts.plt_yt3d">plt_yt3d() (in module ism3d.plts)</a>, <a href="_autosummary/ism3d.plts.plt_yt3d.html#ism3d.plts.plt_yt3d">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.plts.plt_yt3d">plt_yt3d() (in module gmake.plts)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.potential_fromobj">potential_fromobj() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.potential_fromobj.html#ism3d.model.potential_fromobj">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.potential_fromobj">potential_fromobj() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.pots_to_vcirc">pots_to_vcirc() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.pots_to_vcirc.html#ism3d.model.pots_to_vcirc">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.pots_to_vcirc">pots_to_vcirc() (in module gmake.model)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.ppf">ppf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.ppf">(ism3d.stats.laplace_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.pprint">pprint() (in module gmake.utils)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.ppf">(ism3d.stats.norm2d_gen method)</a>
 </li>
-      <li><a href="gmake.html#gmake.cli.proc_inpfile">proc_inpfile() (in module gmake.cli)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.ppf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.ppf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.pprint">pprint() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.pprint.html#ism3d.utils.pprint">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_chi2Image.html#ism3d.tests.galario_utils.py_chi2Image">py_chi2Image() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_chi2Profile.html#ism3d.tests.galario_utils.py_chi2Profile">py_chi2Profile() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_sampleImage.html#ism3d.tests.galario_utils.py_sampleImage">py_sampleImage() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_sampleImage2.html#ism3d.tests.galario_utils.py_sampleImage2">py_sampleImage2() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_sampleImage3.html#ism3d.tests.galario_utils.py_sampleImage3">py_sampleImage3() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.py_sampleProfile.html#ism3d.tests.galario_utils.py_sampleProfile">py_sampleProfile() (in module ism3d.tests.galario_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -566,47 +1245,153 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.io.read_data">read_data() (in module gmake.io)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.radial_profile.html#ism3d.tests.galario_utils.radial_profile">radial_profile() (in module ism3d.tests.galario_utils)</a>
 </li>
-      <li><a href="gmake.html#gmake.meta.read_inp">read_inp() (in module gmake.meta)</a>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.random_state">random_state() (ism3d.stats.expon2d_gen property)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.random_state">(ism3d.stats.laplace_gen property)</a>
 </li>
-      <li><a href="gmake.html#gmake.vis_utils.read_ms">read_ms() (in module gmake.vis_utils)</a>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.random_state">(ism3d.stats.norm2d_gen property)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.read_par">read_par() (in module gmake.utils)</a>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.random_state">(ism3d.stats.sechsq_gen property)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.random_state">(ism3d.stats.sersic2d_gen property)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.rawSelect">rawSelect() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.rawSelect.html#ism3d.uvhelper.proc.rawSelect">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.io.read_data">read_data() (in module ism3d.io)</a>, <a href="_autosummary/ism3d.io.read_data.html#ism3d.io.read_data">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.meta.read_inp">read_inp() (in module ism3d.meta)</a>, <a href="_autosummary/ism3d.meta.read_inp.html#ism3d.meta.read_inp">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.vis_utils.read_ms">read_ms() (in module ism3d.vis_utils)</a>, <a href="_autosummary/ism3d.vis_utils.read_ms.html#ism3d.vis_utils.read_ms">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.read_par">read_par() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.read_par.html#ism3d.utils.read_par">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.read_range">read_range() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.read_range.html#ism3d.utils.read_range">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.read_range">read_range() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.tests.test_fft.reference_image.html#ism3d.tests.test_fft.reference_image">reference_image (in module ism3d.tests.test_fft)</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.render_component">render_component() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.render_component">render_component() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.render_component.html#ism3d.discretize.render_component">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.repr_parameter">repr_parameter() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.repr_parameter">repr_parameter() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.repr_parameter.html#ism3d.utils.repr_parameter">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.rng_seeded">rng_seeded() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.rmColumns">rmColumns() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.rmColumns.html#ism3d.uvhelper.proc.rmColumns">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.rotate_xy">rotate_xy() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.rmPointing">rmPointing() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.rmPointing.html#ism3d.uvhelper.proc.rmPointing">[1]</a>
 </li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.rng_seeded">rng_seeded() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.rng_seeded.html#ism3d.utils.rng_seeded">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.rotate_xy">rotate_xy() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.rotate_xy.html#ism3d.utils.rotate_xy">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.rvs">rvs() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.rvs">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.rvs">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.rvs">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.rvs">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.sample_grid">sample_grid() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.sample_grid">sample_grid() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.sample_grid.html#ism3d.utils.sample_grid">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.sample_prep">sample_prep() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.sample_prep">sample_prep() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.sample_prep.html#ism3d.discretize.sample_prep">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.sech">sech (in module gmake.stats)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.sech">sech (in module ism3d.stats)</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.sechsq_gen">sechsq_gen (class in ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.stats.sersic2d_gen">sersic2d_gen (class in ism3d.stats)</a>, <a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.set_threads">set_threads() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.set_threads.html#ism3d.utils.set_threads">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.setLogfile">setLogfile() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.setLogfile.html#ism3d.uvhelper.proc.setLogfile">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.sf">sf() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.sf">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.sf">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.sf">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.sf">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.sort_on_runtime">sort_on_runtime() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.sort_on_runtime.html#ism3d.utils.sort_on_runtime">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.stats">stats() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.stats">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.stats">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.stats">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.stats">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.std">std() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.std">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.std">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.std">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.std">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.support">support() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.support">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.support">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.support">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.support">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.sweep_ref.html#ism3d.tests.galario_utils.sweep_ref">sweep_ref() (in module ism3d.tests.galario_utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/ism3d.tests.test_makepsf.test_makepsf.html#ism3d.tests.test_makepsf.test_makepsf">test_makepsf() (in module ism3d.tests.test_makepsf)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.test_mkl_bug.test_mkl.html#ism3d.tests.test_mkl_bug.test_mkl">test_mkl() (in module ism3d.tests.test_mkl_bug)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.test_mkl.test_mkl_fft.html#ism3d.tests.test_mkl.test_mkl_fft">test_mkl_fft() (in module ism3d.tests.test_mkl)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.stats.sechsq_gen">sechsq_gen (class in gmake.stats)</a>
+      <li><a href="_autosummary/ism3d.tests.test_mkl.test_mkl_random.html#ism3d.tests.test_mkl.test_mkl_random">test_mkl_random() (in module ism3d.tests.test_mkl)</a>
 </li>
-      <li><a href="gmake.html#gmake.stats.sersic2d_gen">sersic2d_gen (class in gmake.stats)</a>
+      <li><a href="_autosummary/ism3d.tests.test_mkl.test_mkl_random2.html#ism3d.tests.test_mkl.test_mkl_random2">test_mkl_random2() (in module ism3d.tests.test_mkl)</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.set_threads">set_threads() (in module gmake.utils)</a>
-</li>
-      <li><a href="gmake.html#gmake.utils.sort_on_runtime">sort_on_runtime() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.tests.plt_compare.test_predict_ms_plot.html#ism3d.tests.plt_compare.test_predict_ms_plot">test_predict_ms_plot() (in module ism3d.tests.plt_compare)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -614,39 +1399,65 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.unit_shortname">unit_shortname() (in module gmake.utils)</a>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.unique_part.html#ism3d.tests.galario_utils.unique_part">unique_part() (in module ism3d.tests.galario_utils)</a>
 </li>
-      <li><a href="gmake.html#gmake.evaluate.uv_chisq">uv_chisq() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.unit_shortname">unit_shortname() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.unit_shortname.html#ism3d.utils.unit_shortname">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.uv_render">uv_render() (in module gmake.discretize)</a>
+      <li><a href="_autosummary/ism3d.uvhelper.logger.CustomFormatter.html#ism3d.uvhelper.logger.CustomFormatter.usesTime">usesTime() (ism3d.uvhelper.logger.CustomFormatter method)</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.uv_sample">uv_sample() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.uv_chisq">uv_chisq() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.uv_chisq.html#ism3d.evaluate.uv_chisq">[1]</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.uv_idx.html#ism3d.tests.galario_utils.uv_idx">uv_idx() (in module ism3d.tests.galario_utils)</a>
+</li>
+      <li><a href="_autosummary/ism3d.tests.galario_utils.uv_idx_r2c.html#ism3d.tests.galario_utils.uv_idx_r2c">uv_idx_r2c() (in module ism3d.tests.galario_utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.discretize.uv_sample_direct">uv_sample_direct() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_render">uv_render() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_render.html#ism3d.discretize.uv_render">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.uv_sample_interp2d">uv_sample_interp2d() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_sample">uv_sample() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_sample.html#ism3d.discretize.uv_sample">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.uv_sample_nearest">uv_sample_nearest() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_sample_direct">uv_sample_direct() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_sample_direct.html#ism3d.discretize.uv_sample_direct">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.uv_sample_nufft">uv_sample_nufft() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_sample_interp2d">uv_sample_interp2d() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_sample_interp2d.html#ism3d.discretize.uv_sample_interp2d">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.model.uv_to_header">uv_to_header() (in module gmake.model)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_sample_nearest">uv_sample_nearest() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_sample_nearest.html#ism3d.discretize.uv_sample_nearest">[1]</a>
 </li>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.uv_sample_nufft">uv_sample_nufft() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.uv_sample_nufft.html#ism3d.discretize.uv_sample_nufft">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.model.uv_to_header">uv_to_header() (in module ism3d.model)</a>, <a href="_autosummary/ism3d.model.uv_to_header.html#ism3d.model.uv_to_header">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/ism3d.stats.expon2d_gen.html#ism3d.stats.expon2d_gen.var">var() (ism3d.stats.expon2d_gen method)</a>
+
+      <ul>
+        <li><a href="_autosummary/ism3d.stats.laplace_gen.html#ism3d.stats.laplace_gen.var">(ism3d.stats.laplace_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.norm2d_gen.html#ism3d.stats.norm2d_gen.var">(ism3d.stats.norm2d_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sechsq_gen.html#ism3d.stats.sechsq_gen.var">(ism3d.stats.sechsq_gen method)</a>
+</li>
+        <li><a href="_autosummary/ism3d.stats.sersic2d_gen.html#ism3d.stats.sersic2d_gen.var">(ism3d.stats.sersic2d_gen method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.utils.write_inp">write_inp() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.write_inp">write_inp() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.write_inp.html#ism3d.utils.write_inp">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.vis_utils.write_ms">write_ms() (in module gmake.vis_utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.vis_utils.write_ms">write_ms() (in module ism3d.vis_utils)</a>, <a href="_autosummary/ism3d.vis_utils.write_ms.html#ism3d.vis_utils.write_ms">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.utils.write_par">write_par() (in module gmake.utils)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.utils.write_par">write_par() (in module ism3d.utils)</a>, <a href="_autosummary/ism3d.utils.write_par.html#ism3d.utils.write_par">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -654,13 +1465,15 @@
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.evaluate.xy_chisq">xy_chisq() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.xclean">xclean() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.xclean.html#ism3d.uvhelper.imager.xclean">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.xy_chisq">xy_chisq() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.xy_chisq.html#ism3d.evaluate.xy_chisq">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gmake.html#gmake.evaluate.xy_chisq0">xy_chisq0() (in module gmake.evaluate)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.evaluate.xy_chisq0">xy_chisq0() (in module ism3d.evaluate)</a>, <a href="_autosummary/ism3d.evaluate.xy_chisq0.html#ism3d.evaluate.xy_chisq0">[1]</a>
 </li>
-      <li><a href="gmake.html#gmake.discretize.xy_render">xy_render() (in module gmake.discretize)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.discretize.xy_render">xy_render() (in module ism3d.discretize)</a>, <a href="_autosummary/ism3d.discretize.xy_render.html#ism3d.discretize.xy_render">[1]</a>
 </li>
   </ul></td>
 </tr></table>

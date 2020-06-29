@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.model.makekernel &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ism3d.model.makepb" href="ism3d.model.makepb.html" />
+    <link rel="prev" title="ism3d.model.get_image_size" href="ism3d.model.get_image_size.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ism3d.analyze.html">ism3d.analyze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.cli_new.html">ism3d.cli_new</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.discretize.html">ism3d.discretize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.dynamics.html">ism3d.dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.evaluate.html">ism3d.evaluate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.io.html">ism3d.io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.meta.html">ism3d.meta</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="ism3d.model.html">ism3d.model</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.calc_vcirc.html">ism3d.model.calc_vcirc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.cloudlet_moms.html">ism3d.model.cloudlet_moms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.clouds_discretize_2d.html">ism3d.model.clouds_discretize_2d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.clouds_fromobj.html">ism3d.model.clouds_fromobj</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.clouds_kin.html">ism3d.model.clouds_kin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.clouds_morph.html">ism3d.model.clouds_morph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.clouds_tosky.html">ism3d.model.clouds_tosky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.cr_tanh.html">ism3d.model.cr_tanh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.get_image_size.html">ism3d.model.get_image_size</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.model.makekernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.makepb.html">ism3d.model.makepb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.makepsf.html">ism3d.model.makepsf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.model_realize.html">ism3d.model.model_realize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.model_render.html">ism3d.model.model_render</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.model_setup.html">ism3d.model.model_setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.potential_fromobj.html">ism3d.model.potential_fromobj</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.pots_to_vcirc.html">ism3d.model.pots_to_vcirc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.model.uv_to_header.html">ism3d.model.uv_to_header</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.opt.html">ism3d.opt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.plts.html">ism3d.plts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.stats.html">ism3d.stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.tests.html">ism3d.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.vis_utils.html">ism3d.vis_utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ism3d.html">ism3d</a> &raquo;</li>
+        
+          <li><a href="ism3d.model.html">ism3d.model</a> &raquo;</li>
+        
+      <li>ism3d.model.makekernel</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ism3d-model-makekernel">
+<h1>ism3d.model.makekernel<a class="headerlink" href="#ism3d-model-makekernel" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ism3d.model.makekernel">
+<code class="sig-prename descclassname">ism3d.model.</code><code class="sig-name descname">makekernel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xpixels</span></em>, <em class="sig-param"><span class="n">ypixels</span></em>, <em class="sig-param"><span class="n">beam</span></em>, <em class="sig-param"><span class="n">pa</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">cent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'center'</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/model.html#makekernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.model.makekernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>mode: ‘center’,’linear_interp’,’oversample’,’integrate’</p>
+<p>beam=[bmaj,bmin] FWHM not (bmin,bmaj)
+pa=east from north (ccw)deli</p>
+<p>in pixel-size units</p>
+<dl>
+<dt>by default: the resulted kernel is always centered around a single pixel, and the application of</dt><dd><p>the kernel will lead to zero offset,</p>
+</dd>
+<dt>make a “centered” Gaussian PSF kernel:</dt><dd><dl class="simple">
+<dt>e.g. npixel=7, centered at px=3</dt><dd><p>npixel=8, centered at px=4
+so the single peak is always at a pixel center (not physical center)
+and the function is symmetric around that pixel
+the purpose of doing this is to avoid offset when the specified kernel size is
+even number and you build a function peaked at a pixel edge.</p>
+</dd>
+</dl>
+<p>is x ks (peak pixel index)
+10 x 7(3) okay
+10 x 8(4) okay
+10 x 8(3.5) offset
+for convolve (non-fft), odd ks is required (the center pixel is undoubtely index=3)</p>
+<blockquote>
+<div><p>even ks is not allowed</p>
+</div></blockquote>
+<dl class="simple">
+<dt>for convolve_fft, you need to use cent=ks/2:</dt><dd><p>technically it’s not the pixel index of image center
+but the center pixel is “considers”as index=4</p>
+</dd>
+<dt>the rule of thumb-up:</dt><dd><p>cent=floor(ks/2.) or int(ks/2) #  int() try to truncate towards zero.</p>
+</dd>
+</dl>
+<p>note:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Python “rounding half to even” rule vs. traditional IDL:</dt><dd><p><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html">https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html</a>
+<a class="reference external" href="https://realpython.com/python-rounding/">https://realpython.com/python-rounding/</a>
+Python&gt;round(1.5)    # 2
+Python&gt;round(0.5)    # 0
+IDL&gt;round(1.5)       # 2
+IDL&gt;round(0.5)       # 1</p>
+</dd>
+<dt>“forget about how the np.array is stored, just use the array as it is IDL;</dt><dd><p>when it comes down to shape/index, reverse the sequence”</p>
+</dd>
+</dl>
+<p>About Undersampling Images:
+<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html">http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html</a></p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ism3d.model.makepb.html" class="btn btn-neutral float-right" title="ism3d.model.makepb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ism3d.model.get_image_size.html" class="btn btn-neutral float-left" title="ism3d.model.get_image_size" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

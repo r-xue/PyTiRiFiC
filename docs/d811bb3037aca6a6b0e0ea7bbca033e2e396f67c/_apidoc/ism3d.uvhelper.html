@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.uvhelper package &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ism3d.uvhelper package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ism3d-uvhelper-package">
+<h1>ism3d.uvhelper package<a class="headerlink" href="#ism3d-uvhelper-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ism3d.uvhelper.cli">
+<span id="ism3d-uvhelper-cli-module"></span><h2>ism3d.uvhelper.cli module<a class="headerlink" href="#module-ism3d.uvhelper.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.uvhelper.cli.casatools_repack">
+<code class="sig-prename descclassname">ism3d.uvhelper.cli.</code><code class="sig-name descname">casatools_repack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/cli.html#casatools_repack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.cli.casatools_repack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Usage:</p>
+<blockquote>
+<div><p>casatools_repack casatools-6.1.0.79-cp36-cp36m-macosx_10_15_x86_64.whl cp38
+casatools_repack casatools-6.1.0.79-cp36-cp36m-macosx_10_15_x86_64.whl cp37m
+or
+cli.py casatools-6.1.0.79-cp36-cp36m-macosx_10_15_x86_64.whl cp38</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.uvhelper.ft">
+<span id="ism3d-uvhelper-ft-module"></span><h2>ism3d.uvhelper.ft module<a class="headerlink" href="#module-ism3d.uvhelper.ft" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.uvhelper.ft.invert_ft">
+<code class="sig-prename descclassname">ism3d.uvhelper.ft.</code><code class="sig-name descname">invert_ft</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uu</span></em>, <em class="sig-param"><span class="n">vv</span></em>, <em class="sig-param"><span class="n">wv</span></em>, <em class="sig-param"><span class="n">vis</span></em>, <em class="sig-param"><span class="n">cell</span></em>, <em class="sig-param"><span class="n">imsize</span></em>, <em class="sig-param"><span class="n">wt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bychannel</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/ft.html#invert_ft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.ft.invert_ft" title="Permalink to this definition">¶</a></dt>
+<dd><p>use nufft to create dirty cube from visibility
+uu: in meter (vector, nrecord
+vv: in meter (vector, nrecord)
+wv: in meter (vector, nchannel)
+psize: Quality
+wt:         apply wt when doing invert (essentialy nature weighting)</p>
+<blockquote>
+<div><p>only works when bychannle=true</p>
+</div></blockquote>
+<dl class="simple">
+<dt>bychannel:  False ignore the wavelength changing effect on uvw</dt><dd><p>True: uu/vv will be calculated channel by channel</p>
+</dd>
+</dl>
+<p>output (nx,ny,nz)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.ft.make_psf">
+<code class="sig-prename descclassname">ism3d.uvhelper.ft.</code><code class="sig-name descname">make_psf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uu</span></em>, <em class="sig-param"><span class="n">vv</span></em>, <em class="sig-param"><span class="n">wv</span></em>, <em class="sig-param"><span class="n">cell</span></em>, <em class="sig-param"><span class="n">imsize</span></em>, <em class="sig-param"><span class="n">wt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bychannel</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/ft.html#make_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.ft.make_psf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.uvhelper.imager">
+<span id="ism3d-uvhelper-imager-module"></span><h2>ism3d.uvhelper.imager module<a class="headerlink" href="#module-ism3d.uvhelper.imager" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.uvhelper.imager.copyimages">
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">copyimages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagename</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#copyimages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.copyimages" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy a imaging product set
+if imagename==outname, it will do nothing</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.imager.exportimages">
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">exportimages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagenames</span></em>, <em class="sig-param"><span class="n">velocity</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">optical</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stokeslast</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dropstokes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dropmask</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">droptable</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">compress</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#exportimages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.exportimages" title="Permalink to this definition">¶</a></dt>
+<dd><p>a wrap function to export tclean products into FITS</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.imager.ext_list">
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">ext_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#ext_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.ext_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>tclean output file extenstion list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.imager.invert">
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">invert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">imagename</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">antenna</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'briggs'</span></em>, <em class="sig-param"><span class="n">robust</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">npixels</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cell</span><span class="o">=</span><span class="default_value">0.04</span></em>, <em class="sig-param"><span class="n">imsize</span><span class="o">=</span><span class="default_value">[128, 128]</span></em>, <em class="sig-param"><span class="n">phasecenter</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">specmode</span><span class="o">=</span><span class="default_value">'cube'</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nchan</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">perchanweightdensity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">restoringbeam</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">onlydm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">pbmask</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pblimit</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a compact dirty image from a MS dataset as a quick imaging snapshot;</p>
+<p>Note about the default setting:</p>
+<ul class="simple">
+<li><p>restoringbeam=’’ to preserve the original dirty beam shape:
+if “common” then additional undesired convolution will happen</p></li>
+<li><p>Another faster way to do this would be using the toolkits:
+imager.open(‘3C273XC1.MS’)
+imager.defineimage(nx=256, ny=256, cellx=’0.7arcsec’, celly=’0.7arcsec’)
+imager.image(type=’corrected’, image=’3C273XC1.dirty’)
+imager.close()
+But it may be difficult to write a function to cover all setting already in casatasks.tclean()</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.imager.xclean">
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">xclean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">imagename</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">spw</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">imsize</span><span class="o">=</span><span class="default_value">[128, 128]</span></em>, <em class="sig-param"><span class="n">cell</span><span class="o">=</span><span class="default_value">'0.04arcsec'</span></em>, <em class="sig-param"><span class="n">phasecenter</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">pblimit</span><span class="o">=</span><span class="default_value">- 0.1</span></em>, <em class="sig-param"><span class="n">stokes</span><span class="o">=</span><span class="default_value">'I'</span></em>, <em class="sig-param"><span class="n">outframe</span><span class="o">=</span><span class="default_value">'LSRK'</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">nchan</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">'linear'</span></em>, <em class="sig-param"><span class="n">perchanweightdensity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">deconvolver</span><span class="o">=</span><span class="default_value">'mtmfs'</span></em>, <em class="sig-param"><span class="n">specmode</span><span class="o">=</span><span class="default_value">'mfs'</span></em>, <em class="sig-param"><span class="n">scales</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'briggs'</span></em>, <em class="sig-param"><span class="n">robust</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">'0.0Jy'</span></em>, <em class="sig-param"><span class="n">niter</span><span class="o">=</span><span class="default_value">10000</span></em>, <em class="sig-param"><span class="n">nsigma</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">restoringbeam</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">usemask</span><span class="o">=</span><span class="default_value">'pb'</span></em>, <em class="sig-param"><span class="n">pbmask</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">uselast</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">runexport</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#xclean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.xclean" title="Permalink to this definition">¶</a></dt>
+<dd><p>A imaging/clean workflow function which wrap around tclean/exports,
+helping you make customized better imaging products</p>
+<dl class="simple">
+<dt>note:</dt><dd><ul class="simple">
+<li><p>doesn’t require a pipeline CASA version since no calibration is involved</p></li>
+<li><dl class="simple">
+<dt>def. of tt0/tt1:</dt><dd><p><a class="reference external" href="https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu232.html">https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu232.html</a></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>clean vs. tclean:</dt><dd><p><a class="reference external" href="https://casaguides.nrao.edu/index.php/TCLEAN_and_ALMA">https://casaguides.nrao.edu/index.php/TCLEAN_and_ALMA</a></p>
+</dd>
+</dl>
+</li>
+<li><p>reuse:    reuse existing imaging set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.uvhelper.logger">
+<span id="ism3d-uvhelper-logger-module"></span><h2>ism3d.uvhelper.logger module<a class="headerlink" href="#module-ism3d.uvhelper.logger" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="ism3d.uvhelper.logger.CustomFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">ism3d.uvhelper.logger.</code><code class="sig-name descname">CustomFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fmt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">datefmt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="o">=</span><span class="default_value">'%'</span></em>, <em class="sig-param"><span class="n">validate</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/logger.html#CustomFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.logger.CustomFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></p>
+<p>customized logging formatter which can handle mutiple-line msgs</p>
+<dl class="py method">
+<dt id="ism3d.uvhelper.logger.CustomFormatter.format">
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span><span class="p">:</span> <span class="n">logging.LogRecord</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/logger.html#CustomFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.logger.CustomFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the specified record as text.</p>
+<p>The record’s attribute dictionary is used as the operand to a
+string formatting operation which yields the returned string.
+Before formatting the dictionary, a couple of preparatory steps
+are carried out. The message attribute of the record is computed
+using LogRecord.getMessage(). If the formatting string uses the
+time (as determined by a call to usesTime(), formatTime() is
+called to format the event time. If there is exception information,
+it is formatted using formatException() and appended to the message.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.logger.logger_config">
+<code class="sig-prename descclassname">ism3d.uvhelper.logger.</code><code class="sig-name descname">logger_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">logfilelevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/logger.html#logger_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.logger.logger_config" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>set up a customized logger,e.g.,</dt><dd><dl class="simple">
+<dt>&gt;&gt;&gt;gmake.logger_config(logfile=’logs/test_gmake.log’,</dt><dd><p>loglevel=logging.WARNING,
+logfilelevel=logging.INFO)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.logger.logger_status">
+<code class="sig-prename descclassname">ism3d.uvhelper.logger.</code><code class="sig-name descname">logger_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/logger.html#logger_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.logger.logger_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>print out the current status of uvrx logger</p>
+</dd></dl>
+
+</div>
+<div class="section" id="ism3d-uvhelper-obsolete-alma-imager-module">
+<h2>ism3d.uvhelper.obsolete_alma_imager module<a class="headerlink" href="#ism3d-uvhelper-obsolete-alma-imager-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ism3d.uvhelper.plts">
+<span id="ism3d-uvhelper-plts-module"></span><h2>ism3d.uvhelper.plts module<a class="headerlink" href="#module-ism3d.uvhelper.plts" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ism3d.uvhelper.proc">
+<span id="ism3d-uvhelper-proc-module"></span><h2>ism3d.uvhelper.proc module<a class="headerlink" href="#module-ism3d.uvhelper.proc" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.casa_version">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">casa_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#casa_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.casa_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>show the CASA 6 tools/tasks version number</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.checkchflag">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">checkchflag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#checkchflag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.checkchflag" title="Permalink to this definition">¶</a></dt>
+<dd><p>check flag consistancy across channels
+it’s able to handle ms with multiple spw/pol.</p>
+<dl class="simple">
+<dt>note: miriad/invert slop=1,zero could include</dt><dd><p>partionally flagged records into imaging
+We can run xutils.unchflag() and zero-out such data
+to implement a similar treatment:
+<a class="reference external" href="http://www.atnf.csiro.au/computing/software/miriad/userguide/node145.html">http://www.atnf.csiro.au/computing/software/miriad/userguide/node145.html</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.flagbywt">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">flagbywt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">fitspw</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#flagbywt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.flagbywt" title="Permalink to this definition">¶</a></dt>
+<dd><p>doesn’t really work yet (see statwt.py)
+performe the following procedures:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>save current flagging</p></li>
+<li><p>use statwt to recalculate weight</p></li>
+<li><p>flag weightoutlier</p></li>
+</ol>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.flagchan">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">flagchan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#flagchan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.flagchan" title="Permalink to this definition">¶</a></dt>
+<dd><p>flagged the channel if the data from contributing rows are partially flagged
+this is &lt;unchflag&gt; in the CASA 5 xutils</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.flagrow">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">flagrow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#flagrow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.flagrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>flagged the entire row if it’s partially flagged
+use this with cautions and you’re removing potentially large amount of rows</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.getcommonfreqs">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">getcommonfreqs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis_list</span></em>, <em class="sig-param"><span class="n">spw_list</span></em>, <em class="sig-param"><span class="n">edge_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">frame</span><span class="o">=</span><span class="default_value">'LSRK'</span></em>, <em class="sig-param"><span class="n">chanbin</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#getcommonfreqs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.getcommonfreqs" title="Permalink to this definition">¶</a></dt>
+<dd><p>edge_list: for each vis, we exclude some edge channels for evluation as they might be flagged in pipeline
+chanbin: the channel width will be chanbin*max(chanwidth among vis_list)
+output freqgrid will be covered by all vis_list
+fgrid:     freqeuncy grid
+df:        frequency resolution</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.getfreqs">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">getfreqs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span></em>, <em class="sig-param"><span class="n">frame</span><span class="o">=</span><span class="default_value">'LSRK'</span></em>, <em class="sig-param"><span class="n">spwids</span><span class="o">=</span><span class="default_value">[0]</span></em>, <em class="sig-param"><span class="n">edge</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#getfreqs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.getfreqs" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the frequency sampling grid of one SPW in a MS, in a specified frame
+edge is for original grid</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.plotuv_freqtime_amp">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">plotuv_freqtime_amp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">spw</span><span class="o">=</span><span class="default_value">['']</span></em>, <em class="sig-param"><span class="n">xaxis</span><span class="o">=</span><span class="default_value">'freq'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#plotuv_freqtime_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.plotuv_freqtime_amp" title="Permalink to this definition">¶</a></dt>
+<dd><p>vis=’calibrated_target.ms’,spw</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.rawSelect">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">rawSelect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">correlation</span><span class="o">=</span><span class="default_value">'RR,LL'</span></em>, <em class="sig-param"><span class="n">keepflags</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#rawSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.rawSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>get rid of trunk rows to reduce the data size</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.rmColumns">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">rmColumns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span></em>, <em class="sig-param"><span class="n">column</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#rmColumns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.rmColumns" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove columns from MS (only handle one column currently)
+By default, the function will check the available column names without removing any column.
+e.g. column=’WEIGHT_SPECTRUM’</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.rmPointing">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">rmPointing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">outvis</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#rmPointing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.rmPointing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empty the POINTING table</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.uvhelper.proc.setLogfile">
+<code class="sig-prename descclassname">ism3d.uvhelper.proc.</code><code class="sig-name descname">setLogfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">rmlast</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">onconsole</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/proc.html#setLogfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.proc.setLogfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set CASA log file</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.uvhelper">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ism3d.uvhelper" title="Permalink to this headline">¶</a></h2>
+<p>Top-level package for uvrx.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

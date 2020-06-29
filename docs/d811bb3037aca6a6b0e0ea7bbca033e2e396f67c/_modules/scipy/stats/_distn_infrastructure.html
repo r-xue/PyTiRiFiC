@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>scipy.stats._distn_infrastructure &mdash; GMaKE 0.2.dev1 documentation</title>
+  <title>scipy.stats._distn_infrastructure &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -25,6 +25,8 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -33,6 +35,7 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -48,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> GMaKE
+            <a href="../../../index.html" class="icon icon-home"> ism3d
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.2.dev1
+                0.3.dev1
               </div>
             
           
@@ -82,22 +85,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quickstart</span></p>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html#dependencies">Dependencies:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Parameter File</span></p>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html#sections">Sections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html#the-magic-of">The magic of “&#64;”</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html#others">Others</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../inpfile.html#units">Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/casa6.html">CASA6 Installation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Basic Tutorials</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark/demo_invert_ft.html">Invert</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
@@ -113,16 +125,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Background</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../misc.html">History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../misc.html#design-goals">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../misc.html#credit">Credit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../misc.html#see-also">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html">GN20:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules/Functions</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../gmake.html">gmake package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -137,7 +164,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">GMaKE</a>
+          <a href="../../../index.html">ism3d</a>
         
       </nav>
 
@@ -190,16 +217,14 @@
 <span class="c1"># Author:  Travis Oliphant  2002-2011 with contributions from</span>
 <span class="c1">#          SciPy Developers 2004-2011</span>
 <span class="c1">#</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
-
-<span class="kn">from</span> <span class="nn">scipy._lib.six</span> <span class="kn">import</span> <span class="n">string_types</span><span class="p">,</span> <span class="n">exec_</span><span class="p">,</span> <span class="n">PY2</span>
-<span class="kn">from</span> <span class="nn">scipy._lib._util</span> <span class="kn">import</span> <span class="n">getargspec_no_self</span> <span class="k">as</span> <span class="n">_getargspec</span>
+<span class="kn">from</span> <span class="nn">scipy._lib._util</span> <span class="kn">import</span> <span class="n">getfullargspec_no_self</span> <span class="k">as</span> <span class="n">_getfullargspec</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">keyword</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 
 <span class="kn">from</span> <span class="nn">scipy._lib</span> <span class="kn">import</span> <span class="n">doccer</span>
@@ -209,7 +234,7 @@
 
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="p">(</span><span class="n">comb</span><span class="p">,</span> <span class="n">chndtr</span><span class="p">,</span> <span class="n">entr</span><span class="p">,</span> <span class="n">rel_entr</span><span class="p">,</span> <span class="n">xlogy</span><span class="p">,</span> <span class="n">ive</span><span class="p">)</span>
 
-<span class="c1"># for root finding for discrete distribution ppf, and max likelihood estimation</span>
+<span class="c1"># for root finding for continuous distribution ppf, and max likelihood estimation</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
 
 <span class="c1"># for functions of continuous distributions (e.g. moments, entropy, cdf)</span>
@@ -225,12 +250,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">._constants</span> <span class="kn">import</span> <span class="n">_XMAX</span>
-
-<span class="k">if</span> <span class="n">PY2</span><span class="p">:</span>
-    <span class="n">instancemethod</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">instancemethod</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
 
 
 <span class="c1"># These are the docstring parts used for substitution in specific</span>
@@ -297,8 +316,10 @@
 <span class="s2">    (Differential) entropy of the RV.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="n">_doc_fit</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
-<span class="s2">fit(data, </span><span class="si">%(shapes)s</span><span class="s2">, loc=0, scale=1)</span>
+<span class="s2">fit(data)</span>
 <span class="s2">    Parameter estimates for generic data.</span>
+<span class="s2">    See `scipy.stats.rv_continuous.fit &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rv_continuous.fit.html#scipy.stats.rv_continuous.fit&gt;`__ for detailed documentation of the</span>
+<span class="s2">    keyword arguments.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="n">_doc_expect</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">expect(func, args=(</span><span class="si">%(shapes_)s</span><span class="s2">), loc=0, scale=1, lb=None, ub=None, conditional=False, **kwds)</span>
@@ -616,7 +637,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">dist</span><span class="o">.</span><span class="n">_updated_ctor_param</span><span class="p">())</span>
 
         <span class="n">shapes</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -776,19 +796,34 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">rv_generic</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># figure out if _stats signature has &#39;moments&#39; keyword</span>
-        <span class="n">sign</span> <span class="o">=</span> <span class="n">_getargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stats_has_moments</span> <span class="o">=</span> <span class="p">((</span><span class="n">sign</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
-                                   <span class="p">(</span><span class="s1">&#39;moments&#39;</span> <span class="ow">in</span> <span class="n">sign</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">_getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats_has_moments</span> <span class="o">=</span> <span class="p">((</span><span class="n">sig</span><span class="o">.</span><span class="n">varkw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                                   <span class="p">(</span><span class="s1">&#39;moments&#39;</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="ow">or</span>
+                                   <span class="p">(</span><span class="s1">&#39;moments&#39;</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">kwonlyargs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># For historical reasons, `size` was made an attribute that was read</span>
+        <span class="c1"># inside _rvs().  The code is being changed so that &#39;size&#39; is an argument</span>
+        <span class="c1"># to self._rvs(). However some external (non-SciPy) distributions have not</span>
+        <span class="c1"># been updated.  Maintain backwards compatibility by checking if</span>
+        <span class="c1"># the self._rvs() signature has the &#39;size&#39; keyword, or a **kwarg,</span>
+        <span class="c1"># and if not set self._size inside self.rvs() before calling self._rvs().</span>
+        <span class="n">argspec</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rvs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rvs_uses_size_attribute</span> <span class="o">=</span> <span class="p">(</span><span class="n">argspec</span><span class="o">.</span><span class="n">varkw</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+                                         <span class="s1">&#39;size&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">argspec</span><span class="o">.</span><span class="n">args</span> <span class="ow">and</span>
+                                         <span class="s1">&#39;size&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">argspec</span><span class="o">.</span><span class="n">kwonlyargs</span><span class="p">)</span>
+        <span class="c1"># Warn on first use only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rvs_size_warned</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">random_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get or set the RandomState object for generating random variates.</span>
 
-<span class="sd">        This can be either None or an existing RandomState object.</span>
+<span class="sd">        This can be either None, int, a RandomState instance, or a</span>
+<span class="sd">        np.random.Generator instance.</span>
 
 <span class="sd">        If None (or np.random), use the RandomState singleton used by np.random.</span>
-<span class="sd">        If already a RandomState instance, use it.</span>
+<span class="sd">        If already a RandomState or Generator instance, use it.</span>
 <span class="sd">        If an int, use a new RandomState instance seeded with seed.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -825,7 +860,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">:</span>
             <span class="c1"># sanitize the user-supplied shapes</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;shapes must be a string.&#39;</span><span class="p">)</span>
 
             <span class="n">shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -842,7 +877,7 @@
             <span class="c1"># are shapes.</span>
             <span class="n">shapes_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">meths_to_inspect</span><span class="p">:</span>
-                <span class="n">shapes_args</span> <span class="o">=</span> <span class="n">_getargspec</span><span class="p">(</span><span class="n">meth</span><span class="p">)</span>   <span class="c1"># NB: does not contain self</span>
+                <span class="n">shapes_args</span> <span class="o">=</span> <span class="n">_getfullargspec</span><span class="p">(</span><span class="n">meth</span><span class="p">)</span>   <span class="c1"># NB: does not contain self</span>
                 <span class="n">args</span> <span class="o">=</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>       <span class="c1"># peel off &#39;x&#39;, too</span>
 
                 <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
@@ -852,9 +887,12 @@
                     <span class="k">if</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">varargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                             <span class="s1">&#39;*args are not allowed w/out explicit shapes&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">keywords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">varkw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                             <span class="s1">&#39;**kwds are not allowed w/out explicit shapes&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">kwonlyargs</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                            <span class="s1">&#39;kwonly args are not allowed w/out explicit shapes&#39;</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">shapes_args</span><span class="o">.</span><span class="n">defaults</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;defaults are not allowed for shapes&#39;</span><span class="p">)</span>
 
@@ -875,12 +913,10 @@
                    <span class="n">locscale_out</span><span class="o">=</span><span class="n">locscale_out</span><span class="p">,</span>
                    <span class="p">)</span>
         <span class="n">ns</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">exec_</span><span class="p">(</span><span class="n">parse_arg_template</span> <span class="o">%</span> <span class="n">dct</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span>
+        <span class="n">exec</span><span class="p">(</span><span class="n">parse_arg_template</span> <span class="o">%</span> <span class="n">dct</span><span class="p">,</span> <span class="n">ns</span><span class="p">)</span>
         <span class="c1"># NB: attach to the instance, not class</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_parse_args&#39;</span><span class="p">,</span> <span class="s1">&#39;_parse_args_stats&#39;</span><span class="p">,</span> <span class="s1">&#39;_parse_args_rvs&#39;</span><span class="p">]:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
-                    <span class="n">instancemethod</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
-                    <span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="bp">self</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span> <span class="k">if</span> <span class="n">shapes</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;numargs&#39;</span><span class="p">):</span>
@@ -970,9 +1006,8 @@
     <span class="c1"># The primed mu is a widely used notation for the noncentral moment.</span>
     <span class="k">def</span> <span class="nf">_munp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="c1"># Silence floating point warnings from integration.</span>
-        <span class="n">olderr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_moment</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">olderr</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_moment</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vals</span>
 
     <span class="k">def</span> <span class="nf">_argcheck_rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1038,7 +1073,7 @@
                   <span class="k">for</span> <span class="p">(</span><span class="n">bcdim</span><span class="p">,</span> <span class="n">szdim</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bcast_shape</span><span class="p">,</span> <span class="n">size_</span><span class="p">)])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;size does not match the broadcast shape of &quot;</span>
-                             <span class="s2">&quot;the parameters.&quot;</span><span class="p">)</span>
+                             <span class="s2">&quot;the parameters. </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size_</span><span class="p">,</span> <span class="n">bcast_shape</span><span class="p">))</span>
 
         <span class="n">param_bcast</span> <span class="o">=</span> <span class="n">all_bcast</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">loc_bcast</span> <span class="o">=</span> <span class="n">all_bcast</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
@@ -1084,20 +1119,22 @@
 
     <span class="k">def</span> <span class="nf">_support_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_open_support_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1"># This method must handle self._size being a tuple, and it must</span>
-        <span class="c1"># properly broadcast *args and self._size.  self._size might be</span>
+    <span class="k">def</span> <span class="nf">_rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># This method must handle size being a tuple, and it must</span>
+        <span class="c1"># properly broadcast *args and size.  size might be</span>
         <span class="c1"># an empty tuple, which means a scalar random variate is to be</span>
         <span class="c1"># generated.</span>
 
         <span class="c1">## Use basic inverse cdf algorithm for RV generation as default.</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span><span class="o">.</span><span class="n">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppf</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Y</span>
 
@@ -1135,9 +1172,12 @@
 <span class="sd">            Scale parameter (default=1).</span>
 <span class="sd">        size : int or tuple of ints, optional</span>
 <span class="sd">            Defining number of random variates (default is 1).</span>
-<span class="sd">        random_state : None or int or ``np.random.RandomState`` instance, optional</span>
-<span class="sd">            If int or RandomState, use it for drawing the random variates.</span>
-<span class="sd">            If None, rely on ``self.random_state``.</span>
+<span class="sd">        random_state : {None, int, `~np.random.RandomState`, `~np.random.Generator`}, optional</span>
+<span class="sd">            If `seed` is `None` the `~np.random.RandomState` singleton is used.</span>
+<span class="sd">            If `seed` is an int, a new ``RandomState`` instance is used, seeded</span>
+<span class="sd">            with seed.</span>
+<span class="sd">            If `seed` is already a ``RandomState`` or ``Generator`` instance,</span>
+<span class="sd">            then that object is used.</span>
 <span class="sd">            Default is None.</span>
 
 <span class="sd">        Returns</span>
@@ -1159,13 +1199,24 @@
         <span class="c1"># extra gymnastics needed for a custom random_state</span>
         <span class="k">if</span> <span class="n">rndm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">random_state_saved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">rndm</span><span class="p">)</span>
+            <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">rndm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">random_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span>
 
-        <span class="c1"># `size` should just be an argument to _rvs(), but for, um,</span>
-        <span class="c1"># historical reasons, it is made an attribute that is read</span>
-        <span class="c1"># by _rvs().</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rvs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># Maintain backwards compatibility by setting self._size</span>
+        <span class="c1"># for distributions that still need it.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rvs_uses_size_attribute</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rvs_size_warned</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The signature of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rvs</span><span class="si">}</span><span class="s1"> does not contain &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;a &quot;size&quot; keyword.  Such signatures are deprecated.&#39;</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rvs_size_warned</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rvs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rvs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
         <span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">loc</span>
 
@@ -1248,10 +1299,9 @@
                     <span class="n">mu2p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_munp</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">goodargs</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">mu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_munp</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">goodargs</span><span class="p">)</span>
-                    <span class="n">mu2</span> <span class="o">=</span> <span class="n">mu2p</span> <span class="o">-</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">mu</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mu</span><span class="p">):</span>
-                        <span class="c1"># if mean is inf then var is also inf</span>
-                        <span class="n">mu2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+                    <span class="c1"># if mean is inf then var is also inf</span>
+                    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                        <span class="n">mu2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">mu2p</span> <span class="o">-</span> <span class="n">mu</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
                 <span class="n">out0</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="n">place</span><span class="p">(</span><span class="n">out0</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">mu2</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out0</span><span class="p">)</span>
@@ -1605,11 +1655,13 @@
 <span class="sd">        This string is used as the last part of the docstring returned when a</span>
 <span class="sd">        subclass has no docstring of its own. Note: `extradoc` exists for</span>
 <span class="sd">        backwards compatibility, do not use for new subclasses.</span>
-<span class="sd">    seed : None or int or ``numpy.random.RandomState`` instance, optional</span>
-<span class="sd">        This parameter defines the RandomState object to use for drawing</span>
-<span class="sd">        random variates.</span>
-<span class="sd">        If None (or np.random), the global np.random state is used.</span>
-<span class="sd">        If integer, it is used to seed the local RandomState instance.</span>
+<span class="sd">    seed : {None, int, `~np.random.RandomState`, `~np.random.Generator`}, optional</span>
+<span class="sd">        This parameter defines the object to use for drawing random variates.</span>
+<span class="sd">        If `seed` is `None` the `~np.random.RandomState` singleton is used.</span>
+<span class="sd">        If `seed` is an int, a new ``RandomState`` instance is used, seeded</span>
+<span class="sd">        with seed.</span>
+<span class="sd">        If `seed` is already a ``RandomState`` or ``Generator`` instance,</span>
+<span class="sd">        then that object is used.</span>
 <span class="sd">        Default is None.</span>
 
 <span class="sd">    Methods</span>
@@ -1842,26 +1894,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">)</span><span class="o">+</span><span class="n">args</span><span class="p">)</span><span class="o">-</span><span class="n">q</span>
 
     <span class="k">def</span> <span class="nf">_ppf_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="n">left</span> <span class="o">=</span> <span class="n">right</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_a</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
-            <span class="n">left</span> <span class="o">=</span> <span class="n">_a</span>
-        <span class="k">if</span> <span class="n">_b</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
-            <span class="n">right</span> <span class="o">=</span> <span class="n">_b</span>
-
         <span class="n">factor</span> <span class="o">=</span> <span class="mf">10.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">left</span><span class="p">:</span>  <span class="c1"># i.e. self.a = -inf</span>
-            <span class="n">left</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">factor</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="o">-</span><span class="n">factor</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppf_to_solve</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-                <span class="n">right</span> <span class="o">=</span> <span class="n">left</span>
-                <span class="n">left</span> <span class="o">*=</span> <span class="n">factor</span>
-            <span class="c1"># left is now such that cdf(left) &lt; q</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">right</span><span class="p">:</span>  <span class="c1"># i.e. self.b = inf</span>
-            <span class="n">right</span> <span class="o">=</span> <span class="n">factor</span>
+                <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">left</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">left</span>
+            <span class="c1"># left is now such that cdf(left) &lt;= q</span>
+            <span class="c1"># if right has changed, then cdf(right) &gt; q</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">left</span><span class="p">)</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppf_to_solve</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
-                <span class="n">left</span> <span class="o">=</span> <span class="n">right</span>
-                <span class="n">right</span> <span class="o">*=</span> <span class="n">factor</span>
-            <span class="c1"># right is now such that cdf(right) &gt; q</span>
+                <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">right</span><span class="p">,</span> <span class="n">right</span> <span class="o">*</span> <span class="n">factor</span>
+            <span class="c1"># right is now such that cdf(right) &gt;= q</span>
 
         <span class="k">return</span> <span class="n">optimize</span><span class="o">.</span><span class="n">brentq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ppf_to_solve</span><span class="p">,</span>
                                <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">q</span><span class="p">,)</span><span class="o">+</span><span class="n">args</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xtol</span><span class="p">)</span>
@@ -2005,9 +2052,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">dtyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">find_common_type</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="p">[])</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">loc</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtyp</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -2047,9 +2094,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">dtyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">find_common_type</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="p">[])</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">loc</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtyp</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -2090,9 +2137,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">dtyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">find_common_type</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="p">[])</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">loc</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtyp</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -2135,9 +2182,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">dtyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">find_common_type</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="p">[])</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">loc</span><span class="p">)</span><span class="o">/</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtyp</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -2178,9 +2225,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">loc</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">cond2</span> <span class="o">=</span> <span class="n">cond0</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
@@ -2224,9 +2271,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">loc</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">cond2</span> <span class="o">=</span> <span class="n">cond0</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
@@ -2382,18 +2429,20 @@
 <span class="sd">        ----------</span>
 <span class="sd">        data : array_like</span>
 <span class="sd">            Data to use in calculating the MLEs.</span>
-<span class="sd">        args : floats, optional</span>
+<span class="sd">        arg1, arg2, arg3,... : floats, optional</span>
 <span class="sd">            Starting value(s) for any shape-characterizing arguments (those not</span>
 <span class="sd">            provided will be determined by a call to ``_fitstart(data)``).</span>
 <span class="sd">            No default value.</span>
 <span class="sd">        kwds : floats, optional</span>
-<span class="sd">            Starting values for the location and scale parameters; no default.</span>
+<span class="sd">            - `loc`: initial guess of the distribution&#39;s location parameter.</span>
+<span class="sd">            - `scale`: initial guess of the distribution&#39;s scale parameter.</span>
+
 <span class="sd">            Special keyword arguments are recognized as holding certain</span>
 <span class="sd">            parameters fixed:</span>
 
 <span class="sd">            - f0...fn : hold respective shape parameters fixed.</span>
 <span class="sd">              Alternatively, shape parameters to fix can be specified by name.</span>
-<span class="sd">              For example, if ``self.shapes == &quot;a, b&quot;``, ``fa``and ``fix_a``</span>
+<span class="sd">              For example, if ``self.shapes == &quot;a, b&quot;``, ``fa`` and ``fix_a``</span>
 <span class="sd">              are equivalent to ``f0``, and ``fb`` and ``fix_b`` are</span>
 <span class="sd">              equivalent to ``f1``.</span>
 
@@ -2481,7 +2530,7 @@
 
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">kwds</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;optimizer&#39;</span><span class="p">,</span> <span class="n">optimize</span><span class="o">.</span><span class="n">fmin</span><span class="p">)</span>
         <span class="c1"># convert string to function in scipy.optimize</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;fmin_&#39;</span><span class="p">):</span>
                 <span class="n">optimizer</span> <span class="o">=</span> <span class="s2">&quot;fmin_&quot;</span><span class="o">+</span><span class="n">optimizer</span>
             <span class="k">if</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="s1">&#39;fmin_&#39;</span><span class="p">:</span>
@@ -2606,9 +2655,8 @@
 
         <span class="c1"># upper limit is often inf, so suppress warnings when integrating</span>
         <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">olderr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">integ</span><span class="p">,</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">olderr</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">integ</span><span class="p">,</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">h</span>
@@ -2680,6 +2728,8 @@
 <span class="sd">        finite. For example ``cauchy(0).mean()`` returns ``np.nan`` and</span>
 <span class="sd">        ``cauchy(0).expect()`` returns ``0.0``.</span>
 
+<span class="sd">        The function is not vectorized.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
@@ -2722,9 +2772,8 @@
             <span class="n">invfac</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">kwds</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
         <span class="c1"># Silence floating point warnings from integration.</span>
-        <span class="n">olderr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">invfac</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">olderr</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">invfac</span>
         <span class="k">return</span> <span class="n">vals</span>
 
 
@@ -2911,11 +2960,13 @@
 <span class="sd">        This string is used as the last part of the docstring returned when a</span>
 <span class="sd">        subclass has no docstring of its own. Note: `extradoc` exists for</span>
 <span class="sd">        backwards compatibility, do not use for new subclasses.</span>
-<span class="sd">    seed : None or int or ``numpy.random.RandomState`` instance, optional</span>
-<span class="sd">        This parameter defines the RandomState object to use for drawing</span>
-<span class="sd">        random variates.</span>
-<span class="sd">        If None, the global np.random state is used.</span>
-<span class="sd">        If integer, it is used to seed the local RandomState instance.</span>
+<span class="sd">    seed : {None, int, `~np.random.RandomState`, `~np.random.Generator`}, optional</span>
+<span class="sd">        This parameter defines the object to use for drawing random variates.</span>
+<span class="sd">        If `seed` is `None` the `~np.random.RandomState` singleton is used.</span>
+<span class="sd">        If `seed` is an int, a new ``RandomState`` instance is used, seeded</span>
+<span class="sd">        with seed.</span>
+<span class="sd">        If `seed` is already a ``RandomState`` or ``Generator`` instance,</span>
+<span class="sd">        then that object is used.</span>
 <span class="sd">        Default is None.</span>
 
 <span class="sd">    Methods</span>
@@ -3047,14 +3098,12 @@
         <span class="c1"># correct nin for generic moment vectorization</span>
         <span class="n">_vec_generic_moment</span> <span class="o">=</span> <span class="n">vectorize</span><span class="p">(</span><span class="n">_drv2_moment</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
         <span class="n">_vec_generic_moment</span><span class="o">.</span><span class="n">nin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numargs</span> <span class="o">+</span> <span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generic_moment</span> <span class="o">=</span> <span class="n">instancemethod</span><span class="p">(</span><span class="n">_vec_generic_moment</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="p">,</span> <span class="n">rv_discrete</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_moment</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">_vec_generic_moment</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># correct nin for ppf vectorization</span>
         <span class="n">_vppf</span> <span class="o">=</span> <span class="n">vectorize</span><span class="p">(</span><span class="n">_drv2_ppfsingle</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
         <span class="n">_vppf</span><span class="o">.</span><span class="n">nin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numargs</span> <span class="o">+</span> <span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ppfvec</span> <span class="o">=</span> <span class="n">instancemethod</span><span class="p">(</span><span class="n">_vppf</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="p">,</span> <span class="n">rv_discrete</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ppfvec</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">_vppf</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># now that self.numargs is defined, we can adjust nin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cdfvec</span><span class="o">.</span><span class="n">nin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numargs</span> <span class="o">+</span> <span class="mi">1</span>
@@ -3142,9 +3191,15 @@
 <span class="sd">        size : int or tuple of ints, optional</span>
 <span class="sd">            Defining number of random variates (Default is 1).  Note that `size`</span>
 <span class="sd">            has to be given as keyword, not as positional argument.</span>
-<span class="sd">        random_state : None or int or ``np.random.RandomState`` instance, optional</span>
-<span class="sd">            If int or RandomState, use it for drawing the random variates.</span>
-<span class="sd">            If None, rely on ``self.random_state``.</span>
+<span class="sd">        random_state : {None, int, `~np.random.RandomState`, `~np.random.Generator`}, optional</span>
+<span class="sd">            This parameter defines the object to use for drawing random</span>
+<span class="sd">            variates.</span>
+<span class="sd">            If `random_state` is `None` the `~np.random.RandomState` singleton</span>
+<span class="sd">            is used.</span>
+<span class="sd">            If `random_state` is an int, a new ``RandomState`` instance is used,</span>
+<span class="sd">            seeded with random_state.</span>
+<span class="sd">            If `random_state` is already a ``RandomState`` or ``Generator``</span>
+<span class="sd">            instance, then that object is used.</span>
 <span class="sd">            Default is None.</span>
 
 <span class="sd">        Returns</span>
@@ -3177,9 +3232,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">))</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nonzero</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -3214,9 +3269,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">))</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nonzero</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -3252,9 +3307,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">))</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">_b</span><span class="p">)</span>
@@ -3292,9 +3347,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">))</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">_b</span><span class="p">)</span>
@@ -3333,9 +3388,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">_b</span><span class="p">)</span>
@@ -3375,9 +3430,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">loc</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">_b</span><span class="p">)</span>
@@ -3415,17 +3470,17 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">loc</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">cond0</span>
         <span class="n">cond</span> <span class="o">=</span> <span class="n">cond0</span> <span class="o">&amp;</span> <span class="n">cond1</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">valarray</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">cond</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">badvalue</span><span class="p">,</span> <span class="n">typecode</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
         <span class="c1"># output type &#39;d&#39; to handle nin and inf</span>
-        <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">cond</span> <span class="o">==</span> <span class="n">cond</span><span class="p">),</span> <span class="n">_a</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond2</span><span class="p">,</span> <span class="n">_b</span><span class="p">)</span>
+        <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">cond</span> <span class="o">==</span> <span class="n">cond</span><span class="p">),</span> <span class="n">_a</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">loc</span><span class="p">)</span>
+        <span class="n">place</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">cond2</span><span class="p">,</span> <span class="n">_b</span> <span class="o">+</span> <span class="n">loc</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">cond</span><span class="p">):</span>
             <span class="n">goodargs</span> <span class="o">=</span> <span class="n">argsreduce</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="n">q</span><span class="p">,)</span><span class="o">+</span><span class="n">args</span><span class="o">+</span><span class="p">(</span><span class="n">loc</span><span class="p">,)))</span>
             <span class="n">loc</span><span class="p">,</span> <span class="n">goodargs</span> <span class="o">=</span> <span class="n">goodargs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">goodargs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -3456,9 +3511,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">asarray</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_support</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="n">cond0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argcheck</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">loc</span><span class="p">)</span>
         <span class="n">cond1</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">cond2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">cond0</span>
@@ -3733,11 +3788,11 @@
         <span class="n">indx</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">sqq</span> <span class="o">&gt;=</span> <span class="n">qq</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xk</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Need to define it explicitly, otherwise .rvs() with size=None</span>
         <span class="c1"># fails due to explicit broadcasting in _ppf</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_state</span><span class="o">.</span><span class="n">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppf</span><span class="p">(</span><span class="n">U</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
