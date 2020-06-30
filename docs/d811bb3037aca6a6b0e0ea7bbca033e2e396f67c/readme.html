@@ -108,24 +108,18 @@
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
@@ -142,9 +136,19 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -229,8 +233,7 @@
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <p><em>Efficient forward-modeling of Galaxy Emission in Astronomical Data</em></p>
 <ul class="simple">
-<li><p>Construct high-precision spatially/spectroscopically-resolved galaxy emission models, from
-analytical or physical prescriptions of galaxy geometry, emissivity,  kinematics, and dynamics.</p></li>
+<li><p>Construct high-precision spatially/spectroscopically-resolved galaxy emission models, from analytical or physical prescriptions of galaxy geometry, emissivity,  kinematics, and dynamics.</p></li>
 <li><p>Implement various model elements (e.g., line, continuum, sky background) to provide a realistic presentation of expected galaxy sky emission. multi-frequency synthetic visibility or</p></li>
 <li><p>The galaxy model can incorporate with multiple line/continuum components.</p></li>
 <li><p>Perform simulated observations of galaxy emission model and render them within a wide range of astronomical data forms
@@ -243,23 +246,23 @@ multiple-band photometric images,
 <ul class="simple">
 <li><p>We offer several model fitting/optimization algorithms under the same interface for a flexible user-friendly modeling experience through either a command-line approach or a serial of Python API functions).</p></li>
 <li><p>All modeling details are summarized in a single parameter file with a very flexible/readable syntax, which is easy to re-use for progressive modeling iterations.</p></li>
-<li><p>The package is specially optimized for efficiently performing joint model fitting on large heterogeneous multiple-wavelength datasets, and performance Bayesian-based model sampling for robust statistical error estimation with proper prior assumption. This is done by taking the advantages of multi-threading computation, with careful memory footprint management.</p></li>
+<li><p>The package is specially optimized for efficiently performing joint model fitting on large heterogeneous multiple-wavelength datasets and performance Bayesian-based model sampling for robust statistical error estimation with proper prior assumption. This is done by taking the advantages of multi-threading computation, with careful memory footprint management.</p></li>
 </ul>
-<p>GMaKE is originally designed to be a special tool to extract galaxy morphology and kinematics property from large modern interferometer datasets (specifically VLA and ALMA). We integrate some convenient utility-type functions (based on CASA 6’s Python modules) for helping process, image, and visualize calibrated viability data from the interferometer data archive, as we realize the importance of properly preparing visibility data, which may require additional effort due to large dataset size and “complex” nature of interferometer visibility data forms.</p>
-<p>On the other hand, although we have demonstrated that visibility-domain modeling can eliminate the non-linear imaging process for interferometer data and offers a unique advantage on the marginally-resolved moderate SNR data (e.g., noteably for high-z observations), we note that GMaKE is still equivalently equipped to analyze imaging or data products under the same modeling and fitting framework.</p>
-<p>Currently, ism3d is orgnized into several subpackages</p>
+<p>ISM3D is originally designed to be a special tool to extract galaxy morphology and kinematics property from large modern interferometer datasets (specifically VLA and ALMA). We integrate some convenient utility-type functions (based on CASA 6’s Python modules) for helping process, image, and visualize calibrated viability data from the interferometer data archive, as we realize the importance of properly preparing visibility data, which may require additional effort due to large dataset size and “complex” nature of interferometer visibility data forms.</p>
+<p>On the other hand, although we have demonstrated that visibility-domain modeling can eliminate the non-linear imaging process for interferometer data and offers a unique advantage on the marginally-resolved moderate SNR data (e.g., notably for high-z observations), we note that ISM3D is still equivalently equipped to analyze imaging or data products under the same modeling and fitting framework.</p>
+<p>Currently, ism3d is organized into several sub-packages</p>
 <ul class="simple">
 <li><p>arts:      generate artificial sources up to 3d (position-position-frequency/wavelength/velocity) in the sparse array (a.k.a. cloudlet) or regular grid (e.g. spectral cube) (see examples in the yt documents)</p></li>
-<li><p>simuv:     an similator for radio interefmeteric observations</p></li>
-<li><p>simxy:     an similator for spectroscopic imaging observations, as well as photometric imaging and 1D spectroscopy (not fully implemented)</p></li>
-<li><p>modelling: a model fitting / optimizer framwork</p></li>
-<li><p>uvhelper:   help prepare and analyze “uv” data for modelling (using CASA6): A small Python library that provides a collection of utility functions helping process, analyze, and visualize interferometric visibility data.</p></li>
-<li><p>xyhelper:   help prepare and analyze “xy” data for modelling</p></li>
-<li><p>utils:      utilities functions to support other modules</p></li>
-<li><p>maths:      pesuomd random generator / other math related functions</p></li>
+<li><p>simuv: a simulator for radio interferometric observations</p></li>
+<li><p>simxy: a simulator for spectroscopic imaging observations, as well as photometric imaging and 1D spectroscopy (not fully implemented)</p></li>
+<li><p>modelling: a model fitting/optimizer framework</p></li>
+<li><p>uvhelper:   help prepare and analyze “uv” data for modeling (using CASA6): A small Python library that provides a collection of utility functions helping process, analyze, and visualize interferometric visibility data.</p></li>
+<li><p>xyhelper:   help prepare and analyze “xy” data for modeling</p></li>
+<li><p>utils: utility functions to support other modules</p></li>
+<li><p>maths:      pseudo-random generator / other math-related functions</p></li>
 <li><p>plots:      general plotting modules</p></li>
 </ul>
-<p>While the current effort is still a work in progress: incosistent documentation, many non-working function placeholders, etc., fast-paced changes are expected in near future.
+<p>While the current effort is still a work in progress: inconsistent documentation, many non-working function placeholders, etc., fast-paced changes are expected soon.
 Any comments and suggestions are appreciated and <a class="reference external" href="https://www.magclouds.org/ism3d/html/contributing.html">code/documentation contributions</a> are very welcome.</p>
 </div>
 </div>

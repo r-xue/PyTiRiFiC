@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Example GN20: perform imaging of CO 2-1 dataset" href="demo_gn20_imaging.html" />
-    <link rel="prev" title="Invert" href="../benchmark/demo_invert_ft.html" /> 
+    <link rel="next" title="Example: BX610 (High-z SFG) : Data Prep" href="demo_bx610_prep.html" />
+    <link rel="prev" title="Tutorials &amp; Examples" href="../tutorials/demo_notebook.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,36 +110,18 @@
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Example: GN20 (z~4 SMF) : Data Prep</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#archive-query">Archive Query:</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-the-beta-version-of-casa-6">Using the beta-version of CASA 6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#reduce-raw-data-size">Reduce Raw Data Size</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-calibration">Data Calibration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prepare-visibiity-data-from-the-calibrated-ms-from-the-modified-vla-scripted-pipeline">Prepare visibiity data from the calibrated MS from the modified VLA scripted pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prep-calibrated-data">Prep Calibrated Data:</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials: Direct API usage</span></p>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
@@ -156,9 +138,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials: Jupyter Notebook</span></p>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example: GN20 (z~4 SMF) : Data Prep</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#archive-query">Archive Query:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#load-some-essential-python-modules-casa-6-tasks-tools">Load some essential Python modules + CASA 6 tasks/tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-beta-version-of-casa-6">Using the beta-version of CASA 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#import-some-convinient-functions-from-rxutils">Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reduce-raw-data-size">Reduce Raw Data Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-calibration">Data Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prepare-visibiity-data-from-the-calibrated-ms-from-the-modified-vla-scripted-pipeline">Prepare visibiity data from the calibrated MS from the modified VLA scripted pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prep-calibrated-data">Prep Calibrated Data:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -240,28 +244,28 @@
 </div>
 <div class="section" id="load-some-essential-python-modules-casa-6-tasks-tools">
 <h3>Load some essential Python modules + CASA 6 tasks/tools<a class="headerlink" href="#load-some-essential-python-modules-casa-6-tasks-tools" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys,os,glob,io,socket
-import logging
-from pprint import pprint
-import numpy as np
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span><span class="o">,</span><span class="nn">glob</span><span class="o">,</span><span class="nn">io</span><span class="o">,</span><span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-import casatasks as ctasks
-import casatools as ctools
+<span class="kn">import</span> <span class="nn">casatasks</span> <span class="k">as</span> <span class="nn">ctasks</span>
+<span class="kn">import</span> <span class="nn">casatools</span> <span class="k">as</span> <span class="nn">ctools</span>
 
-# Import wurlitzer for display real-time console logs
-#   https://github.com/minrk/wurlitzer
-%reload_ext wurlitzer
+<span class="c1"># Import wurlitzer for display real-time console logs</span>
+<span class="c1">#   https://github.com/minrk/wurlitzer</span>
+<span class="o">%</span><span class="k">reload_ext</span> wurlitzer
 
-# for inline plots
-%matplotlib inline
-%config InlineBackend.figure_format = &quot;retina&quot;
+<span class="c1"># for inline plots</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="o">%</span><span class="k">config</span> InlineBackend.figure_format = &quot;retina&quot;
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-the-beta-version-of-casa-6">
 <h3>Using the beta-version of CASA 6<a class="headerlink" href="#using-the-beta-version-of-casa-6" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;casatools ver:&#39;,ctools.version_string())
-print(&#39;casatasks ver:&#39;,ctasks.version_string())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;casatools ver:&#39;</span><span class="p">,</span><span class="n">ctools</span><span class="o">.</span><span class="n">version_string</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;casatasks ver:&#39;</span><span class="p">,</span><span class="n">ctasks</span><span class="o">.</span><span class="n">version_string</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">casatools</span> <span class="n">ver</span><span class="p">:</span> <span class="mf">2019.172</span>
@@ -271,11 +275,11 @@ print(&#39;casatasks ver:&#39;,ctasks.version_string())
 </div>
 <div class="section" id="import-some-convinient-functions-from-rxutils">
 <h3>Import some convinient functions from <code class="docutils literal notranslate"><span class="pre">rxutils</span></code><a class="headerlink" href="#import-some-convinient-functions-from-rxutils" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from rxutils.casa.proc import rmPointing        # help remove POINTING tables hidden under
-from rxutils.casa.proc import setLogfile        # help reset the casa 6 log file
-from rxutils.casa.proc import checkchflag       # help check channel-wise flagging stats
-from rxutils.casa.proc import getcommonfreqs    # obatin the frequency coverage of one SPW in a specified frame (e.g. TOPO-LSRK)
-from rxutils.casa.proc import rmColumns         # remove columns from MS
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rxutils.casa.proc</span> <span class="kn">import</span> <span class="n">rmPointing</span>        <span class="c1"># help remove POINTING tables hidden under</span>
+<span class="kn">from</span> <span class="nn">rxutils.casa.proc</span> <span class="kn">import</span> <span class="n">setLogfile</span>        <span class="c1"># help reset the casa 6 log file</span>
+<span class="kn">from</span> <span class="nn">rxutils.casa.proc</span> <span class="kn">import</span> <span class="n">checkchflag</span>       <span class="c1"># help check channel-wise flagging stats</span>
+<span class="kn">from</span> <span class="nn">rxutils.casa.proc</span> <span class="kn">import</span> <span class="n">getcommonfreqs</span>    <span class="c1"># obatin the frequency coverage of one SPW in a specified frame (e.g. TOPO-LSRK)</span>
+<span class="kn">from</span> <span class="nn">rxutils.casa.proc</span> <span class="kn">import</span> <span class="n">rmColumns</span>         <span class="c1"># remove columns from MS</span>
 </pre></div>
 </div>
 </div>
@@ -284,24 +288,24 @@ from rxutils.casa.proc import rmColumns         # remove columns from MS
 <h2>Reduce Raw Data Size<a class="headerlink" href="#reduce-raw-data-size" title="Permalink to this headline">¶</a></h2>
 <p>The main purpose of this step is getting rid of RL/LR and flagged rows
 to speed up calibrations and reduce local I/O load.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import glob
-import os
-from casatasks import mstransform
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">mstransform</span>
 
-demo_dir=&#39;/Volumes/D2/raw/AC974/&#39; # where the original archival dataset stored
-if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
-    os.chdir(demo_dir)
-setLogfile(&#39;/Volumes/D1/raw/AC974/demo_gn20_prep.log&#39;)
+<span class="n">demo_dir</span><span class="o">=</span><span class="s1">&#39;/Volumes/D2/raw/AC974/&#39;</span> <span class="c1"># where the original archival dataset stored</span>
+<span class="k">if</span>  <span class="s1">&#39;hypersion&#39;</span> <span class="ow">or</span> <span class="s1">&#39;mini&#39;</span> <span class="ow">in</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span> <span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">demo_dir</span><span class="p">)</span>
+<span class="n">setLogfile</span><span class="p">(</span><span class="s1">&#39;/Volumes/D1/raw/AC974/demo_gn20_prep.log&#39;</span><span class="p">)</span>
 
-mslist=glob.glob(&#39;*.ms&#39;)
+<span class="n">mslist</span><span class="o">=</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.ms&#39;</span><span class="p">)</span>
 
-for ms in mslist:
-    outms=&#39;/Volumes/D1/raw/AC974/&#39;+ms.replace(&#39;.ms&#39;,&#39;.ms&#39;) # a slim verson of archival data
-    if  os.path.isdir(outms):
-        continue
-    mstransform(vis=ms,outputvis=outms,correlation=&#39;RR,LL&#39;,keepflags=False,datacolumn=&#39;data&#39;)
-    flagmanager(vis=outms,mode=&#39;save&#39;,versionname=&#39;Original&#39;,merge=&#39;replace&#39;,\
-                comment=&#39;Original Flagging from the archive with online/shadown/zero flagging applied nad completed flagged rows are removed&#39;)
+<span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mslist</span><span class="p">:</span>
+    <span class="n">outms</span><span class="o">=</span><span class="s1">&#39;/Volumes/D1/raw/AC974/&#39;</span><span class="o">+</span><span class="n">ms</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">,</span><span class="s1">&#39;.ms&#39;</span><span class="p">)</span> <span class="c1"># a slim verson of archival data</span>
+    <span class="k">if</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outms</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="n">mstransform</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span><span class="n">outputvis</span><span class="o">=</span><span class="n">outms</span><span class="p">,</span><span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;RR,LL&#39;</span><span class="p">,</span><span class="n">keepflags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+    <span class="n">flagmanager</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">outms</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">,</span><span class="n">versionname</span><span class="o">=</span><span class="s1">&#39;Original&#39;</span><span class="p">,</span><span class="n">merge</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span>\
+                <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;Original Flagging from the archive with online/shadown/zero flagging applied nad completed flagged rows are removed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">26</span> <span class="mi">22</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">43</span> <span class="n">INFO</span>    <span class="n">mstransform</span><span class="p">::::</span><span class="n">casa</span>     <span class="c1">##########################################</span>
@@ -448,39 +452,39 @@ raw OK Scans Logs</div>
 <span class="n">inspect</span> <span class="n">WEIGHT</span> <span class="n">column</span> <span class="n">at</span> <span class="n">the</span> <span class="n">end</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Switch working directory
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Switch working directory</span>
 
-import glob
-demo_dir=&#39;/Users/Rui/Documents/Workspace/projects/GMaKE/examples/data/gn20/vla/&#39;
-if  &#39;hypersion&#39; or &#39;mini&#39; in socket.gethostname() :
-    os.chdir(demo_dir)
-setLogfile(demo_dir+&#39;/&#39;+&#39;demo_GN20.log&#39;)
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="n">demo_dir</span><span class="o">=</span><span class="s1">&#39;/Users/Rui/Documents/Workspace/projects/GMaKE/examples/data/gn20/vla/&#39;</span>
+<span class="k">if</span>  <span class="s1">&#39;hypersion&#39;</span> <span class="ow">or</span> <span class="s1">&#39;mini&#39;</span> <span class="ow">in</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span> <span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">demo_dir</span><span class="p">)</span>
+<span class="n">setLogfile</span><span class="p">(</span><span class="n">demo_dir</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="s1">&#39;demo_GN20.log&#39;</span><span class="p">)</span>
 
-mslist=[]
-mslist.extend(glob.glob(&#39;/Volumes/D1/proc/AC*/AC*ms&#39;)) # calibrated vis are in S1/proc and D1/proc
-                                                      # du -hs /Volumes/*/proc/AC*/AC*ms | wc -l
-mslist=sorted(mslist)
-print(mslist)
-print(len(mslist))
-for ms in mslist:
+<span class="n">mslist</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">mslist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;/Volumes/D1/proc/AC*/AC*ms&#39;</span><span class="p">))</span> <span class="c1"># calibrated vis are in S1/proc and D1/proc</span>
+                                                      <span class="c1"># du -hs /Volumes/*/proc/AC*/AC*ms | wc -l</span>
+<span class="n">mslist</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">mslist</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mslist</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mslist</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">mslist</span><span class="p">:</span>
 
-    #ctasks.flagdata(vis_name,autocorr=True,flagbackup=True)
-    outms=ms.split(&#39;/&#39;)[-2]
-    outms=outms+&#39;.ms&#39;
-    #if  not (&#39;100408&#39; in ms or &#39;100409&#39; in ms):
-    #    continue
-    #if os.path.isdir(outms):
-    #   continue
-    os.system(&#39;rm -rf &#39;+outms)
-    os.system(&#39;rm -rf &#39;+outms+&#39;.flagversions&#39;)
-    antenna=&#39;&#39;
-    ctasks.mstransform(ms,outputvis=outms,field=&#39;GN20cluster&#39;,spw=&#39;2:0~62,3:1~63&#39;,datacolumn=&#39;corrected&#39;,correlation=&#39;RR,LL&#39;,antenna=antenna,
-                        regridms=True,outframe=&#39;lsrk&#39;,combinespws=True,mode=&#39;channel&#39;,start=1,nchan=128,width=1,
-                        timeaverage=True,timebin=&#39;30s&#39;,maxuvwdistance=0.0,
-                        keepflags=False,usewtspectrum=False)
-    #ctasks.cvel2(ms,outputvis=outms,field=&#39;GN20cluster&#39;,spw=&#39;2,3&#39;,passall=False,
-    #             start=1,nchan=128,width=1,
-    #rmPointing(outvis) # pointing tables are generally small for EVLA data
+    <span class="c1">#ctasks.flagdata(vis_name,autocorr=True,flagbackup=True)</span>
+    <span class="n">outms</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">outms</span><span class="o">=</span><span class="n">outms</span><span class="o">+</span><span class="s1">&#39;.ms&#39;</span>
+    <span class="c1">#if  not (&#39;100408&#39; in ms or &#39;100409&#39; in ms):</span>
+    <span class="c1">#    continue</span>
+    <span class="c1">#if os.path.isdir(outms):</span>
+    <span class="c1">#   continue</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span><span class="o">+</span><span class="n">outms</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span><span class="o">+</span><span class="n">outms</span><span class="o">+</span><span class="s1">&#39;.flagversions&#39;</span><span class="p">)</span>
+    <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="n">ctasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span><span class="n">outputvis</span><span class="o">=</span><span class="n">outms</span><span class="p">,</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;GN20cluster&#39;</span><span class="p">,</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;2:0~62,3:1~63&#39;</span><span class="p">,</span><span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span><span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;RR,LL&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+                        <span class="n">regridms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">outframe</span><span class="o">=</span><span class="s1">&#39;lsrk&#39;</span><span class="p">,</span><span class="n">combinespws</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nchan</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">timeaverage</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">timebin</span><span class="o">=</span><span class="s1">&#39;30s&#39;</span><span class="p">,</span><span class="n">maxuvwdistance</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                        <span class="n">keepflags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">usewtspectrum</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1">#ctasks.cvel2(ms,outputvis=outms,field=&#39;GN20cluster&#39;,spw=&#39;2,3&#39;,passall=False,</span>
+    <span class="c1">#             start=1,nchan=128,width=1,</span>
+    <span class="c1">#rmPointing(outvis) # pointing tables are generally small for EVLA data</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;/Volumes/D1/proc/AC974.100329/AC974_sb1178393_1.55284.176880300925.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.100404/AC974_sb1178393_1.55290.15952814815.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.100408/AC974_sb1178393_1_000.55294.19113723379.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.100409/AC974_sb1178393_1.55295.14680190972.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110211/AC974.sb3282289.eb3372706.55603.30302575231.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110212/AC974.sb3282289.eb3372707.55604.21726888889.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110214/AC974.sb3282289.eb3372708.55606.21154611111.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110216/AC974.sb3282289.eb3372709.55608.19656930555.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110217/AC974.sb3282289.eb3372710.55609.20419065972.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110218/AC974.sb3282289.eb3372711.55610.18910030092.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110219/AC974.sb3282289.eb3372712.55611.200792627315.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110221/AC974.sb3282289.eb3372713.55613.19257357639.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110224/AC974.sb3282289.eb3372714.55616.27802989583.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110226/AC974.sb3282289.eb3372715.55618.305010428245.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110227/AC974.sb3282289.eb3372716_000.55619.25416130787.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110306/AC974.sb3282289.eb3372717.55626.21851298611.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110312/AC974.sb3282289.eb3372718.55632.18241631945.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;/Volumes/D1/proc/AC974.110428/AC974.sb3848174.eb3850825.55679.073782673615.ms&#39;</span><span class="p">]</span>
@@ -1560,10 +1564,10 @@ for ms in mslist:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="demo_gn20_imaging.html" class="btn btn-neutral float-right" title="Example GN20: perform imaging of CO 2-1 dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="demo_bx610_prep.html" class="btn btn-neutral float-right" title="Example: BX610 (High-z SFG) : Data Prep" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../benchmark/demo_invert_ft.html" class="btn btn-neutral float-left" title="Invert" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../tutorials/demo_notebook.html" class="btn btn-neutral float-left" title="Tutorials &amp; Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
