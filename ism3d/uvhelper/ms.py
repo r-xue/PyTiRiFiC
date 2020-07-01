@@ -66,6 +66,8 @@ def read_ms(vis='',
     keyrule:   'number':      data_0, data_1, data_3
                'basename':    basename1, basename2, basename3
                'abspath':     absolute name
+               
+    note: we on purpose preserve the data shape to ensure write_ms will work properly
     """
     
     vis_dict={'relpath':os.path.relpath(vis),

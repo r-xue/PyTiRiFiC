@@ -8,7 +8,7 @@ from ..utils.meta import create_header
 import logging
 logger = logging.getLogger(__name__)
 
-def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,bychannel=True):
+def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
     """
     use nufft to create dirty cube from visibility
     uu: in meter (vector, nrecord
@@ -21,6 +21,8 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,bychannel=True):
                 True: uu/vv will be calculated channel by channel
                 
     output (nx,ny,nz)
+    
+    note: should not include flagged records
     """
     
     if  bychannel==False:
@@ -37,28 +39,33 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,bychannel=True):
         for i in range(len(wv)):
             uuu=-uu/wv[i]*2*np.pi*(cell.to(u.rad).value)
             vvv=vv/wv[i]*2*np.pi*(cell.to(u.rad).value)
+            vis_one=vis[:,i]
+            if  flag is not None:
+                uuu=uuu[~flag[:,i]]
+                vvv=vvv[~flag[:,i]]
+                vis_one=vis_one[~flag[:,i]]
+                wt_one=wt[~flag[:,i]]
+                print(uuu.shape,vvv.shape,vis_one.shape,wt_one.shape)
             if  wt is None:
-                nufft.nufft2d1(uuu,vvv,vis[:,i],
+                nufft.nufft2d1(uuu,vvv,vis_one,
                             -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)
+                cube[:,:,i]/=uu.shape[0]  
             else:
-                nufft.nufft2d1(uuu,vvv,vis[:,i]*wt,
-                            -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)                
-        #cube[:,:,i]=im0
-        if  wt is None:
-            cube/=uu.shape[0]
-        else:
-            cube/=np.sum(wt)
+                nufft.nufft2d1(uuu,vvv,vis_one*wt_one,
+                            -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)
+                cube[:,:,i]/=np.sum(wt_one)               
+
     
     return cube.real
 
-def make_psf(uu,vv,wv,cell,imsize,wt=None,bychannel=True):
+def make_psf(uu,vv,wv,cell,imsize,**kwargs):
     
     vis=np.ones((uu.shape[0],len(wv)),dtype=np.complex128,order='F')
-    cube=invert_ft(uu,vv,wv,vis,cell,imsize,wt=wt,bychannel=bychannel)
+    cube=invert_ft(uu,vv,wv,vis,cell,imsize,**kwargs)
 
     return cube
 
-def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
+def advise_header(uv,center,chanfreq,chanwidth,antsize=None):
     """
     create a header template for discreating cloudlet model before uv sampling
         using accroding to UV sampling and primary beam FOV
@@ -94,37 +101,28 @@ def uv_to_header(uv,center,chanfreq,chanwidth,antsize=None):
     else:
         pb=(1.22*wv/antsize).value
     
-    nxy, dxy = get_image_size(uv[:,0]/wv.value, uv[:,1]/wv.value,
+    nxy, dxy = advise_imsize(uv[:,0]/wv.value, uv[:,1]/wv.value,
                               pb=pb,f_max=f_max,f_min=f_min)
     
     logger.debug('nxyz:'+str(nxy)+','+str(np.size(chanfreq)))
     logger.debug('dxyz:'+(dxy<<u.rad).to(u.arcsec).to_string()+','+(np.mean(chanwidth.to(u.MHz))).to_string())
     
-    header=create_header()
-    header['NAXIS1']=nxy
-    header['NAXIS2']=nxy
-    header['NAXIS3']=np.size(chanfreq)
-    
-    header['CRVAL1']=center.ra.to_value(u.deg)
-    header['CRVAL2']=center.dec.to_value(u.deg)
-                   
     crval3=chanfreq.to_value(u.Hz)
     if  not np.isscalar(crval3):
-        crval3=crval3[0]
-    header['CRVAL3']=crval3
-    header['CDELT1']=-np.rad2deg(dxy)
-    header['CDELT2']=np.rad2deg(dxy)
-    header['CDELT3']=np.mean(chanwidth.to_value(u.Hz))   
-    header['CRPIX1']=np.floor(nxy/2)+1
-    header['CRPIX2']=np.floor(nxy/2)+1
+        crval3=crval3[0]    
+    header=create_header(naxis=[nxy,nxy,np.size(chanfreq)],
+                         objname='unknown',
+                         crval=[center.ra.to_value(u.deg),center.dec.to_value(u.deg),crval3],
+                         cdelt=[-np.rad2deg(dxy),np.rad2deg(dxy),np.mean(chanwidth.to_value(u.Hz))])
+
     
     return header
 
-def get_image_size(u, v, pb=0, f_min=5., f_max=2.0,even=True):
+def advise_imsize(u, v, pb=0, f_min=5., f_max=2.0,even=True):
     """
     Compute the recommended image size given the (u, v) locations.
     Typical call signature::
-        nxy, dxy = get_image_size(u, v, PB=0, f_min=5., f_max=2.5, verbose=False)
+        nxy, dxy = advise_imsize(u, v, PB=0, f_min=5., f_max=2.5, verbose=False)
     Parameters
     ----------
     u : array_like, float

@@ -18,7 +18,7 @@ from astropy.coordinates import SkyCoord
 from .uvhelper.proc import rmColumns
 
 from .discretize import sample_prep,uv_sample,pickplane
-from .model import makepb,get_image_size
+from .model import makepb,advise_imsize
 
 import numexpr as ne
 """

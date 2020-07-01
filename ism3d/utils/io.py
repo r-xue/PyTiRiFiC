@@ -224,6 +224,8 @@ def to_hdf5(value,outname='test.h5',checkname=False, **kwargs):
         https://support.hdfgroup.org/HDF5/Tutor/cmdtoolview.html
          h5ls -r test.h5
         h5dump -n 1 test.h5
+    optional kwargs:    compression='gzip'
+
     """
     if  outname.endswith('.h5') or outname.endswith('.hdf5'):
         outpath=outname
@@ -236,9 +238,9 @@ def to_hdf5(value,outname='test.h5',checkname=False, **kwargs):
             for key in list(value.keys()):
                 if  '/' in key:
                     value_copy[key.replace('/','|')]=value_copy.pop(key)
-            hkl.dump(value_copy, outpath, mode='w',**kwargs)#,compression='gzip')
+            hkl.dump(value_copy, outpath, mode='w', **kwargs)
     else:
-        hkl.dump(value, outpath, mode='w',**kwargs)#,compression='gzip')
+        hkl.dump(value, outpath, mode='w', **kwargs)
     
     logger.debug('--- save to: '+outpath)    
     
