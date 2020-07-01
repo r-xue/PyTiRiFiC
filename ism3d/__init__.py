@@ -30,7 +30,7 @@ logger_config(logfile=None,loglevel='INFO',logfilelevel='INFO',reset=True)
 
 from .utils.misc import check_config
 
-from .utils import *
+#from .utils import * 
 #from .logger import *
 #from .io import *
 #from .evaluate import *  

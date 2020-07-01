@@ -45,7 +45,6 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
                 vvv=vvv[~flag[:,i]]
                 vis_one=vis_one[~flag[:,i]]
                 wt_one=wt[~flag[:,i]]
-                print(uuu.shape,vvv.shape,vis_one.shape,wt_one.shape)
             if  wt is None:
                 nufft.nufft2d1(uuu,vvv,vis_one,
                             -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)

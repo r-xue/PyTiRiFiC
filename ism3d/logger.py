@@ -3,6 +3,13 @@ import pprint as pp
 import tempfile
 
 from casatools import logsink
+from casatasks import casalog   
+
+# <- the default logsink instance casatask uses
+#   not logfile after the initallization of casalog 
+os.system('rm -rf '+casalog.logfile())
+casalog.setlogfile('/dev/null')
+
 import logging
 
 logger = logging.getLogger('ism3d')
@@ -16,6 +23,7 @@ def logger_config(logfile=None,
                 loglevel=logging.WARNING,
                 logfilelevel=logging.INFO)
     note: this will merge the logging output from ism3d and casa6 into a single log file.
+    loglevel='INFO'/'WARN'/'DEBUG'
     """
 
     if reset:
@@ -50,25 +58,65 @@ def logger_config(logfile=None,
     #   https://casa.nrao.edu/docs/CasaRef/logsink-Tool.html#logsink.version.html
     #   https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu43.html
 
+    casalogger_config(logfile=logfile,loglevel=loglevel,onconsole=True)
+    
+    return
+
+def casalogger_config(logfile=None,loglevel='INFO',onconsole=True,
+                      reset=False):
+    """
+    Set CASA log file
+    use reset=True when you don't want the last casa log file (which could be autmatically created when import casataks)
+    """
+    if  logfile is None:
+        #fd, casalogfile= tempfile.mkstemp(suffix='.log')
+        casalogfile='/dev/null'   
+    else:
+        casalogfile=logfile
+        
+    if  reset==True:
+        if  'null' not in casalog.logfile():
+            os.system('rm -rf '+casalog.logfile())
+     
+    casalog.setlogfile(casalogfile)
+    casalog.showconsole(onconsole=onconsole)
+    casalog.filter(loglevel)
+    
+    return
+
+def casalogsink_config(logfile=None,loglevel='INFO',onconsole=True):
+    """
+    obselete
+    casatools.logsink can create a casalogger instance
+    import casatasks will initialize a casalogger instance
+    the casa logger setup will be initilized with "import casataks"
+    
+    to prevent this, we need the casalogger configuration at the toolkit ahead of
+    import casatasks  
+    """
     if logfile is None:
         fd, logfile = tempfile.mkstemp(suffix='.log')
     # site-packages/casatools/__casac__/logsink.py
     casalogger = logsink(filename=logfile, enable_telemetry=False)
     casalogger.showconsole(onconsole=True)
     casalogger.filter(loglevel)
+    
+    return    
+    
 
-    return
-
-
-def logger_status(root=False):
+def logger_status():
     """
     print out the current status of ism3d logger
     """
+    logger.info("\n-- ism3d logger:\n")
     logger.info(logging.getLogger('ism3d'))
     logger.info(logging.getLogger('ism3d').handlers)
-
-    if root == True:
-        logger.info(logging.Logger.manager.loggerDict)
+    
+    logger.info('\n-- casa logger:\n')
+    logger.info(casalog.logfile())
+        
+    logger.info("\n-- root logger:\n")
+    logger.info(pp.pformat(logging.Logger.manager.loggerDict))
 
     return
 
