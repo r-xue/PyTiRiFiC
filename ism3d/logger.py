@@ -12,10 +12,10 @@ def logger_config(logfile=None,
                   reset=True):
     """
     set up a customized logger,e.g.,
-        >>>gmake.logger_config(logfile='logs/test_gmake.log',
+        >>>ism3d.logger_config(logfile='logs/test_ism3d.log',
                 loglevel=logging.WARNING,
                 logfilelevel=logging.INFO)
-
+    note: this will merge the logging output from ism3d and casa6 into a single log file.
     """
 
     if reset:
@@ -52,6 +52,7 @@ def logger_config(logfile=None,
 
     if logfile is None:
         fd, logfile = tempfile.mkstemp(suffix='.log')
+    # site-packages/casatools/__casac__/logsink.py
     casalogger = logsink(filename=logfile, enable_telemetry=False)
     casalogger.showconsole(onconsole=True)
     casalogger.filter(loglevel)
@@ -61,13 +62,13 @@ def logger_config(logfile=None,
 
 def logger_status(root=False):
     """
-    print out the current status of gmake logger
+    print out the current status of ism3d logger
     """
-    print(logging.getLogger('gmake'))
-    print(logging.getLogger('gmake').handlers)
+    logger.info(logging.getLogger('ism3d'))
+    logger.info(logging.getLogger('ism3d').handlers)
 
     if root == True:
-        pp.pprint(logging.Logger.manager.loggerDict)
+        logger.info(logging.Logger.manager.loggerDict)
 
     return
 
@@ -76,7 +77,6 @@ class CustomFormatter(logging.Formatter):
     """
     customized logging formatter which can handle mutiple-line msgs
     """
-
     def format(self, record: logging.LogRecord):
         save_msg = record.msg
         output = []

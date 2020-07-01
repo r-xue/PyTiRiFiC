@@ -1,4 +1,4 @@
-from .vis_utils import read_ms
+#from .vis_utils import read_ms
 #from .ms import read_ms0
 from sys import getsizeof
 import logging
@@ -8,15 +8,16 @@ import os
 from astropy.io import fits 
 from astropy.table import Table
 from astropy.table import Column
-from .vis_utils import write_ms
+#from .vis_utils import write_ms
 
 logger = logging.getLogger(__name__)
 
 
 import warnings
 import hickle as hkl
-from hickle.hickle import SerializedWarning   
-warnings.filterwarnings("ignore",category=SerializedWarning)  
+
+#from hickle.hickle import SerializedWarning   
+#warnings.filterwarnings("ignore",category=SerializedWarning)  
 
 #from memory_profiler import profile
 #@profile
@@ -211,7 +212,53 @@ def dct2npy(dct,outname='dct2npy'):
 
 def npy2dct(npyname):
     return np.load(npyname,allow_pickle=True).item()
+
+
+def to_hdf5(value,outname='test.h5',checkname=False, **kwargs):
+    """
+    write a Python dictionary object into a HDF5 file.
+    slashes are not allowed in HDF5 object names
+    We repalce any "/" in keys with "|" to avoid a confusion with HDF5 internal structures
     
+    note:    
+        https://support.hdfgroup.org/HDF5/Tutor/cmdtoolview.html
+         h5ls -r test.h5
+        h5dump -n 1 test.h5
+    """
+    if  outname.endswith('.h5') or outname.endswith('.hdf5'):
+        outpath=outname
+    else:
+        outpath=outname+'.h5'
+        
+    if  checkname==True:
+        if  isinstance(value, dict):
+            value_copy=value.copy()
+            for key in list(value.keys()):
+                if  '/' in key:
+                    value_copy[key.replace('/','|')]=value_copy.pop(key)
+            hkl.dump(value_copy, outpath, mode='w',**kwargs)#,compression='gzip')
+    else:
+        hkl.dump(value, outpath, mode='w',**kwargs)#,compression='gzip')
+    
+    logger.debug('--- save to: '+outpath)    
+    
+    return
+
+def from_hdf5(h5name):
+    """
+    read a Python dictionary object from a HDF5 file
+    slashes are not allowed in HDF5 object names
+    We repalce any "|" in keys with "/" to recover the potential file directory paths in keysst   
+    """
+    value=hkl.load(h5name)
+    #keys=list(value.keys())
+    #for key in keys:
+    #    if  '|' in key:
+    #        value[key.replace('|','/')]=value.pop(key)    
+    
+    return value
+    
+
 def dct2hdf(dct,outname='dct2hdf'):
     """
     write a Python dictionary object into a HDF5 file.

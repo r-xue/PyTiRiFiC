@@ -51,7 +51,8 @@ def rmPointing(outvis,verbose=False):
     
     ctb=ctools.table()
     ctb.open(outvis+'/POINTING',nomodify=False)
-    ctb.removerows(range(ctb.nrows()))
+    print(ctb.nrows())
+    ctb.removerows(list(range(ctb.nrows())))
     ctb.done()
     
     # rmtables(outvis+'/POINTING') # doesn't work

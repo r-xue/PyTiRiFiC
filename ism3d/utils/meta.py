@@ -36,16 +36,13 @@ aeval.symtable['Angle']=Angle
 aeval.symtable['Number']=Number
 aeval.symtable['Quantity']=Quantity
 
+from .. import __resource__
 
-package_path=os.path.dirname(os.path.abspath(__file__))
-metadata_path=os.path.dirname(os.path.abspath(__file__))+'/resource/'
 
 cfg=ConfigParser(interpolation=ExtendedInterpolation())
-cfg.read(package_path+"/default.cfg") 
-
+cfg.read(__resource__+"/default.cfg") 
 
 __all__ = ['read_inp']
-
 
 try:
     db_global
@@ -265,7 +262,7 @@ def pars_interp(key,value):
     
     return value_int
 
-inp_def=read_inp(metadata_path+'input_def.inp',log=False)
+inp_def=read_inp(__resource__+'input_def.inp',log=False)
 
 
 
