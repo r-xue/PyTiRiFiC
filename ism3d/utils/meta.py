@@ -62,7 +62,7 @@ def create_header(file=None,
             
     if  file is None:
         hdr=fits.Header.fromstring("""\
-SIMPLE  =                    T /Written by GMaKe     
+SIMPLE  =                    T /Written by ism3d     
 BITPIX  =                  -32 /Floating point (32 bit)                         
 NAXIS   =                    4 /                                                
 NAXIS1  =                  128 /                                                

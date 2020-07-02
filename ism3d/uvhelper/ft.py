@@ -8,7 +8,9 @@ from ..utils.meta import create_header
 import logging
 logger = logging.getLogger(__name__)
 
-def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
+def invert_ft(uu,vv,wv,vis,cell,imsize,
+              wt=None,flag=None,
+              bychannel=True,sortbyfreq=False):
     """
     use nufft to create dirty cube from visibility
     uu: in meter (vector, nrecord
@@ -19,7 +21,8 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
                 only works when bychannle=true
     bychannel:  False ignore the wavelength changing effect on uvw
                 True: uu/vv will be calculated channel by channel
-                
+    sortbyfreq:    make sure the output cube is increasing by frequency (even chanel-freq is decreasing)
+                   this make it easy to compare with the tclean results whihc is always mono-increasing in freq 
     output (nx,ny,nz)
     
     note: should not include flagged records
@@ -36,7 +39,14 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
         cube=np.zeros((imsize,imsize,len(wv)),dtype=np.complex128,order='F')
         
         #im0=np.zeros((imsize,imsize),dtype=np.complex128,order='F')
+        
+            
         for i in range(len(wv)):
+            cube_i=i
+            if  wv[0]<wv[1] and sortbyfreq==True:
+                cube_i=len(wv)-i-1
+            else:
+                cube_i=i
             uuu=-uu/wv[i]*2*np.pi*(cell.to(u.rad).value)
             vvv=vv/wv[i]*2*np.pi*(cell.to(u.rad).value)
             vis_one=vis[:,i]
@@ -47,13 +57,12 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,wt=None,flag=None,bychannel=True):
                 wt_one=wt[~flag[:,i]]
             if  wt is None:
                 nufft.nufft2d1(uuu,vvv,vis_one,
-                            -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)
-                cube[:,:,i]/=uu.shape[0]  
+                            -1,1e-15,imsize,imsize,cube[:,:,cube_i],debug=0)
+                cube[:,:,cube_i]/=uu.shape[0]  
             else:
                 nufft.nufft2d1(uuu,vvv,vis_one*wt_one,
-                            -1,1e-15,imsize,imsize,cube[:,:,i],debug=0)
-                cube[:,:,i]/=np.sum(wt_one)               
-
+                            -1,1e-15,imsize,imsize,cube[:,:,cube_i],debug=0)
+                cube[:,:,cube_i]/=np.sum(wt_one)               
     
     return cube.real
 
@@ -64,7 +73,9 @@ def make_psf(uu,vv,wv,cell,imsize,**kwargs):
 
     return cube
 
-def advise_header(uv,center,chanfreq,chanwidth,antsize=None):
+def advise_header(uv,center,chanfreq,chanwidth,
+                  sortbyfreq=False,
+                  antsize=None):
     """
     create a header template for discreating cloudlet model before uv sampling
         using accroding to UV sampling and primary beam FOV
@@ -107,12 +118,19 @@ def advise_header(uv,center,chanfreq,chanwidth,antsize=None):
     logger.debug('dxyz:'+(dxy<<u.rad).to(u.arcsec).to_string()+','+(np.mean(chanwidth.to(u.MHz))).to_string())
     
     crval3=chanfreq.to_value(u.Hz)
+    cdelt3=np.mean(chanwidth.to_value(u.Hz))
+    if  sortbyfreq==True:
+        if  cdelt3<0:
+            crval3=np.flip(crval3)
+            cdelt3=-cdelt3
+        
     if  not np.isscalar(crval3):
-        crval3=crval3[0]    
+        crval3=crval3[0]
+
     header=create_header(naxis=[nxy,nxy,np.size(chanfreq)],
                          objname='unknown',
                          crval=[center.ra.to_value(u.deg),center.dec.to_value(u.deg),crval3],
-                         cdelt=[-np.rad2deg(dxy),np.rad2deg(dxy),np.mean(chanwidth.to_value(u.Hz))])
+                         cdelt=[-np.rad2deg(dxy),np.rad2deg(dxy),cdelt3])
 
     
     return header

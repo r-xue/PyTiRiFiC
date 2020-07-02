@@ -6,6 +6,7 @@ from casatasks import importfits
 from casatools import calibrater
 from casatools import msmetadata
 from casatools import table
+import casatools as ctools
 import numexpr as ne
 
 from astropy.coordinates import SkyCoord
@@ -22,6 +23,7 @@ from ..utils.utils import paste_array
 import astropy.units as u
 from astropy.coordinates import Angle
 from ast import literal_eval
+
 from astropy.io import fits
 logger = logging.getLogger(__name__)
 

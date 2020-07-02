@@ -39,8 +39,12 @@ def invert(vis='',imagename='',
            datacolumn='data',antenna='',
            weighting='briggs',robust=1.0,npixels=0,
            cell=0.04,imsize=[128,128],phasecenter='',
-           specmode='cube',start=0,width=1,nchan=-1,perchanweightdensity=True,
-           restoringbeam='',onlydm=True,pbmask=0,pblimit=0):
+           specmode='cube',start='',width='',nchan=-1,perchanweightdensity=True,
+           restoringbeam='',onlydm=False,pbmask=0,pblimit=0,
+           exclude_list=['residual','residual.tt0','residual.tt1',
+                                   'sumwt','sumwt.tt0','sumwt.tt1','sumwt.tt2',
+                                   'model','model.tt0','model.tt1'],
+           **kwargs):
     """
     Generate a compact dirty image from a MS dataset as a quick imaging snapshot;
     
@@ -53,7 +57,14 @@ def invert(vis='',imagename='',
         imager.defineimage(nx=256, ny=256, cellx='0.7arcsec', celly='0.7arcsec')  
         imager.image(type='corrected', image='3C273XC1.dirty')  
         imager.close()
-        But it may be difficult to write a function to cover all setting already in casatasks.tclean() 
+        But it may be difficult to write a function to cover all setting already in casatasks.tclean()
+        
+    note:
+        apperantly tclean(start='',width='',nchan-1) will not follow the actual spw-channel arrangeent:
+        it will sort channel by frequency forst and then start the sequence.
+        That means even when negative channel width will still get frequency-increasing cube:
+            for such case, width=-1,nchanel=240,start=239 will get a cube following the channel-frequency arrangment.
+  
  
     """
     for ext in ext_list():
@@ -77,7 +88,8 @@ def invert(vis='',imagename='',
         for ext in ext_list():
             os.system('rm -rf '+imagename+'.'+ext)        
     else:
-        exportimages(imagename,droptable=True)
+        exportimages(imagename,droptable=True,
+                     exclude_list=exclude_list,**kwargs)
         
     return
 
@@ -100,9 +112,11 @@ def exportimages(imagenames,
                  overwrite=True,
                  stokeslast=True,dropstokes=False,
                  dropmask=False,droptable=False,
+                 exclude_list=[],
                  compress=False):
     """
     a wrap function to export tclean products into FITS
+    exclude_list include any ext_list element you don't want process
     """
     
     image_list = [imagenames] if  isinstance(imagenames,str) else imagenames
@@ -111,16 +125,19 @@ def exportimages(imagenames,
     for ext in ext_list():
         for fname in image_list:
             if  os.path.exists(fname+'.'+ext):
-                if  dropmask==True:
-                    if  ('.image' in fname+'.'+ext or '.residual' in fname+'.'+ext) \
-                        and os.path.exists(fname+'.'+ext+'/mask0'):
-                        makemask(mode='delete',inpimage=fname+'.'+ext,
-                                 inpmask=fname+'.'+ext+':mask0')
-                exportfits(fitsimage=fname+'.'+ext+'.fits',
-                           imagename=fname+'.'+ext,
-                           bitpix=-32, maxpix=-1,minpix=0,
-                           overwrite=overwrite, velocity=velocity, optical=optical,
-                           stokeslast=stokeslast,dropstokes=dropstokes)
+                
+                if  ext not in exclude_list:
+                    if  dropmask==True:
+                        if  ('.image' in fname+'.'+ext or '.residual' in fname+'.'+ext) \
+                            and os.path.exists(fname+'.'+ext+'/mask0'):
+                            makemask(mode='delete',inpimage=fname+'.'+ext,
+                                     inpmask=fname+'.'+ext+':mask0')
+                    exportfits(fitsimage=fname+'.'+ext+'.fits',
+                               imagename=fname+'.'+ext,
+                               bitpix=-32, maxpix=-1,minpix=0,
+                               overwrite=overwrite, velocity=velocity, optical=optical,
+                               stokeslast=stokeslast,dropstokes=dropstokes)
+                
                 if  droptable==True:
                     os.system("rm -rf "+fname+'.'+ext)
                 fits_list+=[fname+'.'+ext+'.fits']

@@ -224,7 +224,10 @@ def to_hdf5(value,outname='test.h5',checkname=False, **kwargs):
         https://support.hdfgroup.org/HDF5/Tutor/cmdtoolview.html
          h5ls -r test.h5
         h5dump -n 1 test.h5
-    optional kwargs:    compression='gzip'
+    optional kwargs:    compression='gzip' None, gzip, lzf (+ szip, if installed)
+        gzip is preferred 
+        lzip with high-speed but lower comperssion rate.
+        examples: uvdata.h5 (none2.5GB/lzip2.2GB/gzip2.0GB)
 
     """
     if  outname.endswith('.h5') or outname.endswith('.hdf5'):

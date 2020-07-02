@@ -1,5 +1,5 @@
 import os
-import pprint as pp
+from pprint import pformat
 import tempfile
 
 from casatools import logsink
@@ -16,7 +16,7 @@ logger = logging.getLogger('ism3d')
 
 def logger_config(logfile=None,
                   loglevel='INFO', logfilelevel='INFO',
-                  reset=True):
+                  reset=True,log2term=True):
     """
     set up a customized logger,e.g.,
         >>>ism3d.logger_config(logfile='logs/test_ism3d.log',
@@ -58,7 +58,7 @@ def logger_config(logfile=None,
     #   https://casa.nrao.edu/docs/CasaRef/logsink-Tool.html#logsink.version.html
     #   https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu43.html
 
-    casalogger_config(logfile=logfile,loglevel=loglevel,onconsole=True)
+    casalogger_config(logfile=logfile,loglevel=loglevel,onconsole=log2term)
     
     return
 
@@ -109,14 +109,14 @@ def logger_status():
     print out the current status of ism3d logger
     """
     logger.info("\n-- ism3d logger:\n")
-    logger.info(logging.getLogger('ism3d'))
-    logger.info(logging.getLogger('ism3d').handlers)
+    logger.info(pformat(logging.getLogger('ism3d')))
+    logger.info(pformat(logging.getLogger('ism3d').handlers))
     
     logger.info('\n-- casa logger:\n')
     logger.info(casalog.logfile())
         
     logger.info("\n-- root logger:\n")
-    logger.info(pp.pformat(logging.Logger.manager.loggerDict))
+    logger.info(pformat(logging.Logger.manager.loggerDict))
 
     return
 
