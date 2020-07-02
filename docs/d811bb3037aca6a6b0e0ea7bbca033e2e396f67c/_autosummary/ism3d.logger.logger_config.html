@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ism3d.logger.logger_status" href="ism3d.logger.logger_status.html" />
-    <link rel="prev" title="ism3d.logger" href="ism3d.logger.html" /> 
+    <link rel="prev" title="ism3d.logger.casalogsink_config" href="ism3d.logger.casalogsink_config.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -123,22 +123,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -158,12 +143,16 @@
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ism3d.logger.casalogger_config.html">ism3d.logger.casalogger_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.logger.casalogsink_config.html">ism3d.logger.casalogsink_config</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.logger.logger_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.logger.logger_status.html">ism3d.logger.logger_status</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.logger.CustomFormatter.html">ism3d.logger.CustomFormatter</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
 </ul>
 </li>
 </ul>
@@ -236,15 +225,17 @@
 <h1>ism3d.logger.logger_config<a class="headerlink" href="#ism3d-logger-logger-config" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ism3d.logger.logger_config">
-<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">logger_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">logfilelevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#logger_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.logger_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">logger_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">logfilelevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">log2term</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#logger_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.logger_config" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>set up a customized logger,e.g.,</dt><dd><dl class="simple">
-<dt>&gt;&gt;&gt;gmake.logger_config(logfile=’logs/test_gmake.log’,</dt><dd><p>loglevel=logging.WARNING,
+<dt>&gt;&gt;&gt;ism3d.logger_config(logfile=’logs/test_ism3d.log’,</dt><dd><p>loglevel=logging.WARNING,
 logfilelevel=logging.INFO)</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<p>note: this will merge the logging output from ism3d and casa6 into a single log file.
+loglevel=’INFO’/’WARN’/’DEBUG’</p>
 </dd></dl>
 
 </div>
@@ -260,7 +251,7 @@ logfilelevel=logging.INFO)</p>
         <a href="ism3d.logger.logger_status.html" class="btn btn-neutral float-right" title="ism3d.logger.logger_status" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.logger.html" class="btn btn-neutral float-left" title="ism3d.logger" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.logger.casalogsink_config.html" class="btn btn-neutral float-left" title="ism3d.logger.casalogsink_config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

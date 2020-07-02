@@ -123,22 +123,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -158,6 +143,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.cli.html">ism3d.uvhelper.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.ft.html">ism3d.uvhelper.ft</a></li>
@@ -169,11 +155,12 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.uvhelper.imager.xclean.html">ism3d.uvhelper.imager.xclean</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.logger.html">ism3d.uvhelper.logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.ms.html">ism3d.uvhelper.ms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.plts.html">ism3d.uvhelper.plts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.proc.html">ism3d.uvhelper.proc</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
 </ul>
 </li>
 </ul>
@@ -248,7 +235,7 @@
 <h1>ism3d.uvhelper.imager.invert<a class="headerlink" href="#ism3d-uvhelper-imager-invert" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ism3d.uvhelper.imager.invert">
-<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">invert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">imagename</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">antenna</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'briggs'</span></em>, <em class="sig-param"><span class="n">robust</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">npixels</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cell</span><span class="o">=</span><span class="default_value">0.04</span></em>, <em class="sig-param"><span class="n">imsize</span><span class="o">=</span><span class="default_value">[128, 128]</span></em>, <em class="sig-param"><span class="n">phasecenter</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">specmode</span><span class="o">=</span><span class="default_value">'cube'</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nchan</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">perchanweightdensity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">restoringbeam</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">onlydm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">pbmask</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pblimit</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.invert" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">invert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vis</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">imagename</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">datacolumn</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">antenna</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'briggs'</span></em>, <em class="sig-param"><span class="n">robust</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">npixels</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cell</span><span class="o">=</span><span class="default_value">0.04</span></em>, <em class="sig-param"><span class="n">imsize</span><span class="o">=</span><span class="default_value">[128, 128]</span></em>, <em class="sig-param"><span class="n">phasecenter</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">specmode</span><span class="o">=</span><span class="default_value">'cube'</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">nchan</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">perchanweightdensity</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">restoringbeam</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">onlydm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pbmask</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pblimit</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclude_list</span><span class="o">=</span><span class="default_value">['residual', 'residual.tt0', 'residual.tt1', 'sumwt', 'sumwt.tt0', 'sumwt.tt1', 'sumwt.tt2', 'model', 'model.tt0', 'model.tt1']</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.invert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a compact dirty image from a MS dataset as a quick imaging snapshot;</p>
 <p>Note about the default setting:</p>
 <ul class="simple">
@@ -261,6 +248,15 @@ imager.image(type=’corrected’, image=’3C273XC1.dirty’)
 imager.close()
 But it may be difficult to write a function to cover all setting already in casatasks.tclean()</p></li>
 </ul>
+<dl>
+<dt>note:</dt><dd><p>apperantly tclean(start=’’,width=’’,nchan-1) will not follow the actual spw-channel arrangeent:
+it will sort channel by frequency forst and then start the sequence.
+That means even when negative channel width will still get frequency-increasing cube:</p>
+<blockquote>
+<div><p>for such case, width=-1,nchanel=240,start=239 will get a cube following the channel-frequency arrangment.</p>
+</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

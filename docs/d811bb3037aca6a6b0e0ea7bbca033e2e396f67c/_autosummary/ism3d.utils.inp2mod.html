@@ -121,22 +121,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -218,6 +203,25 @@
             
   <div class="section" id="ism3d-utils-inp2mod">
 <h1>ism3d.utils.inp2mod<a class="headerlink" href="#ism3d-utils-inp2mod" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ism3d.utils.inp2mod">
+<code class="sig-prename descclassname">ism3d.utils.</code><code class="sig-name descname">inp2mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#inp2mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.inp2mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Input Parameter Dictionary to Model Properties Dictionary</p>
+<dl class="simple">
+<dt>The code will make a dictionary ready for model constructions, including:</dt><dd><ul class="simple">
+<li><p>add the default values</p></li>
+<li><p>fill optional keywords</p></li>
+<li><p>fill the “tied” values</p></li>
+</ul>
+</dd>
+</dl>
+<p>inp_dct</p>
+<p>–&gt; write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration)</p>
+<p>inp_dct_modified</p>
+<p>–&gt; inp2mod (fullfill the default value / ties / reject comments &lt;– act as a formatter)</p>
+<p>mod_dct</p>
+</dd></dl>
+
 </div>
 
 

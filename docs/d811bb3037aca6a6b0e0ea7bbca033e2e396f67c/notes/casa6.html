@@ -129,22 +129,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -282,11 +267,17 @@ The procedure is demostrated under Macports-Python 3.8 (set as below), though th
     casatasks casashell casaplotms casaviewer
 </pre></div>
 </div>
-<p>The other CASA6 components (<code class="docutils literal notranslate"><span class="pre">casatasks</span></code>,``casashell``,``casaviewer``,``casaplotms``,``casampi``) are not platform specific and the installation can be done using the standard method.</p>
+<p>The other CASA6 components (<code class="docutils literal notranslate"><span class="pre">casatasks</span></code>,``casashell``,``casaviewer``,``casaplotms``,``casampi``,`` casatelemetry``) are not platform specific and the installation can be done using the standard method.</p>
 </div>
 <div class="section" id="verify-the-installation">
 <h2>Verify the Installation<a class="headerlink" href="#verify-the-installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">casatasks</span><span class="o">,</span> <span class="nn">casatools</span>
+
+<span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;casatools ver:&#39;</span><span class="p">,</span><span class="n">casatools</span><span class="o">.</span><span class="n">version_string</span><span class="p">())</span>
+<span class="go">casatools ver: 6.1.0.107</span>
+
+<span class="gp">In [3]: </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;casatasks ver:&#39;</span><span class="p">,</span><span class="n">casatasks</span><span class="o">.</span><span class="n">version_string</span><span class="p">())</span>
+<span class="go">casatasks ver: 6.1.0.107</span>
 </pre></div>
 </div>
 </div>

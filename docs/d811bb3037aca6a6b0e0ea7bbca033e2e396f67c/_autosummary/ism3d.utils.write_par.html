@@ -121,22 +121,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -218,6 +203,25 @@
             
   <div class="section" id="ism3d-utils-write-par">
 <h1>ism3d.utils.write_par<a class="headerlink" href="#ism3d-utils-write-par" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ism3d.utils.write_par">
+<code class="sig-prename descclassname">ism3d.utils.</code><code class="sig-name descname">write_par</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">par_name</span></em>, <em class="sig-param"><span class="n">par_value</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#write_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.write_par" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>write parameter values</dt><dd><p>key:    par_str[ind_str]&#64;obj_str</p>
+</dd>
+<dt>example:</dt><dd><p>test=read_par(inp_dct,’xypos[0]&#64;co76’)
+print(test)
+test=read_par(inp_dct,’<a class="reference external" href="mailto:vrot&#37;&#52;&#48;co76">vrot<span>&#64;</span>co76</a>’)
+print(test)
+test=read_par(inp_dct,’vrot[0:2]&#64;co76’)
+print(test)
+write_par(inp_dct,’vrot[0:2]&#64;co76’,[2,5])
+test=read_par(inp_dct,’<a class="reference external" href="mailto:vrot&#37;&#52;&#48;co76">vrot<span>&#64;</span>co76</a>’)
+print(test)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

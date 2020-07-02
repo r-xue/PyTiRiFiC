@@ -121,22 +121,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -218,23 +203,31 @@
             
   <h1>Source code for ism3d.logger</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pprint</span> <span class="k">as</span> <span class="nn">pp</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 
 <span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">logsink</span>
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">casalog</span>   
+
+<span class="c1"># &lt;- the default logsink instance casatask uses</span>
+<span class="c1">#   not logfile after the initallization of casalog </span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span><span class="o">+</span><span class="n">casalog</span><span class="o">.</span><span class="n">logfile</span><span class="p">())</span>
+<span class="n">casalog</span><span class="o">.</span><span class="n">setlogfile</span><span class="p">(</span><span class="s1">&#39;/dev/null&#39;</span><span class="p">)</span>
+
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ism3d&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="logger_config"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.logger_config.html#ism3d.logger.logger_config">[docs]</a><span class="k">def</span> <span class="nf">logger_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span> <span class="n">logfilelevel</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span>
-                  <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                  <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">log2term</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    set up a customized logger,e.g.,</span>
-<span class="sd">        &gt;&gt;&gt;gmake.logger_config(logfile=&#39;logs/test_gmake.log&#39;,</span>
+<span class="sd">        &gt;&gt;&gt;ism3d.logger_config(logfile=&#39;logs/test_ism3d.log&#39;,</span>
 <span class="sd">                loglevel=logging.WARNING,</span>
 <span class="sd">                logfilelevel=logging.INFO)</span>
-
+<span class="sd">    note: this will merge the logging output from ism3d and casa6 into a single log file.</span>
+<span class="sd">    loglevel=&#39;INFO&#39;/&#39;WARN&#39;/&#39;DEBUG&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
@@ -269,24 +262,65 @@
     <span class="c1">#   https://casa.nrao.edu/docs/CasaRef/logsink-Tool.html#logsink.version.html</span>
     <span class="c1">#   https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu43.html</span>
 
+    <span class="n">casalogger_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span><span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">,</span><span class="n">onconsole</span><span class="o">=</span><span class="n">log2term</span><span class="p">)</span>
+    
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="casalogger_config"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.casalogger_config.html#ism3d.logger.casalogger_config">[docs]</a><span class="k">def</span> <span class="nf">casalogger_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span><span class="n">onconsole</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set CASA log file</span>
+<span class="sd">    use reset=True when you don&#39;t want the last casa log file (which could be autmatically created when import casataks)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span>  <span class="n">logfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#fd, casalogfile= tempfile.mkstemp(suffix=&#39;.log&#39;)</span>
+        <span class="n">casalogfile</span><span class="o">=</span><span class="s1">&#39;/dev/null&#39;</span>   
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">casalogfile</span><span class="o">=</span><span class="n">logfile</span>
+        
+    <span class="k">if</span>  <span class="n">reset</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="s1">&#39;null&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">casalog</span><span class="o">.</span><span class="n">logfile</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span><span class="o">+</span><span class="n">casalog</span><span class="o">.</span><span class="n">logfile</span><span class="p">())</span>
+     
+    <span class="n">casalog</span><span class="o">.</span><span class="n">setlogfile</span><span class="p">(</span><span class="n">casalogfile</span><span class="p">)</span>
+    <span class="n">casalog</span><span class="o">.</span><span class="n">showconsole</span><span class="p">(</span><span class="n">onconsole</span><span class="o">=</span><span class="n">onconsole</span><span class="p">)</span>
+    <span class="n">casalog</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+    
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="casalogsink_config"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.casalogsink_config.html#ism3d.logger.casalogsink_config">[docs]</a><span class="k">def</span> <span class="nf">casalogsink_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span><span class="n">onconsole</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    obselete</span>
+<span class="sd">    casatools.logsink can create a casalogger instance</span>
+<span class="sd">    import casatasks will initialize a casalogger instance</span>
+<span class="sd">    the casa logger setup will be initilized with &quot;import casataks&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    to prevent this, we need the casalogger configuration at the toolkit ahead of</span>
+<span class="sd">    import casatasks  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">logfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">fd</span><span class="p">,</span> <span class="n">logfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.log&#39;</span><span class="p">)</span>
+    <span class="c1"># site-packages/casatools/__casac__/logsink.py</span>
     <span class="n">casalogger</span> <span class="o">=</span> <span class="n">logsink</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">enable_telemetry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">casalogger</span><span class="o">.</span><span class="n">showconsole</span><span class="p">(</span><span class="n">onconsole</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">casalogger</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+    
+    <span class="k">return</span>    </div>
+    
 
-    <span class="k">return</span></div>
-
-
-<div class="viewcode-block" id="logger_status"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.logger_status.html#ism3d.logger.logger_status">[docs]</a><span class="k">def</span> <span class="nf">logger_status</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="logger_status"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.logger_status.html#ism3d.logger.logger_status">[docs]</a><span class="k">def</span> <span class="nf">logger_status</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    print out the current status of gmake logger</span>
+<span class="sd">    print out the current status of ism3d logger</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;gmake&#39;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;gmake&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">-- ism3d logger:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ism3d&#39;</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ism3d&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">handlers</span><span class="p">))</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">-- casa logger:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">casalog</span><span class="o">.</span><span class="n">logfile</span><span class="p">())</span>
+        
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">-- root logger:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">pformat</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="p">))</span>
 
     <span class="k">return</span></div>
 
@@ -295,7 +329,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    customized logging formatter which can handle mutiple-line msgs</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="CustomFormatter.format"><a class="viewcode-back" href="../../_autosummary/ism3d.logger.CustomFormatter.html#ism3d.logger.CustomFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">):</span>
         <span class="n">save_msg</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">msg</span>
         <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>

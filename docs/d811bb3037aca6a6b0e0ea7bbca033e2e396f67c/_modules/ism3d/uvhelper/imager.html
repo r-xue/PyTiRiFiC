@@ -121,22 +121,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -258,8 +243,12 @@
            <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
            <span class="n">weighting</span><span class="o">=</span><span class="s1">&#39;briggs&#39;</span><span class="p">,</span><span class="n">robust</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">npixels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
            <span class="n">cell</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span><span class="n">imsize</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">],</span><span class="n">phasecenter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-           <span class="n">specmode</span><span class="o">=</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nchan</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">perchanweightdensity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-           <span class="n">restoringbeam</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">onlydm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">pbmask</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblimit</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+           <span class="n">specmode</span><span class="o">=</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">nchan</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">perchanweightdensity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+           <span class="n">restoringbeam</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">onlydm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">pbmask</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblimit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+           <span class="n">exclude_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span><span class="s1">&#39;residual.tt0&#39;</span><span class="p">,</span><span class="s1">&#39;residual.tt1&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;sumwt&#39;</span><span class="p">,</span><span class="s1">&#39;sumwt.tt0&#39;</span><span class="p">,</span><span class="s1">&#39;sumwt.tt1&#39;</span><span class="p">,</span><span class="s1">&#39;sumwt.tt2&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;model&#39;</span><span class="p">,</span><span class="s1">&#39;model.tt0&#39;</span><span class="p">,</span><span class="s1">&#39;model.tt1&#39;</span><span class="p">],</span>
+           <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a compact dirty image from a MS dataset as a quick imaging snapshot;</span>
 <span class="sd">    </span>
@@ -272,7 +261,14 @@
 <span class="sd">        imager.defineimage(nx=256, ny=256, cellx=&#39;0.7arcsec&#39;, celly=&#39;0.7arcsec&#39;)  </span>
 <span class="sd">        imager.image(type=&#39;corrected&#39;, image=&#39;3C273XC1.dirty&#39;)  </span>
 <span class="sd">        imager.close()</span>
-<span class="sd">        But it may be difficult to write a function to cover all setting already in casatasks.tclean() </span>
+<span class="sd">        But it may be difficult to write a function to cover all setting already in casatasks.tclean()</span>
+<span class="sd">        </span>
+<span class="sd">    note:</span>
+<span class="sd">        apperantly tclean(start=&#39;&#39;,width=&#39;&#39;,nchan-1) will not follow the actual spw-channel arrangeent:</span>
+<span class="sd">        it will sort channel by frequency forst and then start the sequence.</span>
+<span class="sd">        That means even when negative channel width will still get frequency-increasing cube:</span>
+<span class="sd">            for such case, width=-1,nchanel=240,start=239 will get a cube following the channel-frequency arrangment.</span>
+<span class="sd">  </span>
 <span class="sd"> </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">ext_list</span><span class="p">():</span>
@@ -296,7 +292,8 @@
         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">ext_list</span><span class="p">():</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -rf &#39;</span><span class="o">+</span><span class="n">imagename</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">)</span>        
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">exportimages</span><span class="p">(</span><span class="n">imagename</span><span class="p">,</span><span class="n">droptable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">exportimages</span><span class="p">(</span><span class="n">imagename</span><span class="p">,</span><span class="n">droptable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">exclude_list</span><span class="o">=</span><span class="n">exclude_list</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
     <span class="k">return</span></div>
 
@@ -319,9 +316,11 @@
                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">stokeslast</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dropstokes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">dropmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">droptable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">exclude_list</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    a wrap function to export tclean products into FITS</span>
+<span class="sd">    exclude_list include any ext_list element you don&#39;t want process</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">image_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">imagenames</span><span class="p">]</span> <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">imagenames</span><span class="p">,</span><span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">imagenames</span>
@@ -330,16 +329,19 @@
     <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">ext_list</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">image_list</span><span class="p">:</span>
             <span class="k">if</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">):</span>
-                <span class="k">if</span>  <span class="n">dropmask</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-                    <span class="k">if</span>  <span class="p">(</span><span class="s1">&#39;.image&#39;</span> <span class="ow">in</span> <span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span> <span class="ow">or</span> <span class="s1">&#39;.residual&#39;</span> <span class="ow">in</span> <span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">)</span> \
-                        <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;/mask0&#39;</span><span class="p">):</span>
-                        <span class="n">makemask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span><span class="n">inpimage</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">,</span>
-                                 <span class="n">inpmask</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;:mask0&#39;</span><span class="p">)</span>
-                <span class="n">exportfits</span><span class="p">(</span><span class="n">fitsimage</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span>
-                           <span class="n">imagename</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">,</span>
-                           <span class="n">bitpix</span><span class="o">=-</span><span class="mi">32</span><span class="p">,</span> <span class="n">maxpix</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">minpix</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                           <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">optical</span><span class="o">=</span><span class="n">optical</span><span class="p">,</span>
-                           <span class="n">stokeslast</span><span class="o">=</span><span class="n">stokeslast</span><span class="p">,</span><span class="n">dropstokes</span><span class="o">=</span><span class="n">dropstokes</span><span class="p">)</span>
+                
+                <span class="k">if</span>  <span class="n">ext</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_list</span><span class="p">:</span>
+                    <span class="k">if</span>  <span class="n">dropmask</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                        <span class="k">if</span>  <span class="p">(</span><span class="s1">&#39;.image&#39;</span> <span class="ow">in</span> <span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span> <span class="ow">or</span> <span class="s1">&#39;.residual&#39;</span> <span class="ow">in</span> <span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">)</span> \
+                            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;/mask0&#39;</span><span class="p">):</span>
+                            <span class="n">makemask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span><span class="n">inpimage</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">,</span>
+                                     <span class="n">inpmask</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;:mask0&#39;</span><span class="p">)</span>
+                    <span class="n">exportfits</span><span class="p">(</span><span class="n">fitsimage</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span>
+                               <span class="n">imagename</span><span class="o">=</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">,</span>
+                               <span class="n">bitpix</span><span class="o">=-</span><span class="mi">32</span><span class="p">,</span> <span class="n">maxpix</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">minpix</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                               <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">optical</span><span class="o">=</span><span class="n">optical</span><span class="p">,</span>
+                               <span class="n">stokeslast</span><span class="o">=</span><span class="n">stokeslast</span><span class="p">,</span><span class="n">dropstokes</span><span class="o">=</span><span class="n">dropstokes</span><span class="p">)</span>
+                
                 <span class="k">if</span>  <span class="n">droptable</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;rm -rf &quot;</span><span class="o">+</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">)</span>
                 <span class="n">fits_list</span><span class="o">+=</span><span class="p">[</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;.fits&#39;</span><span class="p">]</span>

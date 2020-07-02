@@ -123,22 +123,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html">Bx610: Visibility-based Modeling of its line/continuum covered in two ALMA bands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bx610.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html">GN20:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/gn20.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html">Simulated High-z VLA Field</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#prepare-visibiity-data-from-the-calibrated-ms-restored-by-the-local-alma-pipeline">Prepare visibiity data from the calibrated MS restored by the local ALMA pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-2-aravena-m">2013.1.00059.S (Band 4, Cycle-2, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-6-cycle-3-aravena-m">2015.1.00250.S (Band 6, Cycle-3, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/simvla.html#s-band-4-cycle-5-aravena-m">2017.1.01045.S (Band 4, Cycle-5, Aravena M.)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_display.html">Example: BX610 (High-z SFG) : Examine Moment0 + 1D Spectrum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: misc</span></p>
 <ul>
@@ -158,6 +143,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.cli.html">ism3d.uvhelper.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.ft.html">ism3d.uvhelper.ft</a></li>
@@ -169,11 +155,12 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.uvhelper.imager.xclean.html">ism3d.uvhelper.imager.xclean</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.logger.html">ism3d.uvhelper.logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.ms.html">ism3d.uvhelper.ms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.plts.html">ism3d.uvhelper.plts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.uvhelper.proc.html">ism3d.uvhelper.proc</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
 </ul>
 </li>
 </ul>
@@ -248,8 +235,9 @@
 <h1>ism3d.uvhelper.imager.exportimages<a class="headerlink" href="#ism3d-uvhelper-imager-exportimages" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ism3d.uvhelper.imager.exportimages">
-<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">exportimages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagenames</span></em>, <em class="sig-param"><span class="n">velocity</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">optical</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stokeslast</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dropstokes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dropmask</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">droptable</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">compress</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#exportimages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.exportimages" title="Permalink to this definition">¶</a></dt>
-<dd><p>a wrap function to export tclean products into FITS</p>
+<code class="sig-prename descclassname">ism3d.uvhelper.imager.</code><code class="sig-name descname">exportimages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagenames</span></em>, <em class="sig-param"><span class="n">velocity</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">optical</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stokeslast</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dropstokes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dropmask</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">droptable</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">exclude_list</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">compress</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/uvhelper/imager.html#exportimages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.uvhelper.imager.exportimages" title="Permalink to this definition">¶</a></dt>
+<dd><p>a wrap function to export tclean products into FITS
+exclude_list include any ext_list element you don’t want process</p>
 </dd></dl>
 
 </div>

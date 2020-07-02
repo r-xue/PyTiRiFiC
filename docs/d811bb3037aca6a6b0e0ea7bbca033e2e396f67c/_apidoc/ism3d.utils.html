@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.utils package &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ism3d.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ism3d-utils-package">
+<h1>ism3d.utils package<a class="headerlink" href="#ism3d-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ism3d.utils.cli_new">
+<span id="ism3d-utils-cli-new-module"></span><h2>ism3d.utils.cli_new module<a class="headerlink" href="#module-ism3d.utils.cli_new" title="Permalink to this headline">¶</a></h2>
+<p>Console script for ism3d.</p>
+<dl class="py function">
+<dt id="ism3d.utils.cli_new.main">
+<code class="sig-prename descclassname">ism3d.utils.cli_new.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/cli_new.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.cli_new.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Console script for ism3d.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.utils.io">
+<span id="ism3d-utils-io-module"></span><h2>ism3d.utils.io module<a class="headerlink" href="#module-ism3d.utils.io" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.utils.io.dct2fits">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">dct2fits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dct</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">'dct2fits'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#dct2fits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.dct2fits" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>save a non-nested dictionary into a FITS binary table
+note:  not every Python object can be dumped into a FITS column,</p>
+<blockquote>
+<div><p>e.g. a dictionary type can be aded into a column of a astropy/Table, but
+the Table can’be saved into FITS.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>example:</dt><dd><p>gmake.dct2fits(dat_dct,save_npy=True)</p>
+</dd>
+</dl>
+<p>for npy np.save(outname.replace(‘.fits’,’.npy’),dct)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>note: we decide to save dct to HDF5 by default for a couple of reasons from now.</dt><dd><p>FITS is always stored in big-endian byte order, will cause some troubles with casacore/galario
+I/O performance is worse
+The “table” approach doesn’t support nesting / DatType may changed during the dct2fits-&gt;fits2dct process</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.dct2hdf">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">dct2hdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dct</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">'dct2hdf'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#dct2hdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.dct2hdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a Python dictionary object into a HDF5 file.
+slashes are not allowed in HDF5 object names
+We repalce any “/” in keys with “|” to avoid a confusion with HDF5 internal structures</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.dct2npy">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">dct2npy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dct</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">'dct2npy'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#dct2npy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.dct2npy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.export_model">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">export_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">models</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="o">=</span><span class="default_value">'./'</span></em>, <em class="sig-param"><span class="n">includedata</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">outname_exclude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outname_replace</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#export_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.export_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>export a model set into FITS images or Measurement Sets
+shortname:    a string list to get rid of from the original data image name</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.fits2dct">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">fits2dct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fits</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#fits2dct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.fits2dct" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a fits table into a none-nested dictionary
+the fits table must be the “1-row” version from gmake.dct2fits</p>
+<dl class="simple">
+<dt>References</dt><dd><ul class="simple">
+<li><p>about FITS byteorder: <a class="reference external" href="https://github.com/astropy/astropy/issues/4069">https://github.com/astropy/astropy/issues/4069</a></p></li>
+</ul>
+</dd>
+<dt>note: we decide to save dct to HDF5 by default for a couple of reasons from now.</dt><dd><p>FITS is always stored in big-endian byte order, will cause some troubles with casacore/galario
+I/O performance is worse
+The “table” approach doesn’t support nesting / DatType may changed during the dct2fits-&gt;fits2dct process</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.from_hdf5">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">from_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#from_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.from_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a Python dictionary object from a HDF5 file
+slashes are not allowed in HDF5 object names
+We repalce any “|” in keys with “/” to recover the potential file directory paths in keysst</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.hdf2dct">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">hdf2dct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hdf</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#hdf2dct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.hdf2dct" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a Python dictionary object from a HDF5 file
+slashes are not allowed in HDF5 object names
+We repalce any “|” in keys with “/” to recover the potential file directory paths in keysst</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.npy2dct">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">npy2dct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">npyname</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#npy2dct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.npy2dct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.read_data">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">read_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">save_data</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fill_mask</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fill_error</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">polaverage</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dataflag</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">saveflag</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.read_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>read FITS/image or MS/visibilities into the dictionary</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>we set data=</p></li>
+</ul>
+<dl>
+<dt>note:</dt><dd><p>DATA column shape in nrecord x nchan x ncorr
+WEIGHT column shape in nrecord x ncorr( supposely this is the “average” value of WEIGHT_SPECTRUM along the channle-axis
+WEIGHT_SPECTRUM SHAPE in nrecord x nchan x ncorr
+FLAGS shape in nrecord x nchan x ncorr
+(so WEIGHT_SPECTRUM is likely ~WEIGHT/NCHAN?) depending on the data model / calibration script</p>
+<p><a class="reference external" href="mailto:data&#37;&#52;&#48;ms">data<span>&#64;</span>ms</a> in complex64 (not complex128)</p>
+</dd>
+<dt>For space-saving, we</dt><dd><ul class="simple">
+<li><p>set DATA-values=np.nan when flag=True (so there is no a “flag” variable for flagging in dat_dct</p></li>
+<li><dl class="simple">
+<dt>when polaverage=True, we only derive stokes-I if both XX/YY (or RR/YY) are Good. If one of them are flagged, Data-Values set to np.nan</dt><dd><p>this follows the principle in the tclean()/stokes parameter
+<a class="reference external" href="https://casa.nrao.edu/casadocs-devel/stable/global-task-list/task_tclean/parameters">https://casa.nrao.edu/casadocs-devel/stable/global-task-list/task_tclean/parameters</a>
+<a class="reference external" href="http://casacore.github.io/casacore/StokesConverter_8h_source.html">http://casacore.github.io/casacore/StokesConverter_8h_source.html</a></p>
+</dd>
+</dl>
+</li>
+<li><p>weight doesn’t include the channel-axis (assuming the channel-wise weight variable is neligible</p></li>
+</ul>
+<p>XX=I+Q YY=I-Q ; RR=I+V LL=I-V =&gt; I=(XX+YY)/2 or (RR+LL)/2</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.io.to_hdf5">
+<code class="sig-prename descclassname">ism3d.utils.io.</code><code class="sig-name descname">to_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">'test.h5'</span></em>, <em class="sig-param"><span class="n">checkname</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/io.html#to_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.io.to_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a Python dictionary object into a HDF5 file.
+slashes are not allowed in HDF5 object names
+We repalce any “/” in keys with “|” to avoid a confusion with HDF5 internal structures</p>
+<dl>
+<dt>note:</dt><dd><dl class="simple">
+<dt><a class="reference external" href="https://support.hdfgroup.org/HDF5/Tutor/cmdtoolview.html">https://support.hdfgroup.org/HDF5/Tutor/cmdtoolview.html</a></dt><dd><p>h5ls -r test.h5</p>
+</dd>
+</dl>
+<p>h5dump -n 1 test.h5</p>
+</dd>
+<dt>optional kwargs:    compression=’gzip’ None, gzip, lzf (+ szip, if installed)</dt><dd><p>gzip is preferred
+lzip with high-speed but lower comperssion rate.
+examples: uvdata.h5 (none2.5GB/lzip2.2GB/gzip2.0GB)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.utils.meta">
+<span id="ism3d-utils-meta-module"></span><h2>ism3d.utils.meta module<a class="headerlink" href="#module-ism3d.utils.meta" title="Permalink to this headline">¶</a></h2>
+<p>Container for internal metadata/configuration variables under the program namespace</p>
+<blockquote>
+<div><p>inp_dct:    input parameter set (using quantities)
+mod_dct:    model parameter set (using quantities)
+obj_dct:    component parameter set (dimensionless, values in internal units)</p>
+</div></blockquote>
+<p>Input metadata                    inp_dct (can be hacked) (fixed)
+Component metadata                mod_dct (lightweight) (dynamical(
+Component Reference model            mod_dct (lightweight (dynamical)
+Data                                dat_dct (heavy) (transite)
+Models                            models (heavy) not nesscarilly filled with data (transite only exporting data)</p>
+<dl class="py function">
+<dt id="ism3d.utils.meta.read_inp">
+<code class="sig-prename descclassname">ism3d.utils.meta.</code><code class="sig-name descname">read_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parfile</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/meta.html#read_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.meta.read_inp" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>read parameters/setups from a .inp file into a dictionary nest:</dt><dd><p>inp_dct[id][keywords]=values.
+inp_dct[‘comments’]=’??’
+inp_dct[‘changlog’]=’??’
+inp_dct[‘optimize’]=’??’</p>
+</dd>
+<dt>keyword value formatting</dt><dd><p>1.remove trailing/prefix space / comments
+2.split my space
+3.first element is the key
+4.the rest elements will be filled into value</p>
+<blockquote>
+<div><p>more than one element : list
+one element: scaler</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.utils.misc">
+<span id="ism3d-utils-misc-module"></span><h2>ism3d.utils.misc module<a class="headerlink" href="#module-ism3d.utils.misc" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.utils.misc.check_config">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">check_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#check_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.check_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.check_deps">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">check_deps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">package_name</span><span class="o">=</span><span class="default_value">'ism3d'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#check_deps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.check_deps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.check_fftpack">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">check_fftpack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#check_fftpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.check_fftpack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.convert_size">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">convert_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size_bytes</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#convert_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.convert_size" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>obsolete</strong> now we use human_unit()/human_to_string()</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.get_obj_size">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">get_obj_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">to_string</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#get_obj_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.get_obj_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.human_to_string">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">human_to_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">format_string</span><span class="o">=</span><span class="default_value">'{0.value:0.2f} {0.unit:shortname}'</span></em>, <em class="sig-param"><span class="n">nospace</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#human_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.human_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>A slightly more fancy version of quality.to_string()
+add the option of 0.units:shortname in formating string syntax
+# <a class="reference external" href="https://docs.astropy.org/en/stable/units/format.html#astropy-units-format">https://docs.astropy.org/en/stable/units/format.html#astropy-units-format</a></p>
+<dl class="simple">
+<dt>format: forwarded to .to_string(format):</dt><dd><p>options: generic, unscaled, cds, console, fits, latex, latex_inline, ogip, unicode, vounit</p>
+</dd>
+<dt>format_string: {0:0.2f} {1}</dt><dd><p>help format you output when output=’string’</p>
+</dd>
+<dt>output:</dt><dd><p>‘string’:       a string represent the input quantity in best-guess unit</p>
+</dd>
+</dl>
+<p>For time:           try built-in astropy.utils.console.human_time()
+For file size:      one may also use astropy.utils.concolse.human_file_size()</p>
+<p>print(human_to_string(q,format_string=’{0.value:0.2f} {0.unit:shortname}’,nospace=False))
+print(human_to_string(q,format_string=’{0.value:0.2f}{0.unit:shortname}’,nospace=True))
+print(human_to_string(q,format_string=’{0.value:0.2f}{0.unit:cds}’,nospace=True))
+print(human_to_string(q,format_string=’{0.value:0.2f} in {0.unit:shortname}’,nospace=True))
+print(human_to_string(q,format_string=’{0.value:0.2f} in {0.unit:cds}’,nospace=True))</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.human_unit">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">human_unit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">quantity</span></em>, <em class="sig-param"><span class="n">return_unit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">base_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">scale_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#human_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.human_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sugguest a better unit for the quantity and make it more human readable
+e.g. 1200 m/s -&gt; 1.2 km/s</p>
+<dl class="simple">
+<dt>return_unit:</dt><dd><p>False:          return the input quantity in a suggested unit
+True:           just return a suggested unit</p>
+</dd>
+<dt>base_index:</dt><dd><p>the index of the unitbase which we examine its prefix possibility.</p>
+</dd>
+</dl>
+<p>For time:           try built-in astropy.utils.console.human_time()
+For file size:      one may also use astropy.utils.concolse.human_file_size()</p>
+<p>reference:    <a class="reference external" href="https://docs.astropy.org/en/stable/_modules/astropy/units/core.html">https://docs.astropy.org/en/stable/_modules/astropy/units/core.html</a></p>
+<p>have tried the functions below,they work similar for PrefixUnit, but they dont work well
+with composited units (e.g. u.km/u.s)</p>
+<blockquote>
+<div><p>get_current_unit_registry().get_units_with_physical_type(unit)
+unit.find_equivalent_units(include_prefix_units=True)
+unit.compose(include_prefix_units=True) might work but the results can be unexpected</p>
+</div></blockquote>
+<dl class="simple">
+<dt>note:</dt><dd><p>get_units_with_same_physical_type() is a private method, since end users should be encouraged
+to use the more powerful <cite>compose</cite> and <cite>find_equivalent_units</cite>
+methods (which use this under the hood).</p>
+</dd>
+</dl>
+<p>help find the best human readable unit
+then you can do q.to_string(unit=’*’)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.unit_shortname">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">unit_shortname</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">unit</span></em>, <em class="sig-param"><span class="n">nospace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">options</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#unit_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.unit_shortname" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert unit to shortest name
+e.g.: (unit_shortname(u.Jy*u.km/u.s,nospace=False)</p>
+<p>In [5]: unit_shortname(u.Jy*u.km/u.s,nospace=False)
+Out[5]: ‘Jy km / s’</p>
+<p>In [6]: unit_shortname(u.Jy*u.km/u.s,nospace=True)
+Out[6]: ‘Jykm/s’</p>
+<p>ref:
+<a class="reference external" href="https://docs.astropy.org/en/stable/units/format.html#astropy-units-format">https://docs.astropy.org/en/stable/units/format.html#astropy-units-format</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.utils.utils">
+<span id="ism3d-utils-utils-module"></span><h2>ism3d.utils.utils module<a class="headerlink" href="#module-ism3d.utils.utils" title="Permalink to this headline">¶</a></h2>
+<p>General-purpose utility Functions used by other modules</p>
+<dl class="py function">
+<dt id="ism3d.utils.utils.backup">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">backup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">move</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#backup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>backup file / dirwectiory to be overwrite</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.chi2red_to_lognsigma">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">chi2red_to_lognsigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chi2red</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#chi2red_to_lognsigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.chi2red_to_lognsigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.eval_func">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">eval_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vs_func_ps</span></em>, <em class="sig-param"><span class="n">var_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#eval_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.eval_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do an inline calculation from a string expression in a lambda function-like syntax</p>
+<blockquote>
+<div><p>1st: element</p>
+</div></blockquote>
+<dl>
+<dt>expr<span class="classifier">expected to be a tuple</span></dt><dd><dl class="simple">
+<dt>expr[0]   string:</dt><dd><p>lamabda function-like syntax defining a anonymous function and its variable(s)
+the variables’ name and content should exist in the dictionary “locals”</p>
+</dd>
+<dt>expr[1],expr[2],expr[3]</dt><dd><p>function parameters</p>
+</dd>
+</dl>
+</dd>
+<dt>output:</dt><dd><p>the function’s value at each points of variables under the given parameters</p>
+</dd>
+<dt>example:</dt><dd><p>eval_func((‘rho : minimum(rho/p2,1.0)*p1’,200*u.km/u.s,5*u.kpc),locals())</p>
+<p>the function call will calculate “minimum(rho/p2,1.0)*p1” assuming
+p1=200*u.km/u.s &amp; p2=5*u.kpc at each “rho” value.
+Here, “rho” is a local-scope variable containing a numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.gal_flat">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">gal_flat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">im</span></em>, <em class="sig-param"><span class="n">ang</span></em>, <em class="sig-param"><span class="n">inc</span></em>, <em class="sig-param"><span class="n">cen</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interp</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">align_major</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#gal_flat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.gal_flat" title="Permalink to this definition">¶</a></dt>
+<dd><p>translated from IDL/gal_flat.pro
+im in (nz,ny,nx)
+cen is (xc,yc)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.get_autocoor_time">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">get_autocoor_time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#get_autocoor_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.get_autocoor_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.get_dirsize">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">get_dirsize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#get_dirsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.get_dirsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the size of a file or directory</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.gmake_listpars">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">gmake_listpars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span></em>, <em class="sig-param"><span class="n">showcontent</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#gmake_listpars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.gmake_listpars" title="Permalink to this definition">¶</a></dt>
+<dd><p>print out the parameter dict</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.gmake_pformat">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">gmake_pformat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fit_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#gmake_pformat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.gmake_pformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>fill..
+p_format            : format for values
+p_format_keys       : format for p_name</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.h5ls">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">h5ls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#h5ls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.h5ls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.h5ls_print">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">h5ls_print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#h5ls_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.h5ls_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.imcontsub">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">imcontsub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagename</span></em>, <em class="sig-param"><span class="n">linefile</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">contfile</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fitorder</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">linechan</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">contchan</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#imcontsub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.imcontsub" title="Permalink to this definition">¶</a></dt>
+<dd><p>linechan / contchan: tuple with [fmin,fmax] in each element</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.inp2mod">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">inp2mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#inp2mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.inp2mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Input Parameter Dictionary to Model Properties Dictionary</p>
+<dl class="simple">
+<dt>The code will make a dictionary ready for model constructions, including:</dt><dd><ul class="simple">
+<li><p>add the default values</p></li>
+<li><p>fill optional keywords</p></li>
+<li><p>fill the “tied” values</p></li>
+</ul>
+</dd>
+</dl>
+<p>inp_dct</p>
+<p>–&gt; write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration)</p>
+<p>inp_dct_modified</p>
+<p>–&gt; inp2mod (fullfill the default value / ties / reject comments &lt;– act as a formatter)</p>
+<p>mod_dct</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.inp_validate">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">inp_validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#inp_validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.inp_validate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>validate the input parameters, will do the follows step by step</dt><dd><ol class="arabic simple">
+<li><p>check if the variable type against its type definition</p></li>
+<li><p>for quanity, check the physical_type use .is_eqivalent(default_unit)</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.make_slice">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">make_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#make_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.make_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>parsing the slicing syntax in STRING</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.moments">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagename</span></em>, <em class="sig-param"><span class="n">outname</span><span class="o">=</span><span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">maskname</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">linechan</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#moments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.moments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.obj_defunit">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">obj_defunit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#obj_defunit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.obj_defunit" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert quatity to values in default internal units</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.one_beam">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">one_beam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fitsname</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#one_beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.one_beam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.paste_array">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">paste_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wall</span></em>, <em class="sig-param"><span class="n">block</span></em>, <em class="sig-param"><span class="n">loc</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'replace'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#paste_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.paste_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>past a small array into a larger array with shifting
+works for high dimension or off-edge cases
+wall/block requires in the same dimension number
+loc: the index of left-bottom pixel of block in wall.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.paste_slice">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">paste_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tup</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#paste_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.paste_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>make slice for the overlapping region</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.pprint">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">pprint</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#pprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.pprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>A modified pprint.pprint without sorting dictionary keys</p>
+<dl class="simple">
+<dt>this may not be neccsary with Py38+ as optional keyword sort_dicts become available</dt><dd><p><a class="reference external" href="https://docs.python.org/3/library/pprint.html">https://docs.python.org/3/library/pprint.html</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.read_par">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">read_par</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">par_name</span></em>, <em class="sig-param"><span class="n">to_value</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#read_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.read_par" title="Permalink to this definition">¶</a></dt>
+<dd><p>read parameter quantity / values (in default units) from a parameter dictionary
+this function can handle literal slicing and attribute syntax</p>
+<blockquote>
+<div><dl class="simple">
+<dt>e.g.:   par_str[ind_str]&#64;section_name</dt><dd><p><a class="reference external" href="mailto:par_str&#46;attrubute&#37;&#52;&#48;section_name">par_str<span>&#46;</span>attrubute<span>&#64;</span>section_name</a></p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.read_range">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">read_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#read_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.read_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>modifiy the parameter exploring bounrdary according to the info from opt section
+a:    absolute</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.repr_parameter">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">repr_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#repr_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.repr_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similiar to the built-in repr(), but can handle Quantity / SkyCoord
+used for writing input files</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.rng_seeded">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">rng_seeded</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#rng_seeded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.rng_seeded" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a seeded RNG plus is_mkl
+mkl_random is preferrred over numpy.random</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.rotate_xy">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">rotate_xy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">angle</span></em>, <em class="sig-param"><span class="n">xo</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">yo</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#rotate_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.rotate_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>rotate points in a 2D coordinate system
+angle:    rotate points by angle in CCW
+ref:    rotate_xy.pro rot_3d.pro
+performance consideration:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://gist.github.com/LyleScott/e36e08bfb23b1f87af68c9051f985302">https://gist.github.com/LyleScott/e36e08bfb23b1f87af68c9051f985302</a>
+<a class="reference external" href="https://stackoverflow.com/questions/33004551/why-is-b-numpy-dota-x-so-much-slower-looping-through-doing-bi-numpy">https://stackoverflow.com/questions/33004551/why-is-b-numpy-dota-x-so-much-slower-looping-through-doing-bi-numpy</a>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rotation_matrix">https://en.wikipedia.org/wiki/Rotation_matrix</a></p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.sample_grid">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">sample_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spacing</span></em>, <em class="sig-param"><span class="n">xrange</span><span class="o">=</span><span class="default_value">[- 100, 100]</span></em>, <em class="sig-param"><span class="n">yrange</span><span class="o">=</span><span class="default_value">[- 100, 100]</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ratio</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#sample_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.sample_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>this is loosely based on my sample_grid.pro in IDL with improvement on defining x-/y-range
+angle in rad
+ratio=major/minor</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.set_threads">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">set_threads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#set_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.set_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>some underline alrgoithm library can use OMP
+turn on OMP is beneficial for iteration optimizwer but not for parallele optimizer
+this function can turn on / turn off OMP in modelling alrothjm</p>
+<dl class="simple">
+<dt>ref:</dt><dd><p>looks like os.environ will only work before import packages
+after the packages are imported, changing os.environ can not dynamically
+switching nthreads</p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://software.intel.com/en-us/mkl-linux-developer-guide-mkl-domain-num-threads">https://software.intel.com/en-us/mkl-linux-developer-guide-mkl-domain-num-threads</a>
+<a class="reference external" href="http://www.diracprogram.org/doc/release-17/installation/mkl.html">http://www.diracprogram.org/doc/release-17/installation/mkl.html</a>
+<a class="reference external" href="https://software.intel.com/en-us/blogs/2018/10/18/mkl-service-package-controlling-mkl-behavior-through-python-interfaces">https://software.intel.com/en-us/blogs/2018/10/18/mkl-service-package-controlling-mkl-behavior-through-python-interfaces</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.sort_on_runtime">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">sort_on_runtime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#sort_on_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.sort_on_runtime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.write_inp">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">write_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">inpfile</span><span class="o">=</span><span class="default_value">'example.inp'</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#write_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.write_inp" title="Permalink to this definition">¶</a></dt>
+<dd><p>write out inp files from inp_dct
+if overwrite=False, the function will try to append .0/.1/.2… to the .inp file name
+writepar is two-element tuple, first element is the key name to be modified</p>
+<blockquote>
+<div><p>second element is the value</p>
+</div></blockquote>
+<p>note: py&gt;=3.7 use the ordered dict by default (so the output keyword order is preserved)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.utils.write_par">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">write_par</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">par_name</span></em>, <em class="sig-param"><span class="n">par_value</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#write_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.write_par" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>write parameter values</dt><dd><p>key:    par_str[ind_str]&#64;obj_str</p>
+</dd>
+<dt>example:</dt><dd><p>test=read_par(inp_dct,’xypos[0]&#64;co76’)
+print(test)
+test=read_par(inp_dct,’<a class="reference external" href="mailto:vrot&#37;&#52;&#48;co76">vrot<span>&#64;</span>co76</a>’)
+print(test)
+test=read_par(inp_dct,’vrot[0:2]&#64;co76’)
+print(test)
+write_par(inp_dct,’vrot[0:2]&#64;co76’,[2,5])
+test=read_par(inp_dct,’<a class="reference external" href="mailto:vrot&#37;&#52;&#48;co76">vrot<span>&#64;</span>co76</a>’)
+print(test)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ism3d.utils" title="Permalink to this headline">¶</a></h2>
+<p>subpackage utils</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

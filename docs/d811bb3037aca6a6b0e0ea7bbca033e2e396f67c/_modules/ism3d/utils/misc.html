@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.utils.misc &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ism3d.utils.misc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ism3d.utils.misc</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">multiprocessing</span>
+
+<span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
+<span class="kn">from</span> <span class="nn">pip._vendor</span> <span class="kn">import</span> <span class="n">pkg_resources</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">gc</span>
+
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">Quantity</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+
+<span class="kn">import</span> <span class="nn">ism3d</span>
+
+<div class="viewcode-block" id="check_config"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.check_config.html#ism3d.utils.misc.check_config">[docs]</a><span class="k">def</span> <span class="nf">check_config</span><span class="p">():</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;#&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Python version:   </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Host Name:        </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Num of Core:      </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()))</span>
+    <span class="n">mem</span><span class="o">=</span><span class="n">virtual_memory</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Total Memory:     </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">convert_size</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">total</span><span class="p">)))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Available Memory: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">convert_size</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">available</span><span class="p">)))</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">check_deps</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">check_fftpack</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="o">*</span><span class="mi">80</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>    </div>
+    
+    
+    
+<div class="viewcode-block" id="check_deps"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.check_deps.html#ism3d.utils.misc.check_deps">[docs]</a><span class="k">def</span> <span class="nf">check_deps</span><span class="p">(</span><span class="n">package_name</span><span class="o">=</span><span class="s1">&#39;ism3d&#39;</span><span class="p">):</span>
+    
+    <span class="n">package</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="o">.</span><span class="n">by_key</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="n">deps</span> <span class="o">=</span> <span class="n">package</span><span class="o">.</span><span class="n">requires</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">deps</span><span class="p">:</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">version_required</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">specifier</span><span class="p">)</span>
+        <span class="k">if</span>  <span class="n">version_required</span><span class="o">==</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">version_required</span><span class="o">=</span><span class="s1">&#39;unspecified&#39;</span>
+        <span class="n">version_installed</span><span class="o">=</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="o">.</span><span class="n">by_key</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">version</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&lt;18}</span><span class="s1"> </span><span class="si">{1:&lt;12}</span><span class="s1"> </span><span class="si">{2:&lt;12}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">version_required</span><span class="p">,</span><span class="n">version_installed</span><span class="p">))</span>
+
+    <span class="k">return</span>    </div>
+
+<div class="viewcode-block" id="check_fftpack"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.check_fftpack.html#ism3d.utils.misc.check_fftpack">[docs]</a><span class="k">def</span> <span class="nf">check_fftpack</span><span class="p">():</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;fft_use:          </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ism3d</span><span class="o">.</span><span class="n">fft_use</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;fft_fastlen:      </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ism3d</span><span class="o">.</span><span class="n">fft_fastlen</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span><span class="n">ism3d</span><span class="o">.</span><span class="n">fft_fastlen</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="convert_size"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.convert_size.html#ism3d.utils.misc.convert_size">[docs]</a><span class="k">def</span> <span class="nf">convert_size</span><span class="p">(</span><span class="n">size_bytes</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **obsolete** now we use human_unit()/human_to_string()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">size_bytes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="s2">&quot;0B&quot;</span> 
+    <span class="n">size_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;KB&quot;</span><span class="p">,</span> <span class="s2">&quot;MB&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">,</span> <span class="s2">&quot;TB&quot;</span><span class="p">,</span> <span class="s2">&quot;PB&quot;</span><span class="p">,</span> <span class="s2">&quot;EB&quot;</span><span class="p">,</span> <span class="s2">&quot;ZB&quot;</span><span class="p">,</span> <span class="s2">&quot;YB&quot;</span><span class="p">)</span> 
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">size_bytes</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1024</span><span class="p">)))</span>
+    <span class="n">power</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> 
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">size_bytes</span> <span class="o">/</span> <span class="n">power</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size_name</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="unit_shortname"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.unit_shortname.html#ism3d.utils.misc.unit_shortname">[docs]</a><span class="k">def</span> <span class="nf">unit_shortname</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">nospace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    convert unit to shortest name</span>
+<span class="sd">    e.g.: (unit_shortname(u.Jy*u.km/u.s,nospace=False)</span>
+
+<span class="sd">    In [5]: unit_shortname(u.Jy*u.km/u.s,nospace=False)                                                                 </span>
+<span class="sd">    Out[5]: &#39;Jy km / s&#39;</span>
+
+<span class="sd">    In [6]: unit_shortname(u.Jy*u.km/u.s,nospace=True)                                                                  </span>
+<span class="sd">    Out[6]: &#39;Jykm/s&#39;    </span>
+
+<span class="sd">    ref:</span>
+<span class="sd">    https://docs.astropy.org/en/stable/units/format.html#astropy-units-format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">format_all</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;generic&#39;</span><span class="p">,</span> <span class="s1">&#39;unscaled&#39;</span><span class="p">,</span> <span class="s1">&#39;cds&#39;</span><span class="p">,</span> <span class="s1">&#39;console&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;latex&#39;</span><span class="p">,</span> <span class="s1">&#39;latex_inline&#39;</span><span class="p">,</span> <span class="s1">&#39;ogip&#39;</span><span class="p">,</span> <span class="s1">&#39;unicode&#39;</span><span class="p">,</span> <span class="s1">&#39;vounit&#39;</span><span class="p">]</span>
+    <span class="n">unit_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">unit_names</span> <span class="o">+=</span> <span class="n">unit</span><span class="o">.</span><span class="n">names</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">unit_names</span> <span class="o">+=</span> <span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">format_all</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">options</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">unit_names</span><span class="p">)</span>
+    <span class="n">unit_string</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">unit_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nospace</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">unit_string</span> <span class="o">=</span> <span class="n">unit_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">unit_string</span></div>
+
+<div class="viewcode-block" id="human_unit"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.human_unit.html#ism3d.utils.misc.human_unit">[docs]</a><span class="k">def</span> <span class="nf">human_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">return_unit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sugguest a better unit for the quantity and make it more human readable</span>
+<span class="sd">    e.g. 1200 m/s -&gt; 1.2 km/s</span>
+<span class="sd">        </span>
+<span class="sd">    return_unit:</span>
+<span class="sd">        False:          return the input quantity in a suggested unit</span>
+<span class="sd">        True:           just return a suggested unit</span>
+
+<span class="sd">    base_index:</span>
+<span class="sd">        the index of the unitbase which we examine its prefix possibility.</span>
+<span class="sd">            </span>
+<span class="sd">    For time:           try built-in astropy.utils.console.human_time()</span>
+<span class="sd">    For file size:      one may also use astropy.utils.concolse.human_file_size()</span>
+
+<span class="sd">    reference:    https://docs.astropy.org/en/stable/_modules/astropy/units/core.html</span>
+<span class="sd">    </span>
+<span class="sd">    have tried the functions below,they work similar for PrefixUnit, but they dont work well </span>
+<span class="sd">    with composited units (e.g. u.km/u.s)</span>
+<span class="sd">        get_current_unit_registry().get_units_with_physical_type(unit)</span>
+<span class="sd">        unit.find_equivalent_units(include_prefix_units=True)</span>
+<span class="sd">        unit.compose(include_prefix_units=True) might work but the results can be unexpected</span>
+<span class="sd">    note:</span>
+<span class="sd">        get_units_with_same_physical_type() is a private method, since end users should be encouraged</span>
+<span class="sd">        to use the more powerful `compose` and `find_equivalent_units`</span>
+<span class="sd">        methods (which use this under the hood).</span>
+<span class="sd">        </span>
+<span class="sd">    help find the best human readable unit</span>
+<span class="sd">    then you can do q.to_string(unit=&#39;*&#39;)        </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    
+    <span class="k">if</span>  <span class="ow">not</span> <span class="n">quantity</span><span class="o">.</span><span class="n">isscalar</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;given quantity is not scalar&quot;</span><span class="p">)</span>
+   
+    <span class="n">human_unit</span><span class="o">=</span><span class="n">quantity</span><span class="o">.</span><span class="n">unit</span>
+
+    <span class="n">bases</span><span class="o">=</span><span class="n">human_unit</span><span class="o">.</span><span class="n">bases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">powers</span><span class="o">=</span><span class="n">human_unit</span><span class="o">.</span><span class="n">powers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">base</span><span class="o">=</span><span class="n">bases</span><span class="p">[</span><span class="n">base_index</span><span class="p">]</span>
+    <span class="n">candidate_list</span><span class="o">=</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">include_prefix_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span>  <span class="n">base</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">byte</span><span class="p">):</span>
+        <span class="n">base_factor</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span>
+    <span class="k">elif</span>    <span class="n">base</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">base_factor</span><span class="o">=</span><span class="mi">60</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">base_factor</span><span class="o">=</span><span class="mf">1e3</span>
+
+    <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidate_list</span><span class="p">:</span>
+    
+        <span class="k">if</span>  <span class="n">scale_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">candidate</span><span class="o">.</span><span class="n">scale</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">scale_range</span><span class="p">)</span> <span class="ow">or</span> <span class="n">candidate</span><span class="o">.</span><span class="n">scale</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">scale_range</span><span class="p">):</span>
+                <span class="k">continue</span>
+        
+        <span class="k">if</span>  <span class="mi">1</span> <span class="o">&lt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">*</span><span class="n">candidate</span><span class="o">.</span><span class="n">scale</span> <span class="o">&lt;</span> <span class="n">base_factor</span> <span class="ow">and</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base_factor</span><span class="p">))</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+            
+            <span class="n">human_base</span><span class="o">=</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">bases</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">bases</span><span class="p">[</span><span class="n">base_index</span><span class="p">]</span><span class="o">=</span><span class="n">human_base</span>
+            <span class="n">human_unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">powers</span><span class="p">):</span> 
+                <span class="n">human_unit</span> <span class="o">*=</span> <span class="n">b</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">b</span><span class="o">**</span><span class="n">p</span> <span class="c1"># make sure back to PrefixUnit when possible</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span>  <span class="n">return_unit</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">human_unit</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">human_unit</span></div>
+
+<div class="viewcode-block" id="human_to_string"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.human_to_string.html#ism3d.utils.misc.human_to_string">[docs]</a><span class="k">def</span> <span class="nf">human_to_string</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">format_string</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0.value:0.2f}</span><span class="s1"> {0.unit:shortname}&#39;</span><span class="p">,</span><span class="n">nospace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A slightly more fancy version of quality.to_string()</span>
+<span class="sd">    add the option of 0.units:shortname in formating string syntax</span>
+<span class="sd">    # https://docs.astropy.org/en/stable/units/format.html#astropy-units-format</span>
+<span class="sd">    </span>
+<span class="sd">    format: forwarded to .to_string(format):</span>
+<span class="sd">        options: generic, unscaled, cds, console, fits, latex, latex_inline, ogip, unicode, vounit</span>
+<span class="sd">    </span>
+<span class="sd">    format_string: {0:0.2f} {1}</span>
+<span class="sd">        help format you output when output=&#39;string&#39;</span>
+<span class="sd">        </span>
+<span class="sd">    output: </span>
+<span class="sd">        &#39;string&#39;:       a string represent the input quantity in best-guess unit</span>
+
+<span class="sd">            </span>
+<span class="sd">    For time:           try built-in astropy.utils.console.human_time()</span>
+<span class="sd">    For file size:      one may also use astropy.utils.concolse.human_file_size()</span>
+
+<span class="sd">    print(human_to_string(q,format_string=&#39;{0.value:0.2f} {0.unit:shortname}&#39;,nospace=False))</span>
+<span class="sd">    print(human_to_string(q,format_string=&#39;{0.value:0.2f}{0.unit:shortname}&#39;,nospace=True))</span>
+<span class="sd">    print(human_to_string(q,format_string=&#39;{0.value:0.2f}{0.unit:cds}&#39;,nospace=True))</span>
+<span class="sd">    print(human_to_string(q,format_string=&#39;{0.value:0.2f} in {0.unit:shortname}&#39;,nospace=True))</span>
+<span class="sd">    print(human_to_string(q,format_string=&#39;{0.value:0.2f} in {0.unit:cds}&#39;,nospace=True))</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format_use</span><span class="o">=</span><span class="n">format_string</span>
+    <span class="k">if</span>  <span class="s1">&#39;0.unit:shortname&#39;</span> <span class="ow">in</span> <span class="n">format_use</span><span class="p">:</span>
+        <span class="n">format_use</span><span class="o">=</span><span class="n">format_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;0.unit:shortname&quot;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">format_use</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">unit_shortname</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span><span class="n">nospace</span><span class="o">=</span><span class="n">nospace</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
+
+    
+    <span class="c1">#if  &#39;lmfit&#39; in inp_dct[&#39;optimize&#39;][&#39;method&#39;]:</span>
+    <span class="c1">#    gmake_lmfit_analyze(fit_dct,sampler[&#39;inp_dct&#39;],sampler[&#39;inp_dct&#39;],sampler[&#39;dat_dct&#39;],nstep=nstep)        </span>
+
+<div class="viewcode-block" id="get_obj_size"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.get_obj_size.html#ism3d.utils.misc.get_obj_size">[docs]</a><span class="k">def</span> <span class="nf">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">to_string</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">marked</span> <span class="o">=</span> <span class="p">{</span><span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
+    <span class="n">obj_q</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">obj_q</span><span class="p">:</span>
+        <span class="n">sz</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">,</span> <span class="n">obj_q</span><span class="p">))</span>
+
+        <span class="c1"># Lookup all the object referred to by the object in obj_q.</span>
+        <span class="c1"># See: https://docs.python.org/3.7/library/gc.html#gc.get_referents</span>
+        <span class="n">all_refr</span> <span class="o">=</span> <span class="p">((</span><span class="nb">id</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_referents</span><span class="p">(</span><span class="o">*</span><span class="n">obj_q</span><span class="p">))</span>
+
+        <span class="c1"># Filter object that are already marked.</span>
+        <span class="c1"># Using dict notation will prevent repeated objects.</span>
+        <span class="n">new_refr</span> <span class="o">=</span> <span class="p">{</span><span class="n">o_id</span><span class="p">:</span> <span class="n">o</span> <span class="k">for</span> <span class="n">o_id</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">all_refr</span> <span class="k">if</span> <span class="n">o_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">marked</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">type</span><span class="p">)}</span>
+
+        <span class="c1"># The new obj_q will be the ones that were not marked,</span>
+        <span class="c1"># and we will update marked with their ids so we will</span>
+        <span class="c1"># not traverse them again.</span>
+        <span class="n">obj_q</span> <span class="o">=</span> <span class="n">new_refr</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="n">marked</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_refr</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">if</span>  <span class="n">to_string</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">sz</span><span class="o">=</span><span class="n">human_unit</span><span class="p">(</span><span class="n">sz</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">byte</span><span class="p">)</span>
+        <span class="n">sz</span><span class="o">=</span><span class="n">human_to_string</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span><span class="n">format_string</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0.value:3.0f}</span><span class="s1"> {0.unit:shortname}&#39;</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">sz</span>    </div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

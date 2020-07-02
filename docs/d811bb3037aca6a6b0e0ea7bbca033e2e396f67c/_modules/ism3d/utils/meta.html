@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.utils.meta &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/reference.html">Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ism3d.utils.meta</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ism3d.utils.meta</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Container for internal metadata/configuration variables under the program namespace</span>
+
+
+<span class="sd">    inp_dct:    input parameter set (using quantities)</span>
+<span class="sd">    mod_dct:    model parameter set (using quantities)</span>
+<span class="sd">    obj_dct:    component parameter set (dimensionless, values in internal units)</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">Input metadata                    inp_dct (can be hacked) (fixed)</span>
+<span class="sd">Component metadata                mod_dct (lightweight) (dynamical(</span>
+<span class="sd">Component Reference model            mod_dct (lightweight (dynamical)</span>
+<span class="sd">Data                                dat_dct (heavy) (transite)</span>
+<span class="sd">Models                            models (heavy) not nesscarilly filled with data (transite only exporting data)</span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span><span class="p">,</span> <span class="n">ExtendedInterpolation</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">Quantity</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">asteval</span> <span class="kn">import</span> <span class="n">Interpreter</span>
+<span class="n">aeval</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="p">(</span><span class="n">use_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">err_writer</span><span class="o">=</span><span class="n">StringIO</span><span class="p">())</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">u</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;SkyCoord&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">SkyCoord</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Angle&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Angle</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Number&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Number</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Quantity</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__resource__</span>
+
+
+<span class="n">cfg</span><span class="o">=</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="n">ExtendedInterpolation</span><span class="p">())</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">__resource__</span><span class="o">+</span><span class="s2">&quot;/default.cfg&quot;</span><span class="p">)</span> 
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;read_inp&#39;</span><span class="p">]</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">db_global</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">db_global</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dat_dct&#39;</span><span class="p">:{},</span><span class="s1">&#39;models&#39;</span><span class="p">:{}}</span>
+
+<div class="viewcode-block" id="create_header"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.create_header.html#ism3d.utils.meta.create_header">[docs]</a><span class="k">def</span> <span class="nf">create_header</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">objname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">naxis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crpix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cdelt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ref: https://docs.astropy.org/en/stable/io/fits/api/headers.html</span>
+<span class="sd">        xymodel_header=create_header(file=metadata_path+&#39;xymodel.header&#39;)</span>
+<span class="sd">        xymodel_header=create_header(</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+                   
+            
+    <span class="k">if</span>  <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hdr</span><span class="o">=</span><span class="n">fits</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">SIMPLE  =                    T /Written by ism3d     </span>
+<span class="s2">BITPIX  =                  -32 /Floating point (32 bit)                         </span>
+<span class="s2">NAXIS   =                    4 /                                                </span>
+<span class="s2">NAXIS1  =                  128 /                                                </span>
+<span class="s2">NAXIS2  =                  128 /                                                </span>
+<span class="s2">NAXIS3  =                  238 /                                                </span>
+<span class="s2">NAXIS4  =                    1 /                                                </span>
+<span class="s2">EXTEND  =                    T                                                  </span>
+<span class="s2">BSCALE  =   1.000000000000E+00 /PHYSICAL = PIXEL*BSCALE + BZERO                 </span>
+<span class="s2">BZERO   =   0.000000000000E+00                                                  </span>
+<span class="s2">BMAJ    =   0.0E-05                                                             </span>
+<span class="s2">BMIN    =   0.0E-05                                                             </span>
+<span class="s2">BPA     =   0.0E+01                                                             </span>
+<span class="s2">BTYPE   = &#39;Intensity&#39;                                                           </span>
+<span class="s2">OBJECT  = &#39;TEMPLATE &#39;                                                           </span>
+<span class="s2">BUNIT   = &#39;Jy/pixel&#39;           /Brightness (pixel) unit                         </span>
+<span class="s2">RADESYS = &#39;ICRS    &#39;                                                            </span>
+<span class="s2">LONPOLE =   1.800000000000E+02                                                  </span>
+<span class="s2">LATPOLE =   1.282202777778E+01                                                  </span>
+<span class="s2">PC1_1   =   1.000000000000E+00                                                  </span>
+<span class="s2">PC2_1   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC3_1   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC4_1   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC1_2   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC2_2   =   1.000000000000E+00                                                  </span>
+<span class="s2">PC3_2   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC4_2   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC1_3   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC2_3   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC3_3   =   1.000000000000E+00                                                  </span>
+<span class="s2">PC4_3   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC1_4   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC2_4   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC3_4   =   0.000000000000E+00                                                  </span>
+<span class="s2">PC4_4   =   1.000000000000E+00                                                  </span>
+<span class="s2">CTYPE1  = &#39;RA---SIN&#39;                                                            </span>
+<span class="s2">CRVAL1  =   0.0E+02                                                             </span>
+<span class="s2">CDELT1  =  -1.111111111111E-05                                                  </span>
+<span class="s2">CRPIX1  =        66.0000000000 /                                                </span>
+<span class="s2">CUNIT1  = &#39;deg     &#39;                                                            </span>
+<span class="s2">CTYPE2  = &#39;DEC--SIN&#39;                                                            </span>
+<span class="s2">CRVAL2  =   0.0E+01                                                             </span>
+<span class="s2">CDELT2  =   1.111111111111E-05                                                  </span>
+<span class="s2">CRPIX2  =        66.0000000000 /                                                </span>
+<span class="s2">CUNIT2  = &#39;deg     &#39;                                                            </span>
+<span class="s2">CTYPE3  = &#39;FREQ    &#39;                                                            </span>
+<span class="s2">CRVAL3  =   2.349542341980E+11                                                  </span>
+<span class="s2">CDELT3  =   7.812133295105E+06                                                  </span>
+<span class="s2">CRPIX3  =   1.000000000000E+00                                                  </span>
+<span class="s2">CUNIT3  = &#39;Hz      &#39;                                                            </span>
+<span class="s2">CTYPE4  = &#39;STOKES  &#39;                                                            </span>
+<span class="s2">CRVAL4  =   1.000000000000E+00                                                  </span>
+<span class="s2">CDELT4  =   1.000000000000E+00                                                  </span>
+<span class="s2">CRPIX4  =   1.000000000000E+00                                                  </span>
+<span class="s2">CUNIT4  = &#39;        &#39;                                                            </span>
+<span class="s2">PV2_1   =   0.000000000000E+00                                                  </span>
+<span class="s2">PV2_2   =   0.000000000000E+00                                                  </span>
+<span class="s2">RESTFRQ =   7.573097700000E+11 /Rest Frequency (Hz)                             </span>
+<span class="s2">SPECSYS = &#39;LSRK    &#39;           /Spectral reference frame                        </span>
+<span class="s2">VELREF  =                  257 /1 LSR, 2 HEL, 3 OBS, +256 Radio                 </span>
+<span class="s2">COMMENT casacore non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL                 </span>
+<span class="s2">TELESCOP= &#39;ALMA    &#39;                                                            </span>
+<span class="s2">OBSERVER= &#39;GMAKE&#39;                                                               </span>
+<span class="s2">DATE-OBS= &#39;2016-08-03T07:35:49.824000&#39;                                          </span>
+<span class="s2">TIMESYS = &#39;UTC     &#39;                                                            </span>
+<span class="s2">OBSRA   =   3.565393333333E+02                                                  </span>
+<span class="s2">OBSDEC  =   1.282202777778E+01                                                  </span>
+<span class="s2">OBSGEO-X=   2.225142180269E+06                                                  </span>
+<span class="s2">OBSGEO-Y=  -5.440307370349E+06                                                  </span>
+<span class="s2">OBSGEO-Z=  -2.481029851874E+06                                                  </span>
+<span class="s2">INSTRUME= &#39;ALMA    &#39;                                                            </span>
+<span class="s2">DISTANCE=   0.000000000000E+00                                                  </span>
+<span class="s2">DATE    = &#39;2019-01-01T00:00:00.000000&#39; /Date FITS file was written              </span>
+<span class="s2">ORIGIN  = &#39;GMAKE&#39;                                                               </span>
+<span class="s2">HISTORY FROM TCLEAN STANDARD OUTPUT                                             </span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hdr</span><span class="o">=</span><span class="n">fits</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">endcard</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">padding</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1">#hdr=fits.Header.fromtextfile(file)</span>
+        
+    <span class="k">if</span>  <span class="n">naxis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">naxis</span><span class="p">):</span>
+            <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;NAXIS&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
+    <span class="k">if</span>  <span class="n">naxis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">crpix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">naxis</span><span class="p">):</span>
+            <span class="k">if</span>  <span class="n">idx</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">idx</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRPIX&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;NAXIS&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">if</span>  <span class="n">idx</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRPIX3&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>  
+            
+    <span class="k">if</span>  <span class="n">crval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">crval</span><span class="p">):</span>
+            <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRVAL&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
+            
+    <span class="k">if</span>  <span class="n">cdelt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cdelt</span><span class="p">):</span>
+            <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CDELT&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">=</span><span class="n">value</span>
+     
+    <span class="k">if</span>  <span class="n">objname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;OBJECT&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">objname</span>
+     
+    <span class="k">return</span> <span class="n">hdr</span></div>
+
+
+
+<div class="viewcode-block" id="read_inp"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.read_inp.html#ism3d.utils.meta.read_inp">[docs]</a><span class="k">def</span> <span class="nf">read_inp</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    read parameters/setups from a .inp file into a dictionary nest:</span>
+<span class="sd">        inp_dct[id][keywords]=values.</span>
+<span class="sd">        inp_dct[&#39;comments&#39;]=&#39;??&#39;</span>
+<span class="sd">        inp_dct[&#39;changlog&#39;]=&#39;??&#39;</span>
+<span class="sd">        inp_dct[&#39;optimize&#39;]=&#39;??&#39;</span>
+<span class="sd">        </span>
+<span class="sd">    keyword value formatting</span>
+<span class="sd">        1.remove trailing/prefix space / comments</span>
+<span class="sd">        2.split my space</span>
+<span class="sd">        3.first element is the key</span>
+<span class="sd">        4.the rest elements will be filled into value</span>
+<span class="sd">            more than one element : list</span>
+<span class="sd">            one element: scaler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#print(&quot;**********exe read_inp()**************&quot;)</span>
+    
+    <span class="n">inp_dct</span><span class="o">=</span><span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">lines</span><span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">))</span>
+
+    <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;default&#39;</span>
+    
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+            <span class="n">tag</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1">#pars={&#39;content&#39;:&#39;&#39;}</span>
+            <span class="n">pars</span><span class="o">=</span><span class="p">{}</span>
+            <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
+            <span class="k">if</span>  <span class="n">log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;@ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            
+            <span class="k">if</span>  <span class="nb">any</span><span class="p">(</span><span class="n">section</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.comment&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
+                <span class="k">pass</span>
+                <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
+                <span class="c1">#inp_dct[tag]=pars</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;               </span>
+                <span class="c1">#   identify the &quot;key&quot;</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1">#   remove leading/trailing space to get the &quot;value&quot; portion</span>
+                <span class="n">expr</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span>  <span class="n">log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expr</span><span class="p">))</span>
+                
+                <span class="sd">&quot;&quot;&quot;                    </span>
+<span class="sd">                try:                #   likely mutiple-elements are provided, </span>
+<span class="sd">                                    #   but be careful of eval() usage here</span>
+<span class="sd">                                    #   e.g.:&quot;tuple (1)&quot; will be a valid statement</span>
+<span class="sd">                    #pars[key]=eval(value)</span>
+<span class="sd">                    #pars[key]=ast.literal_eval(value)</span>
+<span class="sd">                    pars[key]=aeval(value)</span>
+<span class="sd">                except SyntaxError: #   pack the value content into a list</span>
+<span class="sd">                    values=value.split()</span>
+<span class="sd">                    #pars[key]=[eval(value0) for value0 in value]</span>
+<span class="sd">                    #pars[key]=[ast.literal_eval(value0) for value0 in value]</span>
+<span class="sd">                    pars[key]=[aeval(value0) for value0 in values]</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+                <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">aeval</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">exprs</span><span class="o">=</span><span class="n">expr</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">exprs</span><span class="p">]</span>
+                
+                <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">pars_interp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">inp_dct</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">=</span><span class="n">pars</span>
+
+    
+    <span class="k">if</span>  <span class="s1">&#39;general&#39;</span> <span class="ow">in</span> <span class="n">inp_dct</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span>  <span class="s1">&#39;outdir&#39;</span> <span class="ow">in</span> <span class="p">(</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">outdir</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">][</span><span class="s1">&#39;outdir&#39;</span><span class="p">]</span>
+            <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span> 
+                <span class="k">if</span>  <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+                <span class="c1">#np.save(outdir+&#39;/inp_dct.npy&#39;,inp_dct)</span>
+                <span class="c1">#write_inp(inp_dct,inpfile=outdir+&#39;/p_start.inp&#39;,</span>
+                <span class="c1">#          overwrite=True)</span>
+                                
+                
+    <span class="k">return</span> <span class="n">inp_dct</span></div>
+
+<div class="viewcode-block" id="pars_interp"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.pars_interp.html#ism3d.utils.meta.pars_interp">[docs]</a><span class="k">def</span> <span class="nf">pars_interp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+
+    <span class="n">value_int</span><span class="o">=</span><span class="n">value</span>
+    
+    <span class="k">if</span>  <span class="n">key</span><span class="o">==</span><span class="s1">&#39;xypos&#39;</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">value_int</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">value_int</span></div>
+
+<span class="n">inp_def</span><span class="o">=</span><span class="n">read_inp</span><span class="p">(</span><span class="n">__resource__</span><span class="o">+</span><span class="s1">&#39;input_def.inp&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
