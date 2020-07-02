@@ -1,4 +1,4 @@
-from .utils import imcontsub
+#from .utils import imcontsub
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,8 +27,53 @@ mpl.rcParams['agg.path.chunksize'] = 10000
 #mpl.rc('text',usetex=True)
 import astropy.units as u
 import numpy as np
-from .model import pots_to_vcirc
+#from .model import pots_to_vcirc
 
+
+
+def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_grid.pdf'):
+    """
+    display images in a basic grid layout, with colorbar
+    images: list can be non
+    nxy:
+    figname
+    w: projection
+    """
+    plt.clf()
+    fig, axs = plt.subplots(nxy[1],nxy[0], figsize=figsize,subplot_kw={'projection':w})
+    fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.2,hspace=0.2)
+
+    for ii in range(nxy[0]*nxy[1]):
+
+        iy,ix = int(ii/nxy[0]),ii%nxy[0]
+
+        if ii>=len(images):
+            fig.delaxes(axs[iy,ix])
+            continue
+
+        if images[ii] is None:
+            fig.delaxes(axs[iy,ix])
+            continue    
+
+        im = axs[iy,ix].imshow(images[ii],origin='lower')
+
+        #divider = make_axes_locatable(axs[iy,ix])
+        #cax = divider.append_axes("right", size="7%", pad=0.05)
+        clb=fig.colorbar(im, ax=axs[iy,ix])
+        if  units is not None:
+            clb.ax.set_title(units[ii])
+        if  titles is not None:
+            axs[iy,ix].set_title(titles[ii])
+        axs[iy,ix].set_xlabel(r'$\Delta~\alpha$ ["]')
+        axs[iy,ix].set_ylabel(r'$\Delta~\delta$ ["]')
+        #aa[iy,ix].set_title(os.path.basename(name).replace('_','.'))
+        #aa[iy,ix].set_aspect('auto')
+
+    #fig.tight_layout() ; plt.show()
+    fig.savefig(figname)
+       
+    #clear_output(wait=True) ; display(fig)
+    
 def calc_ppbeam(header):
     """
     For Radio Cubes:        ppbeam=npix/beam

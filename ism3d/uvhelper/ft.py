@@ -8,8 +8,8 @@ from ..utils.meta import create_header
 import logging
 logger = logging.getLogger(__name__)
 
-def invert_ft(uu,vv,wv,vis,cell,imsize,
-              wt=None,flag=None,
+def invert_ft(uu=None,vv=None,wv=None,vis=None,wt=None,flag=None,uvdata=None,
+              cell=None,imsize=None,header=None,
               bychannel=True,sortbyfreq=False):
     """
     use nufft to create dirty cube from visibility
@@ -26,8 +26,30 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,
     output (nx,ny,nz)
     
     note: should not include flagged records
-    """
     
+    uvdata or uu,vv,wv,vs,wt,flag
+    header or cell,imsize
+    
+    if vis and uvdata are both specified, vis>uvdata (useful for the PSF case)
+    if vis is one D, it will be broadcasted to 2D
+    
+    """
+    if  uvdata is not None:
+        uu=uvdata['uvw'][:,0]
+        vv=uvdata['uvw'][:,1]
+        wv=uvdata['chanfreq'].to(u.m,equivalencies=u.spectral()).value
+        wt=uvdata['weight']
+        flag=uvdata['flag']
+        if  vis is None:
+            vis=uvdata['data']        
+    
+    if  header is not None:
+        cell=header['CDELT2']<<u.deg
+        imsize=header['NAXIS1']
+        
+    #logger.debug('cell:   {}'.format(cell.to(u.arcsec)))
+    #logger.debug('imsize: {}'.format(imsize))
+        
     if  bychannel==False:
         uuu=-uu/np.mean(wv)*2*np.pi*(cell.to(u.rad).value)
         vvv=vv/np.mean(wv)*2*np.pi*(cell.to(u.rad).value)
@@ -37,10 +59,6 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,
         cube/=uu.shape[0]         
     else:
         cube=np.zeros((imsize,imsize,len(wv)),dtype=np.complex128,order='F')
-        
-        #im0=np.zeros((imsize,imsize),dtype=np.complex128,order='F')
-        
-            
         for i in range(len(wv)):
             cube_i=i
             if  wv[0]<wv[1] and sortbyfreq==True:
@@ -49,7 +67,10 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,
                 cube_i=i
             uuu=-uu/wv[i]*2*np.pi*(cell.to(u.rad).value)
             vvv=vv/wv[i]*2*np.pi*(cell.to(u.rad).value)
-            vis_one=vis[:,i]
+            if  vis.ndim==1:
+                vis_one=vis
+            else:
+                vis_one=vis[:,i]
             if  flag is not None:
                 uuu=uuu[~flag[:,i]]
                 vvv=vvv[~flag[:,i]]
@@ -66,10 +87,14 @@ def invert_ft(uu,vv,wv,vis,cell,imsize,
     
     return cube.real
 
-def make_psf(uu,vv,wv,cell,imsize,**kwargs):
+def make_psf(**kwargs):
     
-    vis=np.ones((uu.shape[0],len(wv)),dtype=np.complex128,order='F')
-    cube=invert_ft(uu,vv,wv,vis,cell,imsize,**kwargs)
+    if  'uvdata' in kwargs:
+        nrecord=kwargs['uvdata']['uvw'][:,0].shape[0]
+    else:
+        nrecord=kwargs['uu'].shape[0]
+    vis_one=np.ones(nrecord,dtype=np.complex128,order='F')
+    cube=invert_ft(vis=vis_one,**kwargs)
 
     return cube
 
@@ -114,8 +139,8 @@ def advise_header(uv,center,chanfreq,chanwidth,
     nxy, dxy = advise_imsize(uv[:,0]/wv.value, uv[:,1]/wv.value,
                               pb=pb,f_max=f_max,f_min=f_min)
     
-    logger.debug('nxyz:'+str(nxy)+','+str(np.size(chanfreq)))
-    logger.debug('dxyz:'+(dxy<<u.rad).to(u.arcsec).to_string()+','+(np.mean(chanwidth.to(u.MHz))).to_string())
+    #logger.debug('nxyz:'+str(nxy)+','+str(np.size(chanfreq)))
+    #logger.debug('dxyz:'+(dxy<<u.rad).to(u.arcsec).to_string()+','+(np.mean(chanwidth.to(u.MHz))).to_string())
     
     crval3=chanfreq.to_value(u.Hz)
     cdelt3=np.mean(chanwidth.to_value(u.Hz))
