@@ -1,12 +1,13 @@
 
-The documentation is currently available from the links below:
+## Host Links:
 
+The documentation is currently available from the links below:
 
 * [Direct](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c)
 
 * [Gateway](https://www.magclouds.org/ism3d) (pw: workinProgress)
 
-Highlights:
+## Highlights:
 
 * [Tutorials: ism3d Python API usages](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/tutorials/demo_api_uvhelper.html)
 

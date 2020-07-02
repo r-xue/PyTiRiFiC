@@ -1,4 +1,0 @@
-+ NGC 2976 (CO / HI )
-
-	* 2D image are used as a prior for emission distribution
-	* only test the kinematic modeling

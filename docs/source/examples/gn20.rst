@@ -1,8 +1,0 @@
-GN20:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Visibility-based Modeling of its CO2-1 emission from a mutiple-epoch VLA observation
-
-* well resolved galaxy with a wide range of ancillary dataset
-* 140hr on-source observation
-
-.. include:: ../demos/demo_bx610.rst
