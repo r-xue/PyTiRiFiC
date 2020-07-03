@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ism3d.model &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>ISM3D Dictionary &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -38,7 +38,9 @@
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Invert" href="../benchmark/demo_invert_ft.html" />
+    <link rel="prev" title="Reference" href="reference.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,13 +101,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develop/dictionary.html">ISM3D Dictionary</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ISM3D Dictionary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -140,7 +142,7 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ism3d.html">ism3d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -186,7 +188,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>ism3d.model</li>
+      <li>ISM3D Dictionary</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -203,8 +205,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ism3d-model">
-<h1>ism3d.model<a class="headerlink" href="#ism3d-model" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ism3d-dictionary">
+<h1>ISM3D Dictionary<a class="headerlink" href="#ism3d-dictionary" title="Permalink to this headline">¶</a></h1>
+<p>Here I highlight major ism3d subpackage/modules and some complementary tools offering equivalent functions</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Title</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 67%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ism3d Module/Function</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>equivalent to / inspired by</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ism3d.arts.disk3d</p></td>
+<td><p>generate cloudlet-based disk model</p></td>
+<td><p>kinmspy, galmod, barolo3d</p></td>
+</tr>
+<tr class="row-odd"><td><p>ism3d.arts/.simxy/.modeling</p></td>
+<td><p>source modeling in the image domain up to 3d (position-position-frequency/wavelength, regular or sparse)</p></td>
+<td><p>galfit (2D), TiRiFiC (3D), Barolo3d (3D)</p></td>
+</tr>
+<tr class="row-even"><td><p>ism3d.arts/.simuv/.modeling</p></td>
+<td><p>source modeling in the visibility domain up to 3d (uu-vv-frequency/wavelength, sparse)</p></td>
+<td><p>UVMULTIFIT (3D?)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ims3d.uvhelper.uv_render</p></td>
+<td><p>render source model int a uv data frame</p></td>
+<td><p>galario</p></td>
+</tr>
+<tr class="row-even"><td><p>ism3d.uvhelper.invert_ft</p></td>
+<td><p>invert uv data into dirty map</p></td>
+<td><p>miriad.invert, casa.tclean</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
@@ -212,6 +251,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../benchmark/demo_invert_ft.html" class="btn btn-neutral float-right" title="Invert" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reference.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
