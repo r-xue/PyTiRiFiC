@@ -61,10 +61,9 @@ def invert_ft(uu=None,vv=None,wv=None,vis=None,wt=None,flag=None,uvdata=None,
         cube=np.zeros((imsize,imsize,len(wv)),dtype=np.complex128,order='F')
         for i in range(len(wv)):
             cube_i=i
-            if  wv[0]<wv[1] and sortbyfreq==True:
-                cube_i=len(wv)-i-1
-            else:
-                cube_i=i
+            if  sortbyfreq==True and len(wv)>1:
+                if  wv[0]<wv[1]:
+                    cube_i=len(wv)-i-1
             uuu=-uu/wv[i]*2*np.pi*(cell.to(u.rad).value)
             vvv=vv/wv[i]*2*np.pi*(cell.to(u.rad).value)
             if  vis.ndim==1:

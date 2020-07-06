@@ -29,9 +29,9 @@ import astropy.units as u
 import numpy as np
 #from .model import pots_to_vcirc
 
+from ..utils.misc import prepdir
 
-
-def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_grid.pdf'):
+def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_grid.pdf',vmins=None,vmaxs=None):
     """
     display images in a basic grid layout, with colorbar
     images: list can be non
@@ -54,8 +54,9 @@ def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_
         if images[ii] is None:
             fig.delaxes(axs[iy,ix])
             continue    
-
-        im = axs[iy,ix].imshow(images[ii],origin='lower')
+        vmin=vmins[ii] if  vmins is not None else None
+        vmax=vmaxs[ii] if  vmaxs is not None else None
+        im = axs[iy,ix].imshow(images[ii],origin='lower',vmin=vmin,vmax=vmax)
 
         #divider = make_axes_locatable(axs[iy,ix])
         #cax = divider.append_axes("right", size="7%", pad=0.05)
@@ -70,7 +71,9 @@ def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_
         #aa[iy,ix].set_aspect('auto')
 
     #fig.tight_layout() ; plt.show()
+    prepdir(figname)    
     fig.savefig(figname)
+    plt.close() # don't show it in ipynb
        
     #clear_output(wait=True) ; display(fig)
     
@@ -86,7 +89,6 @@ def calc_ppbeam(header):
     else:
         ppbeam=1.
     
-
     return ppbeam
 
 

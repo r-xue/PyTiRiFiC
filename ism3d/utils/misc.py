@@ -1,5 +1,5 @@
 
-import sys, socket, multiprocessing
+import os,sys, socket, multiprocessing
 
 from psutil import virtual_memory
 from pip._vendor import pkg_resources
@@ -234,4 +234,11 @@ def get_obj_size(obj,to_string=False):
         sz=human_unit(sz*u.byte)
         sz=human_to_string(sz,format_string='{0.value:3.0f} {0.unit:shortname}')
         
-    return sz    
+    return sz   
+
+def prepdir(filename):
+    """
+    """
+    dirname = os.path.dirname(filename)
+    if (not os.path.exists(dirname)) and (dirname != ''):
+        os.makedirs(dirname)       

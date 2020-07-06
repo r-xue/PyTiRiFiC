@@ -13,7 +13,7 @@ def show_gif(fname):
         Image(filename=model_name+"_basis.images/imaging.gif",embed=True)  
         but this doens't show correctly on github.com  
     """
-    clear_output(wait=True) # remove previous plotting cache
+    clear_output(wait=False) # remove previous plotting cache
     with open(fname, 'rb') as fd:
         b64 = base64.b64encode(fd.read()).decode('ascii')
     return display.HTML(f'<img src="data:image/gif;base64,{b64}" />')
