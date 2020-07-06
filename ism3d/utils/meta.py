@@ -39,8 +39,7 @@ aeval.symtable['Quantity']=Quantity
 from .. import __resource__
 
 
-cfg=ConfigParser(interpolation=ExtendedInterpolation())
-cfg.read(__resource__+"/default.cfg") 
+
 
 __all__ = ['read_inp']
 
@@ -48,7 +47,39 @@ try:
     db_global
 except NameError:
     db_global={'dat_dct':{},'models':{}}
+    
+    
+def inp_config(file=None):
+    """
+    supposed configuration setup
+    """
+    cfg=ConfigParser(interpolation=ExtendedInterpolation())
 
+    cfg.read_string("""
+[inp.component]
+
+[inp.dynamics]
+
+    id = gravity,potential,dynamics
+
+[inp.optimizer]
+
+    id = optimize,fitter,optimizer
+
+[inp.analyzer]
+
+    id = analysis,diagnostics,analyzer
+
+[inp.comment]
+
+    id = comments,skip,ignore,changelog
+    
+[inp.general]
+
+    id = general
+""")
+    return cfg
+    
 def create_header(file=None,
                   objname=None,
                   naxis=None, crval=None, crpix=None, cdelt=None):
@@ -122,20 +153,19 @@ PV2_2   =   0.000000000000E+00
 RESTFRQ =   7.573097700000E+11 /Rest Frequency (Hz)                             
 SPECSYS = 'LSRK    '           /Spectral reference frame                        
 VELREF  =                  257 /1 LSR, 2 HEL, 3 OBS, +256 Radio                 
-COMMENT casacore non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL                 
-TELESCOP= 'ALMA    '                                                            
-OBSERVER= 'GMAKE'                                                               
-DATE-OBS= '2016-08-03T07:35:49.824000'                                          
+TELESCOP= 'ism3d   '                                                            
+OBSERVER= 'ism3d   '                                                            
+DATE-OBS= '2020-01-01T00:00:00.000000'                                          
 TIMESYS = 'UTC     '                                                            
 OBSRA   =   3.565393333333E+02                                                  
 OBSDEC  =   1.282202777778E+01                                                  
 OBSGEO-X=   2.225142180269E+06                                                  
 OBSGEO-Y=  -5.440307370349E+06                                                  
 OBSGEO-Z=  -2.481029851874E+06                                                  
-INSTRUME= 'ALMA    '                                                            
+INSTRUME= 'ism3d   '                                                            
 DISTANCE=   0.000000000000E+00                                                  
 DATE    = '2019-01-01T00:00:00.000000' /Date FITS file was written              
-ORIGIN  = 'GMAKE'                                                               
+ORIGIN  = 'ism3d.create_header'                                                               
 HISTORY FROM TCLEAN STANDARD OUTPUT                                             
         """, sep='\n')
     else:
@@ -167,102 +197,9 @@ HISTORY FROM TCLEAN STANDARD OUTPUT
 
 
 
-def read_inp(parfile,log=False):
-    """
-    read parameters/setups from a .inp file into a dictionary nest:
-        inp_dct[id][keywords]=values.
-        inp_dct['comments']='??'
-        inp_dct['changlog']='??'
-        inp_dct['optimize']='??'
-        
-    keyword value formatting
-        1.remove trailing/prefix space / comments
-        2.split my space
-        3.first element is the key
-        4.the rest elements will be filled into value
-            more than one element : list
-            one element: scaler
-    """
-    #print("**********exe read_inp()**************")
-    
-    inp_dct={}
-    with open(parfile,'r') as f:
-        lines=f.readlines()
-    lines= filter(None, (line.split('#')[0].strip() for line in lines))
 
-    tag='default'
-    
-    for line in lines:
-        if  line.startswith('@'):
-            tag=line.replace('@','',1).strip()
-            #pars={'content':''}
-            pars={}
-            #pars['content']+=line+"\n"
-            if  log==True:
-                logger.debug("+"*40)
-                logger.debug('@ {}'.format(tag))
-                logger.debug("-"*40)
-        else:
-            
-            if  any(section in tag.lower() for section in cfg['inp.comment']['id'].split(',')):
-                pass
-                #pars['content']+=line+"\n"
-                #inp_dct[tag]=pars
-            else:
-                #pars['content']+=line+"\n"               
-                #   identify the "key"
-                key=line.split()[0]
-                #   remove leading/trailing space to get the "value" portion
-                expr=line.replace(key,'',1).strip()
-                if  log==True:
-                    logger.debug('{:20}'.format(key)+" : "+str(expr))
-                
-                """                    
-                try:                #   likely mutiple-elements are provided, 
-                                    #   but be careful of eval() usage here
-                                    #   e.g.:"tuple (1)" will be a valid statement
-                    #pars[key]=eval(value)
-                    #pars[key]=ast.literal_eval(value)
-                    pars[key]=aeval(value)
-                except SyntaxError: #   pack the value content into a list
-                    values=value.split()
-                    #pars[key]=[eval(value0) for value0 in value]
-                    #pars[key]=[ast.literal_eval(value0) for value0 in value]
-                    pars[key]=[aeval(value0) for value0 in values]
-                """
-                value=aeval(expr)
-                if  len(aeval.error)>0 and value is None:
-                    exprs=expr.split()
-                    value=[aeval(expr) for expr in exprs]
-                
-                pars[key]=pars_interp(key,value)
-                inp_dct[tag]=pars
 
-    
-    if  'general' in inp_dct.keys():
-        if  'outdir' in (inp_dct['general']).keys():
-            outdir=inp_dct['general']['outdir']
-            if  isinstance(outdir,str): 
-                if  not os.path.exists(outdir):
-                    os.makedirs(outdir)
-                #np.save(outdir+'/inp_dct.npy',inp_dct)
-                #write_inp(inp_dct,inpfile=outdir+'/p_start.inp',
-                #          overwrite=True)
-                                
-                
-    return inp_dct
-
-def pars_interp(key,value):
-
-    value_int=value
-    
-    if  key=='xypos':
-        if  isinstance(value,str):
-            value_int=SkyCoord(value,frame='icrs')
-    
-    return value_int
-
-inp_def=read_inp(__resource__+'input_def.inp',log=False)
+#inp_def=read_inp(__resource__+'input_def.inp',log=False)
 
 
 

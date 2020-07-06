@@ -93,18 +93,7 @@ def arithmeticEval (s):
 """
 
 
-def rng_seeded(seed=None):
-    """
-    return a seeded RNG plus is_mkl
-    mkl_random is preferrred over numpy.random 
-    """
 
-    try:
-        mkl_random
-    except NameError:
-        return Generator(SFC64(seed)), False
-    else:
-        return mkl_random.RandomState(seed), True  # , brng = brng_algo
 
 
 def eval_func(vs_func_ps, var_dict):
@@ -188,43 +177,6 @@ def pprint(*args, **kwargs):
     with patch('builtins.sorted', new=lambda l, **_: l):
         pp.pprint(*args, **kwargs)
 
-
-def write_inp(inp_dct,
-              inpfile='example.inp', overwrite=False):
-    """
-    write out inp files from inp_dct
-    if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name
-    writepar is two-element tuple, first element is the key name to be modified
-                                   second element is the value
-
-    note: py>=3.7 use the ordered dict by default (so the output keyword order is preserved) 
-    """
-
-    logger.info('save the model input parameter: '+inpfile)
-
-    inp_dct0 = deepcopy(inp_dct)
-
-    outname = inpfile
-
-    ind = 0
-    if overwrite == False:
-        while os.path.isfile(outname):
-            outname = inpfile+'.'+str(ind)
-            ind += 1
-
-    f = open(outname, 'w')
-    output = ''
-    for obj in inp_dct0.keys():
-        output += '#'*80+'\n'
-        output += '@'+obj+'\n'
-        output += '#'*80+'\n\n'
-        for key in inp_dct0[obj].keys():
-            # print(repr_parameter(inp_dct0[obj][key]))
-            output += '{:20} {}\n'.format(key,
-                                          repr_parameter(inp_dct0[obj][key]), format=200)
-        output += '\n'
-    f.write(output)
-    f.close()
 
 
 def read_range(center=0, delta=0, mode='a'):
@@ -374,107 +326,7 @@ def gmake_listpars(objs, showcontent=True):
                 print(key, " : ", objs[tag][key])
 
 
-def inp2mod(inp_dct):
-    """
-    Convert Input Parameter Dictionary to Model Properties Dictionary
 
-    The code will make a dictionary ready for model constructions, including:
-        + add the default values
-        + fill optional keywords
-        + fill the "tied" values
-
-    inp_dct
-
-    --> write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration) 
-
-    inp_dct_modified
-
-    --> inp2mod (fullfill the default value / ties / reject comments <-- act as a formatter) 
-
-    mod_dct
-
-    """
-
-    objs = deepcopy(inp_dct)
-
-    ids_ignore = cfg['inp.comment']['id'].split(',') +\
-        cfg['inp.analyzer']['id'].split(',') +\
-        cfg['inp.general']['id'].split(',') +\
-        cfg['inp.optimizer']['id'].split(',')
-
-    #   assemble all parameters
-
-    par_list = []
-    for sec_name in objs.keys():
-        for key_name in objs[sec_name].keys():
-            if '@' not in key_name:
-                par_list += [key_name+'@'+sec_name]
-
-    secs_imported = []
-
-    for tag in list(objs.keys()):
-
-        #   remove sections not related to model component properties
-
-        if any(section in tag.lower() for section in ids_ignore):
-            tmp = objs.pop(tag, None)
-            continue
-
-        for key in list(objs[tag].keys()):
-
-            # fill the cross reference keyword-value
-
-            if isinstance(objs[tag][key], (list, tuple)):
-                value_list = [value for value in objs[tag][key]]
-            else:
-                value_list = [objs[tag][key]]
-
-            for idx, value in enumerate(value_list):
-                if isinstance(value, str):
-                    pars = [par for par in par_list if par in value]
-                    if pars != []:
-                        value_expr = value
-                        for idp, par in enumerate(pars):
-                            #par=max(pars, key=len)
-                            keyobjname = par.split("@")
-                            aeval.symtable["t" +
-                                           str(idp)] = objs[keyobjname[1]][keyobjname[0]]
-                            value_expr = value_expr.replace(par, "t"+str(idp))
-                        value_list[idx] = aeval(value_expr)
-
-            if isinstance(objs[tag][key], tuple):
-                objs[tag][key] = tuple(value_list)
-            elif isinstance(objs[tag][key], list):
-                objs[tag][key] = value_list
-            else:
-                objs[tag][key] = value_list[0]
-
-            # fill "import" sections
-
-            if key.lower() == 'import' and isinstance(objs[tag][key], str):
-
-                import_list = (objs[tag][key]).split(',')
-                del objs[tag][key]
-                for value0 in import_list:
-                    if value0 in list(objs.keys()):
-                        secs_imported += [value0]
-                        for import_key in list(objs[value0].keys()):
-                            objs[tag][import_key] = objs[value0][import_key]
-
-                    #logger.debug('{:16}'.format(key+'@'+tag)+' : '+'{:16}'.format(value)+'-->'+str(objs[tag][key]))
-
-    #   for "imported" parameter group sections, we delete them one by one
-
-    for par_group in list(set(secs_imported)):
-        del objs[par_group]
-
-    #   for "non-general" sections, we delete those without keyword "type"
-
-    for section in list(objs.keys()):
-        if ('type' not in list(objs[section].keys())) and ('general' not in section.lower()):
-            del objs[section]
-
-    return objs
 
 
 def paste_slice(tup):

@@ -181,6 +181,22 @@ class laplace_gen(rv_continuous):
     
 laplace = laplace_gen(name='laplace')
 
+
+
+def rng_seeded(seed=None):
+    """
+    return a seeded RNG plus is_mkl
+    mkl_random is preferrred over numpy.random 
+    """
+
+    try:
+        mkl_random
+    except NameError:
+        return Generator(SFC64(seed)), False
+    else:
+        return mkl_random.RandomState(seed), True  # , brng = brng_algo
+    
+    
 #############################################################
 
 
