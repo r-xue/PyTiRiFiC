@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -209,8 +210,94 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="ism3d-arts-discretize-module">
-<h2>ism3d.arts.discretize module<a class="headerlink" href="#ism3d-arts-discretize-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-ism3d.arts.discretize">
+<span id="ism3d-arts-discretize-module"></span><h2>ism3d.arts.discretize module<a class="headerlink" href="#module-ism3d.arts.discretize" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.arts.discretize.channel_split">
+<code class="sig-prename descclassname">ism3d.arts.discretize.</code><code class="sig-name descname">channel_split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span></em>, <em class="sig-param"><span class="n">w</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/discretize.html#channel_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.discretize.channel_split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divivd the cloudlet model by channel in advance
+to avoid doing it during channel looping</p>
+<dl>
+<dt>Note:</dt><dd><p>returned v has a flip sign from V_los
+vrange[0] first channel velocity and vrange[1] last channel velocity</p>
+<p>The returned list should have a element number of N(objs)</p>
+</dd>
+</dl>
+<p>for ccloudlet model: fluxscale is the flux per cloud
+for continuum model: fluxscale is the flux of the object within a plane</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.discretize.clouds_perchan">
+<code class="sig-prename descclassname">ism3d.arts.discretize.</code><code class="sig-name descname">clouds_perchan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clouds_loc</span></em>, <em class="sig-param"><span class="n">clouds_wt</span></em>, <em class="sig-param"><span class="n">sv</span></em>, <em class="sig-param"><span class="n">return_v</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/discretize.html#clouds_perchan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.discretize.clouds_perchan" title="Permalink to this definition">¶</a></dt>
+<dd><p>split clouds_loc by its LOS velocity</p>
+<p>clouds_loc 6D cloud location
+sv:    LOS velocity sampling vector</p>
+<dl class="simple">
+<dt>note: sv and clouds_loc.d_z are defined by flipped sign;</dt><dd><p>so we consider sv &lt;-&gt; -d_z</p>
+</dd>
+<dt>Ref:</dt><dd><p>The implemented method is analogous to IDL histogram’s reverse_indices:
+<a class="reference external" href="https://stackoverflow.com/questions/26783719/efficiently-get-indices-of-histogram-bins-in-python">https://stackoverflow.com/questions/26783719/efficiently-get-indices-of-histogram-bins-in-python</a>
+<a class="reference external" href="https://stackoverflow.com/questions/2754905/vectorized-approach-to-binning-with-numpy-scipy-in-python">https://stackoverflow.com/questions/2754905/vectorized-approach-to-binning-with-numpy-scipy-in-python</a>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format">https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format</a>)</p>
+</dd>
+<dt>return:</dt><dd><p>list of cloudsset: each elements contain the clouds located within each channel plane</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.discretize.lognsigma_lookup">
+<code class="sig-prename descclassname">ism3d.arts.discretize.</code><code class="sig-name descname">lognsigma_lookup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">objs</span></em>, <em class="sig-param"><span class="n">dname</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/discretize.html#lognsigma_lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.discretize.lognsigma_lookup" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>update some model parameters related to likelihood calculation</dt><dd><p>In the model properties, we have some keywords related to configing the likelihood</p>
+</dd>
+<dt>model and calculate log_propeorbaility:</dt><dd><p>lognsigma: used to scale noise level (in case it’s overunder estimated)</p>
+</dd>
+</dl>
+<p>They are actually related to data (one value per dataset)
+But it’s setup per object due to the input file layout (repeated for different objects, like PSF)
+# we expected lognsigma is the same for one dname from all objs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.discretize.pix2sky">
+<code class="sig-prename descclassname">ism3d.arts.discretize.</code><code class="sig-name descname">pix2sky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">px</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">py</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/discretize.html#pix2sky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.discretize.pix2sky" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert pixel index (zero-based)
+to
+the reference model coordinate system</p>
+<blockquote>
+<div><dl class="simple">
+<dt>for line emission “cloudlet” objects:</dt><dd><p>the sky-projected rest-frame galactic coodrinates, which is centered around the object xypos)
+z = LOS</p>
+</dd>
+<dt>for continuume emission “cloudlet” objects:</dt><dd><p>spatial-wise the sky-projected rest-frame galactic coodrinates, which is centered around the object xypos)
+spectral-wise, sky-or-rest-frame wavelength or frequency</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>“sky-frame” could be (angular,angular,velocity) or (distance,distance,velocity)
+while typically the sky-frame is defined in angular units;
+if the sky frame is defined in length the angular seperation will be converted to physical angular size.
+the object redshift is required</p>
+<blockquote>
+<div><dl class="simple">
+<dt>We assume:</dt><dd><p>inverse-RA (and pixel-x) aligns along with x
+DEC (and pixel-y) aligns along with y</p>
+</dd>
+</dl>
+<p>The functin dosn’t consider pixel rotation at this moment</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Essentially, we transfer:</dt><dd><p>ModelRef_origin-&gt;World-&gt;pix:
+Then map pix index back to ModelRef Vec</p>
+</dd>
+</dl>
+<p>mxo,myo,mzo:    the origin of the reference model</p>
+<p>for cloudlet3d models:    (kpc,kpc,km/s)
+for cloudlet2d models:    (kpc,kpc,Hz)</p>
+</dd></dl>
+
 </div>
 <div class="section" id="ism3d-arts-dynamics-module">
 <h2>ism3d.arts.dynamics module<a class="headerlink" href="#ism3d-arts-dynamics-module" title="Permalink to this headline">¶</a></h2>
@@ -220,6 +307,7 @@
 </div>
 <div class="section" id="module-ism3d.arts">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ism3d.arts" title="Permalink to this headline">¶</a></h2>
+<p>subpackage arts</p>
 </div>
 </div>
 

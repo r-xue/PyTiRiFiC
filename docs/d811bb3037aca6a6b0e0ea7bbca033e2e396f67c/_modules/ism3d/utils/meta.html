@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -246,8 +247,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__resource__</span>
 
 
-<span class="n">cfg</span><span class="o">=</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="n">ExtendedInterpolation</span><span class="p">())</span>
-<span class="n">cfg</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">__resource__</span><span class="o">+</span><span class="s2">&quot;/default.cfg&quot;</span><span class="p">)</span> 
+
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;read_inp&#39;</span><span class="p">]</span>
 
@@ -255,7 +255,39 @@
     <span class="n">db_global</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="n">db_global</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dat_dct&#39;</span><span class="p">:{},</span><span class="s1">&#39;models&#39;</span><span class="p">:{}}</span>
+    
+    
+<div class="viewcode-block" id="inp_config"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.inp_config.html#ism3d.utils.meta.inp_config">[docs]</a><span class="k">def</span> <span class="nf">inp_config</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    supposed configuration setup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cfg</span><span class="o">=</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="n">ExtendedInterpolation</span><span class="p">())</span>
 
+    <span class="n">cfg</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">[inp.component]</span>
+
+<span class="s2">[inp.dynamics]</span>
+
+<span class="s2">    id = gravity,potential,dynamics</span>
+
+<span class="s2">[inp.optimizer]</span>
+
+<span class="s2">    id = optimize,fitter,optimizer</span>
+
+<span class="s2">[inp.analyzer]</span>
+
+<span class="s2">    id = analysis,diagnostics,analyzer</span>
+
+<span class="s2">[inp.comment]</span>
+
+<span class="s2">    id = comments,skip,ignore,changelog</span>
+<span class="s2">    </span>
+<span class="s2">[inp.general]</span>
+
+<span class="s2">    id = general</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cfg</span></div>
+    
 <div class="viewcode-block" id="create_header"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.create_header.html#ism3d.utils.meta.create_header">[docs]</a><span class="k">def</span> <span class="nf">create_header</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">objname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">naxis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crpix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cdelt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -329,20 +361,19 @@
 <span class="s2">RESTFRQ =   7.573097700000E+11 /Rest Frequency (Hz)                             </span>
 <span class="s2">SPECSYS = &#39;LSRK    &#39;           /Spectral reference frame                        </span>
 <span class="s2">VELREF  =                  257 /1 LSR, 2 HEL, 3 OBS, +256 Radio                 </span>
-<span class="s2">COMMENT casacore non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL                 </span>
-<span class="s2">TELESCOP= &#39;ALMA    &#39;                                                            </span>
-<span class="s2">OBSERVER= &#39;GMAKE&#39;                                                               </span>
-<span class="s2">DATE-OBS= &#39;2016-08-03T07:35:49.824000&#39;                                          </span>
+<span class="s2">TELESCOP= &#39;ism3d   &#39;                                                            </span>
+<span class="s2">OBSERVER= &#39;ism3d   &#39;                                                            </span>
+<span class="s2">DATE-OBS= &#39;2020-01-01T00:00:00.000000&#39;                                          </span>
 <span class="s2">TIMESYS = &#39;UTC     &#39;                                                            </span>
 <span class="s2">OBSRA   =   3.565393333333E+02                                                  </span>
 <span class="s2">OBSDEC  =   1.282202777778E+01                                                  </span>
 <span class="s2">OBSGEO-X=   2.225142180269E+06                                                  </span>
 <span class="s2">OBSGEO-Y=  -5.440307370349E+06                                                  </span>
 <span class="s2">OBSGEO-Z=  -2.481029851874E+06                                                  </span>
-<span class="s2">INSTRUME= &#39;ALMA    &#39;                                                            </span>
+<span class="s2">INSTRUME= &#39;ism3d   &#39;                                                            </span>
 <span class="s2">DISTANCE=   0.000000000000E+00                                                  </span>
 <span class="s2">DATE    = &#39;2019-01-01T00:00:00.000000&#39; /Date FITS file was written              </span>
-<span class="s2">ORIGIN  = &#39;GMAKE&#39;                                                               </span>
+<span class="s2">ORIGIN  = &#39;ism3d.create_header&#39;                                                               </span>
 <span class="s2">HISTORY FROM TCLEAN STANDARD OUTPUT                                             </span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -374,102 +405,9 @@
 
 
 
-<div class="viewcode-block" id="read_inp"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.read_inp.html#ism3d.utils.meta.read_inp">[docs]</a><span class="k">def</span> <span class="nf">read_inp</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    read parameters/setups from a .inp file into a dictionary nest:</span>
-<span class="sd">        inp_dct[id][keywords]=values.</span>
-<span class="sd">        inp_dct[&#39;comments&#39;]=&#39;??&#39;</span>
-<span class="sd">        inp_dct[&#39;changlog&#39;]=&#39;??&#39;</span>
-<span class="sd">        inp_dct[&#39;optimize&#39;]=&#39;??&#39;</span>
-<span class="sd">        </span>
-<span class="sd">    keyword value formatting</span>
-<span class="sd">        1.remove trailing/prefix space / comments</span>
-<span class="sd">        2.split my space</span>
-<span class="sd">        3.first element is the key</span>
-<span class="sd">        4.the rest elements will be filled into value</span>
-<span class="sd">            more than one element : list</span>
-<span class="sd">            one element: scaler</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#print(&quot;**********exe read_inp()**************&quot;)</span>
-    
-    <span class="n">inp_dct</span><span class="o">=</span><span class="p">{}</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">lines</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">lines</span><span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">))</span>
 
-    <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;default&#39;</span>
-    
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-        <span class="k">if</span>  <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
-            <span class="n">tag</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="c1">#pars={&#39;content&#39;:&#39;&#39;}</span>
-            <span class="n">pars</span><span class="o">=</span><span class="p">{}</span>
-            <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
-            <span class="k">if</span>  <span class="n">log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;@ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            
-            <span class="k">if</span>  <span class="nb">any</span><span class="p">(</span><span class="n">section</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.comment&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-                <span class="k">pass</span>
-                <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
-                <span class="c1">#inp_dct[tag]=pars</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1">#pars[&#39;content&#39;]+=line+&quot;\n&quot;               </span>
-                <span class="c1">#   identify the &quot;key&quot;</span>
-                <span class="n">key</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="c1">#   remove leading/trailing space to get the &quot;value&quot; portion</span>
-                <span class="n">expr</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span>  <span class="n">log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">expr</span><span class="p">))</span>
-                
-                <span class="sd">&quot;&quot;&quot;                    </span>
-<span class="sd">                try:                #   likely mutiple-elements are provided, </span>
-<span class="sd">                                    #   but be careful of eval() usage here</span>
-<span class="sd">                                    #   e.g.:&quot;tuple (1)&quot; will be a valid statement</span>
-<span class="sd">                    #pars[key]=eval(value)</span>
-<span class="sd">                    #pars[key]=ast.literal_eval(value)</span>
-<span class="sd">                    pars[key]=aeval(value)</span>
-<span class="sd">                except SyntaxError: #   pack the value content into a list</span>
-<span class="sd">                    values=value.split()</span>
-<span class="sd">                    #pars[key]=[eval(value0) for value0 in value]</span>
-<span class="sd">                    #pars[key]=[ast.literal_eval(value0) for value0 in value]</span>
-<span class="sd">                    pars[key]=[aeval(value0) for value0 in values]</span>
-<span class="sd">                &quot;&quot;&quot;</span>
-                <span class="n">value</span><span class="o">=</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
-                <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">aeval</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">exprs</span><span class="o">=</span><span class="n">expr</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">exprs</span><span class="p">]</span>
-                
-                <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">pars_interp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
-                <span class="n">inp_dct</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">=</span><span class="n">pars</span>
 
-    
-    <span class="k">if</span>  <span class="s1">&#39;general&#39;</span> <span class="ow">in</span> <span class="n">inp_dct</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span>  <span class="s1">&#39;outdir&#39;</span> <span class="ow">in</span> <span class="p">(</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">outdir</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">][</span><span class="s1">&#39;outdir&#39;</span><span class="p">]</span>
-            <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span> 
-                <span class="k">if</span>  <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
-                <span class="c1">#np.save(outdir+&#39;/inp_dct.npy&#39;,inp_dct)</span>
-                <span class="c1">#write_inp(inp_dct,inpfile=outdir+&#39;/p_start.inp&#39;,</span>
-                <span class="c1">#          overwrite=True)</span>
-                                
-                
-    <span class="k">return</span> <span class="n">inp_dct</span></div>
-
-<div class="viewcode-block" id="pars_interp"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.meta.pars_interp.html#ism3d.utils.meta.pars_interp">[docs]</a><span class="k">def</span> <span class="nf">pars_interp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-
-    <span class="n">value_int</span><span class="o">=</span><span class="n">value</span>
-    
-    <span class="k">if</span>  <span class="n">key</span><span class="o">==</span><span class="s1">&#39;xypos&#39;</span><span class="p">:</span>
-        <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
-            <span class="n">value_int</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">value_int</span></div>
-
-<span class="n">inp_def</span><span class="o">=</span><span class="n">read_inp</span><span class="p">(</span><span class="n">__resource__</span><span class="o">+</span><span class="s1">&#39;input_def.inp&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1">#inp_def=read_inp(__resource__+&#39;input_def.inp&#39;,log=False)</span>
 
 
 

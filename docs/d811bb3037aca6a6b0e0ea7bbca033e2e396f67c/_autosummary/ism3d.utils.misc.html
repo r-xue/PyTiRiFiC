@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ism3d.utils.misc.check_config" href="ism3d.utils.misc.check_config.html" />
-    <link rel="prev" title="ism3d.utils.meta.read_inp" href="ism3d.utils.meta.read_inp.html" /> 
+    <link rel="prev" title="ism3d.utils.meta.inp_config" href="ism3d.utils.meta.inp_config.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,7 +112,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -163,6 +164,12 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.get_obj_size.html">ism3d.utils.misc.get_obj_size</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.human_to_string.html">ism3d.utils.misc.human_to_string</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.human_unit.html">ism3d.utils.misc.human_unit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.makekernel.html">ism3d.utils.misc.makekernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.makepb.html">ism3d.utils.misc.makepb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.makepsf.html">ism3d.utils.misc.makepsf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.pickplane.html">ism3d.utils.misc.pickplane</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.prepdir.html">ism3d.utils.misc.prepdir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.render_component.html">ism3d.utils.misc.render_component</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.misc.unit_shortname.html">ism3d.utils.misc.unit_shortname</a></li>
 </ul>
 </li>
@@ -270,6 +277,24 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.misc.human_unit.html#ism3d.utils.misc.human_unit" title="ism3d.utils.misc.human_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">human_unit</span></code></a></p></td>
 <td><p>Sugguest a better unit for the quantity and make it more human readable e.g.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.misc.makekernel.html#ism3d.utils.misc.makekernel" title="ism3d.utils.misc.makekernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">makekernel</span></code></a></p></td>
+<td><p>mode: ‘center’,’linear_interp’,’oversample’,’integrate’</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.misc.makepb.html#ism3d.utils.misc.makepb" title="ism3d.utils.misc.makepb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">makepb</span></code></a></p></td>
+<td><p>make a 2D Gaussian image approximated to the ALMA (or VLA?) primary beam</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.misc.makepsf.html#ism3d.utils.misc.makepsf" title="ism3d.utils.misc.makepsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">makepsf</span></code></a></p></td>
+<td><p>make a 2D Gaussian image as PSF, warapping around makekernel() beam: tuple (bmaj,bmin,bpa) quatity in fits convention      otherwise, use header bmaj/bmin/bpa size:  (nx,ny) &lt;– in the FITS convention (not other way around, or so called ij)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.misc.pickplane.html#ism3d.utils.misc.pickplane" title="ism3d.utils.misc.pickplane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickplane</span></code></a></p></td>
+<td><p>pick a channel plane from a “cube”</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.misc.prepdir.html#ism3d.utils.misc.prepdir" title="ism3d.utils.misc.prepdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepdir</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.misc.render_component.html#ism3d.utils.misc.render_component" title="ism3d.utils.misc.render_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_component</span></code></a></p></td>
+<td><p>in-plane-add model components into spectral-cube or mutil-freq MS see other mode options: e.g.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.misc.unit_shortname.html#ism3d.utils.misc.unit_shortname" title="ism3d.utils.misc.unit_shortname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_shortname</span></code></a></p></td>
 <td><p>convert unit to shortest name e.g.: (unit_shortname(u.Jy*u.km/u.s,nospace=False)</p></td>
 </tr>
@@ -288,7 +313,7 @@
         <a href="ism3d.utils.misc.check_config.html" class="btn btn-neutral float-right" title="ism3d.utils.misc.check_config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.utils.meta.read_inp.html" class="btn btn-neutral float-left" title="ism3d.utils.meta.read_inp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.utils.meta.inp_config.html" class="btn btn-neutral float-left" title="ism3d.utils.meta.inp_config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

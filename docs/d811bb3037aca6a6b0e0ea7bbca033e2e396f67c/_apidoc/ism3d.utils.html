@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -370,27 +371,6 @@ Component metadata                mod_dct (lightweight) (dynamical(
 Component Reference model            mod_dct (lightweight (dynamical)
 Data                                dat_dct (heavy) (transite)
 Models                            models (heavy) not nesscarilly filled with data (transite only exporting data)</p>
-<dl class="py function">
-<dt id="ism3d.utils.meta.read_inp">
-<code class="sig-prename descclassname">ism3d.utils.meta.</code><code class="sig-name descname">read_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parfile</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/meta.html#read_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.meta.read_inp" title="Permalink to this definition">¶</a></dt>
-<dd><dl>
-<dt>read parameters/setups from a .inp file into a dictionary nest:</dt><dd><p>inp_dct[id][keywords]=values.
-inp_dct[‘comments’]=’??’
-inp_dct[‘changlog’]=’??’
-inp_dct[‘optimize’]=’??’</p>
-</dd>
-<dt>keyword value formatting</dt><dd><p>1.remove trailing/prefix space / comments
-2.split my space
-3.first element is the key
-4.the rest elements will be filled into value</p>
-<blockquote>
-<div><p>more than one element : list
-one element: scaler</p>
-</div></blockquote>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="module-ism3d.utils.misc">
 <span id="ism3d-utils-misc-module"></span><h2>ism3d.utils.misc module<a class="headerlink" href="#module-ism3d.utils.misc" title="Permalink to this headline">¶</a></h2>
@@ -473,6 +453,130 @@ methods (which use this under the hood).</p>
 </dl>
 <p>help find the best human readable unit
 then you can do q.to_string(unit=’*’)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.makekernel">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">makekernel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xpixels</span></em>, <em class="sig-param"><span class="n">ypixels</span></em>, <em class="sig-param"><span class="n">beam</span></em>, <em class="sig-param"><span class="n">pa</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">cent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'center'</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#makekernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.makekernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>mode: ‘center’,’linear_interp’,’oversample’,’integrate’</p>
+<p>beam=[bmaj,bmin] FWHM not (bmin,bmaj)
+pa=east from north (ccw)deli</p>
+<p>in pixel-size units</p>
+<dl>
+<dt>by default: the resulted kernel is always centered around a single pixel, and the application of</dt><dd><p>the kernel will lead to zero offset,</p>
+</dd>
+<dt>make a “centered” Gaussian PSF kernel:</dt><dd><dl class="simple">
+<dt>e.g. npixel=7, centered at px=3</dt><dd><p>npixel=8, centered at px=4
+so the single peak is always at a pixel center (not physical center)
+and the function is symmetric around that pixel
+the purpose of doing this is to avoid offset when the specified kernel size is
+even number and you build a function peaked at a pixel edge.</p>
+</dd>
+</dl>
+<p>is x ks (peak pixel index)
+10 x 7(3) okay
+10 x 8(4) okay
+10 x 8(3.5) offset
+for convolve (non-fft), odd ks is required (the center pixel is undoubtely index=3)</p>
+<blockquote>
+<div><p>even ks is not allowed</p>
+</div></blockquote>
+<dl class="simple">
+<dt>for convolve_fft, you need to use cent=ks/2:</dt><dd><p>technically it’s not the pixel index of image center
+but the center pixel is “considers”as index=4</p>
+</dd>
+<dt>the rule of thumb-up:</dt><dd><p>cent=floor(ks/2.) or int(ks/2) #  int() try to truncate towards zero.</p>
+</dd>
+</dl>
+<p>note:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Python “rounding half to even” rule vs. traditional IDL:</dt><dd><p><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html">https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html</a>
+<a class="reference external" href="https://realpython.com/python-rounding/">https://realpython.com/python-rounding/</a>
+Python&gt;round(1.5)    # 2
+Python&gt;round(0.5)    # 0
+IDL&gt;round(1.5)       # 2
+IDL&gt;round(0.5)       # 1</p>
+</dd>
+<dt>“forget about how the np.array is stored, just use the array as it is IDL;</dt><dd><p>when it comes down to shape/index, reverse the sequence”</p>
+</dd>
+</dl>
+<p>About Undersampling Images:
+<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html">http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html</a></p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.makepb">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">makepb</code><span class="sig-paren">(</span><em class="sig-param">header</em>, <em class="sig-param">phasecenter=None</em>, <em class="sig-param">antsize=&lt;Quantity 12. m&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#makepb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.makepb" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>make a 2D Gaussian image approximated to the ALMA (or VLA?) primary beam</dt><dd><p><a class="reference external" href="https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90">https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90</a></p>
+</dd>
+<dt>note: this is just a apprximate solution, assuming the the pointing is towards the reference pixel in the header</dt><dd><p>and use the first channel as the reference frequency.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.makepsf">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">makepsf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">header</span></em>, <em class="sig-param"><span class="n">beam</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'oversample'</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">'peak'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#makepsf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.makepsf" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a 2D Gaussian image as PSF, warapping around makekernel()
+beam: tuple (bmaj,bmin,bpa) quatity in fits convention</p>
+<blockquote>
+<div><p>otherwise, use header bmaj/bmin/bpa</p>
+</div></blockquote>
+<p>size:  (nx,ny) &lt;– in the FITS convention (not other way around, or so called ij)</p>
+<p>norm=’peak’ would be godo for Jy/pix-&gt;Jy/beam
+output</p>
+<p>Note: we choose not use Gaussian2DKernel as we want to handle customzed PSF case in upstream (as dirty beam)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.pickplane">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">pickplane</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">im</span></em>, <em class="sig-param"><span class="n">iz</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#pickplane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.pickplane" title="Permalink to this definition">¶</a></dt>
+<dd><p>pick a channel plane from a “cube”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.prepdir">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">prepdir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#prepdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.prepdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.utils.misc.render_component">
+<code class="sig-prename descclassname">ism3d.utils.misc.</code><code class="sig-name descname">render_component</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out</span></em>, <em class="sig-param"><span class="n">im</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'iadd'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/misc.html#render_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.misc.render_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>in-plane-add model components into spectral-cube or mutil-freq MS
+see other mode options: e.g. iadd/isub</p>
+<blockquote>
+<div><p><a class="reference external" href="https://docs.python.org/3.8/library/operator.html">https://docs.python.org/3.8/library/operator.html</a></p>
+</div></blockquote>
+<p>out=None return a new obect
+out!=None return a reference point to the updated out</p>
+<dl class="simple">
+<dt>Note:</dt><dd><p>this may return a view of numpy if out is a slice</p>
+</dd>
+</dl>
+<p>from gmake.discretize import render_component
+cube=np.zeros((3,3,3))</p>
+<p>cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+x=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+np.may_share_memory(x,cube)</p>
+<dl class="simple">
+<dt>warning:</dt><dd><p>cube=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+will override your cube values..
+one should use instead:
+cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)</p>
+</dd>
+</dl>
+<p>if im=[], it will do nothing…</p>
+<dl class="simple">
+<dt>if  you’re not sure out is None, maybe use:</dt><dd><p>out=render_component(out)</p>
+</dd>
+<dt>if  you know out is not None, use</dt><dd><p>render_component(out)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -579,25 +683,6 @@ p_format_keys       : format for p_name</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ism3d.utils.utils.inp2mod">
-<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">inp2mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#inp2mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.inp2mod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert Input Parameter Dictionary to Model Properties Dictionary</p>
-<dl class="simple">
-<dt>The code will make a dictionary ready for model constructions, including:</dt><dd><ul class="simple">
-<li><p>add the default values</p></li>
-<li><p>fill optional keywords</p></li>
-<li><p>fill the “tied” values</p></li>
-</ul>
-</dd>
-</dl>
-<p>inp_dct</p>
-<p>–&gt; write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration)</p>
-<p>inp_dct_modified</p>
-<p>–&gt; inp2mod (fullfill the default value / ties / reject comments &lt;– act as a formatter)</p>
-<p>mod_dct</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ism3d.utils.utils.inp_validate">
 <code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">inp_validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#inp_validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.inp_validate" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
@@ -684,13 +769,6 @@ used for writing input files</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ism3d.utils.utils.rng_seeded">
-<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">rng_seeded</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#rng_seeded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.rng_seeded" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a seeded RNG plus is_mkl
-mkl_random is preferrred over numpy.random</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ism3d.utils.utils.rotate_xy">
 <code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">rotate_xy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">angle</span></em>, <em class="sig-param"><span class="n">xo</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">yo</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#rotate_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.rotate_xy" title="Permalink to this definition">¶</a></dt>
 <dd><p>rotate points in a 2D coordinate system
@@ -733,18 +811,6 @@ switching nthreads</p>
 <dt id="ism3d.utils.utils.sort_on_runtime">
 <code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">sort_on_runtime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#sort_on_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.sort_on_runtime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py function">
-<dt id="ism3d.utils.utils.write_inp">
-<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">write_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dct</span></em>, <em class="sig-param"><span class="n">inpfile</span><span class="o">=</span><span class="default_value">'example.inp'</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#write_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.write_inp" title="Permalink to this definition">¶</a></dt>
-<dd><p>write out inp files from inp_dct
-if overwrite=False, the function will try to append .0/.1/.2… to the .inp file name
-writepar is two-element tuple, first element is the key name to be modified</p>
-<blockquote>
-<div><p>second element is the value</p>
-</div></blockquote>
-<p>note: py&gt;=3.7 use the ordered dict by default (so the output keyword order is preserved)</p>
-</dd></dl>
 
 <dl class="py function">
 <dt id="ism3d.utils.utils.write_par">

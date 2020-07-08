@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -236,9 +237,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="c1">#from .model import pots_to_vcirc</span>
 
+<span class="kn">from</span> <span class="nn">..utils.misc</span> <span class="kn">import</span> <span class="n">prepdir</span>
 
-
-<div class="viewcode-block" id="im_grid"><a class="viewcode-back" href="../../../_autosummary/ism3d.visualize.plts.im_grid.html#ism3d.visualize.plts.im_grid">[docs]</a><span class="k">def</span> <span class="nf">im_grid</span><span class="p">(</span><span class="n">images</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">titles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nxy</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span><span class="n">figname</span><span class="o">=</span><span class="s1">&#39;im_grid.pdf&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="im_grid"><a class="viewcode-back" href="../../../_autosummary/ism3d.visualize.plts.im_grid.html#ism3d.visualize.plts.im_grid">[docs]</a><span class="k">def</span> <span class="nf">im_grid</span><span class="p">(</span><span class="n">images</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">titles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nxy</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span><span class="n">figname</span><span class="o">=</span><span class="s1">&#39;im_grid.pdf&#39;</span><span class="p">,</span><span class="n">vmins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmaxs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    display images in a basic grid layout, with colorbar</span>
 <span class="sd">    images: list can be non</span>
@@ -261,8 +262,9 @@
         <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">delaxes</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">iy</span><span class="p">,</span><span class="n">ix</span><span class="p">])</span>
             <span class="k">continue</span>    
-
-        <span class="n">im</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">iy</span><span class="p">,</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">vmins</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">if</span>  <span class="n">vmins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="n">vmaxs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">if</span>  <span class="n">vmaxs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">iy</span><span class="p">,</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
 
         <span class="c1">#divider = make_axes_locatable(axs[iy,ix])</span>
         <span class="c1">#cax = divider.append_axes(&quot;right&quot;, size=&quot;7%&quot;, pad=0.05)</span>
@@ -277,7 +279,9 @@
         <span class="c1">#aa[iy,ix].set_aspect(&#39;auto&#39;)</span>
 
     <span class="c1">#fig.tight_layout() ; plt.show()</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figname</span><span class="p">)</span></div>
+    <span class="n">prepdir</span><span class="p">(</span><span class="n">figname</span><span class="p">)</span>    
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figname</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="c1"># don&#39;t show it in ipynb</span></div>
        
     <span class="c1">#clear_output(wait=True) ; display(fig)</span>
     
@@ -293,7 +297,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ppbeam</span><span class="o">=</span><span class="mf">1.</span>
     
-
     <span class="k">return</span> <span class="n">ppbeam</span></div>
 
 

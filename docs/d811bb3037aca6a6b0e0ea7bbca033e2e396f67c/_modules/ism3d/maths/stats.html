@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -388,6 +389,22 @@
     
 <span class="n">laplace</span> <span class="o">=</span> <span class="n">laplace_gen</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;laplace&#39;</span><span class="p">)</span>
 
+
+
+<div class="viewcode-block" id="rng_seeded"><a class="viewcode-back" href="../../../_autosummary/ism3d.maths.stats.rng_seeded.html#ism3d.maths.stats.rng_seeded">[docs]</a><span class="k">def</span> <span class="nf">rng_seeded</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return a seeded RNG plus is_mkl</span>
+<span class="sd">    mkl_random is preferrred over numpy.random </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mkl_random</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Generator</span><span class="p">(</span><span class="n">SFC64</span><span class="p">(</span><span class="n">seed</span><span class="p">)),</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mkl_random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="kc">True</span>  <span class="c1"># , brng = brng_algo</span></div>
+    
+    
 <span class="c1">#############################################################</span>
 
 

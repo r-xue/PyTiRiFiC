@@ -112,7 +112,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -168,7 +169,6 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.h5ls.html">ism3d.utils.utils.h5ls</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.h5ls_print.html">ism3d.utils.utils.h5ls_print</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.imcontsub.html">ism3d.utils.utils.imcontsub</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.inp2mod.html">ism3d.utils.utils.inp2mod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.inp_validate.html">ism3d.utils.utils.inp_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.make_slice.html">ism3d.utils.utils.make_slice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.moments.html">ism3d.utils.utils.moments</a></li>
@@ -180,12 +180,10 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.read_par.html">ism3d.utils.utils.read_par</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.read_range.html">ism3d.utils.utils.read_range</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.repr_parameter.html">ism3d.utils.utils.repr_parameter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.rng_seeded.html">ism3d.utils.utils.rng_seeded</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.rotate_xy.html">ism3d.utils.utils.rotate_xy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.sample_grid.html">ism3d.utils.utils.sample_grid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.set_threads.html">ism3d.utils.utils.set_threads</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.sort_on_runtime.html">ism3d.utils.utils.sort_on_runtime</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.write_inp.html">ism3d.utils.utils.write_inp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.utils.utils.write_par.html">ism3d.utils.utils.write_par</a></li>
 </ul>
 </li>
@@ -305,44 +303,38 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.imcontsub.html#ism3d.utils.utils.imcontsub" title="ism3d.utils.utils.imcontsub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imcontsub</span></code></a></p></td>
 <td><p>linechan / contchan: tuple with [fmin,fmax] in each element</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.inp2mod.html#ism3d.utils.utils.inp2mod" title="ism3d.utils.utils.inp2mod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inp2mod</span></code></a></p></td>
-<td><p>Convert Input Parameter Dictionary to Model Properties Dictionary</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.inp_validate.html#ism3d.utils.utils.inp_validate" title="ism3d.utils.utils.inp_validate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inp_validate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.inp_validate.html#ism3d.utils.utils.inp_validate" title="ism3d.utils.utils.inp_validate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inp_validate</span></code></a></p></td>
 <td><p>validate the input parameters, will do the follows step by step</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.make_slice.html#ism3d.utils.utils.make_slice" title="ism3d.utils.utils.make_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_slice</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.make_slice.html#ism3d.utils.utils.make_slice" title="ism3d.utils.utils.make_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_slice</span></code></a></p></td>
 <td><p>parsing the slicing syntax in STRING</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.moments.html#ism3d.utils.utils.moments" title="ism3d.utils.utils.moments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moments</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.moments.html#ism3d.utils.utils.moments" title="ism3d.utils.utils.moments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moments</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.obj_defunit.html#ism3d.utils.utils.obj_defunit" title="ism3d.utils.utils.obj_defunit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obj_defunit</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.obj_defunit.html#ism3d.utils.utils.obj_defunit" title="ism3d.utils.utils.obj_defunit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obj_defunit</span></code></a></p></td>
 <td><p>convert quatity to values in default internal units</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.one_beam.html#ism3d.utils.utils.one_beam" title="ism3d.utils.utils.one_beam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">one_beam</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.one_beam.html#ism3d.utils.utils.one_beam" title="ism3d.utils.utils.one_beam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">one_beam</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.paste_array.html#ism3d.utils.utils.paste_array" title="ism3d.utils.utils.paste_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_array</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.paste_array.html#ism3d.utils.utils.paste_array" title="ism3d.utils.utils.paste_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_array</span></code></a></p></td>
 <td><p>past a small array into a larger array with shifting works for high dimension or off-edge cases wall/block requires in the same dimension number loc: the index of left-bottom pixel of block in wall.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.paste_slice.html#ism3d.utils.utils.paste_slice" title="ism3d.utils.utils.paste_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_slice</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.paste_slice.html#ism3d.utils.utils.paste_slice" title="ism3d.utils.utils.paste_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">paste_slice</span></code></a></p></td>
 <td><p>make slice for the overlapping region</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.pprint.html#ism3d.utils.utils.pprint" title="ism3d.utils.utils.pprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pprint</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.pprint.html#ism3d.utils.utils.pprint" title="ism3d.utils.utils.pprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pprint</span></code></a></p></td>
 <td><p>A modified pprint.pprint without sorting dictionary keys</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.read_par.html#ism3d.utils.utils.read_par" title="ism3d.utils.utils.read_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_par</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.read_par.html#ism3d.utils.utils.read_par" title="ism3d.utils.utils.read_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_par</span></code></a></p></td>
 <td><p>read parameter quantity / values (in default units) from a parameter dictionary this function can handle literal slicing and attribute syntax     e.g.:   par_str[ind_str]&#64;section_name             <a class="reference external" href="mailto:par_str&#46;attrubute&#37;&#52;&#48;section_name">par_str<span>&#46;</span>attrubute<span>&#64;</span>section_name</a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.read_range.html#ism3d.utils.utils.read_range" title="ism3d.utils.utils.read_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_range</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.read_range.html#ism3d.utils.utils.read_range" title="ism3d.utils.utils.read_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_range</span></code></a></p></td>
 <td><p>modifiy the parameter exploring bounrdary according to the info from opt section a:    absolute</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.repr_parameter.html#ism3d.utils.utils.repr_parameter" title="ism3d.utils.utils.repr_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repr_parameter</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.repr_parameter.html#ism3d.utils.utils.repr_parameter" title="ism3d.utils.utils.repr_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repr_parameter</span></code></a></p></td>
 <td><p>Similiar to the built-in repr(), but can handle Quantity / SkyCoord used for writing input files</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.rng_seeded.html#ism3d.utils.utils.rng_seeded" title="ism3d.utils.utils.rng_seeded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rng_seeded</span></code></a></p></td>
-<td><p>return a seeded RNG plus is_mkl mkl_random is preferrred over numpy.random</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.rotate_xy.html#ism3d.utils.utils.rotate_xy" title="ism3d.utils.utils.rotate_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_xy</span></code></a></p></td>
 <td><p>rotate points in a 2D coordinate system angle:    rotate points by angle in CCW ref:    rotate_xy.pro rot_3d.pro performance consideration:     <a class="reference external" href="https://gist.github.com/LyleScott/e36e08bfb23b1f87af68c9051f985302">https://gist.github.com/LyleScott/e36e08bfb23b1f87af68c9051f985302</a>     <a class="reference external" href="https://stackoverflow.com/questions/33004551/why-is-b-numpy-dota-x-so-much-slower-looping-through-doing-bi-numpy">https://stackoverflow.com/questions/33004551/why-is-b-numpy-dota-x-so-much-slower-looping-through-doing-bi-numpy</a>     <a class="reference external" href="https://en.wikipedia.org/wiki/Rotation_matrix">https://en.wikipedia.org/wiki/Rotation_matrix</a></p></td>
@@ -356,10 +348,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.sort_on_runtime.html#ism3d.utils.utils.sort_on_runtime" title="ism3d.utils.utils.sort_on_runtime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_on_runtime</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.write_inp.html#ism3d.utils.utils.write_inp" title="ism3d.utils.utils.write_inp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_inp</span></code></a></p></td>
-<td><p>write out inp files from inp_dct if overwrite=False, the function will try to append .0/.1/.2…</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.utils.utils.write_par.html#ism3d.utils.utils.write_par" title="ism3d.utils.utils.write_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_par</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.utils.utils.write_par.html#ism3d.utils.utils.write_par" title="ism3d.utils.utils.write_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_par</span></code></a></p></td>
 <td><p>write parameter values</p></td>
 </tr>
 </tbody>

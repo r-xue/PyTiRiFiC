@@ -1,0 +1,629 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d.modeling.interface &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/my_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/casa6.html">CASA6 Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/dictionary.html">ISM3D Dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/callgraph.html">ISM3D call graph</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ism3d.modeling.interface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ism3d.modeling.interface</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">Quantity</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+
+<span class="kn">from</span> <span class="nn">..utils.meta</span> <span class="kn">import</span> <span class="n">inp_config</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">Quantity</span>
+
+<span class="kn">from</span> <span class="nn">asteval</span> <span class="kn">import</span> <span class="n">Interpreter</span>
+<span class="n">aeval</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="p">(</span><span class="n">use_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">err_writer</span><span class="o">=</span><span class="n">StringIO</span><span class="p">())</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">u</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;SkyCoord&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">SkyCoord</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Angle&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Angle</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Number&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Number</span>
+<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">Quantity</span>
+
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="c1">#import copy</span>
+<span class="c1">#from copy import copy</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="read_inp"><a class="viewcode-back" href="../../../_autosummary/ism3d.modeling.interface.read_inp.html#ism3d.modeling.interface.read_inp">[docs]</a><span class="k">def</span> <span class="nf">read_inp</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    read parameters/setups from a .inp file into a dictionary nest:</span>
+<span class="sd">        inp_dct[id][keywords]=values.</span>
+<span class="sd">        inp_dct[&#39;comments&#39;]=&#39;??&#39;</span>
+<span class="sd">        inp_dct[&#39;changlog&#39;]=&#39;??&#39;</span>
+<span class="sd">        inp_dct[&#39;optimize&#39;]=&#39;??&#39;</span>
+<span class="sd">        </span>
+<span class="sd">    keyword value formatting</span>
+<span class="sd">        1.remove trailing/prefix space / comments</span>
+<span class="sd">        2.split my space</span>
+<span class="sd">        3.first element is the key</span>
+<span class="sd">        4.the rest elements will be filled into value</span>
+<span class="sd">            more than one element : list</span>
+<span class="sd">            one element: scaler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cfg</span><span class="o">=</span><span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="n">configparser</span><span class="o">.</span><span class="n">ExtendedInterpolation</span><span class="p">())</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>   <span class="c1"># make the key case sensitive</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">parfile</span><span class="p">)</span>
+    <span class="n">inp_dict</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">_sections</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">inp_dict</span><span class="p">:</span>
+        <span class="c1"># logger.debug(section)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">inp_dict</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
+            <span class="n">expr</span><span class="o">=</span><span class="n">inp_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+            <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">aeval</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">exprs</span><span class="o">=</span><span class="n">expr</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="n">aeval</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">exprs</span><span class="p">]</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">key_intepreter</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
+            <span class="c1"># logger.debug(&#39;    {} : {}&#39;.format(key,expr))</span>
+            <span class="c1"># logger.debug(&#39;        {} : {}&#39;.format(type(value).__name__,value))</span>
+            <span class="n">inp_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>
+    <span class="n">inp_dict</span><span class="p">[</span><span class="s1">&#39;ism3d.inp&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cfg</span>
+    
+    <span class="k">return</span> <span class="n">inp_dict</span></div>
+
+<div class="viewcode-block" id="key_intepreter"><a class="viewcode-back" href="../../../_autosummary/ism3d.modeling.interface.key_intepreter.html#ism3d.modeling.interface.key_intepreter">[docs]</a><span class="k">def</span> <span class="nf">key_intepreter</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    additional customized interpretaion of key values </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value_int</span><span class="o">=</span><span class="n">value</span>
+    
+    <span class="k">if</span>  <span class="n">key</span><span class="o">==</span><span class="s1">&#39;xypos&#39;</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">value_int</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">value_int</span></div>
+
+<div class="viewcode-block" id="write_inp"><a class="viewcode-back" href="../../../_autosummary/ism3d.modeling.interface.write_inp.html#ism3d.modeling.interface.write_inp">[docs]</a><span class="k">def</span> <span class="nf">write_inp</span><span class="p">(</span><span class="n">inp_dict</span><span class="p">,</span>
+              <span class="n">parfile</span><span class="o">=</span><span class="s1">&#39;test,inp&#39;</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parfile</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">configfile</span><span class="p">:</span>
+        <span class="n">inp_dict</span><span class="p">[</span><span class="s1">&#39;ism3d.inp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="inp_to_mod"><a class="viewcode-back" href="../../../_autosummary/ism3d.modeling.interface.inp_to_mod.html#ism3d.modeling.interface.inp_to_mod">[docs]</a><span class="k">def</span> <span class="nf">inp_to_mod</span><span class="p">(</span><span class="n">inp_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">mod_dict</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">inp_dict</span><span class="p">)</span>
+    <span class="n">imported_sections</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="c1">#   import reference keys</span>
+    
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">mod_dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">]):</span>
+            <span class="k">if</span>  <span class="ow">not</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;import&#39;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="nb">str</span><span class="p">)):</span>
+                <span class="k">continue</span>
+            <span class="n">import_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">import_section</span> <span class="ow">in</span> <span class="n">import_list</span><span class="p">:</span>
+                <span class="k">if</span>  <span class="n">import_section</span> <span class="ow">in</span> <span class="n">mod_dict</span><span class="p">:</span>
+                    <span class="n">imported_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">import_section</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">import_key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mod_dict</span><span class="p">[</span><span class="n">import_section</span><span class="p">]):</span>
+                        <span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">import_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_dict</span><span class="p">[</span><span class="n">import_section</span><span class="p">][</span><span class="n">import_key</span><span class="p">]</span>
+
+    <span class="c1">#   remove imported sections</span>
+    
+    <span class="k">for</span> <span class="n">imported_section</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">imported_sections</span><span class="p">)):</span>
+        <span class="k">del</span> <span class="n">mod_dict</span><span class="p">[</span><span class="n">imported_section</span><span class="p">]</span>  
+        
+    <span class="c1">#   remove unrelated configuration sections</span>
+    
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mod_dict</span><span class="p">):</span>
+        <span class="k">if</span>  <span class="n">section</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ism3d.&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="n">mod_dict</span><span class="p">[</span><span class="n">section</span><span class="p">]</span>
+            
+                            
+    <span class="k">return</span> <span class="n">mod_dict</span></div>
+
+                    <span class="c1">#logger.debug(&#39;{:16}&#39;.format(key+&#39;@&#39;+tag)+&#39; : &#39;+&#39;{:16}&#39;.format(value)+&#39;--&gt;&#39;+str(objs[tag][key]))</span>
+
+<span class="c1"># def inp2mod(inp_dct):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Convert Input Parameter Dictionary to Model Properties Dictionary</span>
+<span class="c1"># </span>
+<span class="c1">#     The code will make a dictionary ready for model constructions, including:</span>
+<span class="c1">#         + add the default values</span>
+<span class="c1">#         + fill optional keywords</span>
+<span class="c1">#         + fill the &quot;tied&quot; values</span>
+<span class="c1"># </span>
+<span class="c1">#     inp_dct</span>
+<span class="c1"># </span>
+<span class="c1">#     --&gt; write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration) </span>
+<span class="c1"># </span>
+<span class="c1">#     inp_dct_modified</span>
+<span class="c1"># </span>
+<span class="c1">#     --&gt; inp2mod (fullfill the default value / ties / reject comments &lt;-- act as a formatter) </span>
+<span class="c1"># </span>
+<span class="c1">#     mod_dct</span>
+<span class="c1"># </span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1"># </span>
+<span class="c1">#     objs = deepcopy(inp_dct)</span>
+<span class="c1"># </span>
+<span class="c1">#     ids_ignore = cfg[&#39;inp.comment&#39;][&#39;id&#39;].split(&#39;,&#39;) +\</span>
+<span class="c1">#         cfg[&#39;inp.analyzer&#39;][&#39;id&#39;].split(&#39;,&#39;) +\</span>
+<span class="c1">#         cfg[&#39;inp.general&#39;][&#39;id&#39;].split(&#39;,&#39;) +\</span>
+<span class="c1">#         cfg[&#39;inp.optimizer&#39;][&#39;id&#39;].split(&#39;,&#39;)</span>
+<span class="c1"># </span>
+<span class="c1">#     #   assemble all parameters</span>
+<span class="c1"># </span>
+<span class="c1">#     par_list = []</span>
+<span class="c1">#     for sec_name in objs.keys():</span>
+<span class="c1">#         for key_name in objs[sec_name].keys():</span>
+<span class="c1">#             if &#39;@&#39; not in key_name:</span>
+<span class="c1">#                 par_list += [key_name+&#39;@&#39;+sec_name]</span>
+<span class="c1"># </span>
+<span class="c1">#     secs_imported = []</span>
+<span class="c1"># </span>
+<span class="c1">#     for tag in list(objs.keys()):</span>
+<span class="c1"># </span>
+<span class="c1">#         #   remove sections not related to model component properties</span>
+<span class="c1"># </span>
+<span class="c1">#         if any(section in tag.lower() for section in ids_ignore):</span>
+<span class="c1">#             tmp = objs.pop(tag, None)</span>
+<span class="c1">#             continue</span>
+<span class="c1"># </span>
+<span class="c1">#         for key in list(objs[tag].keys()):</span>
+<span class="c1"># </span>
+<span class="c1">#             # fill the cross reference keyword-value</span>
+<span class="c1"># </span>
+<span class="c1">#             if isinstance(objs[tag][key], (list, tuple)):</span>
+<span class="c1">#                 value_list = [value for value in objs[tag][key]]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 value_list = [objs[tag][key]]</span>
+<span class="c1"># </span>
+<span class="c1">#             for idx, value in enumerate(value_list):</span>
+<span class="c1">#                 if isinstance(value, str):</span>
+<span class="c1">#                     pars = [par for par in par_list if par in value]</span>
+<span class="c1">#                     if pars != []:</span>
+<span class="c1">#                         value_expr = value</span>
+<span class="c1">#                         for idp, par in enumerate(pars):</span>
+<span class="c1">#                             #par=max(pars, key=len)</span>
+<span class="c1">#                             keyobjname = par.split(&quot;@&quot;)</span>
+<span class="c1">#                             aeval.symtable[&quot;t&quot; +</span>
+<span class="c1">#                                            str(idp)] = objs[keyobjname[1]][keyobjname[0]]</span>
+<span class="c1">#                             value_expr = value_expr.replace(par, &quot;t&quot;+str(idp))</span>
+<span class="c1">#                         value_list[idx] = aeval(value_expr)</span>
+<span class="c1"># </span>
+<span class="c1">#             if isinstance(objs[tag][key], tuple):</span>
+<span class="c1">#                 objs[tag][key] = tuple(value_list)</span>
+<span class="c1">#             elif isinstance(objs[tag][key], list):</span>
+<span class="c1">#                 objs[tag][key] = value_list</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 objs[tag][key] = value_list[0]</span>
+<span class="c1"># </span>
+<span class="c1">#             # fill &quot;import&quot; sections</span>
+<span class="c1"># </span>
+<span class="c1">#             if key.lower() == &#39;import&#39; and isinstance(objs[tag][key], str):</span>
+<span class="c1"># </span>
+<span class="c1">#                 import_list = (objs[tag][key]).split(&#39;,&#39;)</span>
+<span class="c1">#                 del objs[tag][key]</span>
+<span class="c1">#                 for value0 in import_list:</span>
+<span class="c1">#                     if value0 in list(objs.keys()):</span>
+<span class="c1">#                         secs_imported += [value0]</span>
+<span class="c1">#                         for import_key in list(objs[value0].keys()):</span>
+<span class="c1">#                             objs[tag][import_key] = objs[value0][import_key]</span>
+<span class="c1"># </span>
+<span class="c1">#                     #logger.debug(&#39;{:16}&#39;.format(key+&#39;@&#39;+tag)+&#39; : &#39;+&#39;{:16}&#39;.format(value)+&#39;--&gt;&#39;+str(objs[tag][key]))</span>
+<span class="c1"># </span>
+<span class="c1">#     #   for &quot;imported&quot; parameter group sections, we delete them one by one</span>
+<span class="c1"># </span>
+<span class="c1">#     for par_group in list(set(secs_imported)):</span>
+<span class="c1">#         del objs[par_group]</span>
+<span class="c1"># </span>
+<span class="c1">#     #   for &quot;non-general&quot; sections, we delete those without keyword &quot;type&quot;</span>
+<span class="c1"># </span>
+<span class="c1">#     for section in list(objs.keys()):</span>
+<span class="c1">#         if (&#39;type&#39; not in list(objs[section].keys())) and (&#39;general&#39; not in section.lower()):</span>
+<span class="c1">#             del objs[section]</span>
+<span class="c1"># </span>
+<span class="c1">#     return objs</span>
+
+<span class="c1">#from configparser import ConfigParser, ExtendedInterpolation</span>
+<span class="c1">#cfg=ConfigParser(interpolation=ExtendedInterpolation())</span>
+<span class="c1">#cfg=ConfigParser(interpolation=ExtendedInterpolation())</span>
+<span class="c1">#cfg.read(inpfile)</span>
+<span class="c1">#cfg_dict=cfg._sections</span>
+
+<span class="c1">#pprint(cfg_dict)</span>
+
+<span class="c1">#cfg_out = ConfigParser()</span>
+<span class="c1">#cfg_out.read_dict(cfg_dict)</span>
+<span class="c1">#cfg_out[&#39;database&#39;][&#39;pb&#39;]=[&#39;../test_discretize/mockup_multiobjs_withnoise.ms/dm.pb.fits&#39;,</span>
+<span class="c1">#                           &#39;../test_discretize/mockup_multiobjs_withnoise.ms&#39;]</span>
+<span class="c1">#with open(&#39;example.cfg&#39;, &#39;w&#39;) as configfile:</span>
+<span class="c1">#    cfg_out.write(configfile)</span>
+
+        
+
+<span class="c1"># def write_inp(inp_dct,</span>
+<span class="c1">#               inpfile=&#39;example.inp&#39;, overwrite=False):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     write out inp files from inp_dct</span>
+<span class="c1">#     if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name</span>
+<span class="c1">#     writepar is two-element tuple, first element is the key name to be modified</span>
+<span class="c1">#                                    second element is the value</span>
+<span class="c1"># </span>
+<span class="c1">#     note: py&gt;=3.7 use the ordered dict by default (so the output keyword order is preserved) </span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1"># </span>
+<span class="c1">#     logger.info(&#39;save the model input parameter: &#39;+inpfile)</span>
+<span class="c1"># </span>
+<span class="c1">#     inp_dct0 = deepcopy(inp_dct)</span>
+<span class="c1"># </span>
+<span class="c1">#     outname = inpfile</span>
+<span class="c1"># </span>
+<span class="c1">#     ind = 0</span>
+<span class="c1">#     if overwrite == False:</span>
+<span class="c1">#         while os.path.isfile(outname):</span>
+<span class="c1">#             outname = inpfile+&#39;.&#39;+str(ind)</span>
+<span class="c1">#             ind += 1</span>
+<span class="c1"># </span>
+<span class="c1">#     f = open(outname, &#39;w&#39;)</span>
+<span class="c1">#     output = &#39;&#39;</span>
+<span class="c1">#     for obj in inp_dct0.keys():</span>
+<span class="c1">#         output += &#39;#&#39;*80+&#39;\n&#39;</span>
+<span class="c1">#         output += &#39;@&#39;+obj+&#39;\n&#39;</span>
+<span class="c1">#         output += &#39;#&#39;*80+&#39;\n\n&#39;</span>
+<span class="c1">#         for key in inp_dct0[obj].keys():</span>
+<span class="c1">#             # print(repr_parameter(inp_dct0[obj][key]))</span>
+<span class="c1">#             output += &#39;{:20} {}\n&#39;.format(key,</span>
+<span class="c1">#                                           repr_parameter(inp_dct0[obj][key]), format=200)</span>
+<span class="c1">#         output += &#39;\n&#39;</span>
+<span class="c1">#     f.write(output)</span>
+<span class="c1">#     f.close()</span>
+
+
+
+<span class="c1"># def read_inp(parfile,log=False):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     read parameters/setups from a .inp file into a dictionary nest:</span>
+<span class="c1">#         inp_dct[id][keywords]=values.</span>
+<span class="c1">#         inp_dct[&#39;comments&#39;]=&#39;??&#39;</span>
+<span class="c1">#         inp_dct[&#39;changlog&#39;]=&#39;??&#39;</span>
+<span class="c1">#         inp_dct[&#39;optimize&#39;]=&#39;??&#39;</span>
+<span class="c1">#         </span>
+<span class="c1">#     keyword value formatting</span>
+<span class="c1">#         1.remove trailing/prefix space / comments</span>
+<span class="c1">#         2.split my space</span>
+<span class="c1">#         3.first element is the key</span>
+<span class="c1">#         4.the rest elements will be filled into value</span>
+<span class="c1">#             more than one element : list</span>
+<span class="c1">#             one element: scaler</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+    
+<span class="c1">#     #print(&quot;**********exe read_inp()**************&quot;)</span>
+<span class="c1">#     </span>
+<span class="c1"># </span>
+<span class="c1">#     cfg=inp_config(file=None)</span>
+<span class="c1">#     </span>
+<span class="c1">#     inp_dct={}</span>
+<span class="c1">#     with open(parfile,&#39;r&#39;) as f:</span>
+<span class="c1">#         lines=f.readlines()</span>
+<span class="c1">#     lines= filter(None, (line.split(&#39;#&#39;)[0].strip() for line in lines))</span>
+
+<span class="c1">#     tag=&#39;default&#39;</span>
+<span class="c1">#     </span>
+<span class="c1">#     for line in lines:</span>
+<span class="c1">#         if  line.startswith(&#39;@&#39;):</span>
+<span class="c1">#             tag=line.replace(&#39;@&#39;,&#39;&#39;,1).strip()</span>
+<span class="c1">#             #pars={&#39;content&#39;:&#39;&#39;}</span>
+<span class="c1">#             pars={}</span>
+<span class="c1">#             #pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
+<span class="c1">#             if  log==True:</span>
+<span class="c1">#                 logger.debug(&quot;+&quot;*40)</span>
+<span class="c1">#                 logger.debug(&#39;@ {}&#39;.format(tag))</span>
+<span class="c1">#                 logger.debug(&quot;-&quot;*40)</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             </span>
+<span class="c1">#             if  any(section in tag.lower() for section in cfg[&#39;inp.comment&#39;][&#39;id&#39;].split(&#39;,&#39;)):</span>
+<span class="c1">#                 pass</span>
+<span class="c1">#                 #pars[&#39;content&#39;]+=line+&quot;\n&quot;</span>
+<span class="c1">#                 #inp_dct[tag]=pars</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 #pars[&#39;content&#39;]+=line+&quot;\n&quot;               </span>
+<span class="c1">#                 #   identify the &quot;key&quot;</span>
+<span class="c1">#                 key=line.split()[0]</span>
+<span class="c1">#                 #   remove leading/trailing space to get the &quot;value&quot; portion</span>
+<span class="c1">#                 expr=line.replace(key,&#39;&#39;,1).strip()</span>
+<span class="c1">#                 if  log==True:</span>
+<span class="c1">#                     logger.debug(&#39;{:20}&#39;.format(key)+&quot; : &quot;+str(expr))</span>
+<span class="c1">#                 </span>
+<span class="c1">#                 &quot;&quot;&quot;                    </span>
+<span class="c1">#                 try:                #   likely mutiple-elements are provided, </span>
+<span class="c1">#                                     #   but be careful of eval() usage here</span>
+<span class="c1">#                                     #   e.g.:&quot;tuple (1)&quot; will be a valid statement</span>
+<span class="c1">#                     #pars[key]=eval(value)</span>
+<span class="c1">#                     #pars[key]=ast.literal_eval(value)</span>
+<span class="c1">#                     pars[key]=aeval(value)</span>
+<span class="c1">#                 except SyntaxError: #   pack the value content into a list</span>
+<span class="c1">#                     values=value.split()</span>
+<span class="c1">#                     #pars[key]=[eval(value0) for value0 in value]</span>
+<span class="c1">#                     #pars[key]=[ast.literal_eval(value0) for value0 in value]</span>
+<span class="c1">#                     pars[key]=[aeval(value0) for value0 in values]</span>
+<span class="c1">#                 &quot;&quot;&quot;</span>
+<span class="c1">#                 value=aeval(expr)</span>
+<span class="c1">#                 if  len(aeval.error)&gt;0 and value is None:</span>
+<span class="c1">#                     exprs=expr.split()</span>
+<span class="c1">#                     value=[aeval(expr) for expr in exprs]</span>
+<span class="c1">#                 </span>
+<span class="c1">#                 pars[key]=pars_interp(key,value)</span>
+<span class="c1">#                 inp_dct[tag]=pars</span>
+<span class="c1"># </span>
+<span class="c1">#     </span>
+<span class="c1">#     if  &#39;general&#39; in inp_dct.keys():</span>
+<span class="c1">#         if  &#39;outdir&#39; in (inp_dct[&#39;general&#39;]).keys():</span>
+<span class="c1">#             outdir=inp_dct[&#39;general&#39;][&#39;outdir&#39;]</span>
+<span class="c1">#             if  isinstance(outdir,str): </span>
+<span class="c1">#                 if  not os.path.exists(outdir):</span>
+<span class="c1">#                     os.makedirs(outdir)</span>
+<span class="c1">#                 #np.save(outdir+&#39;/inp_dct.npy&#39;,inp_dct)</span>
+<span class="c1">#                 #write_inp(inp_dct,inpfile=outdir+&#39;/p_start.inp&#39;,</span>
+<span class="c1">#                 #          overwrite=True)</span>
+       
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -206,7 +207,7 @@
             
   <h1>Source code for ism3d.utils.misc</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span><span class="o">,</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">multiprocessing</span>
 
 <span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
 <span class="kn">from</span> <span class="nn">pip._vendor</span> <span class="kn">import</span> <span class="n">pkg_resources</span>
@@ -222,6 +223,8 @@
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+
+<span class="kn">import</span> <span class="nn">operator</span>
 
 <span class="kn">import</span> <span class="nn">ism3d</span>
 
@@ -441,7 +444,230 @@
         <span class="n">sz</span><span class="o">=</span><span class="n">human_unit</span><span class="p">(</span><span class="n">sz</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">byte</span><span class="p">)</span>
         <span class="n">sz</span><span class="o">=</span><span class="n">human_to_string</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span><span class="n">format_string</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0.value:3.0f}</span><span class="s1"> {0.unit:shortname}&#39;</span><span class="p">)</span>
         
-    <span class="k">return</span> <span class="n">sz</span>    </div>
+    <span class="k">return</span> <span class="n">sz</span>   </div>
+
+<div class="viewcode-block" id="prepdir"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.prepdir.html#ism3d.utils.misc.prepdir">[docs]</a><span class="k">def</span> <span class="nf">prepdir</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dirname</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>   </div>
+        
+        
+<div class="viewcode-block" id="render_component"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.render_component.html#ism3d.utils.misc.render_component">[docs]</a><span class="k">def</span> <span class="nf">render_component</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">im</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;iadd&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    in-plane-add model components into spectral-cube or mutil-freq MS</span>
+<span class="sd">    see other mode options: e.g. iadd/isub</span>
+<span class="sd">        https://docs.python.org/3.8/library/operator.html</span>
+<span class="sd">    </span>
+<span class="sd">    out=None return a new obect</span>
+<span class="sd">    out!=None return a reference point to the updated out</span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        this may return a view of numpy if out is a slice </span>
+<span class="sd">        </span>
+<span class="sd">    from gmake.discretize import render_component</span>
+<span class="sd">    cube=np.zeros((3,3,3))</span>
+<span class="sd">    </span>
+<span class="sd">    cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)</span>
+<span class="sd">    x=render_component(cube[0,:,:],np.ones((3,3)),scale=5) </span>
+<span class="sd">    np.may_share_memory(x,cube)</span>
+<span class="sd">    </span>
+<span class="sd">    warning: </span>
+<span class="sd">        cube=render_component(cube[0,:,:],np.ones((3,3)),scale=5)</span>
+<span class="sd">        will override your cube values.. </span>
+<span class="sd">        one should use instead:</span>
+<span class="sd">        cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)</span>
+<span class="sd">    if im=[], it will do nothing...          </span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    if  you&#39;re not sure out is None, maybe use:</span>
+<span class="sd">        out=render_component(out)</span>
+<span class="sd">    if  you know out is not None, use</span>
+<span class="sd">        render_component(out)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span>  <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        
+        <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="p">)):</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">render_component</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">im</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span><span class="n">mode</span><span class="p">)(</span><span class="n">out</span><span class="p">,</span><span class="n">im</span><span class="o">*</span><span class="n">scale</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="p">)):</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">render_component</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">im</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">im</span><span class="o">*</span><span class="n">scale</span>
+            
+    <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="pickplane"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.pickplane.html#ism3d.utils.misc.pickplane">[docs]</a><span class="k">def</span> <span class="nf">pickplane</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="n">iz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    pick a channel plane from a &quot;cube&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span>  <span class="n">im</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">im</span>
+    <span class="k">if</span>  <span class="n">im</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">im</span><span class="p">[</span><span class="n">iz</span><span class="p">,:,:]</span>
+    <span class="k">if</span>  <span class="n">im</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">iz</span><span class="p">,:,:]</span>            </div>
+    
+
+
+    
+<div class="viewcode-block" id="makepsf"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.makepsf.html#ism3d.utils.misc.makepsf">[docs]</a><span class="k">def</span> <span class="nf">makepsf</span><span class="p">(</span><span class="n">header</span><span class="p">,</span>
+            <span class="n">beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;oversample&#39;</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;peak&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    make a 2D Gaussian image as PSF, warapping around makekernel()</span>
+<span class="sd">    beam: tuple (bmaj,bmin,bpa) quatity in fits convention</span>
+<span class="sd">         otherwise, use header bmaj/bmin/bpa</span>
+<span class="sd">    size:  (nx,ny) &lt;-- in the FITS convention (not other way around, or so called ij)</span>
+<span class="sd">    </span>
+<span class="sd">    norm=&#39;peak&#39; would be godo for Jy/pix-&gt;Jy/beam </span>
+<span class="sd">    output </span>
+<span class="sd">    </span>
+<span class="sd">    Note: we choose not use Gaussian2DKernel as we want to handle customzed PSF case in upstream (as dirty beam)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#   get size</span>
+    <span class="k">if</span>  <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">],</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">])</span>
+    <span class="n">cell</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT1&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">]))</span>
+    <span class="c1">#   get beam</span>
+    <span class="n">beam_pix</span><span class="o">=</span><span class="kc">None</span>
+    <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">beam_pix</span><span class="o">=</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">/</span><span class="n">cell</span><span class="p">,</span>
+                  <span class="n">beam</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">/</span><span class="n">cell</span><span class="p">,</span>
+                  <span class="n">beam</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="s1">&#39;BMAJ&#39;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMIN&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> 
+                <span class="n">beam_pix</span><span class="o">=</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMAJ&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">cell</span><span class="p">,</span>
+                          <span class="n">header</span><span class="p">[</span><span class="s1">&#39;BMIN&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">cell</span><span class="p">,</span>
+                          <span class="n">header</span><span class="p">[</span><span class="s1">&#39;BPA&#39;</span><span class="p">])</span>
+    <span class="c1">#   get psf</span>
+    <span class="n">psf</span><span class="o">=</span><span class="kc">None</span>
+    <span class="k">if</span>  <span class="n">beam_pix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="n">factor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">factor</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">10.</span><span class="o">/</span><span class="n">beam_pix</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span>  <span class="n">factor</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+        <span class="n">psf</span><span class="o">=</span><span class="n">makekernel</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                       <span class="p">[</span><span class="n">beam_pix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">beam_pix</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span><span class="n">pa</span><span class="o">=</span><span class="n">beam_pix</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                       <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="n">factor</span><span class="p">)</span>
+        <span class="k">if</span>  <span class="n">norm</span><span class="o">==</span><span class="s1">&#39;peak&#39;</span><span class="p">:</span>
+            <span class="n">psf</span><span class="o">/=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">psf</span><span class="p">)</span>
+        <span class="k">if</span>  <span class="n">norm</span><span class="o">==</span><span class="s1">&#39;sum&#39;</span><span class="p">:</span>
+            <span class="n">psf</span><span class="o">/=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">psf</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        # kernel object:</span>
+<span class="sd">        psf=Gaussian2DKernel(x_stddev=beam_pix[1]*gaussian_fwhm_to_sigma,</span>
+<span class="sd">                             y_stddev=beam_pix[0]*gaussian_fwhm_to_sigma,</span>
+<span class="sd">                             x_size=int(size[0]),y_size=int(size[1]),</span>
+<span class="sd">                             theta=np.radians(beam_pix[2]),</span>
+<span class="sd">                             mode=mode,factor=factor)          </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">psf</span></div>
+    
+
+<div class="viewcode-block" id="makepb"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.makepb.html#ism3d.utils.misc.makepb">[docs]</a><span class="k">def</span> <span class="nf">makepb</span><span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">antsize</span><span class="o">=</span><span class="mi">12</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    make a 2D Gaussian image approximated to the ALMA (or VLA?) primary beam</span>
+<span class="sd">        https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90</span>
+<span class="sd">    </span>
+<span class="sd">    note: this is just a apprximate solution, assuming the the pointing is towards the reference pixel in the header </span>
+<span class="sd">          and use the first channel as the reference frequency.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span>  <span class="n">phasecenter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xc</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRPIX1&#39;</span><span class="p">]</span>
+        <span class="n">yc</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRPIX2&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">w</span><span class="o">=</span><span class="n">WCS</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="n">xc</span><span class="p">,</span><span class="n">yc</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">celestial</span><span class="o">.</span><span class="n">wcs_world2pix</span><span class="p">(</span><span class="n">phasecenter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">phasecenter</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1">#   PB size in pixel</span>
+    <span class="n">freqs</span><span class="o">=</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRVAL3&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS3&#39;</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="o">-</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRPIX3&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT3&#39;</span><span class="p">]</span> <span class="c1"># in hz</span>
+    <span class="n">beam</span><span class="o">=</span><span class="mf">1.13</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s1">&#39;m/s&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">freqs</span><span class="o">/</span><span class="n">antsize</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">))</span>
+    <span class="n">beam</span><span class="o">*=</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CDELT2&#39;</span><span class="p">])</span>
+    
+    <span class="n">pb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS3&#39;</span><span class="p">],</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">],</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">]))</span>
+    
+    <span class="n">sigma2fwhm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">))</span><span class="o">*</span><span class="mf">2.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS3&#39;</span><span class="p">]):</span>
+        <span class="n">mod</span><span class="o">=</span><span class="n">Gaussian2D</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                       <span class="n">x_mean</span><span class="o">=</span><span class="n">xc</span><span class="p">,</span><span class="n">y_mean</span><span class="o">=</span><span class="n">yc</span><span class="p">,</span>
+                       <span class="n">x_stddev</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">sigma2fwhm</span><span class="p">,</span><span class="n">y_stddev</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">sigma2fwhm</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pb</span><span class="p">[</span><span class="n">i</span><span class="p">,:,:]</span><span class="o">=</span><span class="n">discretize_model</span><span class="p">(</span><span class="n">mod</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS1&#39;</span><span class="p">])),(</span><span class="mi">0</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;NAXIS2&#39;</span><span class="p">])))</span>
+
+    <span class="k">return</span> <span class="n">pb</span></div>
+
+<div class="viewcode-block" id="makekernel"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.misc.makekernel.html#ism3d.utils.misc.makekernel">[docs]</a><span class="k">def</span> <span class="nf">makekernel</span><span class="p">(</span><span class="n">xpixels</span><span class="p">,</span><span class="n">ypixels</span><span class="p">,</span><span class="n">beam</span><span class="p">,</span><span class="n">pa</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">cent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+               <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    mode: &#39;center&#39;,&#39;linear_interp&#39;,&#39;oversample&#39;,&#39;integrate&#39;</span>
+
+<span class="sd">    beam=[bmaj,bmin] FWHM not (bmin,bmaj)</span>
+<span class="sd">    pa=east from north (ccw)deli</span>
+<span class="sd">    </span>
+<span class="sd">    in pixel-size units</span>
+<span class="sd">    </span>
+<span class="sd">    by default: the resulted kernel is always centered around a single pixel, and the application of</span>
+<span class="sd">        the kernel will lead to zero offset,</span>
+<span class="sd">    </span>
+<span class="sd">    make a &quot;centered&quot; Gaussian PSF kernel:</span>
+<span class="sd">        e.g. npixel=7, centered at px=3</span>
+<span class="sd">             npixel=8, centered at px=4</span>
+<span class="sd">             so the single peak is always at a pixel center (not physical center)</span>
+<span class="sd">             and the function is symmetric around that pixel</span>
+<span class="sd">             the purpose of doing this is to avoid offset when the specified kernel size is</span>
+<span class="sd">             even number and you build a function peaked at a pixel edge. </span>
+<span class="sd">             </span>
+<span class="sd">        is x ks (peak pixel index)</span>
+<span class="sd">        10 x 7(3) okay</span>
+<span class="sd">        10 x 8(4) okay</span>
+<span class="sd">        10 x 8(3.5) offset</span>
+<span class="sd">        for convolve (non-fft), odd ks is required (the center pixel is undoubtely index=3)</span>
+<span class="sd">                                even ks is not allowed</span>
+<span class="sd">        for convolve_fft, you need to use cent=ks/2:</span>
+<span class="sd">                                technically it&#39;s not the pixel index of image center</span>
+<span class="sd">                                but the center pixel is &quot;considers&quot;as index=4</span>
+<span class="sd">        the rule of thumb-up:</span>
+<span class="sd">            cent=floor(ks/2.) or int(ks/2) #  int() try to truncate towards zero.</span>
+<span class="sd">        </span>
+<span class="sd">        note:</span>
+<span class="sd">            </span>
+<span class="sd">            Python &quot;rounding half to even&quot; rule vs. traditional IDL:</span>
+<span class="sd">                https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html</span>
+<span class="sd">                https://realpython.com/python-rounding/</span>
+<span class="sd">                Python&gt;round(1.5)    # 2</span>
+<span class="sd">                Python&gt;round(0.5)    # 0</span>
+<span class="sd">                IDL&gt;round(1.5)       # 2 </span>
+<span class="sd">                IDL&gt;round(0.5)       # 1</span>
+<span class="sd"> </span>
+<span class="sd">            &quot;forget about how the np.array is stored, just use the array as it is IDL;</span>
+<span class="sd">             when it comes down to shape/index, reverse the sequence&quot;</span>
+<span class="sd">             </span>
+<span class="sd">            About Undersampling Images:</span>
+<span class="sd">            http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html</span>
+<span class="sd">            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span>  <span class="n">cent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">xpixels</span><span class="o">/</span><span class="mf">2.</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ypixels</span><span class="o">/</span><span class="mf">2.</span><span class="p">)]</span>
+    <span class="n">sigma2fwhm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">))</span><span class="o">*</span><span class="mf">2.</span>
+    <span class="n">mod</span><span class="o">=</span><span class="n">Gaussian2D</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span><span class="n">x_mean</span><span class="o">=</span><span class="n">cent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y_mean</span><span class="o">=</span><span class="n">cent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">x_stddev</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">sigma2fwhm</span><span class="p">,</span><span class="n">y_stddev</span><span class="o">=</span><span class="n">beam</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">sigma2fwhm</span><span class="p">,</span>
+               <span class="n">theta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">pa</span><span class="p">))</span>
+    <span class="n">psf</span><span class="o">=</span><span class="n">discretize_model</span><span class="p">(</span><span class="n">mod</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">xpixels</span><span class="p">)),(</span><span class="mi">0</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">ypixels</span><span class="p">)),</span>
+                         <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="n">factor</span><span class="p">)</span>
+    <span class="c1">#x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels),indexing=&#39;xy&#39;)</span>
+    <span class="c1">#psf=mod(x,y)</span>
+    
+    <span class="k">return</span> <span class="n">psf</span>    </div>
 </pre></div>
 
            </div>

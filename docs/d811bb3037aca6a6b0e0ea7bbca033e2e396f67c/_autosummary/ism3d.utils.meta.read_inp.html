@@ -38,9 +38,7 @@
   <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.utils.misc" href="ism3d.utils.misc.html" />
-    <link rel="prev" title="ism3d.utils.meta.pars_interp" href="ism3d.utils.meta.pars_interp.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -142,33 +141,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.cli_new.html">ism3d.utils.cli_new</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.io.html">ism3d.utils.io</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="ism3d.utils.meta.html">ism3d.utils.meta</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.meta.create_header.html">ism3d.utils.meta.create_header</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.utils.meta.pars_interp.html">ism3d.utils.meta.pars_interp</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.utils.meta.read_inp</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.misc.html">ism3d.utils.misc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.utils.html">ism3d.utils.utils</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -214,12 +188,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="ism3d.html">ism3d</a> &raquo;</li>
-        
-          <li><a href="ism3d.utils.html">ism3d.utils</a> &raquo;</li>
-        
-          <li><a href="ism3d.utils.meta.html">ism3d.utils.meta</a> &raquo;</li>
-        
       <li>ism3d.utils.meta.read_inp</li>
     
     
@@ -239,27 +207,6 @@
             
   <div class="section" id="ism3d-utils-meta-read-inp">
 <h1>ism3d.utils.meta.read_inp<a class="headerlink" href="#ism3d-utils-meta-read-inp" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ism3d.utils.meta.read_inp">
-<code class="sig-prename descclassname">ism3d.utils.meta.</code><code class="sig-name descname">read_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parfile</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/meta.html#read_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.meta.read_inp" title="Permalink to this definition">¶</a></dt>
-<dd><dl>
-<dt>read parameters/setups from a .inp file into a dictionary nest:</dt><dd><p>inp_dct[id][keywords]=values.
-inp_dct[‘comments’]=’??’
-inp_dct[‘changlog’]=’??’
-inp_dct[‘optimize’]=’??’</p>
-</dd>
-<dt>keyword value formatting</dt><dd><p>1.remove trailing/prefix space / comments
-2.split my space
-3.first element is the key
-4.the rest elements will be filled into value</p>
-<blockquote>
-<div><p>more than one element : list
-one element: scaler</p>
-</div></blockquote>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
@@ -267,15 +214,6 @@ one element: scaler</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ism3d.utils.misc.html" class="btn btn-neutral float-right" title="ism3d.utils.misc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ism3d.utils.meta.pars_interp.html" class="btn btn-neutral float-left" title="ism3d.utils.meta.pars_interp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

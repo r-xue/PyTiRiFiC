@@ -110,7 +110,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">Demonstration: ISM3D Python API usages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -300,18 +301,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="rng_seeded"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.utils.rng_seeded.html#ism3d.utils.utils.rng_seeded">[docs]</a><span class="k">def</span> <span class="nf">rng_seeded</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    return a seeded RNG plus is_mkl</span>
-<span class="sd">    mkl_random is preferrred over numpy.random </span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">mkl_random</span>
-    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Generator</span><span class="p">(</span><span class="n">SFC64</span><span class="p">(</span><span class="n">seed</span><span class="p">)),</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">mkl_random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="kc">True</span>  <span class="c1"># , brng = brng_algo</span></div>
 
 
 <div class="viewcode-block" id="eval_func"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.utils.eval_func.html#ism3d.utils.utils.eval_func">[docs]</a><span class="k">def</span> <span class="nf">eval_func</span><span class="p">(</span><span class="n">vs_func_ps</span><span class="p">,</span> <span class="n">var_dict</span><span class="p">):</span>
@@ -395,43 +385,6 @@
     <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;builtins.sorted&#39;</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="k">lambda</span> <span class="n">l</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">:</span> <span class="n">l</span><span class="p">):</span>
         <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="write_inp"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.write_inp.html#ism3d.utils.utils.write_inp">[docs]</a><span class="k">def</span> <span class="nf">write_inp</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">,</span>
-              <span class="n">inpfile</span><span class="o">=</span><span class="s1">&#39;example.inp&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    write out inp files from inp_dct</span>
-<span class="sd">    if overwrite=False, the function will try to append .0/.1/.2... to the .inp file name</span>
-<span class="sd">    writepar is two-element tuple, first element is the key name to be modified</span>
-<span class="sd">                                   second element is the value</span>
-
-<span class="sd">    note: py&gt;=3.7 use the ordered dict by default (so the output keyword order is preserved) </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;save the model input parameter: &#39;</span><span class="o">+</span><span class="n">inpfile</span><span class="p">)</span>
-
-    <span class="n">inp_dct0</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">)</span>
-
-    <span class="n">outname</span> <span class="o">=</span> <span class="n">inpfile</span>
-
-    <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">outname</span><span class="p">):</span>
-            <span class="n">outname</span> <span class="o">=</span> <span class="n">inpfile</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
-            <span class="n">ind</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inp_dct0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;#&#39;</span><span class="o">*</span><span class="mi">80</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;@&#39;</span><span class="o">+</span><span class="n">obj</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;#&#39;</span><span class="o">*</span><span class="mi">80</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">inp_dct0</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="c1"># print(repr_parameter(inp_dct0[obj][key]))</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{:20}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span>
-                                          <span class="n">repr_parameter</span><span class="p">(</span><span class="n">inp_dct0</span><span class="p">[</span><span class="n">obj</span><span class="p">][</span><span class="n">key</span><span class="p">]),</span> <span class="nb">format</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="read_range"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.utils.read_range.html#ism3d.utils.utils.read_range">[docs]</a><span class="k">def</span> <span class="nf">read_range</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">):</span>
@@ -581,107 +534,7 @@
                 <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot; : &quot;</span><span class="p">,</span> <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="inp2mod"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.utils.inp2mod.html#ism3d.utils.utils.inp2mod">[docs]</a><span class="k">def</span> <span class="nf">inp2mod</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert Input Parameter Dictionary to Model Properties Dictionary</span>
 
-<span class="sd">    The code will make a dictionary ready for model constructions, including:</span>
-<span class="sd">        + add the default values</span>
-<span class="sd">        + fill optional keywords</span>
-<span class="sd">        + fill the &quot;tied&quot; values</span>
-
-<span class="sd">    inp_dct</span>
-
-<span class="sd">    --&gt; write_par (changed some modeling parameter values, e.g. shifting during the optimization iteration) </span>
-
-<span class="sd">    inp_dct_modified</span>
-
-<span class="sd">    --&gt; inp2mod (fullfill the default value / ties / reject comments &lt;-- act as a formatter) </span>
-
-<span class="sd">    mod_dct</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">objs</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">)</span>
-
-    <span class="n">ids_ignore</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.comment&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">+</span>\
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.analyzer&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">+</span>\
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.general&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">+</span>\
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;inp.optimizer&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-
-    <span class="c1">#   assemble all parameters</span>
-
-    <span class="n">par_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">sec_name</span> <span class="ow">in</span> <span class="n">objs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">key_name</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">[</span><span class="n">sec_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="s1">&#39;@&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_name</span><span class="p">:</span>
-                <span class="n">par_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">key_name</span><span class="o">+</span><span class="s1">&#39;@&#39;</span><span class="o">+</span><span class="n">sec_name</span><span class="p">]</span>
-
-    <span class="n">secs_imported</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-
-        <span class="c1">#   remove sections not related to model component properties</span>
-
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">section</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">ids_ignore</span><span class="p">):</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">objs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">continue</span>
-
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-
-            <span class="c1"># fill the cross reference keyword-value</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-                <span class="n">value_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">value_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]]</span>
-
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value_list</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="n">pars</span> <span class="o">=</span> <span class="p">[</span><span class="n">par</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">par_list</span> <span class="k">if</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">pars</span> <span class="o">!=</span> <span class="p">[]:</span>
-                        <span class="n">value_expr</span> <span class="o">=</span> <span class="n">value</span>
-                        <span class="k">for</span> <span class="n">idp</span><span class="p">,</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pars</span><span class="p">):</span>
-                            <span class="c1">#par=max(pars, key=len)</span>
-                            <span class="n">keyobjname</span> <span class="o">=</span> <span class="n">par</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span>
-                            <span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s2">&quot;t&quot;</span> <span class="o">+</span>
-                                           <span class="nb">str</span><span class="p">(</span><span class="n">idp</span><span class="p">)]</span> <span class="o">=</span> <span class="n">objs</span><span class="p">[</span><span class="n">keyobjname</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">keyobjname</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-                            <span class="n">value_expr</span> <span class="o">=</span> <span class="n">value_expr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idp</span><span class="p">))</span>
-                        <span class="n">value_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">aeval</span><span class="p">(</span><span class="n">value_expr</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">value_list</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_list</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="c1"># fill &quot;import&quot; sections</span>
-
-            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;import&#39;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-
-                <span class="n">import_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-                <span class="k">del</span> <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">value0</span> <span class="ow">in</span> <span class="n">import_list</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">value0</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                        <span class="n">secs_imported</span> <span class="o">+=</span> <span class="p">[</span><span class="n">value0</span><span class="p">]</span>
-                        <span class="k">for</span> <span class="n">import_key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">value0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                            <span class="n">objs</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">import_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">objs</span><span class="p">[</span><span class="n">value0</span><span class="p">][</span><span class="n">import_key</span><span class="p">]</span>
-
-                    <span class="c1">#logger.debug(&#39;{:16}&#39;.format(key+&#39;@&#39;+tag)+&#39; : &#39;+&#39;{:16}&#39;.format(value)+&#39;--&gt;&#39;+str(objs[tag][key]))</span>
-
-    <span class="c1">#   for &quot;imported&quot; parameter group sections, we delete them one by one</span>
-
-    <span class="k">for</span> <span class="n">par_group</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">secs_imported</span><span class="p">)):</span>
-        <span class="k">del</span> <span class="n">objs</span><span class="p">[</span><span class="n">par_group</span><span class="p">]</span>
-
-    <span class="c1">#   for &quot;non-general&quot; sections, we delete those without keyword &quot;type&quot;</span>
-
-    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;general&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
-            <span class="k">del</span> <span class="n">objs</span><span class="p">[</span><span class="n">section</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">objs</span></div>
 
 
 <div class="viewcode-block" id="paste_slice"><a class="viewcode-back" href="../../../_autosummary/ism3d.utils.utils.paste_slice.html#ism3d.utils.utils.paste_slice">[docs]</a><span class="k">def</span> <span class="nf">paste_slice</span><span class="p">(</span><span class="n">tup</span><span class="p">):</span>
