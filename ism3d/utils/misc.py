@@ -16,6 +16,8 @@ from astropy.coordinates import SkyCoord
 from astropy.coordinates import Angle
 import astropy.units as u
 
+import operator
+
 import ism3d
 
 def check_config():
@@ -241,4 +243,220 @@ def prepdir(filename):
     """
     dirname = os.path.dirname(filename)
     if (not os.path.exists(dirname)) and (dirname != ''):
-        os.makedirs(dirname)       
+        os.makedirs(dirname)   
+        
+        
+def render_component(out,im,scale=1,mode='iadd'):
+    """
+    in-plane-add model components into spectral-cube or mutil-freq MS
+    see other mode options: e.g. iadd/isub
+        https://docs.python.org/3.8/library/operator.html
+    
+    out=None return a new obect
+    out!=None return a reference point to the updated out
+    
+    Note:
+        this may return a view of numpy if out is a slice 
+        
+    from gmake.discretize import render_component
+    cube=np.zeros((3,3,3))
+    
+    cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+    x=render_component(cube[0,:,:],np.ones((3,3)),scale=5) 
+    np.may_share_memory(x,cube)
+    
+    warning: 
+        cube=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+        will override your cube values.. 
+        one should use instead:
+        cube[0,:,:]=render_component(cube[0,:,:],np.ones((3,3)),scale=5)
+    if im=[], it will do nothing...          
+    
+    
+    if  you're not sure out is None, maybe use:
+        out=render_component(out)
+    if  you know out is not None, use
+        render_component(out)
+    
+    """
+    if  out is not None:
+        
+        if  isinstance(im,list):
+            for i in range(len(im)):
+                out=render_component(out,im[i],scale=scale[i],mode=mode)
+        else:
+            out=getattr(operator,mode)(out,im*scale)
+    else:
+        if  isinstance(im,list):
+            for i in range(len(im)):
+                out=render_component(out,im[i],scale=scale[i],mode=mode)
+        else:
+            out=im*scale
+            
+    return out
+
+def pickplane(im,iz):
+    """
+    pick a channel plane from a "cube"
+    """
+    if  im.ndim==2:
+        return im
+    if  im.ndim==3:
+        return im[iz,:,:]
+    if  im.ndim==4:
+        return im[0,iz,:,:]            
+    
+
+
+    
+def makepsf(header,
+            beam=None,size=None,
+            mode='oversample',factor=None,norm='peak'):
+    """
+    make a 2D Gaussian image as PSF, warapping around makekernel()
+    beam: tuple (bmaj,bmin,bpa) quatity in fits convention
+         otherwise, use header bmaj/bmin/bpa
+    size:  (nx,ny) <-- in the FITS convention (not other way around, or so called ij)
+    
+    norm='peak' would be godo for Jy/pix->Jy/beam 
+    output 
+    
+    Note: we choose not use Gaussian2DKernel as we want to handle customzed PSF case in upstream (as dirty beam)
+    """
+    #   get size
+    if  size is None:
+        size=(header['NAXIS1'],header['NAXIS2'])
+    cell=np.sqrt(abs(header['CDELT1']*header['CDELT2']))
+    #   get beam
+    beam_pix=None
+    if  isinstance(beam,tuple):
+        beam_pix=(beam[0].to_value(u.deg)/cell,
+                  beam[1].to_value(u.deg)/cell,
+                  beam[2].to_value(u.deg))
+    else:
+        if  'BMAJ' in header:
+            if  header['BMAJ']>0 and header['BMIN']>0: 
+                beam_pix=(header['BMAJ']/cell,
+                          header['BMIN']/cell,
+                          header['BPA'])
+    #   get psf
+    psf=None
+    if  beam_pix is not None:
+        if  factor is None:
+            factor=max(int(10./beam_pix[1]),1)
+        if  factor==1:
+            mode='center'
+        psf=makekernel(size[0],size[1],
+                       [beam_pix[0],beam_pix[1]],pa=beam_pix[2],
+                       mode=mode,factor=factor)
+        if  norm=='peak':
+            psf/=np.max(psf)
+        if  norm=='sum':
+            psf/=np.sum(psf)
+        """
+        # kernel object:
+        psf=Gaussian2DKernel(x_stddev=beam_pix[1]*gaussian_fwhm_to_sigma,
+                             y_stddev=beam_pix[0]*gaussian_fwhm_to_sigma,
+                             x_size=int(size[0]),y_size=int(size[1]),
+                             theta=np.radians(beam_pix[2]),
+                             mode=mode,factor=factor)          
+        """
+    return psf
+    
+
+def makepb(header,phasecenter=None,antsize=12*u.m):
+    """
+    make a 2D Gaussian image approximated to the ALMA (or VLA?) primary beam
+        https://help.almascience.org/index.php?/Knowledgebase/Article/View/90/0/90
+    
+    note: this is just a apprximate solution, assuming the the pointing is towards the reference pixel in the header 
+          and use the first channel as the reference frequency.
+    
+    """
+    
+    if  phasecenter is None:
+        xc=header['CRPIX1']
+        yc=header['CRPIX2']
+    else:
+        w=WCS(header)
+        xc,yc=w.celestial.wcs_world2pix(phasecenter[0],phasecenter[1],0)
+    #   PB size in pixel
+    freqs=header['CRVAL3']+(np.arange(header['NAXIS3'])+1-header['CRPIX3'])*header['CDELT3'] # in hz
+    beam=1.13*np.rad2deg(const.c.to_value('m/s')/freqs/antsize.to_value(u.m))
+    beam*=1/np.abs(header['CDELT2'])
+    
+    pb=np.zeros((header['NAXIS3'],header['NAXIS2'],header['NAXIS1']))
+    
+    sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
+    for i in range(header['NAXIS3']):
+        mod=Gaussian2D(amplitude=1.,
+                       x_mean=xc,y_mean=yc,
+                       x_stddev=beam[i]/sigma2fwhm,y_stddev=beam[i]/sigma2fwhm,theta=0)
+        pb[i,:,:]=discretize_model(mod,(0,int(header['NAXIS1'])),(0,int(header['NAXIS2'])))
+
+    return pb
+
+def makekernel(xpixels,ypixels,beam,pa=0.,cent=None,
+               mode='center',factor=10,
+               verbose=True):
+    """
+    mode: 'center','linear_interp','oversample','integrate'
+
+    beam=[bmaj,bmin] FWHM not (bmin,bmaj)
+    pa=east from north (ccw)deli
+    
+    in pixel-size units
+    
+    by default: the resulted kernel is always centered around a single pixel, and the application of
+        the kernel will lead to zero offset,
+    
+    make a "centered" Gaussian PSF kernel:
+        e.g. npixel=7, centered at px=3
+             npixel=8, centered at px=4
+             so the single peak is always at a pixel center (not physical center)
+             and the function is symmetric around that pixel
+             the purpose of doing this is to avoid offset when the specified kernel size is
+             even number and you build a function peaked at a pixel edge. 
+             
+        is x ks (peak pixel index)
+        10 x 7(3) okay
+        10 x 8(4) okay
+        10 x 8(3.5) offset
+        for convolve (non-fft), odd ks is required (the center pixel is undoubtely index=3)
+                                even ks is not allowed
+        for convolve_fft, you need to use cent=ks/2:
+                                technically it's not the pixel index of image center
+                                but the center pixel is "considers"as index=4
+        the rule of thumb-up:
+            cent=floor(ks/2.) or int(ks/2) #  int() try to truncate towards zero.
+        
+        note:
+            
+            Python "rounding half to even" rule vs. traditional IDL:
+                https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html
+                https://realpython.com/python-rounding/
+                Python>round(1.5)    # 2
+                Python>round(0.5)    # 0
+                IDL>round(1.5)       # 2 
+                IDL>round(0.5)       # 1
+ 
+            "forget about how the np.array is stored, just use the array as it is IDL;
+             when it comes down to shape/index, reverse the sequence"
+             
+            About Undersampling Images:
+            http://docs.astropy.org/en/stable/api/astropy.convolution.discretize_model.html
+            
+    """
+    
+    if  cent is None:
+        cent=[np.floor(xpixels/2.),np.floor(ypixels/2.)]
+    sigma2fwhm=np.sqrt(2.*np.log(2.))*2.
+    mod=Gaussian2D(amplitude=1.,x_mean=cent[0],y_mean=cent[1],
+               x_stddev=beam[1]/sigma2fwhm,y_stddev=beam[0]/sigma2fwhm,
+               theta=np.deg2rad(pa))
+    psf=discretize_model(mod,(0,int(xpixels)),(0,int(ypixels)),
+                         mode=mode,factor=factor)
+    #x,y=np.meshgrid(np.arange(xpixels),np.arange(ypixels),indexing='xy')
+    #psf=mod(x,y)
+    
+    return psf    

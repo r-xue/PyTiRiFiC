@@ -75,7 +75,7 @@ try:
     # not sure why at this moment
     # fft_use.fftn(1)# doesn't work
     # import mkl_random # work
-    # fft_use.fftn(np.ones(1)) # work
+    fft_use.fftn(np.ones(1)) # work
     mkl.verbose(0)
     import mkl_fft._scipy_fft_backend as mkl_be
 except NameError:

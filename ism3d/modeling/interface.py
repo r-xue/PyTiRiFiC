@@ -61,7 +61,7 @@ def read_inp(parfile,log=False):
     inp_dict=deepcopy(cfg._sections)
     
     for section in inp_dict:
-        logger.debug(section)
+        # logger.debug(section)
         for key in inp_dict[section]:
             expr=inp_dict[section][key]
             value=aeval(expr)
@@ -69,8 +69,8 @@ def read_inp(parfile,log=False):
                 exprs=expr.split()
                 value=[aeval(expr) for expr in exprs]
             value=key_intepreter(key,value)
-            logger.debug('    {} : {}'.format(key,expr))
-            logger.debug('        {} : {}'.format(type(value).__name__,value))
+            # logger.debug('    {} : {}'.format(key,expr))
+            # logger.debug('        {} : {}'.format(type(value).__name__,value))
             inp_dict[section][key]=value
     inp_dict['ism3d.inp']=cfg
     

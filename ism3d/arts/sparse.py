@@ -1,3 +1,5 @@
+"""source model: sparse form"""
+
 import numpy as np
 from ..maths.stats import pdf2rv, cdf2rv, custom_rvs, custom_pdf
 import astropy.units as u
@@ -508,15 +510,76 @@ def clouds_from_point(obj):
     
     return
 
-def clouds_from_obj(obj):
+def clouds_from_obj(obj,
+                    nc=100000,nv=20,seeds=[None,None,None,None]):
     
     if  obj['type']=='disk3d':
-        clouds_from_disk3d(obj)
+        clouds_from_disk3d(obj,nc=nc,nv=nv,seeds=seeds)
     
     if  obj['type']=='point':
         clouds_from_point(obj)
     
     return
+
+
+
+
+def clouds_discretize_2d(cloudlet,axes=['y','x'],
+                           range=[[-1, 1], [-1, 1]], bins=[10,10],
+                           weights=None):
+    """
+    """
+    
+    xx=np.ravel(cloudlet.__getattribute__(axes[0]).value)
+    yy=np.ravel(cloudlet.__getattribute__(axes[1]).value)
+    if  weights is None:
+        zz=None
+    else:
+        zz=np.ravel(weights)                 
+    image=fh.histogram2d(xx,yy,weights=zz,range=range,bins=bins)
+        
+    return image
+
+def cloudlet_moms(cloudlet,
+                  range=[[-1, 1], [-1, 1]], bins=[10,10],
+                  weights=None):
+
+    i_weights=None if weights is None else weights
+    dm_i=cloudls_discretize_2d(cloudlet,
+                                  axes=['y','x'],
+                                  range=range,bins=bins,
+                                  weights=i_weights)
+    dz=cloudlet.differentials['s'].d_z.value
+    
+    iv_weights=dz if weights is None else weights*dz
+    dm_iv=cloudls_discretize_2d(cloudlet,
+                              axes=['y','x'],
+                              range=range, bins=bins,
+                              weights=iv_weights)
+    np.seterr(invalid='ignore')
+    dm_v=dm_iv/dm_i
+    np.seterr(invalid=None)
+    
+    ivv_weights=dz**2 if weights is None else weights*dz**2
+    dm_ivv=cloudls_discretize_2d(cloudlet,
+                              axes=['y','x'],
+                              range=range, bins=bins,
+                              weights=ivv_weights)    
+    dm_vsigma=np.sqrt((dm_ivv-dm_i*dm_v**2)/dm_i)
+
+    dm_n=cloudls_discretize_2d(cloudlet,
+                              axes=['y','x'],
+                              range=range, bins=bins,
+                              weights=None)
+    np.seterr(invalid='ignore')
+    dm_ierr=dm_i/(dm_n)**1.5
+    np.seterr(invalid=None)
+
+    return dm_i,dm_v,dm_vsigma,dm_ierr
+
+
+
+ 
 
 
 # def clouds_fromobj(obj,

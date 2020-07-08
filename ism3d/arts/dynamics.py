@@ -205,6 +205,178 @@ def model_vrot(mod_dct):
             
         
     return
+
+###################################################################################################
+
+def potential_fromobj(obj):
+    """
+    create a abstract galpy.potential object (defined in the galactic plane frame)
+    which can be used to calculate circular velocity once cloud position is defined. 
+    
+    obj:    type='poyential'
+    return a list of galpy.potential
+    
+    https://galpy.readthedocs.io/en/v1.5.0/potential.html
+    
+    """
+
+    # note: the normalizaton factor doesn't really matter if 
+    #       we use astropy.quality when building potentials
+    
+    ro=8.*u.kpc         
+    vo=110.*u.km/u.s
+    pots=[]
+    
+    #   NFW like potential
+    
+    if  'nfw' in obj:
+        
+        # https://galpy.readthedocs.io/en/v1.5.0/reference/potentialnfw.html
+        z=obj['nfw'][1]
+        h=Planck13.h
+        z0 = np.array([0.0 ,0.5 ,1.0 ,2.0 ,3.0 ,5.0 ])
+        c0 = np.array([9.60,7.08,5.45,3.67,2.83,2.34])
+        m0 = np.array([1.5e19,1.5e17,2.5e15,6.8e13,6.3e12,6.6e11]) / h
+        ikind='linear'
+        if_c=interp1d(np.array(z0),np.array(c0),kind=ikind,bounds_error=False,
+                      fill_value=(c0[0],c0[-1]))
+        if_m=interp1d(np.array(z0),np.array(m0),kind=ikind,bounds_error=False,
+                      fill_value=(m0[0],m0[-1]))        
+        m_vir=obj['nfw'][0]   # values in units if 10^12msun
+        #   if m_vir is value, then in units of 1e12msun
+        #   https://galpy.readthedocs.io/en/latest/reference/potentialnfw.html
+        m_vir_12msun=(obj['nfw'][0]).to_value(u.Msun)/1e12
+        c_vir = if_c(z) * (m_vir_12msun*h)**(-0.075) * (1+(m_vir_12msun*1e12/if_m(z))**0.26)
+                                    
+        omega_z=Planck13.Om(z)                                           
+        delta_c = 18.*(np.pi**2) + 82.*(omega_z-1.) - 39.*(omega_z-1.)**2
+        npot=galpy_pot.NFWPotential(conc=c_vir,
+                          mvir=m_vir_12msun,
+                          H=Planck13.H(z).value,
+                          Om=0.3,#dones't matter as wrtcrit=True
+                          overdens=delta_c,wrtcrit=True,
+                          ro=ro,vo=vo)
+        pots.append(npot)
+
+    #   Thin exp diskpotential
+    
+    if  'expdisk' in obj:
+
+        dpot=galpy_pot.RazorThinExponentialDiskPotential(amp=obj['expdisk'][0],
+                                                         hr=obj['expdisk'][1],
+                                                         ro=ro,vo=vo)
+        pots.append(dpot)
+        
+    if  'dexpdisk' in obj:
+
+        dpot=galpy_pot.DoubleExponentialDiskPotential(amp=obj['dexpdisk'][0],
+                                                         hr=obj['dexpdisk'][1],
+                                                         hz=obj['dexpdisk'][2],
+                                                         ro=ro,vo=vo)
+        pots.append(dpot)  
+        
+    if  'nm3expdisk' in obj:
+
+        dpot=galpy_pot.MN3ExponentialDiskPotential(amp=obj['nm3expdisk'][0],
+                                                         hr=obj['nm3expdisk'][1],
+                                                         hz=obj['nm3expdisk'][2],
+                                                         sech=obj['nm3expdisk'][3],
+                                                         ro=ro,vo=vo)
+        pots.append(dpot)                     
+        
+    if  'isochrone' in obj:
+
+        dpot=galpy_pot.IsochronePotential(amp=obj['isochrone'][0],
+                                          b=obj['isochrone'][1],
+                                          ro=ro,vo=vo)
+        pots.append(dpot)
+        
+    if  'kepler' in obj:
+        
+        dpot=galpy_pot.KeplerPotential(amp=obj['kepler'],
+                                          ro=ro,vo=vo)
+        pots.append(dpot)     
+        
+    if  'powerlaw' in obj:
+        # https://galpy.readthedocs.io/en/v1.5.0/reference/potentialpowerspher.html
+        dpot=galpy_pot.PowerSphericalPotential(amp=obj['powerlaw'][0],
+                                               alpha=obj['powerlaw'][1],
+                                               r1=obj['powerlaw'][2],
+                                               ro=ro,vo=vo)
+        pots.append(dpot)          
+        
+        
+
+    return pots 
+
+def calc_vcirc(pot,rho,interp=True,logr=True):
+    """
+    use interpolated vcirc to speed up vcirc calculation 
+    decide to not use potential/interpRZPotential.py to avoid some overheads
+    see https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz
+    logr will keep 
+    also see: galpy.poteential.vcirc()
+    """
+    if  interp==True:
+        if  logr==False:
+            rGrid=np.linspace(np.min(rho),np.max(rho),101)
+        else:
+            rGrid=np.geomspace(np.min(rho),np.max(rho),101)
+        return np.interp(rho,rGrid,pot.vcirc(rGrid))
+    else:
+        return pot.vcirc(rho)
+
+def pots_to_vcirc(pots,rho,pscorr=None):
+    """
+    calculate vcirc and vrot from galactocentric distance and galpy.potential
+    post is a list of ponetials
+    
+    optionally, a dispersion-based pressure correcton can be applied to provide partial support (tehrefore, decrease vrot)
+    pscorr=(vSigma,ExpDisk_scale_length) 
+    note: this is only correct if the non-DM is in a exp-disk
+    
+        vcirc:   no pressure correction
+        vrot:    pressure correction
+    optionall
+    
+    vcirc[0,:] = rotational velocity after the correction
+    vcirc[1,:] = rotatipnal velocity before the correction
+    vcirc{2:,:] = contribution from individial potentials 
+    
+    """
+
+    vcirc_pot=[]
+    for pot in pots:
+        vcirc_pot.append(calc_vcirc(pot,rho,interp=False,logr=True))        
+
+    
+    vcirc_pot=np.vstack(vcirc_pot)
+    vcirc=np.sqrt(np.sum((np.vstack(vcirc_pot))**2,axis=0))
+
+    pots_name=[(pot.__class__.__name__).split(".")[-1] for pot in pots]
+    
+    if  pscorr is not None:
+        vrot=vcirc**2-2*pscorr[0]**2*(rho/pscorr[1])
+        vrot[vrot<0]=0
+        vrot=np.sqrt(vrot)
+        return np.vstack((vrot,vcirc,vcirc_pot)),['Vrot','Vcirc']+pots_name
+    else:          
+        return np.vstack((vcirc,vcirc_pot)),['Vrot']+pots_name
+
+
+
+def cr_tanh(r,r_in=None,r_out=None,
+              theta_out=90*u.deg):
+    """
+    See Peng+2010 Appendix A. with some scaling correction
+    """
+    cdef=(20*u.deg).to(u.rad).value
+    A=2*cdef/np.abs(theta_out.to(u.rad).value)-1
+    B=(2.-np.arctanh(A))*r_out/(r_out-r_in)
+    
+    return 0.5*(np.tanh((B*(r/r_out-1)+2.)*u.rad)+1.)
+
+
     
 if  __name__=="__main__":
 
