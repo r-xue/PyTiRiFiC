@@ -3,12 +3,13 @@
 import logging
 logger = logging.getLogger(__name__)
 
+from astropy.coordinates import SkyCoord
 
 import matplotlib as mpl
 mpl.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
-
+from astropy.wcs import WCS
 # mpl.rcParams['xtick.direction'] = 'in'
 # mpl.rcParams['ytick.direction'] = 'in'
 # mpl.rcParams.update({'font.size': 12})
@@ -30,25 +31,51 @@ import numpy as np
 #from .model import pots_to_vcirc
 
 from ..utils.misc import prepdir
+from ..xyhelper.sky import linear_offset_coords
 
-def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_grid.pdf',vmins=None,vmaxs=None):
+def im_grid(images,header,
+            offset=False,
+            units=None,titles=None,nxy=(3,3),
+            figsize=(9,9),figname='im_grid.pdf',
+            vmins=None,vmaxs=None,
+            showplot=False):
     """
-    display images in a basic grid layout, with colorbar
+    display fits-images in a basic grid layout, with colorbar
+    some interesting features:
+        optionally make maps in an offset coordinates
+    
     images: list can be non
     nxy:
     figname
     w: projection
     """
+    if  offset==True:
+        w=WCS(header).celestial
+        coord = SkyCoord(header['CRVAL1'], header['CRVAL2'], unit="deg")
+        #coord = SkyCoord(w.wcs.crval[0],w.wcs.crval[1], unit="deg")
+        w_use=linear_offset_coords(w,coord)
+        xlabel=r'$\Delta~\alpha$ ["]'
+        ylabel=r'$\Delta~\delta$ ["]'
+    else:
+        w_use=WCS(header).celestial
+        xlabel=r'$\alpha$ ["]'
+        ylabel=r'$\delta$ ["]'        
+    
+    if  not isinstance(images,list):
+        images=[images]
+    if  not isinstance(images,list):
+        images=[header]        
+
     plt.clf()
-    fig, axs = plt.subplots(nxy[1],nxy[0], figsize=figsize,subplot_kw={'projection':w})
+    
+    fig, axs = plt.subplots(nxy[1],nxy[0], figsize=figsize,subplot_kw={'projection':w_use})
+    axs=np.array(axs).reshape(-1)
     fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.2,hspace=0.2)
-
+    
     for ii in range(nxy[0]*nxy[1]):
-
-        iy,ix = int(ii/nxy[0]),ii%nxy[0]
-
+        
         if ii>=len(images):
-            fig.delaxes(axs[iy,ix])
+            fig.delaxes(axs[ii])
             continue
 
         if images[ii] is None:
@@ -56,40 +83,30 @@ def im_grid(images,w,units=None,titles=None,nxy=(3,3),figsize=(9,9),figname='im_
             continue    
         vmin=vmins[ii] if  vmins is not None else None
         vmax=vmaxs[ii] if  vmaxs is not None else None
-        im = axs[iy,ix].imshow(images[ii],origin='lower',vmin=vmin,vmax=vmax)
+        im = axs[ii].imshow(images[ii],origin='lower',vmin=vmin,vmax=vmax);
 
         #divider = make_axes_locatable(axs[iy,ix])
         #cax = divider.append_axes("right", size="7%", pad=0.05)
-        clb=fig.colorbar(im, ax=axs[iy,ix])
+        clb=fig.colorbar(im, ax=axs[ii]);
         if  units is not None:
             clb.ax.set_title(units[ii])
         if  titles is not None:
-            axs[iy,ix].set_title(titles[ii])
-        axs[iy,ix].set_xlabel(r'$\Delta~\alpha$ ["]')
-        axs[iy,ix].set_ylabel(r'$\Delta~\delta$ ["]')
+            axs[ii].set_title(titles[ii])
+        axs[ii].set_xlabel(xlabel)
+        axs[ii].set_ylabel(ylabel)
         #aa[iy,ix].set_title(os.path.basename(name).replace('_','.'))
         #aa[iy,ix].set_aspect('auto')
 
-    #fig.tight_layout() ; plt.show()
+    fig.tight_layout() 
+    #; plt.show()
     prepdir(figname)    
     fig.savefig(figname)
-    plt.close() # don't show it in ipynb
-       
+    
+    if  showplot==False:
+        plt.close() # don't show it in ipynb
     #clear_output(wait=True) ; display(fig)
     
-def calc_ppbeam(header):
-    """
-    For Radio Cubes:        ppbeam=npix/beam
-    For optical/IR Cubes:   ppbeam=1.0
-    """
-    if  'BMAJ' in header.keys() and 'BMIN' in header.keys():
-        beam_area = np.abs(header['BMAJ']*header['BMIN']*3600.**2.0)*2.*np.pi/(8.*np.log(2.))
-        pixel_area=np.abs(header['CDELT1']*header['CDELT2']*3600.**2.0)
-        ppbeam=beam_area/pixel_area
-    else:
-        ppbeam=1.
-    
-    return ppbeam
+
 
 
 def plt_spec1d(fn,roi='icrs; circle(356.53932576899575,12.822017913507711 , 1") # text={example}'):
