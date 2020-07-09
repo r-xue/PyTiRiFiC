@@ -3,7 +3,7 @@ import scipy
 import astropy.units as u
 from astropy.wcs import WCS
 from astropy import constants as const
-from astropy.cosmology import Planck13
+from astropy.cosmology import Planck13 as cosmos
 from astropy.wcs.utils import proj_plane_pixel_area, proj_plane_pixel_scales
 from astropy.io import fits
 from astropy.coordinates import SkyCoord
@@ -41,6 +41,8 @@ from ..utils.misc import render_component
 from ..utils.misc import pickplane
 from astropy.modeling import models as apmodels
 
+
+from ..arts.utils import fluxscale_from_contflux
 """
     Note: 
         performance on Quanitu/Units
@@ -61,76 +63,137 @@ Note:
         - also there is a bug when out.dtype is not float
         - exception when bounding_box > imsize
       We combined these two features together (see model_disk2d).
-
+    + for 2D objects, the render function will output a 2D plane + fluxscale for each plane.
+      this is preferred for memory managament, and 3D data will only be assembed at the final rendering stage.
+      it's important to do this for mutiple-object mutiple-channel data.
 """
 
-
-
-def render_point(obj,w,out=None):
+def render_spmodel3d(obj,w,out=None):
     """
-    obj:     object prescription
-    w:       wcs 
-    """
-    px,py=w.celestial.wcs_world2pix(obj['xypos'].ra,obj['xypos'].dec,0)
-    naxis=w._naxis
-    if  out is None:
-        out=np.zeros((naxis[2],naxis[1],naxis[0]),dtype=np.float32)      
-
-    wspec=w.sub(['spectral'])
-    sz=wspec.pixel_to_world(np.arange(w._naxis[2])).to(u.Hz,equivalencies=u.spectral())
-    
-    fluxscale=obj['contflux']*((sz/obj['contfreq'])**obj['alpha'])
-    fluxscale.to_value('Jy')
-    
-    out[:,round(float(py)),round(float(px))]=fluxscale.to_value('Jy')
-    
-    return out
-
-def render_poly2d(obj,w,out=None):
-    """
+    render a sparse model 
     """
     
     return
 
-def render_sersic2d(obj,w,out=None):
+def render_apmodel2d(obj,w,out=None,normalize=True):
     """
-    """
-    px,py=w.celestial.wcs_world2pix(obj['xypos'].ra,obj['xypos'].dec,0)
-    naxis=w._naxis
-    out0=np.zeros((naxis[1],naxis[0]),dtype=np.float32)
+    obj:     object prescription
+    w:       wcs 
+        
+    Render astropy.modeling.models into the specificied WCS system
+        https://docs.astropy.org/en/stable/modeling/predef_models2D.html
     
-    wspec=w.sub(['spectral'])
-    sz=wspec.pixel_to_world(np.arange(w._naxis[2])).to(u.Hz,equivalencies=u.spectral())
+    normalize:  True: normalize the total readout in the plane template to 1
+                False: normaliz the peak readout in the plane template to 1
+                
+    """
+
+    naxis=w._naxis
+    # need to fix the astropy bug
+    # see: https://github.com/astropy/astropy/pull/10542
+    out0=np.zeros((naxis[1],naxis[0]),dtype=np.float32) 
+        
+    # not all model requires x/y, but we set px,py to image center by default
+    try:
+        px,py=w.celestial.wcs_world2pix(obj['xypos'].ra,obj['xypos'].dec,0)
+        #xp, yp = skycoord_to_pixel(center, wcs)
+    except:
+        px=naxis[0]/2.0 ; py=naxis[1]/2.0
     
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0*u.arcsec
-    kps=Planck13.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
+    kps=cosmos.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
     dp=cell*kps
-        
-    amp=10
-    r_eff=(obj['sbProf'][1]/dp).value
-    n=obj['sbProf'][2]
-    #x_0=obj['sbProf'][3]
-    #y_0=obj['sbProf'][4]
-    #apmodel=getattr(apmodels,obj['sbProf'][0])(amplitude=amp,r_eff=r_eff,n=n, x_0=px,y_0=py)
-    #apmodel=apmodels.Sersic2D(amplitude=amp,r_eff=r_eff,n=n, x_0=px,y_0=py)
-    #print(apmodel._bounding_box)
-    #"""
-    apmodel=apmodels.Gaussian2D(amplitude=amp,
-                                x_mean=px,y_mean=py,
-                                x_stddev=20,y_stddev=20)
-    if  apmodel._bounding_box is not None:
-        ((xmin,xmax),(ymin,ymax))=apmodel.bounding_box
-        xmin=max(xmin,1)
-        xmax=min(xmax,naxis[0]-1)
-        ymin=max(ymin,1)
-        ymax=min(ymax,naxis[1]-1)
-        apmodel.bounding_box=((xmin,xmax),(ymin,ymax))
-    apmodel.render(out=out)
     
-   
+    if  not isinstance(obj['sbProf'],(tuple,list)):
+        obj['sbProf']=(obj['sbProf'],)
+    model_name=obj['sbProf'][0]
+    model_par=obj['sbProf'][1:]
+
+    if  model_name == 'AiryDisk2D':
+        radius=(model_par[0]/dp).value
+        apmodel=getattr(apmodels,model_name)(1,px,py,radius)
+
+    if  model_name == 'Box2D':
+        x_width=(model_par[0]/dp).value
+        y_width=(model_par[1]/dp).value
+        apmodel=getattr(apmodels,model_name)(1,px,py,x_width,y_width)
+
+    if  model_name == 'Const2D':
+        apmodel=getattr(apmodels,model_name)(1)
+
+    if  model_name == 'Ellipse2D':
+        a=(model_par[0]/dp).value
+        b=(model_par[1]/dp).value
+        theta=(model_par[2]+90*u.deg).to_value(u.rad)
+        apmodel=getattr(apmodels,model_name)(1, px,py, a, b, theta)
+
+    if  model_name == 'Disk2D':
+        R_0=(model_par[0]/dp).value
+        apmodel=getattr(apmodels,model_name)(1, px,py, R_0)
+
+    if  model_name == 'Gaussian2D':
+        x_stddev=(model_par[0]/dp).value
+        y_stddev=(model_par[1]/dp).value
+        theta=(model_par[2]+90*u.deg).to_value(u.rad)
+        apmodel=getattr(apmodels,model_name)(1, px,py,x_stddev,y_stddev,theta)
     
-    return out
+    if  model_name == 'Planar2D':
+        slope_x=(model_par[0]/dp).value
+        slope_y=(model_par[1]/dp).value
+        apmodel=getattr(apmodels,model_name)(slope_x,slope_y,1)
     
+    if  model_name == 'Sersic2D':
+        r_eff=(model_par[0]/dp).value
+        n=model_par[1]
+        try:
+            ellip=model_par[2]
+        except:
+            ellip=0
+        try:
+            theta=(model_par[3]+90*u.deg).to_value(u.rad)
+        except:
+            theta=(90*u.deg).to_value(u.rad)
+        apmodel=getattr(apmodels,model_name)(1, r_eff,n,px,py,ellip,theta)   
+    
+    if  model_name == 'Ring2D':
+        r_in=(model_par[0]/dp).value
+        width=(model_par[1]/dp).value
+        apmodel=getattr(apmodels,model_name)(1, px,py,r_in,width)
+
+    if  model_name == 'RickerWavelet2D':
+        sigma=(model_par[0]/dp).value
+        apmodel=getattr(apmodels,model_name)(1, px,py,sigma)    
+    
+    #   try to render apmodel
+    try:
+        if  apmodel._bounding_box is not None:
+            ((xmin,xmax),(ymin,ymax))=apmodel.bounding_box
+            xmin=max(xmin,1)
+            xmax=min(xmax,naxis[0]-1)
+            ymin=max(ymin,1)
+            ymax=min(ymax,naxis[1]-1)
+            apmodel.bounding_box=((xmin,xmax),(ymin,ymax))
+        apmodel.render(out=out0)
+    except:
+        pass
+    
+    #   try to add point-source model
+    if  model_name == 'Point':
+        out0[round(float(py)),round(float(px))]=1.0
+    else:
+        # only need to normalizate for non-point source
+        if  normalize==True:
+            if  not out0.any():
+                out0/=out0.sum()
+        else:
+            if  model_name=='Sersic2D':
+                # sersic model amp is not defined as peak value.
+                # we do a peak normalization to maintain consistency
+                out0/=np.max(out0)
+            
+    fluxscale=fluxscale_from_contflux(obj['contflux'],w)
+    
+    return out0,fluxscale
 
 
 def xy_render(objs,w,psf=None,pb=None,normalize_kernel=False):

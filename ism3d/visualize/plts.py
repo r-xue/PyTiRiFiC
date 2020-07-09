@@ -70,7 +70,7 @@ def im_grid(images,header,
     
     fig, axs = plt.subplots(nxy[1],nxy[0], figsize=figsize,subplot_kw={'projection':w_use})
     axs=np.array(axs).reshape(-1)
-    fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.2,hspace=0.2)
+    #fig.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.2,hspace=0.2)
     
     for ii in range(nxy[0]*nxy[1]):
         
@@ -97,7 +97,7 @@ def im_grid(images,header,
         #aa[iy,ix].set_title(os.path.basename(name).replace('_','.'))
         #aa[iy,ix].set_aspect('auto')
 
-    fig.tight_layout() 
+    #fig.tight_layout() 
     #; plt.show()
     prepdir(figname)    
     fig.savefig(figname)

@@ -29,8 +29,23 @@ def linear_offset_coords(wcs, center):
     new_wcs = WCS(naxis=2)
     new_wcs.wcs.crpix = xp + 1, yp + 1
     new_wcs.wcs.crval = 0., 0.
-    new_wcs.wcs.cdelt = proj_plane_pixel_scales(wcs)*3600.
+    cell=proj_plane_pixel_scales(wcs)*3600.
+    new_wcs.wcs.cdelt = -cell[0], cell[1]
     new_wcs.wcs.ctype = 'XOFFSET', 'YOFFSET'
     new_wcs.wcs.cunit = 'arcsec', 'arcsec'
 
     return new_wcs
+
+def calc_ppbeam(header):
+    """
+    For Radio Cubes:        ppbeam=npix/beam
+    For optical/IR Cubes:   ppbeam=1.0
+    """
+    if  'BMAJ' in header.keys() and 'BMIN' in header.keys():
+        beam_area = np.abs(header['BMAJ']*header['BMIN']*3600.**2.0)*2.*np.pi/(8.*np.log(2.))
+        pixel_area=np.abs(header['CDELT1']*header['CDELT2']*3600.**2.0)
+        ppbeam=beam_area/pixel_area
+    else:
+        ppbeam=1.
+    
+    return ppbeam
