@@ -14,7 +14,7 @@ import numpy as np
 import logging
 from pprint import pformat
 
-from ..utils.meta import inp_config
+
 
 from io import StringIO
 import astropy.units as u
@@ -34,6 +34,8 @@ aeval.symtable['Quantity']=Quantity
 from pprint import pprint
 
 from copy import deepcopy
+
+from .utils.meta import inp_config
 #import copy
 #from copy import copy
 
@@ -85,6 +87,8 @@ def key_intepreter(key,value):
     if  key=='xypos':
         if  isinstance(value,str):
             value_int=SkyCoord(value,frame='icrs')
+        if  isinstance(value,(tuple,list)):
+            value_int=SkyCoord(value[0],value[1],frame='icrs',unit='deg')
     
     return value_int
 
