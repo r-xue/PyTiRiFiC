@@ -111,7 +111,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -214,7 +214,7 @@
 <li class="toctree-l1"><a class="reference internal" href="ism3d.arts.html">ism3d.arts package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts.discretize">ism3d.arts.discretize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#ism3d-arts-dynamics-module">ism3d.arts.dynamics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts.dynamics">ism3d.arts.dynamics module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#ism3d-arts-model-module">ism3d.arts.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts">Module contents</a></li>
 </ul>
@@ -286,6 +286,46 @@
 </div>
 <div class="section" id="ism3d-cli-module">
 <h2>ism3d.cli module<a class="headerlink" href="#ism3d-cli-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ism3d.interface">
+<span id="ism3d-interface-module"></span><h2>ism3d.interface module<a class="headerlink" href="#module-ism3d.interface" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.interface.inp_to_mod">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">inp_to_mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#inp_to_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.inp_to_mod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.key_intepreter">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">key_intepreter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#key_intepreter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.key_intepreter" title="Permalink to this definition">¶</a></dt>
+<dd><p>additional customized interpretaion of key values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.read_inp">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">read_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parfile</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#read_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.read_inp" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>read parameters/setups from a .inp file into a dictionary nest:</dt><dd><p>inp_dct[id][keywords]=values.
+inp_dct[‘comments’]=’??’
+inp_dct[‘changlog’]=’??’
+inp_dct[‘optimize’]=’??’</p>
+</dd>
+<dt>keyword value formatting</dt><dd><p>1.remove trailing/prefix space / comments
+2.split my space
+3.first element is the key
+4.the rest elements will be filled into value</p>
+<blockquote>
+<div><p>more than one element : list
+one element: scaler</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.write_inp">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">write_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em>, <em class="sig-param"><span class="n">parfile</span><span class="o">=</span><span class="default_value">'test,inp'</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#write_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.write_inp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-ism3d.ism3d">
 <span id="ism3d-ism3d-module"></span><h2>ism3d.ism3d module<a class="headerlink" href="#module-ism3d.ism3d" title="Permalink to this headline">¶</a></h2>

@@ -42,7 +42,10 @@ from ..utils.misc import pickplane
 from astropy.modeling import models as apmodels
 
 
-from ..arts.utils import fluxscale_from_contflux
+from ..arts.utils import fluxscale_from_contflux, clouds_split
+from ..arts.sparse import clouds_from_obj
+from pprint import pprint
+
 """
     Note: 
         performance on Quanitu/Units
@@ -73,7 +76,31 @@ def render_spmodel3d(obj,w,out=None):
     render a sparse model 
     """
     
-    return
+    # if the "cloudlet" sparse model doesn't exist, performe the realization
+    
+    if 'clouds_loc' not in obj:
+        logger.debug("add the 3D model realization")
+        clouds_from_obj(obj,nc=100000,nv=20,seeds=[None]*4)
+    
+    fluxscale,xrange,yrange,x,y,wt=clouds_split(obj,w)
+    naxis=w._naxis
+    if  out is None:
+        out=np.zeros((naxis[2],naxis[1],naxis[0]),dtype=np.float32) 
+    
+    for iz in range(naxis[2]):
+        wt=wt[iz+1] if wt is not None else None
+        if  'lineflux' in obj:                    
+            out[iz,:,:]+=(fluxscale*
+                         fh.histogram2d(y[iz+1],x[iz+1],                                             
+                                       range=[yrange,xrange],
+                                       bins=(naxis[1],naxis[0]),weights=wt))
+        if  'contflux' in obj:                   
+            out[iz,:,:]+=(fluxscale[iz]*
+                         fh.histogram2d(y,x,                                             
+                                       range=[yrange,xrange],
+                                       bins=(naxis[1],naxis[0]),weights=wt))        
+    
+    return out
 
 def render_apmodel2d(obj,w,out=None,normalize=True):
     """
@@ -101,8 +128,9 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
         px=naxis[0]/2.0 ; py=naxis[1]/2.0
     
     cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0*u.arcsec
-    kps=cosmos.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
-    dp=cell*kps
+    if  'z' in obj:
+        kps=cosmos.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
+        dp=cell*kps
     
     if  not isinstance(obj['sbProf'],(tuple,list)):
         obj['sbProf']=(obj['sbProf'],)

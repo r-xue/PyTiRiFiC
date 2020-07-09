@@ -111,7 +111,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -260,47 +260,76 @@ But it’s setup per object due to the input file layout (repeated for different
 # we expected lognsigma is the same for one dname from all objs</p>
 </dd></dl>
 
+</div>
+<div class="section" id="module-ism3d.arts.dynamics">
+<span id="ism3d-arts-dynamics-module"></span><h2>ism3d.arts.dynamics module<a class="headerlink" href="#module-ism3d.arts.dynamics" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="ism3d.arts.discretize.pix2sky">
-<code class="sig-prename descclassname">ism3d.arts.discretize.</code><code class="sig-name descname">pix2sky</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">px</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">py</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/discretize.html#pix2sky"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.discretize.pix2sky" title="Permalink to this definition">¶</a></dt>
-<dd><p>convert pixel index (zero-based)
-to
-the reference model coordinate system</p>
-<blockquote>
-<div><dl class="simple">
-<dt>for line emission “cloudlet” objects:</dt><dd><p>the sky-projected rest-frame galactic coodrinates, which is centered around the object xypos)
-z = LOS</p>
-</dd>
-<dt>for continuume emission “cloudlet” objects:</dt><dd><p>spatial-wise the sky-projected rest-frame galactic coodrinates, which is centered around the object xypos)
-spectral-wise, sky-or-rest-frame wavelength or frequency</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>“sky-frame” could be (angular,angular,velocity) or (distance,distance,velocity)
-while typically the sky-frame is defined in angular units;
-if the sky frame is defined in length the angular seperation will be converted to physical angular size.
-the object redshift is required</p>
-<blockquote>
-<div><dl class="simple">
-<dt>We assume:</dt><dd><p>inverse-RA (and pixel-x) aligns along with x
-DEC (and pixel-y) aligns along with y</p>
-</dd>
-</dl>
-<p>The functin dosn’t consider pixel rotation at this moment</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Essentially, we transfer:</dt><dd><p>ModelRef_origin-&gt;World-&gt;pix:
-Then map pix index back to ModelRef Vec</p>
-</dd>
-</dl>
-<p>mxo,myo,mzo:    the origin of the reference model</p>
-<p>for cloudlet3d models:    (kpc,kpc,km/s)
-for cloudlet2d models:    (kpc,kpc,Hz)</p>
+<dt id="ism3d.arts.dynamics.calc_vcirc">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">calc_vcirc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pot</span></em>, <em class="sig-param"><span class="n">rho</span></em>, <em class="sig-param"><span class="n">interp</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">logr</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#calc_vcirc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.calc_vcirc" title="Permalink to this definition">¶</a></dt>
+<dd><p>use interpolated vcirc to speed up vcirc calculation
+decide to not use potential/interpRZPotential.py to avoid some overheads
+see <a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz">https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz</a>
+logr will keep
+also see: galpy.poteential.vcirc()</p>
 </dd></dl>
 
-</div>
-<div class="section" id="ism3d-arts-dynamics-module">
-<h2>ism3d.arts.dynamics module<a class="headerlink" href="#ism3d-arts-dynamics-module" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.cr_tanh">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">cr_tanh</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">r_in=None</em>, <em class="sig-param">r_out=None</em>, <em class="sig-param">theta_out=&lt;Quantity 90. deg&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#cr_tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.cr_tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>See Peng+2010 Appendix A. with some scaling correction</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.model_vcirc">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">model_vcirc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pot_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#model_vcirc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.model_vcirc" title="Permalink to this definition">¶</a></dt>
+<dd><p>take a dictionary describing the potential and calculaet rotation curve</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.model_vcirc_plot">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">model_vcirc_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rc</span></em>, <em class="sig-param"><span class="n">figname</span><span class="o">=</span><span class="default_value">'vcirc_plt.pdf'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#model_vcirc_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.model_vcirc_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.model_vrot">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">model_vrot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#model_vrot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.model_vrot" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a RC from the mass-potential model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.model_vrot_plot">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">model_vrot_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod_obj_disk3d</span></em>, <em class="sig-param"><span class="n">figname</span><span class="o">=</span><span class="default_value">'vrot_plt.pdf'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#model_vrot_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.model_vrot_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>mod_obj_disk3d:    just a single disk object (unitless)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.potential_fromobj">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">potential_fromobj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#potential_fromobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.potential_fromobj" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a abstract galpy.potential object (defined in the galactic plane frame)
+which can be used to calculate circular velocity once cloud position is defined.</p>
+<p>obj:    type=’poyential’
+return a list of galpy.potential</p>
+<p><a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/potential.html">https://galpy.readthedocs.io/en/v1.5.0/potential.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.pots_to_vcirc">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">pots_to_vcirc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pots</span></em>, <em class="sig-param"><span class="n">rho</span></em>, <em class="sig-param"><span class="n">pscorr</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#pots_to_vcirc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.pots_to_vcirc" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate vcirc and vrot from galactocentric distance and galpy.potential
+post is a list of ponetials</p>
+<p>optionally, a dispersion-based pressure correcton can be applied to provide partial support (tehrefore, decrease vrot)
+pscorr=(vSigma,ExpDisk_scale_length)
+note: this is only correct if the non-DM is in a exp-disk</p>
+<blockquote>
+<div><p>vcirc:   no pressure correction
+vrot:    pressure correction</p>
+</div></blockquote>
+<p>optionall</p>
+<p>vcirc[0,:] = rotational velocity after the correction
+vcirc[1,:] = rotatipnal velocity before the correction
+vcirc{2:,:] = contribution from individial potentials</p>
+</dd></dl>
+
 </div>
 <div class="section" id="ism3d-arts-model-module">
 <h2>ism3d.arts.model module<a class="headerlink" href="#ism3d-arts-model-module" title="Permalink to this headline">¶</a></h2>

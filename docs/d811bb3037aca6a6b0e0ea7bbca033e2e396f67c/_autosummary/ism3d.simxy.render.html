@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.simxy.render.render_point" href="ism3d.simxy.render.render_point.html" />
+    <link rel="next" title="ism3d.simxy.render.render_apmodel2d" href="ism3d.simxy.render.render_apmodel2d.html" />
     <link rel="prev" title="ism3d.simxy" href="ism3d.simxy.html" /> 
 </head>
 
@@ -113,7 +113,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -146,6 +146,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
@@ -153,9 +154,8 @@
 <li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.simxy.render</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.render_point.html">ism3d.simxy.render.render_point</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.render_poly2d.html">ism3d.simxy.render.render_poly2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.render_sersic2d.html">ism3d.simxy.render.render_sersic2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.render_apmodel2d.html">ism3d.simxy.render.render_apmodel2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.render_spmodel3d.html">ism3d.simxy.render.render_spmodel3d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.simxy.render.xy_render.html">ism3d.simxy.render.xy_render</a></li>
 </ul>
 </li>
@@ -242,16 +242,13 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.simxy.render.render_point.html#ism3d.simxy.render.render_point" title="ism3d.simxy.render.render_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_point</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.simxy.render.render_apmodel2d.html#ism3d.simxy.render.render_apmodel2d" title="ism3d.simxy.render.render_apmodel2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_apmodel2d</span></code></a></p></td>
 <td><p>obj:     object prescription w:       wcs</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.simxy.render.render_poly2d.html#ism3d.simxy.render.render_poly2d" title="ism3d.simxy.render.render_poly2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_poly2d</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.simxy.render.render_spmodel3d.html#ism3d.simxy.render.render_spmodel3d" title="ism3d.simxy.render.render_spmodel3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_spmodel3d</span></code></a></p></td>
+<td><p>render a sparse model</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.simxy.render.render_sersic2d.html#ism3d.simxy.render.render_sersic2d" title="ism3d.simxy.render.render_sersic2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_sersic2d</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.simxy.render.xy_render.html#ism3d.simxy.render.xy_render" title="ism3d.simxy.render.xy_render"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_render</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.simxy.render.xy_render.html#ism3d.simxy.render.xy_render" title="ism3d.simxy.render.xy_render"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_render</span></code></a></p></td>
 <td><p>Note: psf/pb should not contain missing data</p></td>
 </tr>
 </tbody>
@@ -266,7 +263,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.simxy.render.render_point.html" class="btn btn-neutral float-right" title="ism3d.simxy.render.render_point" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.simxy.render.render_apmodel2d.html" class="btn btn-neutral float-right" title="ism3d.simxy.render.render_apmodel2d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="ism3d.simxy.html" class="btn btn-neutral float-left" title="ism3d.simxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -111,7 +111,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -699,9 +699,9 @@
     
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_loc&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">car</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_wt&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
-    <span class="k">for</span> <span class="n">fluxtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lineflux&#39;</span><span class="p">,</span><span class="s1">&#39;contflux&#39;</span><span class="p">]:</span>
-        <span class="k">if</span>  <span class="n">fluxtype</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_flux&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">fluxtype</span><span class="p">]</span><span class="o">/</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_loc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>    
+    <span class="c1">#for fluxtype in [&#39;lineflux&#39;,&#39;contflux&#39;]:</span>
+    <span class="c1">#    if  fluxtype in obj:</span>
+    <span class="c1">#        obj[&#39;clouds_flux&#39;]=obj[fluxtype]/obj[&#39;clouds_loc&#39;].size    </span>
     
     <span class="k">return</span></div>
 
@@ -712,9 +712,9 @@
     
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_loc&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">car</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_wt&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
-    <span class="k">for</span> <span class="n">fluxtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lineflux&#39;</span><span class="p">,</span><span class="s1">&#39;contflux&#39;</span><span class="p">]:</span>
-        <span class="k">if</span>  <span class="n">fluxtype</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_flux&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">fluxtype</span><span class="p">]</span><span class="o">/</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_loc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>        
+    <span class="c1">#for fluxtype in [&#39;lineflux&#39;,&#39;contflux&#39;]:</span>
+    <span class="c1">#    if  fluxtype in obj:</span>
+    <span class="c1">#        obj[&#39;clouds_flux&#39;]=obj[fluxtype]/obj[&#39;clouds_loc&#39;].size        </span>
     
     <span class="k">return</span></div>
 
@@ -787,7 +787,54 @@
 
 
 
- 
+<div class="viewcode-block" id="clouds_realize"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.sparse.clouds_realize.html#ism3d.arts.sparse.clouds_realize">[docs]</a><span class="k">def</span> <span class="nf">clouds_realize</span><span class="p">(</span><span class="n">mod_dict</span><span class="p">,</span>
+                  <span class="n">nc</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">nv</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">seeds</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]):</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    attach clouds to &quot;mod_dict&quot;</span>
+<span class="sd">    This is a wrapper function to attached a cloudlet model from a object-group dict  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># first pass:   build potentials</span>
+    
+    <span class="k">for</span> <span class="n">objname</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">mod_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span>  <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span>  <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;potential&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;pots&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">potential_fromobj</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        
+    <span class="c1"># second pass:   attach potential (if requested) and fill cloudlet</span>
+    
+    <span class="n">clouds_types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;disk3d&#39;</span><span class="p">,</span><span class="s1">&#39;disk2d&#39;</span><span class="p">,</span><span class="s1">&#39;point&#39;</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">objname</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">mod_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span>  <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span>  <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">clouds_types</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># attach potentials</span>
+        <span class="k">if</span>  <span class="s1">&#39;rcProf&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;rcProf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;potential&#39;</span><span class="p">:</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;pots&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">mod_dict</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;rcProf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;pots&#39;</span><span class="p">]</span>
+        
+        <span class="n">clouds_from_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span>
+                       <span class="n">nc</span><span class="o">=</span><span class="n">nc</span><span class="p">,</span><span class="n">nv</span><span class="o">=</span><span class="n">nv</span><span class="p">,</span><span class="n">seeds</span><span class="o">=</span><span class="n">seeds</span><span class="p">)</span>
+
+                
+    <span class="c1"># third pass: insert astropy.modelling.models</span>
+    
+    <span class="k">for</span> <span class="n">objname</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">mod_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        
+        <span class="k">if</span>  <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span>  <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;apmodel&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;apmodel&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])(</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span><span class="o">+</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]))</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;apmodel_flux&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;contflux&#39;</span><span class="p">]</span>  
+        
+    <span class="k">return</span>   </div>
 
 
 <span class="c1"># def clouds_fromobj(obj,</span>

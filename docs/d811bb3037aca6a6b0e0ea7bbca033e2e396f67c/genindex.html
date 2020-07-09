@@ -111,7 +111,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -279,7 +279,9 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.calc_ppbeam">calc_ppbeam() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.calc_ppbeam.html#ism3d.visualize.plts.calc_ppbeam">[1]</a>
+      <li><a href="_apidoc/ism3d.xyhelper.html#ism3d.xyhelper.sky.calc_ppbeam">calc_ppbeam() (in module ism3d.xyhelper.sky)</a>, <a href="_autosummary/ism3d.xyhelper.sky.calc_ppbeam.html#ism3d.xyhelper.sky.calc_ppbeam">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.calc_vcirc">calc_vcirc() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.calc_vcirc.html#ism3d.arts.dynamics.calc_vcirc">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.casa_version">casa_version() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.casa_version.html#ism3d.uvhelper.proc.casa_version">[1]</a>
 </li>
@@ -319,10 +321,10 @@
         <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.utils.chi2red_to_lognsigma">(in module ism3d.utils.utils)</a>, <a href="_autosummary/ism3d.utils.utils.chi2red_to_lognsigma.html#ism3d.utils.utils.chi2red_to_lognsigma">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/ism3d.arts.sparse.cloudlet_moms.html#ism3d.arts.sparse.cloudlet_moms">cloudlet_moms() (in module ism3d.arts.sparse)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/ism3d.arts.sparse.clouds_discretize_2d.html#ism3d.arts.sparse.clouds_discretize_2d">clouds_discretize_2d() (in module ism3d.arts.sparse)</a>
 </li>
       <li><a href="_autosummary/ism3d.arts.sparse.clouds_from_disk3d.html#ism3d.arts.sparse.clouds_from_disk3d">clouds_from_disk3d() (in module ism3d.arts.sparse)</a>
@@ -337,6 +339,10 @@
 </li>
       <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.discretize.clouds_perchan">clouds_perchan() (in module ism3d.arts.discretize)</a>, <a href="_autosummary/ism3d.arts.discretize.clouds_perchan.html#ism3d.arts.discretize.clouds_perchan">[1]</a>
 </li>
+      <li><a href="_autosummary/ism3d.arts.sparse.clouds_realize.html#ism3d.arts.sparse.clouds_realize">clouds_realize() (in module ism3d.arts.sparse)</a>
+</li>
+      <li><a href="_autosummary/ism3d.arts.utils.clouds_split.html#ism3d.arts.utils.clouds_split">clouds_split() (in module ism3d.arts.utils)</a>
+</li>
       <li><a href="_autosummary/ism3d.arts.sparse.clouds_tosky.html#ism3d.arts.sparse.clouds_tosky">clouds_tosky() (in module ism3d.arts.sparse)</a>
 </li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.convert_size">convert_size() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.convert_size.html#ism3d.utils.misc.convert_size">[1]</a>
@@ -344,6 +350,8 @@
       <li><a href="_autosummary/ism3d.logger.CustomFormatter.html#ism3d.logger.CustomFormatter.converter">converter() (ism3d.logger.CustomFormatter method)</a>
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.imager.copyimages">copyimages() (in module ism3d.uvhelper.imager)</a>, <a href="_autosummary/ism3d.uvhelper.imager.copyimages.html#ism3d.uvhelper.imager.copyimages">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.cr_tanh">cr_tanh() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.cr_tanh.html#ism3d.arts.dynamics.cr_tanh">[1]</a>
 </li>
       <li><a href="_autosummary/ism3d.utils.meta.create_header.html#ism3d.utils.meta.create_header">create_header() (in module ism3d.utils.meta)</a>
 </li>
@@ -457,6 +465,8 @@
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ms.flagrow">flagrow() (in module ism3d.uvhelper.ms)</a>, <a href="_autosummary/ism3d.uvhelper.ms.flagrow.html#ism3d.uvhelper.ms.flagrow">[1]</a>
 </li>
+      <li><a href="_autosummary/ism3d.arts.utils.fluxscale_from_contflux.html#ism3d.arts.utils.fluxscale_from_contflux">fluxscale_from_contflux() (in module ism3d.arts.utils)</a>
+</li>
       <li><a href="_apidoc/ism3d.html#ism3d.logger.CustomFormatter.format">format() (ism3d.logger.CustomFormatter method)</a>, <a href="_autosummary/ism3d.logger.CustomFormatter.html#ism3d.logger.CustomFormatter.format">[1]</a>
 </li>
       <li><a href="_autosummary/ism3d.logger.CustomFormatter.html#ism3d.logger.CustomFormatter.formatException">formatException() (ism3d.logger.CustomFormatter method)</a>
@@ -567,7 +577,7 @@
       </ul></li>
       <li><a href="_autosummary/ism3d.utils.meta.inp_config.html#ism3d.utils.meta.inp_config">inp_config() (in module ism3d.utils.meta)</a>
 </li>
-      <li><a href="_autosummary/ism3d.modeling.interface.inp_to_mod.html#ism3d.modeling.interface.inp_to_mod">inp_to_mod() (in module ism3d.modeling.interface)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.interface.inp_to_mod">inp_to_mod() (in module ism3d.interface)</a>, <a href="_autosummary/ism3d.interface.inp_to_mod.html#ism3d.interface.inp_to_mod">[1]</a>
 </li>
       <li><a href="_autosummary/ism3d.utils.inp_validate.html#ism3d.utils.inp_validate">inp_validate() (in module ism3d.utils)</a>
 
@@ -625,10 +635,31 @@
 </li>
       </ul></li>
       <li>
+    ism3d.arts.dynamics
+
+      <ul>
+        <li><a href="_apidoc/ism3d.arts.html#module-ism3d.arts.dynamics">module</a>, <a href="_autosummary/ism3d.arts.dynamics.html#module-ism3d.arts.dynamics">[1]</a>
+</li>
+      </ul></li>
+      <li>
     ism3d.arts.sparse
 
       <ul>
         <li><a href="_autosummary/ism3d.arts.sparse.html#module-ism3d.arts.sparse">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.arts.utils
+
+      <ul>
+        <li><a href="_autosummary/ism3d.arts.utils.html#module-ism3d.arts.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.interface
+
+      <ul>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.interface">module</a>, <a href="_autosummary/ism3d.interface.html#module-ism3d.interface">[1]</a>
 </li>
       </ul></li>
       <li>
@@ -667,13 +698,6 @@
 </li>
       </ul></li>
       <li>
-    ism3d.modeling.interface
-
-      <ul>
-        <li><a href="_autosummary/ism3d.modeling.interface.html#module-ism3d.modeling.interface">module</a>
-</li>
-      </ul></li>
-      <li>
     ism3d.modeling.model
 
       <ul>
@@ -687,6 +711,8 @@
         <li><a href="_apidoc/ism3d.simuv.html#module-ism3d.simuv">module</a>, <a href="_autosummary/ism3d.simuv.html#module-ism3d.simuv">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ism3d.simuv.ft
 
@@ -694,8 +720,6 @@
         <li><a href="_autosummary/ism3d.simuv.ft.html#module-ism3d.simuv.ft">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ism3d.simuv.render
 
@@ -863,7 +887,7 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/ism3d.modeling.interface.key_intepreter.html#ism3d.modeling.interface.key_intepreter">key_intepreter() (in module ism3d.modeling.interface)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.interface.key_intepreter">key_intepreter() (in module ism3d.interface)</a>, <a href="_autosummary/ism3d.interface.key_intepreter.html#ism3d.interface.key_intepreter">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -975,6 +999,14 @@
 </li>
       <li><a href="_autosummary/ism3d.modeling.model.model_setup.html#ism3d.modeling.model.model_setup">model_setup() (in module ism3d.modeling.model)</a>
 </li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.model_vcirc">model_vcirc() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.model_vcirc.html#ism3d.arts.dynamics.model_vcirc">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.model_vcirc_plot">model_vcirc_plot() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.model_vcirc_plot.html#ism3d.arts.dynamics.model_vcirc_plot">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.model_vrot">model_vrot() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.model_vrot.html#ism3d.arts.dynamics.model_vrot">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.model_vrot_plot">model_vrot_plot() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.model_vrot_plot.html#ism3d.arts.dynamics.model_vrot_plot">[1]</a>
+</li>
       <li>
     module
 
@@ -985,7 +1017,13 @@
 </li>
         <li><a href="_apidoc/ism3d.arts.html#module-ism3d.arts.discretize">ism3d.arts.discretize</a>, <a href="_autosummary/ism3d.arts.discretize.html#module-ism3d.arts.discretize">[1]</a>
 </li>
+        <li><a href="_apidoc/ism3d.arts.html#module-ism3d.arts.dynamics">ism3d.arts.dynamics</a>, <a href="_autosummary/ism3d.arts.dynamics.html#module-ism3d.arts.dynamics">[1]</a>
+</li>
         <li><a href="_autosummary/ism3d.arts.sparse.html#module-ism3d.arts.sparse">ism3d.arts.sparse</a>
+</li>
+        <li><a href="_autosummary/ism3d.arts.utils.html#module-ism3d.arts.utils">ism3d.arts.utils</a>
+</li>
+        <li><a href="_apidoc/ism3d.html#module-ism3d.interface">ism3d.interface</a>, <a href="_autosummary/ism3d.interface.html#module-ism3d.interface">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.html#module-ism3d.ism3d">ism3d.ism3d</a>, <a href="_autosummary/ism3d.ism3d.html#module-ism3d.ism3d">[1]</a>
 </li>
@@ -996,8 +1034,6 @@
         <li><a href="_apidoc/ism3d.maths.html#module-ism3d.maths.stats">ism3d.maths.stats</a>, <a href="_autosummary/ism3d.maths.stats.html#module-ism3d.maths.stats">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.modeling.html#module-ism3d.modeling">ism3d.modeling</a>, <a href="_autosummary/ism3d.modeling.html#module-ism3d.modeling">[1]</a>
-</li>
-        <li><a href="_autosummary/ism3d.modeling.interface.html#module-ism3d.modeling.interface">ism3d.modeling.interface</a>
 </li>
         <li><a href="_autosummary/ism3d.modeling.model.html#module-ism3d.modeling.model">ism3d.modeling.model</a>
 </li>
@@ -1152,14 +1188,14 @@
 </li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.pickplane">pickplane() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.pickplane.html#ism3d.utils.misc.pickplane">[1]</a>
 </li>
-      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.discretize.pix2sky">pix2sky() (in module ism3d.arts.discretize)</a>, <a href="_autosummary/ism3d.arts.discretize.pix2sky.html#ism3d.arts.discretize.pix2sky">[1]</a>
+      <li><a href="_autosummary/ism3d.arts.utils.pix2sky.html#ism3d.arts.utils.pix2sky">pix2sky() (in module ism3d.arts.utils)</a>
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.proc.plotuv_freqtime_amp">plotuv_freqtime_amp() (in module ism3d.uvhelper.proc)</a>, <a href="_autosummary/ism3d.uvhelper.proc.plotuv_freqtime_amp.html#ism3d.uvhelper.proc.plotuv_freqtime_amp">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_makeslice">plt_makeslice() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_makeslice.html#ism3d.visualize.plts.plt_makeslice">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_mom0xy">plt_mom0xy() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_mom0xy.html#ism3d.visualize.plts.plt_mom0xy">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_radprof">plt_radprof() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_radprof.html#ism3d.visualize.plts.plt_radprof">[1]</a>
@@ -1171,6 +1207,10 @@
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_spec1d">plt_spec1d() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_spec1d.html#ism3d.visualize.plts.plt_spec1d">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_yt3d">plt_yt3d() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_yt3d.html#ism3d.visualize.plts.plt_yt3d">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.potential_fromobj">potential_fromobj() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.potential_fromobj.html#ism3d.arts.dynamics.potential_fromobj">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.pots_to_vcirc">pots_to_vcirc() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.pots_to_vcirc.html#ism3d.arts.dynamics.pots_to_vcirc">[1]</a>
 </li>
       <li><a href="_autosummary/ism3d.maths.stats.expon2d_gen.html#ism3d.maths.stats.expon2d_gen.ppf">ppf() (ism3d.maths.stats.expon2d_gen method)</a>
 
@@ -1214,7 +1254,7 @@
 </li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.io.read_data">read_data() (in module ism3d.utils.io)</a>, <a href="_autosummary/ism3d.utils.io.read_data.html#ism3d.utils.io.read_data">[1]</a>
 </li>
-      <li><a href="_autosummary/ism3d.modeling.interface.read_inp.html#ism3d.modeling.interface.read_inp">read_inp() (in module ism3d.modeling.interface)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.interface.read_inp">read_inp() (in module ism3d.interface)</a>, <a href="_autosummary/ism3d.interface.read_inp.html#ism3d.interface.read_inp">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ms.read_ms">read_ms() (in module ism3d.uvhelper.ms)</a>, <a href="_autosummary/ism3d.uvhelper.ms.read_ms.html#ism3d.uvhelper.ms.read_ms">[1]</a>
 </li>
@@ -1230,15 +1270,13 @@
         <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.utils.read_range">(in module ism3d.utils.utils)</a>, <a href="_autosummary/ism3d.utils.utils.read_range.html#ism3d.utils.utils.read_range">[1]</a>
 </li>
       </ul></li>
-      <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.render_component">render_component() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.render_component.html#ism3d.utils.misc.render_component">[1]</a>
+      <li><a href="_autosummary/ism3d.simxy.render.render_apmodel2d.html#ism3d.simxy.render.render_apmodel2d">render_apmodel2d() (in module ism3d.simxy.render)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/ism3d.simxy.render.render_point.html#ism3d.simxy.render.render_point">render_point() (in module ism3d.simxy.render)</a>
+      <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.render_component">render_component() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.render_component.html#ism3d.utils.misc.render_component">[1]</a>
 </li>
-      <li><a href="_autosummary/ism3d.simxy.render.render_poly2d.html#ism3d.simxy.render.render_poly2d">render_poly2d() (in module ism3d.simxy.render)</a>
-</li>
-      <li><a href="_autosummary/ism3d.simxy.render.render_sersic2d.html#ism3d.simxy.render.render_sersic2d">render_sersic2d() (in module ism3d.simxy.render)</a>
+      <li><a href="_autosummary/ism3d.simxy.render.render_spmodel3d.html#ism3d.simxy.render.render_spmodel3d">render_spmodel3d() (in module ism3d.simxy.render)</a>
 </li>
       <li><a href="_autosummary/ism3d.utils.repr_parameter.html#ism3d.utils.repr_parameter">repr_parameter() (in module ism3d.utils)</a>
 
@@ -1410,7 +1448,7 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/ism3d.modeling.interface.write_inp.html#ism3d.modeling.interface.write_inp">write_inp() (in module ism3d.modeling.interface)</a>
+      <li><a href="_apidoc/ism3d.html#ism3d.interface.write_inp">write_inp() (in module ism3d.interface)</a>, <a href="_autosummary/ism3d.interface.write_inp.html#ism3d.interface.write_inp">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ms.write_ms">write_ms() (in module ism3d.uvhelper.ms)</a>, <a href="_autosummary/ism3d.uvhelper.ms.write_ms.html#ism3d.uvhelper.ms.write_ms">[1]</a>
 </li>

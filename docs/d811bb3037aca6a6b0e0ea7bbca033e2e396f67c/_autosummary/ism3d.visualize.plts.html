@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.visualize.plts.calc_ppbeam" href="ism3d.visualize.plts.calc_ppbeam.html" />
+    <link rel="next" title="ism3d.visualize.plts.im_grid" href="ism3d.visualize.plts.im_grid.html" />
     <link rel="prev" title="ism3d.visualize.nb.show_gif" href="ism3d.visualize.nb.show_gif.html" /> 
 </head>
 
@@ -113,7 +113,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -146,6 +146,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
@@ -157,7 +158,6 @@
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ism3d.visualize.nb.html">ism3d.visualize.nb</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.visualize.plts</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.calc_ppbeam.html">ism3d.visualize.plts.calc_ppbeam</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.im_grid.html">ism3d.visualize.plts.im_grid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_makeslice.html">ism3d.visualize.plts.plt_makeslice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_mom0xy.html">ism3d.visualize.plts.plt_mom0xy</a></li>
@@ -248,31 +248,28 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.calc_ppbeam.html#ism3d.visualize.plts.calc_ppbeam" title="ism3d.visualize.plts.calc_ppbeam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_ppbeam</span></code></a></p></td>
-<td><p>For Radio Cubes:        ppbeam=npix/beam For optical/IR Cubes:   ppbeam=1.0</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.im_grid.html#ism3d.visualize.plts.im_grid" title="ism3d.visualize.plts.im_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">im_grid</span></code></a></p></td>
+<td><p>display fits-images in a basic grid layout, with colorbar some interesting features:     optionally make maps in an offset coordinates</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.im_grid.html#ism3d.visualize.plts.im_grid" title="ism3d.visualize.plts.im_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">im_grid</span></code></a></p></td>
-<td><p>display images in a basic grid layout, with colorbar images: list can be non nxy: figname w: projection</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_makeslice.html#ism3d.visualize.plts.plt_makeslice" title="ism3d.visualize.plts.plt_makeslice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_makeslice</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_makeslice.html#ism3d.visualize.plts.plt_makeslice" title="ism3d.visualize.plts.plt_makeslice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_makeslice</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_mom0xy.html#ism3d.visualize.plts.plt_mom0xy" title="ism3d.visualize.plts.plt_mom0xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_mom0xy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_mom0xy.html#ism3d.visualize.plts.plt_mom0xy" title="ism3d.visualize.plts.plt_mom0xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_mom0xy</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_radprof.html#ism3d.visualize.plts.plt_radprof" title="ism3d.visualize.plts.plt_radprof"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_radprof</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_radprof.html#ism3d.visualize.plts.plt_radprof" title="ism3d.visualize.plts.plt_radprof"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_radprof</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_rc.html#ism3d.visualize.plts.plt_rc" title="ism3d.visualize.plts.plt_rc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_rc</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_rc.html#ism3d.visualize.plts.plt_rc" title="ism3d.visualize.plts.plt_rc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_rc</span></code></a></p></td>
 <td><p>plot rc from galpy.potential also try:     <a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/getting_started.html">https://galpy.readthedocs.io/en/v1.5.0/getting_started.html</a>     from galpy.potential import plotRotcurve</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_slice.html#ism3d.visualize.plts.plt_slice" title="ism3d.visualize.plts.plt_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_slice</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_slice.html#ism3d.visualize.plts.plt_slice" title="ism3d.visualize.plts.plt_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_slice</span></code></a></p></td>
 <td><p>data model res contsub version</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_spec1d.html#ism3d.visualize.plts.plt_spec1d" title="ism3d.visualize.plts.plt_spec1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_spec1d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_spec1d.html#ism3d.visualize.plts.plt_spec1d" title="ism3d.visualize.plts.plt_spec1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_spec1d</span></code></a></p></td>
 <td><p>1D spectrum diagnostic plot e.g.:     plt_spec1d(‘./data_bx610.bb1.cube64x64.iter0.image.fits’)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_yt3d.html#ism3d.visualize.plts.plt_yt3d" title="ism3d.visualize.plts.plt_yt3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_yt3d</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.visualize.plts.plt_yt3d.html#ism3d.visualize.plts.plt_yt3d" title="ism3d.visualize.plts.plt_yt3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plt_yt3d</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -287,7 +284,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.visualize.plts.calc_ppbeam.html" class="btn btn-neutral float-right" title="ism3d.visualize.plts.calc_ppbeam" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.visualize.plts.im_grid.html" class="btn btn-neutral float-right" title="ism3d.visualize.plts.im_grid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="ism3d.visualize.nb.show_gif.html" class="btn btn-neutral float-left" title="ism3d.visualize.nb.show_gif" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

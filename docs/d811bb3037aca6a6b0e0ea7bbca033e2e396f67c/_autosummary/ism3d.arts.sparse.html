@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ism3d.arts.sparse.cloudlet_moms" href="ism3d.arts.sparse.cloudlet_moms.html" />
-    <link rel="prev" title="ism3d.arts.discretize.pix2sky" href="ism3d.arts.discretize.pix2sky.html" /> 
+    <link rel="prev" title="ism3d.arts.dynamics.pots_to_vcirc" href="ism3d.arts.dynamics.pots_to_vcirc.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,7 +113,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -147,6 +147,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.arts.sparse</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.cloudlet_moms.html">ism3d.arts.sparse.cloudlet_moms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_discretize_2d.html">ism3d.arts.sparse.clouds_discretize_2d</a></li>
@@ -155,11 +156,14 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_from_point.html">ism3d.arts.sparse.clouds_from_point</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_kin.html">ism3d.arts.sparse.clouds_kin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_morph.html">ism3d.arts.sparse.clouds_morph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_realize.html">ism3d.arts.sparse.clouds_realize</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_tosky.html">ism3d.arts.sparse.clouds_tosky</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.utils.html">ism3d.arts.utils</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
@@ -269,7 +273,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.sparse.clouds_morph.html#ism3d.arts.sparse.clouds_morph" title="ism3d.arts.sparse.clouds_morph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clouds_morph</span></code></a></p></td>
 <td><p>cloudlet generator for a 3D disk model</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.sparse.clouds_tosky.html#ism3d.arts.sparse.clouds_tosky" title="ism3d.arts.sparse.clouds_tosky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clouds_tosky</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.sparse.clouds_realize.html#ism3d.arts.sparse.clouds_realize" title="ism3d.arts.sparse.clouds_realize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clouds_realize</span></code></a></p></td>
+<td><p>attach clouds to “mod_dict” This is a wrapper function to attached a cloudlet model from a object-group dict</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.sparse.clouds_tosky.html#ism3d.arts.sparse.clouds_tosky" title="ism3d.arts.sparse.clouds_tosky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clouds_tosky</span></code></a></p></td>
 <td><p>transform the cloudlet representation in galactic cartersian system to the on-sky cartersian system here:    we assume:         sky-x align with RA  (increase with RA)         sky-y align with DEC (increase with DEC)         sky-z align with LOC (away from observer) therefore , dz in the sky system is</p></td>
 </tr>
 </tbody>
@@ -287,7 +294,7 @@
         <a href="ism3d.arts.sparse.cloudlet_moms.html" class="btn btn-neutral float-right" title="ism3d.arts.sparse.cloudlet_moms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.arts.discretize.pix2sky.html" class="btn btn-neutral float-left" title="ism3d.arts.discretize.pix2sky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.arts.dynamics.pots_to_vcirc.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.pots_to_vcirc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -111,7 +111,7 @@
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts/.simxy/ism3d.simuv: modeling in the image/visibility-domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -211,7 +211,7 @@
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">from</span> <span class="nn">astropy.wcs</span> <span class="kn">import</span> <span class="n">WCS</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
-<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">Planck13</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">Planck13</span> <span class="k">as</span> <span class="n">cosmos</span>
 <span class="kn">from</span> <span class="nn">astropy.wcs.utils</span> <span class="kn">import</span> <span class="n">proj_plane_pixel_area</span><span class="p">,</span> <span class="n">proj_plane_pixel_scales</span>
 <span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
@@ -249,6 +249,11 @@
 <span class="kn">from</span> <span class="nn">..utils.misc</span> <span class="kn">import</span> <span class="n">pickplane</span>
 <span class="kn">from</span> <span class="nn">astropy.modeling</span> <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">apmodels</span>
 
+
+<span class="kn">from</span> <span class="nn">..arts.utils</span> <span class="kn">import</span> <span class="n">fluxscale_from_contflux</span><span class="p">,</span> <span class="n">clouds_split</span>
+<span class="kn">from</span> <span class="nn">..arts.sparse</span> <span class="kn">import</span> <span class="n">clouds_from_obj</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Note: </span>
 <span class="sd">        performance on Quanitu/Units</span>
@@ -269,76 +274,162 @@
 <span class="sd">        - also there is a bug when out.dtype is not float</span>
 <span class="sd">        - exception when bounding_box &gt; imsize</span>
 <span class="sd">      We combined these two features together (see model_disk2d).</span>
-
+<span class="sd">    + for 2D objects, the render function will output a 2D plane + fluxscale for each plane.</span>
+<span class="sd">      this is preferred for memory managament, and 3D data will only be assembed at the final rendering stage.</span>
+<span class="sd">      it&#39;s important to do this for mutiple-object mutiple-channel data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="render_spmodel3d"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.render_spmodel3d.html#ism3d.simxy.render.render_spmodel3d">[docs]</a><span class="k">def</span> <span class="nf">render_spmodel3d</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    render a sparse model </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># if the &quot;cloudlet&quot; sparse model doesn&#39;t exist, performe the realization</span>
+    
+    <span class="k">if</span> <span class="s1">&#39;clouds_loc&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;add the 3D model realization&quot;</span><span class="p">)</span>
+        <span class="n">clouds_from_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">nc</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">nv</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">seeds</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">fluxscale</span><span class="p">,</span><span class="n">xrange</span><span class="p">,</span><span class="n">yrange</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">wt</span><span class="o">=</span><span class="n">clouds_split</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">naxis</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">_naxis</span>
+    <span class="k">if</span>  <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">naxis</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> 
+    
+    <span class="k">for</span> <span class="n">iz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">naxis</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="n">wt</span><span class="o">=</span><span class="n">wt</span><span class="p">[</span><span class="n">iz</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">wt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span>  <span class="s1">&#39;lineflux&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>                    
+            <span class="n">out</span><span class="p">[</span><span class="n">iz</span><span class="p">,:,:]</span><span class="o">+=</span><span class="p">(</span><span class="n">fluxscale</span><span class="o">*</span>
+                         <span class="n">fh</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">iz</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">iz</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>                                             
+                                       <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">yrange</span><span class="p">,</span><span class="n">xrange</span><span class="p">],</span>
+                                       <span class="n">bins</span><span class="o">=</span><span class="p">(</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">weights</span><span class="o">=</span><span class="n">wt</span><span class="p">))</span>
+        <span class="k">if</span>  <span class="s1">&#39;contflux&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>                   
+            <span class="n">out</span><span class="p">[</span><span class="n">iz</span><span class="p">,:,:]</span><span class="o">+=</span><span class="p">(</span><span class="n">fluxscale</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span><span class="o">*</span>
+                         <span class="n">fh</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">,</span>                                             
+                                       <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">yrange</span><span class="p">,</span><span class="n">xrange</span><span class="p">],</span>
+                                       <span class="n">bins</span><span class="o">=</span><span class="p">(</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">weights</span><span class="o">=</span><span class="n">wt</span><span class="p">))</span>        
+    
+    <span class="k">return</span> <span class="n">out</span></div>
 
-
-<div class="viewcode-block" id="render_point"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.render_point.html#ism3d.simxy.render.render_point">[docs]</a><span class="k">def</span> <span class="nf">render_point</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="render_apmodel2d"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.render_apmodel2d.html#ism3d.simxy.render.render_apmodel2d">[docs]</a><span class="k">def</span> <span class="nf">render_apmodel2d</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obj:     object prescription</span>
 <span class="sd">    w:       wcs </span>
+<span class="sd">        </span>
+<span class="sd">    Render astropy.modeling.models into the specificied WCS system</span>
+<span class="sd">        https://docs.astropy.org/en/stable/modeling/predef_models2D.html</span>
+<span class="sd">    </span>
+<span class="sd">    normalize:  True: normalize the total readout in the plane template to 1</span>
+<span class="sd">                False: normaliz the peak readout in the plane template to 1</span>
+<span class="sd">                </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">celestial</span><span class="o">.</span><span class="n">wcs_world2pix</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
     <span class="n">naxis</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">_naxis</span>
-    <span class="k">if</span>  <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">naxis</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>      
-
-    <span class="n">wspec</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">sub</span><span class="p">([</span><span class="s1">&#39;spectral&#39;</span><span class="p">])</span>
-    <span class="n">sz</span><span class="o">=</span><span class="n">wspec</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">_naxis</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,</span><span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">spectral</span><span class="p">())</span>
-    
-    <span class="n">fluxscale</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;contflux&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">((</span><span class="n">sz</span><span class="o">/</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;contfreq&#39;</span><span class="p">])</span><span class="o">**</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">])</span>
-    <span class="n">fluxscale</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s1">&#39;Jy&#39;</span><span class="p">)</span>
-    
-    <span class="n">out</span><span class="p">[:,</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">py</span><span class="p">)),</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">px</span><span class="p">))]</span><span class="o">=</span><span class="n">fluxscale</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s1">&#39;Jy&#39;</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">out</span></div>
-
-<div class="viewcode-block" id="render_poly2d"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.render_poly2d.html#ism3d.simxy.render.render_poly2d">[docs]</a><span class="k">def</span> <span class="nf">render_poly2d</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">return</span></div>
-
-<div class="viewcode-block" id="render_sersic2d"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.render_sersic2d.html#ism3d.simxy.render.render_sersic2d">[docs]</a><span class="k">def</span> <span class="nf">render_sersic2d</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">celestial</span><span class="o">.</span><span class="n">wcs_world2pix</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">naxis</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">_naxis</span>
-    <span class="n">out0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    
-    <span class="n">wspec</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">sub</span><span class="p">([</span><span class="s1">&#39;spectral&#39;</span><span class="p">])</span>
-    <span class="n">sz</span><span class="o">=</span><span class="n">wspec</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">_naxis</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,</span><span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">spectral</span><span class="p">())</span>
+    <span class="c1"># need to fix the astropy bug</span>
+    <span class="c1"># see: https://github.com/astropy/astropy/pull/10542</span>
+    <span class="n">out0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> 
+        
+    <span class="c1"># not all model requires x/y, but we set px,py to image center by default</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">celestial</span><span class="o">.</span><span class="n">wcs_world2pix</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;xypos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1">#xp, yp = skycoord_to_pixel(center, wcs)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">px</span><span class="o">=</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">2.0</span> <span class="p">;</span> <span class="n">py</span><span class="o">=</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.0</span>
     
     <span class="n">cell</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">proj_plane_pixel_scales</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">celestial</span><span class="p">))</span><span class="o">*</span><span class="mf">3600.0</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
-    <span class="n">kps</span><span class="o">=</span><span class="n">Planck13</span><span class="o">.</span><span class="n">kpc_proper_per_arcmin</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kpc</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
-    <span class="n">dp</span><span class="o">=</span><span class="n">cell</span><span class="o">*</span><span class="n">kps</span>
-        
-    <span class="n">amp</span><span class="o">=</span><span class="mi">10</span>
-    <span class="n">r_eff</span><span class="o">=</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">n</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-    <span class="c1">#x_0=obj[&#39;sbProf&#39;][3]</span>
-    <span class="c1">#y_0=obj[&#39;sbProf&#39;][4]</span>
-    <span class="c1">#apmodel=getattr(apmodels,obj[&#39;sbProf&#39;][0])(amplitude=amp,r_eff=r_eff,n=n, x_0=px,y_0=py)</span>
-    <span class="c1">#apmodel=apmodels.Sersic2D(amplitude=amp,r_eff=r_eff,n=n, x_0=px,y_0=py)</span>
-    <span class="c1">#print(apmodel._bounding_box)</span>
-    <span class="c1">#&quot;&quot;&quot;</span>
-    <span class="n">apmodel</span><span class="o">=</span><span class="n">apmodels</span><span class="o">.</span><span class="n">Gaussian2D</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="n">amp</span><span class="p">,</span>
-                                <span class="n">x_mean</span><span class="o">=</span><span class="n">px</span><span class="p">,</span><span class="n">y_mean</span><span class="o">=</span><span class="n">py</span><span class="p">,</span>
-                                <span class="n">x_stddev</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">y_stddev</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-    <span class="k">if</span>  <span class="n">apmodel</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">),(</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">))</span><span class="o">=</span><span class="n">apmodel</span><span class="o">.</span><span class="n">bounding_box</span>
-        <span class="n">xmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">xmax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ymin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ymax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">ymax</span><span class="p">,</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">apmodel</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">=</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">),(</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">))</span>
-    <span class="n">apmodel</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">if</span>  <span class="s1">&#39;z&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">kps</span><span class="o">=</span><span class="n">cosmos</span><span class="o">.</span><span class="n">kpc_proper_per_arcmin</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">kpc</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+        <span class="n">dp</span><span class="o">=</span><span class="n">cell</span><span class="o">*</span><span class="n">kps</span>
     
-   
+    <span class="k">if</span>  <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">],(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span>
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">],)</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">model_par</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;sbProf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;AiryDisk2D&#39;</span><span class="p">:</span>
+        <span class="n">radius</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">radius</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Box2D&#39;</span><span class="p">:</span>
+        <span class="n">x_width</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">y_width</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">x_width</span><span class="p">,</span><span class="n">y_width</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Const2D&#39;</span><span class="p">:</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Ellipse2D&#39;</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">b</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">theta</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Disk2D&#39;</span><span class="p">:</span>
+        <span class="n">R_0</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span> <span class="n">R_0</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Gaussian2D&#39;</span><span class="p">:</span>
+        <span class="n">x_stddev</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">y_stddev</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">theta</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">x_stddev</span><span class="p">,</span><span class="n">y_stddev</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Planar2D&#39;</span><span class="p">:</span>
+        <span class="n">slope_x</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">slope_y</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="n">slope_x</span><span class="p">,</span><span class="n">slope_y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Sersic2D&#39;</span><span class="p">:</span>
+        <span class="n">r_eff</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">n</span><span class="o">=</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ellip</span><span class="o">=</span><span class="n">model_par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">ellip</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">theta</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">theta</span><span class="o">=</span><span class="p">(</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">ellip</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>   
+    
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Ring2D&#39;</span><span class="p">:</span>
+        <span class="n">r_in</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">width</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">r_in</span><span class="p">,</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;RickerWavelet2D&#39;</span><span class="p">:</span>
+        <span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="n">model_par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">dp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">apmodel</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">apmodels</span><span class="p">,</span><span class="n">model_name</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span>    
+    
+    <span class="c1">#   try to render apmodel</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span>  <span class="n">apmodel</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">),(</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">))</span><span class="o">=</span><span class="n">apmodel</span><span class="o">.</span><span class="n">bounding_box</span>
+            <span class="n">xmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">xmax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span><span class="n">naxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ymin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ymax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">ymax</span><span class="p">,</span><span class="n">naxis</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">apmodel</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">=</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">),(</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">))</span>
+        <span class="n">apmodel</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">out0</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="c1">#   try to add point-source model</span>
+    <span class="k">if</span>  <span class="n">model_name</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+        <span class="n">out0</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">py</span><span class="p">)),</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">px</span><span class="p">))]</span><span class="o">=</span><span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># only need to normalizate for non-point source</span>
+        <span class="k">if</span>  <span class="n">normalize</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="ow">not</span> <span class="n">out0</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">out0</span><span class="o">/=</span><span class="n">out0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">model_name</span><span class="o">==</span><span class="s1">&#39;Sersic2D&#39;</span><span class="p">:</span>
+                <span class="c1"># sersic model amp is not defined as peak value.</span>
+                <span class="c1"># we do a peak normalization to maintain consistency</span>
+                <span class="n">out0</span><span class="o">/=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">out0</span><span class="p">)</span>
+            
+    <span class="n">fluxscale</span><span class="o">=</span><span class="n">fluxscale_from_contflux</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;contflux&#39;</span><span class="p">],</span><span class="n">w</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">out0</span><span class="p">,</span><span class="n">fluxscale</span></div>
 
 
 <div class="viewcode-block" id="xy_render"><a class="viewcode-back" href="../../../_autosummary/ism3d.simxy.render.xy_render.html#ism3d.simxy.render.xy_render">[docs]</a><span class="k">def</span> <span class="nf">xy_render</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">psf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">normalize_kernel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>

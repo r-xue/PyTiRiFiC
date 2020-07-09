@@ -491,9 +491,9 @@ def clouds_from_disk3d(obj,
     
     obj['clouds_loc']=car.ravel()
     obj['clouds_wt']=None
-    for fluxtype in ['lineflux','contflux']:
-        if  fluxtype in obj:
-            obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size    
+    #for fluxtype in ['lineflux','contflux']:
+    #    if  fluxtype in obj:
+    #        obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size    
     
     return
 
@@ -504,9 +504,9 @@ def clouds_from_point(obj):
     
     obj['clouds_loc']=car.ravel()
     obj['clouds_wt']=None
-    for fluxtype in ['lineflux','contflux']:
-        if  fluxtype in obj:
-            obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size        
+    #for fluxtype in ['lineflux','contflux']:
+    #    if  fluxtype in obj:
+    #        obj['clouds_flux']=obj[fluxtype]/obj['clouds_loc'].size        
     
     return
 
@@ -579,7 +579,54 @@ def cloudlet_moms(cloudlet,
 
 
 
- 
+def clouds_realize(mod_dict,
+                  nc=100000,nv=20,seeds=[None,None,None,None]):
+    
+    """
+    attach clouds to "mod_dict"
+    This is a wrapper function to attached a cloudlet model from a object-group dict  
+    """
+    
+    # first pass:   build potentials
+    
+    for objname, obj in mod_dict.items():
+        if  'type' not in obj:
+            continue
+        if  obj['type']!='potential':
+            continue
+        obj['pots']=potential_fromobj(obj)
+        
+    # second pass:   attach potential (if requested) and fill cloudlet
+    
+    clouds_types=['disk3d','disk2d','point']
+    
+    for objname, obj in mod_dict.items():
+        if  'type' not in obj:
+            continue
+        if  obj['type'] not in clouds_types:
+            continue
+        # attach potentials
+        if  'rcProf' in obj:
+            if  obj['rcProf'][0]=='potential':
+                obj['pots']=mod_dict[obj['rcProf'][1]]['pots']
+        
+        clouds_from_obj(obj,
+                       nc=nc,nv=nv,seeds=seeds)
+
+                
+    # third pass: insert astropy.modelling.models
+    
+    for objname, obj in mod_dict.items():
+        
+        if  'type' not in obj:
+            continue
+        if  obj['type']!='apmodel':
+            continue
+        
+        obj['apmodel']=getattr(apmodels,obj['sbProf'][0])(*((1,)+obj['sbProf'][1:]))
+        obj['apmodel_flux']=obj['contflux']  
+        
+    return   
 
 
 # def clouds_fromobj(obj,
