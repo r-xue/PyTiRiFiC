@@ -2,6 +2,7 @@ from astropy.cosmology import Planck13
 import numpy as np
 from scipy.interpolate import interp1d
 import galpy.potential as galpy_pot
+from ..interface import eval_func
 import matplotlib.pyplot as plt
 
 from .utils import *
@@ -363,18 +364,40 @@ def pots_to_vcirc(pots,rho,pscorr=None):
     else:          
         return np.vstack((vcirc,vcirc_pot)),['Vrot']+pots_name
 
-
-
-def cr_tanh(r,r_in=None,r_out=None,
-              theta_out=90*u.deg):
+def vrot_from_rcProf(rcProf,rho):
     """
-    See Peng+2010 Appendix A. with some scaling correction
+    use the value of keyword rcProf to evaluate the rotation curve at specified rho 
+    examples of rcProf:
+        rcProf=('rho : minimum(rho/p2,1.0)*p1',400*u.km/u.s,5*u.kpc)
+        rcProf=('tanh',300*u.km/u.s,10*u.kpc)
+        ...
     """
-    cdef=(20*u.deg).to(u.rad).value
-    A=2*cdef/np.abs(theta_out.to(u.rad).value)-1
-    B=(2.-np.arctanh(A))*r_out/(r_out-r_in)
     
-    return 0.5*(np.tanh((B*(r/r_out-1)+2.)*u.rad)+1.)
+    #   lambda function style
+    if  ' : ' in rcProf[0]:
+        vrot=eval_func(rcProf,{'rho':rho})            
+    
+    #   table style
+    if  rcProf[0]=='table':
+        vrot=np.interp(rho,rcProf[1],rcProf[2])
+    
+    #   arctan style
+    if  rcProf[0].lower()=='arctan':
+        vrot=rcProf[1]*2.0/np.pi*np.arctan(rho/rcProf[2]*u.rad)
+
+    #   expon style
+    if  rcProf[0].lower()=='expon':
+        vrot=rcProf[1]*(1-np.exp(-rho/rcProf[2]))
+
+    #   tanh style
+    if  rcProf[0].lower()=='tanh':
+        vrot=rcProf[1]*np.tanh(rho/rcProf[2]*u.rad)
+    
+    #   from a potential
+    if  rcProf[0].lower()=='potential':
+        vrot=(pots_to_vcirc(rcProf[1],rho))[0][0,:]    
+    
+    return vrot
 
 
     

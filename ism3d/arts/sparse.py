@@ -11,10 +11,6 @@ from astropy.coordinates.matrix_utilities import rotation_matrix,matrix_product,
 from astropy.coordinates.representation import SphericalRepresentation, CylindricalRepresentation, CartesianRepresentation
 from astropy.coordinates.representation import SphericalDifferential, CylindricalDifferential, CartesianDifferential
 from io import StringIO
-from asteval import Interpreter
-#aeval = Interpreter(err_writer=StringIO())
-aeval = Interpreter()
-aeval.symtable['u']=u
 
 #from .utils import rng_seeded,fft_fastlen,fft_use,eval_func,one_beam,sample_grid
 
@@ -37,9 +33,21 @@ import logging
 from astropy.modeling import models as apmodels
 #from .discretize import uv_render, xy_render
 
+from .dynamics import vrot_from_rcProf
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
+def cr_tanh(r,r_in=None,r_out=None,
+              theta_out=90*u.deg):
+    """
+    See Peng+2010 Appendix A. with some scaling correction
+    """
+    cdef=(20*u.deg).to(u.rad).value
+    A=2*cdef/np.abs(theta_out.to(u.rad).value)-1
+    B=(2.-np.arctanh(A))*r_out/(r_out-r_in)
+    
+    return 0.5*(np.tanh((B*(r/r_out-1)+2.)*u.rad)+1.)
 
 def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPhi=None,sbPA=None,
                  vbProf=None,
@@ -339,23 +347,8 @@ def clouds_kin(car,rcProf=None,
        
         # get v_rot
         
-        #       lambda function mode
-        if  ' : ' in rcProf[0]:
-            v_rot=eval_func(rcProf,locals())            
-        #       table mode
-        if  rcProf[0]=='table':
-            v_rot=np.interp(rho,rcProf[1],rcProf[2])
-        #       arctan mode
-        if  rcProf[0].lower()=='arctan':
-            v_rot=rcProf[1]*2.0/np.pi*np.arctan(rho/rcProf[2]*u.rad)
-        #       expon mode
-        if  rcProf[0].lower()=='expon':
-            v_rot=rcProf[1]*(1-np.exp(-rho/rcProf[2]))
-        #       tanh mode
-        if  rcProf[0].lower()=='tanh':
-            v_rot=rcProf[1]*np.tanh(rho/rcProf[2]*u.rad)
-        if  rcProf[0].lower()=='potential':
-            v_rot=(pots_to_vcirc(rcProf[1],rho))[0][0,:]
+        v_rot=vrot_from_rcProf(rcProf,rho)
+
             
         
         # get d_phi/d_z/d_rho
@@ -486,7 +479,7 @@ def clouds_from_disk3d(obj,
                        vSigma=obj['vSigma'] if  'vSigma' in obj else None,
                        seed=seeds[3],nV=nv) 
 
-    
+    obj['clouds_source']=deepcopy(car.ravel())
     clouds_tosky(car,obj['inc'],obj['pa'],inplace=True)
     
     obj['clouds_loc']=car.ravel()

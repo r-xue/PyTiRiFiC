@@ -2,7 +2,7 @@
 
 import logging
 logger = logging.getLogger(__name__)
-
+from pprint import pformat
 from astropy.coordinates import SkyCoord
 
 import matplotlib as mpl
@@ -32,6 +32,86 @@ import numpy as np
 
 from ..utils.misc import prepdir
 from ..xyhelper.sky import linear_offset_coords
+from ..arts.dynamics import vrot_from_rcProf
+from astropy.units import Quantity
+
+def plt_rc0(pots,
+           pscorr=None,
+           rrange=[1e-3,1e1]*u.kpc,num=50,
+           figname='plt_rc.pdf'):
+    """
+    plot rc from galpy.potential
+    also try:
+        https://galpy.readthedocs.io/en/v1.5.0/getting_started.html
+        from galpy.potential import plotRotcurve
+        
+    pscorr=(80*u.km/u.s,10*u.kpc)
+    """
+    
+    rho=np.geomspace(rrange[0],rrange[1],num=num)
+    rho=rho[np.where(rho>0)]
+    
+    vcirc,vname=pots_to_vcirc(pots,rho,pscorr=pscorr)
+    
+    plt.clf()
+    fig,ax=plt.subplots(1,1,figsize=(10,10))
+    
+    nc=vcirc.shape[0]
+    for i in range(nc): 
+        ax.plot(rho,vcirc[i,:],label=vname[i])
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_dp'],color='blue',label='ThinExpDisk')
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_tt'],color='black',label='All')
+    ax.set_xlabel('Radius [kpc]')
+    ax.set_ylabel('V [km/s]')
+    ax.legend()
+    #ax1.loglog(rad,vcirc_tp)
+    #ax1.loglog(rad,vcirc_tp,color='black')
+    #ax2.loglog(rad,cmass_tp)
+    fig.savefig(figname)    
+
+def plt_rcProf(rcProf,
+           rrange=[1e-3,2e1]*u.kpc,num=100,
+           figname='plt_rc.pdf',showplot=False):    
+    """
+    plot rotation curve from the keyword:rcProf
+    """
+    
+    rho=np.geomspace(rrange[0],rrange[1],num=num)
+    rho=rho[np.where(rho>0)]
+    
+    vcirc=vrot_from_rcProf(rcProf,rho)    
+    vname='Potential'
+    
+    name=[]
+    for v0 in rcProf:
+        if  isinstance(v0,Quantity):
+            name.append("{0.value}{0.unit:latex_inline}".format(v0))
+        else:
+            name.append("{}".format(v0))
+    name=','.join(name)
+    name='('+name+')'
+
+    
+    if  showplot==False:
+        plt.clf()
+    fig,ax=plt.subplots(1,1,figsize=(5,5))
+    
+    ax.plot(rho,vcirc,label=name)
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_dp'],color='blue',label='ThinExpDisk')
+    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_tt'],color='black',label='All')
+    ax.set_xlabel('Radius [kpc]')
+    ax.set_ylabel('V [km/s]')
+    #ax.legend()
+    ax.set_title(name)
+    #ax1.loglog(rad,vcirc_tp)
+    #ax1.loglog(rad,vcirc_tp,color='black')
+    #ax2.loglog(rad,cmass_tp)
+    prepdir(figname) 
+    fig.savefig(figname)  
+    if  showplot==False:
+        plt.close() # don't show it in ipynb         
+    
+    return
 
 def im_grid(images,header,
             offset=False,
@@ -873,40 +953,6 @@ def plt_radprof(fn):
         logger.debug("plt_radprof >>> "+odir+'/'+os.path.basename(fn).replace('.fits','')+'.pdf\n') 
 
 
-def plt_rc(pots,
-           pscorr=None,
-           rrange=[1e-3,1e1]*u.kpc,num=50,
-           figname='plt_rc.pdf'):
-    """
-    plot rc from galpy.potential
-    also try:
-        https://galpy.readthedocs.io/en/v1.5.0/getting_started.html
-        from galpy.potential import plotRotcurve
-        
-    pscorr=(80*u.km/u.s,10*u.kpc)
-    """
-    
-    rho=np.geomspace(rrange[0],rrange[1],num=num)
-    rho=rho[np.where(rho>0)]
-    
-    vcirc,vname=pots_to_vcirc(pots,rho,pscorr=pscorr)
-    
-    plt.clf()
-    fig,ax=plt.subplots(1,1,figsize=(10,10))
-    
-    nc=vcirc.shape[0]
-    for i in range(nc): 
-        ax.plot(rho,vcirc[i,:],label=vname[i])
-    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_dp'],color='blue',label='ThinExpDisk')
-    #ax.plot(rc['rrad']/rc['kps'],rc['vcirc_tt'],color='black',label='All')
-    ax.set_xlabel('Radius [kpc]')
-    ax.set_ylabel('V [km/s]')
-    ax.legend()
-    #ax1.loglog(rad,vcirc_tp)
-    #ax1.loglog(rad,vcirc_tp,color='black')
-    #ax2.loglog(rad,cmass_tp)
-    fig.savefig(figname)    
-    
 
 if  __name__=="__main__":
 

@@ -83,6 +83,7 @@ def render_spmodel3d(obj,w,out=None):
         clouds_from_obj(obj,nc=100000,nv=20,seeds=[None]*4)
     
     fluxscale,xrange,yrange,x,y,wt=clouds_split(obj,w)
+    
     naxis=w._naxis
     if  out is None:
         out=np.zeros((naxis[2],naxis[1],naxis[0]),dtype=np.float32) 

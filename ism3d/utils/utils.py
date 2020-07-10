@@ -54,13 +54,7 @@ logger = logging.getLogger(__name__)
 
 
 
-aeval = Interpreter(err_writer=StringIO())
-aeval.symtable['u'] = u
-aeval.symtable['SkyCoord'] = SkyCoord
-aeval.symtable['Angle'] = Angle
-aeval.symtable['Number'] = Number
-aeval.symtable['Quantity'] = Quantity
-aeval.symtable['np'] = np
+
 
 
 """
@@ -96,41 +90,7 @@ def arithmeticEval (s):
 
 
 
-def eval_func(vs_func_ps, var_dict):
-    """
-    Do an inline calculation from a string expression in a lambda function-like syntax
 
-
-        1st: element
-    expr    :    expected to be a tuple
-        expr[0]   string: 
-            lamabda function-like syntax defining a anonymous function and its variable(s)
-            the variables' name and content should exist in the dictionary "locals" 
-        expr[1],expr[2],expr[3]
-            function parameters
-    output:
-        the function's value at each points of variables under the given parameters
-
-    example: 
-        eval_func(('rho : minimum(rho/p2,1.0)*p1',200*u.km/u.s,5*u.kpc),locals())
-
-        the function call will calculate "minimum(rho/p2,1.0)*p1" assuming 
-        p1=200*u.km/u.s & p2=5*u.kpc at each "rho" value. 
-        Here, "rho" is a local-scope variable containing a numpy array 
-    """
-
-    vs = vs_func_ps[0].split(" : ")[0].split(",")
-    func = vs_func_ps[0].split(" : ")[1].strip()
-
-    # add variable into the symtable
-    for v in vs:
-        aeval.symtable[v.strip()] = var_dict[v.strip()]
-
-    # add parameters (p1,p2,p3..) into the symtable
-    for ind in range(1, len(vs_func_ps)):
-        aeval.symtable["p"+str(ind)] = vs_func_ps[ind]
-
-    return aeval(func)
 
 
 def repr_parameter(v):
