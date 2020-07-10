@@ -274,12 +274,6 @@ also see: galpy.poteential.vcirc()</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ism3d.arts.dynamics.cr_tanh">
-<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">cr_tanh</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">r_in=None</em>, <em class="sig-param">r_out=None</em>, <em class="sig-param">theta_out=&lt;Quantity 90. deg&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#cr_tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.cr_tanh" title="Permalink to this definition">¶</a></dt>
-<dd><p>See Peng+2010 Appendix A. with some scaling correction</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ism3d.arts.dynamics.model_vcirc">
 <code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">model_vcirc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pot_dct</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#model_vcirc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.model_vcirc" title="Permalink to this definition">¶</a></dt>
 <dd><p>take a dictionary describing the potential and calculaet rotation curve</p>
@@ -328,6 +322,18 @@ vrot:    pressure correction</p>
 <p>vcirc[0,:] = rotational velocity after the correction
 vcirc[1,:] = rotatipnal velocity before the correction
 vcirc{2:,:] = contribution from individial potentials</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.arts.dynamics.vrot_from_rcProf">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">vrot_from_rcProf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rcProf</span></em>, <em class="sig-param"><span class="n">rho</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#vrot_from_rcProf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.vrot_from_rcProf" title="Permalink to this definition">¶</a></dt>
+<dd><p>use the value of keyword rcProf to evaluate the rotation curve at specified rho
+examples of rcProf:</p>
+<blockquote>
+<div><p>rcProf=(‘rho : minimum(rho/p2,1.0)*p1’,400*u.km/u.s,5*u.kpc)
+rcProf=(‘tanh’,300*u.km/u.s,10*u.kpc)
+…</p>
+</div></blockquote>
 </dd></dl>
 
 </div>

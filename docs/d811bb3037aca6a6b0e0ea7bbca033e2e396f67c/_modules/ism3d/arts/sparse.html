@@ -219,10 +219,6 @@
 <span class="kn">from</span> <span class="nn">astropy.coordinates.representation</span> <span class="kn">import</span> <span class="n">SphericalRepresentation</span><span class="p">,</span> <span class="n">CylindricalRepresentation</span><span class="p">,</span> <span class="n">CartesianRepresentation</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates.representation</span> <span class="kn">import</span> <span class="n">SphericalDifferential</span><span class="p">,</span> <span class="n">CylindricalDifferential</span><span class="p">,</span> <span class="n">CartesianDifferential</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-<span class="kn">from</span> <span class="nn">asteval</span> <span class="kn">import</span> <span class="n">Interpreter</span>
-<span class="c1">#aeval = Interpreter(err_writer=StringIO())</span>
-<span class="n">aeval</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="p">()</span>
-<span class="n">aeval</span><span class="o">.</span><span class="n">symtable</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">u</span>
 
 <span class="c1">#from .utils import rng_seeded,fft_fastlen,fft_use,eval_func,one_beam,sample_grid</span>
 
@@ -245,9 +241,21 @@
 <span class="kn">from</span> <span class="nn">astropy.modeling</span> <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">apmodels</span>
 <span class="c1">#from .discretize import uv_render, xy_render</span>
 
+<span class="kn">from</span> <span class="nn">.dynamics</span> <span class="kn">import</span> <span class="n">vrot_from_rcProf</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<div class="viewcode-block" id="cr_tanh"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.sparse.cr_tanh.html#ism3d.arts.sparse.cr_tanh">[docs]</a><span class="k">def</span> <span class="nf">cr_tanh</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">r_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">r_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">theta_out</span><span class="o">=</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    See Peng+2010 Appendix A. with some scaling correction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cdef</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">A</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">cdef</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">theta_out</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">B</span><span class="o">=</span><span class="p">(</span><span class="mf">2.</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">A</span><span class="p">))</span><span class="o">*</span><span class="n">r_out</span><span class="o">/</span><span class="p">(</span><span class="n">r_out</span><span class="o">-</span><span class="n">r_in</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">r_out</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">+</span><span class="mf">1.</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="clouds_morph"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.sparse.clouds_morph.html#ism3d.arts.sparse.clouds_morph">[docs]</a><span class="k">def</span> <span class="nf">clouds_morph</span><span class="p">(</span><span class="n">sbProf</span><span class="p">,</span><span class="n">fmPhi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fmRho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">geRho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">bmY</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sbQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rotPhi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sbPA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">vbProf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -547,23 +555,8 @@
        
         <span class="c1"># get v_rot</span>
         
-        <span class="c1">#       lambda function mode</span>
-        <span class="k">if</span>  <span class="s1">&#39; : &#39;</span> <span class="ow">in</span> <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="n">eval_func</span><span class="p">(</span><span class="n">rcProf</span><span class="p">,</span><span class="nb">locals</span><span class="p">())</span>            
-        <span class="c1">#       table mode</span>
-        <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;table&#39;</span><span class="p">:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="c1">#       arctan mode</span>
-        <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;arctan&#39;</span><span class="p">:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">2.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
-        <span class="c1">#       expon mode</span>
-        <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;expon&#39;</span><span class="p">:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-        <span class="c1">#       tanh mode</span>
-        <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;tanh&#39;</span><span class="p">:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
-        <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;potential&#39;</span><span class="p">:</span>
-            <span class="n">v_rot</span><span class="o">=</span><span class="p">(</span><span class="n">pots_to_vcirc</span><span class="p">(</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rho</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,:]</span>
+        <span class="n">v_rot</span><span class="o">=</span><span class="n">vrot_from_rcProf</span><span class="p">(</span><span class="n">rcProf</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>
+
             
         
         <span class="c1"># get d_phi/d_z/d_rho</span>
@@ -694,7 +687,7 @@
                        <span class="n">vSigma</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;vSigma&#39;</span><span class="p">]</span> <span class="k">if</span>  <span class="s1">&#39;vSigma&#39;</span> <span class="ow">in</span> <span class="n">obj</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">seed</span><span class="o">=</span><span class="n">seeds</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">nV</span><span class="o">=</span><span class="n">nv</span><span class="p">)</span> 
 
-    
+    <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_source&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">car</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
     <span class="n">clouds_tosky</span><span class="p">(</span><span class="n">car</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;inc&#39;</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;pa&#39;</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
     <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;clouds_loc&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">car</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>

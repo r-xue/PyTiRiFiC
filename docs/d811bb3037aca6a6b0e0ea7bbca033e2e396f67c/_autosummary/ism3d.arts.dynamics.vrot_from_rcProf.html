@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ism3d.arts.dynamics.potential_fromobj &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>ism3d.arts.dynamics.vrot_from_rcProf &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.dynamics.pots_to_vcirc" href="ism3d.arts.dynamics.pots_to_vcirc.html" />
-    <link rel="prev" title="ism3d.arts.dynamics.model_vrot_plot" href="ism3d.arts.dynamics.model_vrot_plot.html" /> 
+    <link rel="next" title="ism3d.arts.sparse" href="ism3d.arts.sparse.html" />
+    <link rel="prev" title="ism3d.arts.dynamics.pots_to_vcirc" href="ism3d.arts.dynamics.pots_to_vcirc.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -153,9 +153,9 @@
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html">ism3d.arts.dynamics.model_vcirc_plot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html">ism3d.arts.dynamics.model_vrot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html">ism3d.arts.dynamics.model_vrot_plot</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.dynamics.potential_fromobj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.potential_fromobj.html">ism3d.arts.dynamics.potential_fromobj</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html">ism3d.arts.dynamics.pots_to_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.vrot_from_rcProf.html">ism3d.arts.dynamics.vrot_from_rcProf</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.dynamics.vrot_from_rcProf</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
@@ -226,7 +226,7 @@
         
           <li><a href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a> &raquo;</li>
         
-      <li>ism3d.arts.dynamics.potential_fromobj</li>
+      <li>ism3d.arts.dynamics.vrot_from_rcProf</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -243,16 +243,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ism3d-arts-dynamics-potential-fromobj">
-<h1>ism3d.arts.dynamics.potential_fromobj<a class="headerlink" href="#ism3d-arts-dynamics-potential-fromobj" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ism3d-arts-dynamics-vrot-from-rcprof">
+<h1>ism3d.arts.dynamics.vrot_from_rcProf<a class="headerlink" href="#ism3d-arts-dynamics-vrot-from-rcprof" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ism3d.arts.dynamics.potential_fromobj">
-<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">potential_fromobj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#potential_fromobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.potential_fromobj" title="Permalink to this definition">¶</a></dt>
-<dd><p>create a abstract galpy.potential object (defined in the galactic plane frame)
-which can be used to calculate circular velocity once cloud position is defined.</p>
-<p>obj:    type=’poyential’
-return a list of galpy.potential</p>
-<p><a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/potential.html">https://galpy.readthedocs.io/en/v1.5.0/potential.html</a></p>
+<dt id="ism3d.arts.dynamics.vrot_from_rcProf">
+<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">vrot_from_rcProf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rcProf</span></em>, <em class="sig-param"><span class="n">rho</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#vrot_from_rcProf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.vrot_from_rcProf" title="Permalink to this definition">¶</a></dt>
+<dd><p>use the value of keyword rcProf to evaluate the rotation curve at specified rho
+examples of rcProf:</p>
+<blockquote>
+<div><p>rcProf=(‘rho : minimum(rho/p2,1.0)*p1’,400*u.km/u.s,5*u.kpc)
+rcProf=(‘tanh’,300*u.km/u.s,10*u.kpc)
+…</p>
+</div></blockquote>
 </dd></dl>
 
 </div>
@@ -265,10 +267,10 @@ return a list of galpy.potential</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.arts.dynamics.pots_to_vcirc.html" class="btn btn-neutral float-right" title="ism3d.arts.dynamics.pots_to_vcirc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.arts.sparse.html" class="btn btn-neutral float-right" title="ism3d.arts.sparse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.arts.dynamics.model_vrot_plot.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.model_vrot_plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.arts.dynamics.pots_to_vcirc.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.pots_to_vcirc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

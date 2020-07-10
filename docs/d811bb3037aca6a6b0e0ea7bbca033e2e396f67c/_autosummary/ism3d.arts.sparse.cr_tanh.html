@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ism3d.arts.dynamics.potential_fromobj &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>ism3d.arts.sparse.cr_tanh &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.dynamics.pots_to_vcirc" href="ism3d.arts.dynamics.pots_to_vcirc.html" />
-    <link rel="prev" title="ism3d.arts.dynamics.model_vrot_plot" href="ism3d.arts.dynamics.model_vrot_plot.html" /> 
+    <link rel="next" title="ism3d.arts.utils" href="ism3d.arts.utils.html" />
+    <link rel="prev" title="ism3d.arts.sparse.clouds_tosky" href="ism3d.arts.sparse.clouds_tosky.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -147,18 +147,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.calc_vcirc.html">ism3d.arts.dynamics.calc_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc.html">ism3d.arts.dynamics.model_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html">ism3d.arts.dynamics.model_vcirc_plot</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html">ism3d.arts.dynamics.model_vrot</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html">ism3d.arts.dynamics.model_vrot_plot</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.dynamics.potential_fromobj</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html">ism3d.arts.dynamics.pots_to_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.vrot_from_rcProf.html">ism3d.arts.dynamics.vrot_from_rcProf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.cloudlet_moms.html">ism3d.arts.sparse.cloudlet_moms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_discretize_2d.html">ism3d.arts.sparse.clouds_discretize_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_from_disk3d.html">ism3d.arts.sparse.clouds_from_disk3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_from_obj.html">ism3d.arts.sparse.clouds_from_obj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_from_point.html">ism3d.arts.sparse.clouds_from_point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_kin.html">ism3d.arts.sparse.clouds_kin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_morph.html">ism3d.arts.sparse.clouds_morph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_realize.html">ism3d.arts.sparse.clouds_realize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.sparse.clouds_tosky.html">ism3d.arts.sparse.clouds_tosky</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.sparse.cr_tanh</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.utils.html">ism3d.arts.utils</a></li>
 </ul>
 </li>
@@ -224,9 +226,9 @@
         
           <li><a href="ism3d.arts.html">ism3d.arts</a> &raquo;</li>
         
-          <li><a href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a> &raquo;</li>
+          <li><a href="ism3d.arts.sparse.html">ism3d.arts.sparse</a> &raquo;</li>
         
-      <li>ism3d.arts.dynamics.potential_fromobj</li>
+      <li>ism3d.arts.sparse.cr_tanh</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -243,16 +245,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ism3d-arts-dynamics-potential-fromobj">
-<h1>ism3d.arts.dynamics.potential_fromobj<a class="headerlink" href="#ism3d-arts-dynamics-potential-fromobj" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ism3d-arts-sparse-cr-tanh">
+<h1>ism3d.arts.sparse.cr_tanh<a class="headerlink" href="#ism3d-arts-sparse-cr-tanh" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ism3d.arts.dynamics.potential_fromobj">
-<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">potential_fromobj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#potential_fromobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.potential_fromobj" title="Permalink to this definition">¶</a></dt>
-<dd><p>create a abstract galpy.potential object (defined in the galactic plane frame)
-which can be used to calculate circular velocity once cloud position is defined.</p>
-<p>obj:    type=’poyential’
-return a list of galpy.potential</p>
-<p><a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/potential.html">https://galpy.readthedocs.io/en/v1.5.0/potential.html</a></p>
+<dt id="ism3d.arts.sparse.cr_tanh">
+<code class="sig-prename descclassname">ism3d.arts.sparse.</code><code class="sig-name descname">cr_tanh</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">r_in=None</em>, <em class="sig-param">r_out=None</em>, <em class="sig-param">theta_out=&lt;Quantity 90. deg&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/sparse.html#cr_tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.sparse.cr_tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>See Peng+2010 Appendix A. with some scaling correction</p>
 </dd></dl>
 
 </div>
@@ -265,10 +263,10 @@ return a list of galpy.potential</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.arts.dynamics.pots_to_vcirc.html" class="btn btn-neutral float-right" title="ism3d.arts.dynamics.pots_to_vcirc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.arts.utils.html" class="btn btn-neutral float-right" title="ism3d.arts.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.arts.dynamics.model_vrot_plot.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.model_vrot_plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.arts.sparse.clouds_tosky.html" class="btn btn-neutral float-left" title="ism3d.arts.sparse.clouds_tosky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -290,6 +290,32 @@
 <div class="section" id="module-ism3d.interface">
 <span id="ism3d-interface-module"></span><h2>ism3d.interface module<a class="headerlink" href="#module-ism3d.interface" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
+<dt id="ism3d.interface.eval_func">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">eval_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vs_func_ps</span></em>, <em class="sig-param"><span class="n">var_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#eval_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.eval_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do an inline calculation from a string expression in a lambda function-like syntax</p>
+<blockquote>
+<div><p>1st: element</p>
+</div></blockquote>
+<dl>
+<dt>expr<span class="classifier">expected to be a tuple</span></dt><dd><dl class="simple">
+<dt>expr[0]   string:</dt><dd><p>lamabda function-like syntax defining a anonymous function and its variable(s)
+the variables’ name and content should exist in the dictionary “locals”</p>
+</dd>
+<dt>expr[1],expr[2],expr[3]</dt><dd><p>function parameters</p>
+</dd>
+</dl>
+</dd>
+<dt>output:</dt><dd><p>the function’s value at each points of variables under the given parameters</p>
+</dd>
+<dt>example:</dt><dd><p>eval_func((‘rho : minimum(rho/p2,1.0)*p1’,200*u.km/u.s,5*u.kpc),locals())</p>
+<p>the function call will calculate “minimum(rho/p2,1.0)*p1” assuming
+p1=200*u.km/u.s &amp; p2=5*u.kpc at each “rho” value.
+Here, “rho” is a local-scope variable containing a numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ism3d.interface.inp_to_mod">
 <code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">inp_to_mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#inp_to_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.inp_to_mod" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>

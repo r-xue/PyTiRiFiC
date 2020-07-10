@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ism3d.arts.dynamics.potential_fromobj &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>ism3d.visualize.plts.plt_rcProf &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.dynamics.pots_to_vcirc" href="ism3d.arts.dynamics.pots_to_vcirc.html" />
-    <link rel="prev" title="ism3d.arts.dynamics.model_vrot_plot" href="ism3d.arts.dynamics.model_vrot_plot.html" /> 
+    <link rel="next" title="ism3d.visualize.plts.plt_slice" href="ism3d.visualize.plts.plt_slice.html" />
+    <link rel="prev" title="ism3d.visualize.plts.plt_rc0" href="ism3d.visualize.plts.plt_rc0.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -145,23 +145,7 @@
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.calc_vcirc.html">ism3d.arts.dynamics.calc_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc.html">ism3d.arts.dynamics.model_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html">ism3d.arts.dynamics.model_vcirc_plot</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html">ism3d.arts.dynamics.model_vrot</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html">ism3d.arts.dynamics.model_vrot_plot</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.dynamics.potential_fromobj</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html">ism3d.arts.dynamics.pots_to_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.vrot_from_rcProf.html">ism3d.arts.dynamics.vrot_from_rcProf</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.utils.html">ism3d.arts.utils</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
@@ -171,7 +155,22 @@
 <li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ism3d.visualize.nb.html">ism3d.visualize.nb</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="ism3d.visualize.plts.html">ism3d.visualize.plts</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.im_grid.html">ism3d.visualize.plts.im_grid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_makeslice.html">ism3d.visualize.plts.plt_makeslice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_mom0xy.html">ism3d.visualize.plts.plt_mom0xy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_radprof.html">ism3d.visualize.plts.plt_radprof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_rc0.html">ism3d.visualize.plts.plt_rc0</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.visualize.plts.plt_rcProf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_slice.html">ism3d.visualize.plts.plt_slice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_spec1d.html">ism3d.visualize.plts.plt_spec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.visualize.plts.plt_yt3d.html">ism3d.visualize.plts.plt_yt3d</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper</a></li>
 </ul>
 </li>
@@ -222,11 +221,11 @@
         
           <li><a href="ism3d.html">ism3d</a> &raquo;</li>
         
-          <li><a href="ism3d.arts.html">ism3d.arts</a> &raquo;</li>
+          <li><a href="ism3d.visualize.html">ism3d.visualize</a> &raquo;</li>
         
-          <li><a href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a> &raquo;</li>
+          <li><a href="ism3d.visualize.plts.html">ism3d.visualize.plts</a> &raquo;</li>
         
-      <li>ism3d.arts.dynamics.potential_fromobj</li>
+      <li>ism3d.visualize.plts.plt_rcProf</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -243,16 +242,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ism3d-arts-dynamics-potential-fromobj">
-<h1>ism3d.arts.dynamics.potential_fromobj<a class="headerlink" href="#ism3d-arts-dynamics-potential-fromobj" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ism3d-visualize-plts-plt-rcprof">
+<h1>ism3d.visualize.plts.plt_rcProf<a class="headerlink" href="#ism3d-visualize-plts-plt-rcprof" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ism3d.arts.dynamics.potential_fromobj">
-<code class="sig-prename descclassname">ism3d.arts.dynamics.</code><code class="sig-name descname">potential_fromobj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/dynamics.html#potential_fromobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.dynamics.potential_fromobj" title="Permalink to this definition">¶</a></dt>
-<dd><p>create a abstract galpy.potential object (defined in the galactic plane frame)
-which can be used to calculate circular velocity once cloud position is defined.</p>
-<p>obj:    type=’poyential’
-return a list of galpy.potential</p>
-<p><a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/potential.html">https://galpy.readthedocs.io/en/v1.5.0/potential.html</a></p>
+<dt id="ism3d.visualize.plts.plt_rcProf">
+<code class="sig-prename descclassname">ism3d.visualize.plts.</code><code class="sig-name descname">plt_rcProf</code><span class="sig-paren">(</span><em class="sig-param">rcProf</em>, <em class="sig-param">rrange=&lt;Quantity [1.e-03</em>, <em class="sig-param">2.e+01] kpc&gt;</em>, <em class="sig-param">num=100</em>, <em class="sig-param">figname='plt_rc.pdf'</em>, <em class="sig-param">showplot=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/visualize/plts.html#plt_rcProf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.visualize.plts.plt_rcProf" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot rotation curve from the keyword:rcProf</p>
 </dd></dl>
 
 </div>
@@ -265,10 +260,10 @@ return a list of galpy.potential</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.arts.dynamics.pots_to_vcirc.html" class="btn btn-neutral float-right" title="ism3d.arts.dynamics.pots_to_vcirc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.visualize.plts.plt_slice.html" class="btn btn-neutral float-right" title="ism3d.visualize.plts.plt_slice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.arts.dynamics.model_vrot_plot.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.model_vrot_plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.visualize.plts.plt_rc0.html" class="btn btn-neutral float-left" title="ism3d.visualize.plts.plt_rc0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -608,32 +608,6 @@ Out[6]: ‘Jykm/s’</p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="ism3d.utils.utils.eval_func">
-<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">eval_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vs_func_ps</span></em>, <em class="sig-param"><span class="n">var_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#eval_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.eval_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do an inline calculation from a string expression in a lambda function-like syntax</p>
-<blockquote>
-<div><p>1st: element</p>
-</div></blockquote>
-<dl>
-<dt>expr<span class="classifier">expected to be a tuple</span></dt><dd><dl class="simple">
-<dt>expr[0]   string:</dt><dd><p>lamabda function-like syntax defining a anonymous function and its variable(s)
-the variables’ name and content should exist in the dictionary “locals”</p>
-</dd>
-<dt>expr[1],expr[2],expr[3]</dt><dd><p>function parameters</p>
-</dd>
-</dl>
-</dd>
-<dt>output:</dt><dd><p>the function’s value at each points of variables under the given parameters</p>
-</dd>
-<dt>example:</dt><dd><p>eval_func((‘rho : minimum(rho/p2,1.0)*p1’,200*u.km/u.s,5*u.kpc),locals())</p>
-<p>the function call will calculate “minimum(rho/p2,1.0)*p1” assuming
-p1=200*u.km/u.s &amp; p2=5*u.kpc at each “rho” value.
-Here, “rho” is a local-scope variable containing a numpy array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ism3d.utils.utils.gal_flat">
 <code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">gal_flat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">im</span></em>, <em class="sig-param"><span class="n">ang</span></em>, <em class="sig-param"><span class="n">inc</span></em>, <em class="sig-param"><span class="n">cen</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interp</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">align_major</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/utils/utils.html#gal_flat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.utils.utils.gal_flat" title="Permalink to this definition">¶</a></dt>
 <dd><p>translated from IDL/gal_flat.pro
@@ -690,6 +664,41 @@ p_format_keys       : format for p_name</p>
 <li><p>check if the variable type against its type definition</p></li>
 <li><p>for quanity, check the physical_type use .is_eqivalent(default_unit)</p></li>
 </ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ism3d.utils.utils.logger">
+<code class="sig-prename descclassname">ism3d.utils.utils.</code><code class="sig-name descname">logger</code><em class="property"> = &lt;Logger ism3d.utils.utils (DEBUG)&gt;</em><a class="headerlink" href="#ism3d.utils.utils.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>import ast, operator</p>
+<dl class="simple">
+<dt>binOps = {</dt><dd><p>ast.Add: operator.add,
+ast.Sub: operator.sub,
+ast.Mult: operator.mul,
+ast.Div: operator.truediv,
+ast.Mod: operator.mod</p>
+</dd>
+</dl>
+<p>}</p>
+<dl>
+<dt>def arithmeticEval (s):</dt><dd><p>node = ast.parse(s, mode=’eval’)</p>
+<dl class="simple">
+<dt>def _eval(node):</dt><dd><dl class="simple">
+<dt>if isinstance(node, ast.Expression):</dt><dd><p>return _eval(node.body)</p>
+</dd>
+<dt>elif isinstance(node, ast.Str):</dt><dd><p>return node.s</p>
+</dd>
+<dt>elif isinstance(node, ast.Num):</dt><dd><p>return node.n</p>
+</dd>
+<dt>elif isinstance(node, ast.BinOp):</dt><dd><p>return binOps[type(node.op)](_eval(node.left), _eval(node.right))</p>
+</dd>
+<dt>else:</dt><dd><p>raise Exception(‘Unsupported type {}’.format(node))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>return _eval(node.body)</p>
 </dd>
 </dl>
 </dd></dl>

@@ -149,13 +149,13 @@
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.arts.dynamics</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.calc_vcirc.html">ism3d.arts.dynamics.calc_vcirc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.cr_tanh.html">ism3d.arts.dynamics.cr_tanh</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc.html">ism3d.arts.dynamics.model_vcirc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html">ism3d.arts.dynamics.model_vcirc_plot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html">ism3d.arts.dynamics.model_vrot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html">ism3d.arts.dynamics.model_vrot_plot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.potential_fromobj.html">ism3d.arts.dynamics.potential_fromobj</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html">ism3d.arts.dynamics.pots_to_vcirc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.dynamics.vrot_from_rcProf.html">ism3d.arts.dynamics.vrot_from_rcProf</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
@@ -253,26 +253,26 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.calc_vcirc.html#ism3d.arts.dynamics.calc_vcirc" title="ism3d.arts.dynamics.calc_vcirc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_vcirc</span></code></a></p></td>
 <td><p>use interpolated vcirc to speed up vcirc calculation decide to not use potential/interpRZPotential.py to avoid some overheads see <a class="reference external" href="https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz">https://galpy.readthedocs.io/en/v1.5.0/reference/potentialinterprz.html#interprz</a> logr will keep also see: galpy.poteential.vcirc()</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.cr_tanh.html#ism3d.arts.dynamics.cr_tanh" title="ism3d.arts.dynamics.cr_tanh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cr_tanh</span></code></a></p></td>
-<td><p>See Peng+2010 Appendix A.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc.html#ism3d.arts.dynamics.model_vcirc" title="ism3d.arts.dynamics.model_vcirc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vcirc</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc.html#ism3d.arts.dynamics.model_vcirc" title="ism3d.arts.dynamics.model_vcirc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vcirc</span></code></a></p></td>
 <td><p>take a dictionary describing the potential and calculaet rotation curve</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html#ism3d.arts.dynamics.model_vcirc_plot" title="ism3d.arts.dynamics.model_vcirc_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vcirc_plot</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vcirc_plot.html#ism3d.arts.dynamics.model_vcirc_plot" title="ism3d.arts.dynamics.model_vcirc_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vcirc_plot</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html#ism3d.arts.dynamics.model_vrot" title="ism3d.arts.dynamics.model_vrot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vrot</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vrot.html#ism3d.arts.dynamics.model_vrot" title="ism3d.arts.dynamics.model_vrot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vrot</span></code></a></p></td>
 <td><p>generate a RC from the mass-potential model</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html#ism3d.arts.dynamics.model_vrot_plot" title="ism3d.arts.dynamics.model_vrot_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vrot_plot</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.model_vrot_plot.html#ism3d.arts.dynamics.model_vrot_plot" title="ism3d.arts.dynamics.model_vrot_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_vrot_plot</span></code></a></p></td>
 <td><p>mod_obj_disk3d:    just a single disk object (unitless)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.potential_fromobj.html#ism3d.arts.dynamics.potential_fromobj" title="ism3d.arts.dynamics.potential_fromobj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">potential_fromobj</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.potential_fromobj.html#ism3d.arts.dynamics.potential_fromobj" title="ism3d.arts.dynamics.potential_fromobj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">potential_fromobj</span></code></a></p></td>
 <td><p>create a abstract galpy.potential object (defined in the galactic plane frame) which can be used to calculate circular velocity once cloud position is defined.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html#ism3d.arts.dynamics.pots_to_vcirc" title="ism3d.arts.dynamics.pots_to_vcirc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pots_to_vcirc</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.dynamics.pots_to_vcirc.html#ism3d.arts.dynamics.pots_to_vcirc" title="ism3d.arts.dynamics.pots_to_vcirc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pots_to_vcirc</span></code></a></p></td>
 <td><p>calculate vcirc and vrot from galactocentric distance and galpy.potential post is a list of ponetials</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.dynamics.vrot_from_rcProf.html#ism3d.arts.dynamics.vrot_from_rcProf" title="ism3d.arts.dynamics.vrot_from_rcProf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vrot_from_rcProf</span></code></a></p></td>
+<td><p>use the value of keyword rcProf to evaluate the rotation curve at specified rho examples of rcProf:     rcProf=(‘rho : minimum(rho/p2,1.0)*p1’,400*u.km/u.s,5*u.kpc)     rcProf=(‘tanh’,300*u.km/u.s,10*u.kpc)     …</p></td>
 </tr>
 </tbody>
 </table>

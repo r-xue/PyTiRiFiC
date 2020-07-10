@@ -210,6 +210,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="kn">import</span> <span class="nn">galpy.potential</span> <span class="k">as</span> <span class="nn">galpy_pot</span>
+<span class="kn">from</span> <span class="nn">..interface</span> <span class="kn">import</span> <span class="n">eval_func</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
@@ -571,18 +572,40 @@
     <span class="k">else</span><span class="p">:</span>          
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">vcirc</span><span class="p">,</span><span class="n">vcirc_pot</span><span class="p">)),[</span><span class="s1">&#39;Vrot&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">pots_name</span></div>
 
-
-
-<div class="viewcode-block" id="cr_tanh"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.dynamics.cr_tanh.html#ism3d.arts.dynamics.cr_tanh">[docs]</a><span class="k">def</span> <span class="nf">cr_tanh</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">r_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">r_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">theta_out</span><span class="o">=</span><span class="mi">90</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">):</span>
+<div class="viewcode-block" id="vrot_from_rcProf"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.dynamics.vrot_from_rcProf.html#ism3d.arts.dynamics.vrot_from_rcProf">[docs]</a><span class="k">def</span> <span class="nf">vrot_from_rcProf</span><span class="p">(</span><span class="n">rcProf</span><span class="p">,</span><span class="n">rho</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    See Peng+2010 Appendix A. with some scaling correction</span>
+<span class="sd">    use the value of keyword rcProf to evaluate the rotation curve at specified rho </span>
+<span class="sd">    examples of rcProf:</span>
+<span class="sd">        rcProf=(&#39;rho : minimum(rho/p2,1.0)*p1&#39;,400*u.km/u.s,5*u.kpc)</span>
+<span class="sd">        rcProf=(&#39;tanh&#39;,300*u.km/u.s,10*u.kpc)</span>
+<span class="sd">        ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cdef</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">A</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">cdef</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">theta_out</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-    <span class="n">B</span><span class="o">=</span><span class="p">(</span><span class="mf">2.</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">A</span><span class="p">))</span><span class="o">*</span><span class="n">r_out</span><span class="o">/</span><span class="p">(</span><span class="n">r_out</span><span class="o">-</span><span class="n">r_in</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">r_out</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">+</span><span class="mf">1.</span><span class="p">)</span></div>
+    <span class="c1">#   lambda function style</span>
+    <span class="k">if</span>  <span class="s1">&#39; : &#39;</span> <span class="ow">in</span> <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="n">eval_func</span><span class="p">(</span><span class="n">rcProf</span><span class="p">,{</span><span class="s1">&#39;rho&#39;</span><span class="p">:</span><span class="n">rho</span><span class="p">})</span>            
+    
+    <span class="c1">#   table style</span>
+    <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;table&#39;</span><span class="p">:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="c1">#   arctan style</span>
+    <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;arctan&#39;</span><span class="p">:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">2.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+
+    <span class="c1">#   expon style</span>
+    <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;expon&#39;</span><span class="p">:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="c1">#   tanh style</span>
+    <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;tanh&#39;</span><span class="p">:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">rho</span><span class="o">/</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+    
+    <span class="c1">#   from a potential</span>
+    <span class="k">if</span>  <span class="n">rcProf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;potential&#39;</span><span class="p">:</span>
+        <span class="n">vrot</span><span class="o">=</span><span class="p">(</span><span class="n">pots_to_vcirc</span><span class="p">(</span><span class="n">rcProf</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rho</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,:]</span>    
+    
+    <span class="k">return</span> <span class="n">vrot</span></div>
 
 
     
