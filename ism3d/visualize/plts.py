@@ -177,7 +177,7 @@ def im_grid(images,header,
         #aa[iy,ix].set_title(os.path.basename(name).replace('_','.'))
         #aa[iy,ix].set_aspect('auto')
 
-    #fig.tight_layout() 
+    fig.tight_layout() 
     #; plt.show()
     prepdir(figname)    
     fig.savefig(figname)

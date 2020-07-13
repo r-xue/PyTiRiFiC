@@ -71,6 +71,27 @@ Note:
       it's important to do this for mutiple-object mutiple-channel data.
 """
 
+def render_spmodel3d_xyz(obj):
+    clouds_loc=obj['clouds_loc']
+
+    x=clouds_loc.x.value
+    y=clouds_loc.y.value
+    z=clouds_loc.z.value
+    
+    x_min,x_max=np.min(x),np.max(x)
+    y_min,y_max=np.min(y),np.max(y)
+    z_min,z_max=np.min(z),np.max(z)
+    pad=0.1
+    pad+=0.5
+    xrange=((0.5+pad)*x_min+(0.5-pad)*x_max,(0.5+pad)*x_max+(0.5-pad)*x_min)
+    yrange=((0.5+pad)*y_min+(0.5-pad)*y_max,(0.5+pad)*y_max+(0.5-pad)*y_min)
+    zrange=((0.5+pad)*z_min+(0.5-pad)*z_max,(0.5+pad)*z_max+(0.5-pad)*z_min)
+    
+    cube,edges = np.histogramdd((z,y,x),bins=(100,100,100),
+                                range=(zrange,yrange,xrange))
+    
+    return cube,edges
+
 def render_spmodel3d(obj,w,out=None):
     """
     render a sparse model 
