@@ -151,9 +151,9 @@ def clouds_morph(sbProf,fmPhi=None,fmRho=None,geRho=None,bmY=None,sbQ=None,rotPh
         if  cmode==2:
             rho = custom_rvs(sbProf[0],size=size,sersic_n=sbProf[-1],seed=seeds[0])*sbProf[1]
             # the exp dependency makes the scaling equiavelent to addition weight on PDF  
-            if  sbProf[0]=='expon2d':   rho*=0.5    
-            if  sbProf[0]=='sersic2d':  rho*=0.5**sbProf[-1]
-            if  sbProf[0]=='norm2d':  rho*=0.5**0.5   
+            if  sbProf[0].lower()=='expon2d':   rho*=0.5    
+            if  sbProf[0].lower()=='sersic2d':  rho*=0.5**sbProf[-1]
+            if  sbProf[0].lower()=='norm2d':  rho*=0.5**0.5   
             weights=1/custom_pdf(sbProf[0].replace('2d',''),rho/sbProf[1],sersic_n=sbProf[-1])
     else:
         # likely vector sampling array
@@ -432,13 +432,14 @@ def clouds_tosky(car,inc,pa,inplace=True):
     if  inplace==True:
     
         xyz=car.get_xyz(xyz_axis=-1)    # view
+        #print('view:',xyz.flags['OWNDATA'])
         erfa_ufunc.rxp(rots,xyz,out=xyz)
         
         if  car.differentials:
             d_xyz=car.differentials['s'].get_d_xyz(xyz_axis=-1)
             erfa_ufunc.rxp(rots,d_xyz,out=d_xyz)
         
-        return
+        return car
     
     else:
         
@@ -479,9 +480,13 @@ def clouds_from_disk3d(obj,
                        vSigma=obj['vSigma'] if  'vSigma' in obj else None,
                        seed=seeds[3],nV=nv) 
 
-    obj['clouds_source']=deepcopy(car.ravel())
-    clouds_tosky(car,obj['inc'],obj['pa'],inplace=True)
-    
+    obj['clouds_source']=deepcopy(car).ravel()
+    #car=deepcopy(car)
+    #car=car.copy()
+    #print('before:',car)
+    car=clouds_tosky(car,obj['inc'],obj['pa'],inplace=False)
+    #print('after:',out_car)
+    #print(car is out_car)
     obj['clouds_loc']=car.ravel()
     obj['clouds_wt']=None
     #for fluxtype in ['lineflux','contflux']:
