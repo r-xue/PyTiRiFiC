@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>&lt;no title&gt; &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>ism3d.arts.lens: model artificial sources (lensing-related) &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -114,9 +114,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../develop/callgraph.html">ISM3D call graph</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ism3d.arts.lens: model artificial sources (lensing-related)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Direct-Evaluate-Method">Direct-Evaluate Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sparse/Cloudlet-Rendering-Tests">Sparse/Cloudlet Rendering Tests</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -193,7 +198,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>ism3d.arts.lens: model artificial sources (lensing-related)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -465,6 +470,13 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
+<div class="section" id="ism3d.arts.lens:-model-artificial-sources-(lensing-related)">
+<h1>ism3d.arts.lens: model artificial sources (lensing-related)<a class="headerlink" href="#ism3d.arts.lens:-model-artificial-sources-(lensing-related)" title="Permalink to this headline">¶</a></h1>
+<p><strong>Used ISM3D Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">im3d.logger.logger_config</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">im3d.logger.logger_status</span></code></p></li>
+</ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
@@ -498,6 +510,13 @@ working dir: /Users/Rui/Resilio/Workspace/projects/ism3d/models/output/lens
 
 </pre></div></div>
 </div>
+<div class="section" id="Direct-Evaluate-Method">
+<h2>Direct-Evaluate Method<a class="headerlink" href="#Direct-Evaluate-Method" title="Permalink to this headline">¶</a></h2>
+<p><strong>Used ISM3D Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">im3d.arts.apmodel2d.eval_apmodel2d</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">im3d.arts.lens.sie_grad</span></code> : from A. S. Bolton (NOAO)</p></li>
+</ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
@@ -596,17 +615,20 @@ working dir: /Users/Rui/Resilio/Workspace/projects/ism3d/models/output/lens
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_demo_api_lens_1_1.png" class="no-scaled-link" src="../_images/tutorials_demo_api_lens_1_1.png" style="width: 601px; height: 1106px;" />
+<img alt="../_images/tutorials_demo_api_lens_5_1.png" class="no-scaled-link" src="../_images/tutorials_demo_api_lens_5_1.png" style="width: 601px; height: 1106px;" />
 </div>
 </div>
+</div>
+<div class="section" id="Sparse/Cloudlet-Rendering-Tests">
+<h2>Sparse/Cloudlet Rendering Tests<a class="headerlink" href="#Sparse/Cloudlet-Rendering-Tests" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
 
-
-<span></span><span class="k">def</span> <span class="nf">triangle_area</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">triangle_area</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">x1</span><span class="o">*</span><span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y3</span><span class="p">)</span><span class="o">+</span><span class="n">x2</span><span class="o">*</span><span class="p">(</span><span class="n">y3</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">+</span><span class="n">x3</span><span class="o">*</span><span class="p">(</span><span class="n">y1</span><span class="o">-</span><span class="n">y2</span><span class="p">)))</span>
 
 <span class="k">def</span> <span class="nf">PointInsideTriangle_method1</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span><span class="n">x_arr</span><span class="p">,</span><span class="n">y_arr</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -624,6 +646,7 @@ working dir: /Users/Rui/Resilio/Workspace/projects/ism3d/models/output/lens
 
 <span class="o">%</span><span class="k">lprun</span> -f PointInsideTriangle_method1 PointInsideTriangle_method1(0,0,0,1,1,1,x_arr,y_arr,count=True)
 <span class="n">pprint</span><span class="p">(</span><span class="n">PointInsideTriangle_method1</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">x_arr</span><span class="p">,</span><span class="n">y_arr</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
 </pre></div>
 </div>
 </div>
@@ -632,7 +655,7 @@ working dir: /Users/Rui/Resilio/Workspace/projects/ism3d/models/output/lens
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(499601, 0.5)
+(499891, 0.5)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -642,31 +665,29 @@ working dir: /Users/Rui/Resilio/Workspace/projects/ism3d/models/output/lens
 <div class="highlight"><pre>
 Timer unit: 1e-06 s
 
-Total time: 0.048016 s
-File: &lt;ipython-input-81-6b10a9dec705&gt;
-Function: PointInsideTriangle_method1 at line 4
+Total time: 0.046565 s
+File: &lt;ipython-input-90-b2cdbc2cdcec&gt;
+Function: PointInsideTriangle_method1 at line 6
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
-     4                                           def PointInsideTriangle_method1(x1, y1, x2, y2, x3, y3,x_arr,y_arr,count=False):
-     5         1          5.0      5.0      0.0      A=triangle_area(x1, y1, x2, y2, x3, y3)
-     6         1      17852.0  17852.0     37.2      A1 = triangle_area(x_arr, y_arr, x2, y2, x3, y3)
-     7         1      15606.0  15606.0     32.5      A2 = triangle_area(x1, y1, x_arr, y_arr, x3, y3)
-     8         1      10408.0  10408.0     21.7      A3 = triangle_area(x1, y1, x2, y2, x_arr, y_arr)
-     9         1          2.0      2.0      0.0      if count==True:
-    10         1       4143.0   4143.0      8.6          return np.count_nonzero(np.equal(A,A1+A2+A3)),A
-    11                                               else:
-    12                                                   return np.equal(A,A1+A2+A3)
+     6                                           def PointInsideTriangle_method1(x1, y1, x2, y2, x3, y3,x_arr,y_arr,count=False):
+     7         1          5.0      5.0      0.0      A=triangle_area(x1, y1, x2, y2, x3, y3)
+     8         1      12987.0  12987.0     27.9      A1 = triangle_area(x_arr, y_arr, x2, y2, x3, y3)
+     9         1      12295.0  12295.0     26.4      A2 = triangle_area(x1, y1, x_arr, y_arr, x3, y3)
+    10         1      14777.0  14777.0     31.7      A3 = triangle_area(x1, y1, x2, y2, x_arr, y_arr)
+    11         1          3.0      3.0      0.0      if count==True:
+    12         1       6498.0   6498.0     14.0          return np.count_nonzero(np.equal(A,A1+A2+A3)),A
+    13                                               else:
+    14                                                   return np.equal(A,A1+A2+A3)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[91]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-
-<span class="k">def</span> <span class="nf">triangle_area</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">):</span>
+<span></span><span class="k">def</span> <span class="nf">triangle_area</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">x1</span><span class="o">*</span><span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y3</span><span class="p">)</span><span class="o">+</span><span class="n">x2</span><span class="o">*</span><span class="p">(</span><span class="n">y3</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">+</span><span class="n">x3</span><span class="o">*</span><span class="p">(</span><span class="n">y1</span><span class="o">-</span><span class="n">y2</span><span class="p">)))</span>
 
 <span class="k">def</span> <span class="nf">PointInsideTriangle_method2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span><span class="n">x_arr</span><span class="p">,</span><span class="n">y_arr</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -692,7 +713,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(500743, 0.5)
+(499395, 0.5)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -702,21 +723,21 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 <div class="highlight"><pre>
 Timer unit: 1e-06 s
 
-Total time: 0.031487 s
-File: &lt;ipython-input-78-76b286e3cfe3&gt;
-Function: PointInsideTriangle_method2 at line 6
+Total time: 0.031383 s
+File: &lt;ipython-input-91-cc31dfd9ca51&gt;
+Function: PointInsideTriangle_method2 at line 4
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
-     6                                           def PointInsideTriangle_method2(x1, y1, x2, y2, x3, y3,x_arr,y_arr,count=False):
-     7         1          5.0      5.0      0.0      A=triangle_area(x1, y1, x2, y2, x3, y3)
-     8         1         38.0     38.0      0.1      p=Path([(x1,y1),(x2,y2),(x3,y3)])
-     9         1       2241.0   2241.0      7.1      points = np.vstack((x_arr,y_arr)).T
-    10         1      26944.0  26944.0     85.6      cc=p.contains_points(points)
-    11         1          3.0      3.0      0.0      if count==True:
-    12         1       2256.0   2256.0      7.2          return cc.sum(),A
-    13                                               else:
-    14                                                   return cc
+     4                                           def PointInsideTriangle_method2(x1, y1, x2, y2, x3, y3,x_arr,y_arr,count=False):
+     5         1          4.0      4.0      0.0      A=triangle_area(x1, y1, x2, y2, x3, y3)
+     6         1         39.0     39.0      0.1      p=Path([(x1,y1),(x2,y2),(x3,y3)])
+     7         1       2317.0   2317.0      7.4      points = np.vstack((x_arr,y_arr)).T
+     8         1      28184.0  28184.0     89.8      cc=p.contains_points(points)
+     9         1          2.0      2.0      0.0      if count==True:
+    10         1        837.0    837.0      2.7          return cc.sum(),A
+    11                                               else:
+    12                                                   return cc
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -830,7 +851,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_demo_api_lens_4_2.png" class="no-scaled-link" src="../_images/tutorials_demo_api_lens_4_2.png" style="width: 604px; height: 573px;" />
+<img alt="../_images/tutorials_demo_api_lens_9_2.png" class="no-scaled-link" src="../_images/tutorials_demo_api_lens_9_2.png" style="width: 604px; height: 573px;" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -859,7 +880,9 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
 {"state": {}, "version_major": 2, "version_minor": 0}
-</script>
+</script></div>
+</div>
+
 
            </div>
            
