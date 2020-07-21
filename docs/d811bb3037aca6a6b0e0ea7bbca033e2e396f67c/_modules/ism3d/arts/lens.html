@@ -115,7 +115,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources (lensing-related)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -217,66 +217,60 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="kn">import</span> <span class="n">LensModel</span>
 
-
-<div class="viewcode-block" id="xy_rotate"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.lens.xy_rotate.html#ism3d.arts.lens.xy_rotate">[docs]</a><span class="k">def</span> <span class="nf">xy_rotate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xcen</span><span class="p">,</span> <span class="n">ycen</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+<div class="viewcode-block" id="sie_rt"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.lens.sie_rt.html#ism3d.arts.lens.sie_rt">[docs]</a><span class="k">def</span> <span class="nf">sie_rt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span>
+           <span class="n">theta_e</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">xc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">yc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pa</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+           <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ls&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NAME: xy_rotate</span>
-
-<span class="sd">    PURPOSE: Transform input (x, y) coordiantes into the frame of a new</span>
-<span class="sd">             (x, y) coordinate system that has its origin at the point</span>
-<span class="sd">             (xcen, ycen) in the old system, and whose x-axis is rotated</span>
-<span class="sd">             c.c.w. by phi degrees with respect to the original x axis.</span>
-
-<span class="sd">    USAGE: (xnew,ynew) = xy_rotate(x, y, xcen, ycen, phi)</span>
-
-<span class="sd">    ARGUMENTS:</span>
-<span class="sd">      x, y: numpy ndarrays with (hopefully) matching sizes</span>
-<span class="sd">            giving coordinates in the old system</span>
-<span class="sd">      xcen: old-system x coordinate of the new origin</span>
-<span class="sd">      ycen: old-system y coordinate of the new origin</span>
-<span class="sd">      phi: angle c.c.w. in degrees from old x to new x axis</span>
-
-<span class="sd">    RETURNS: 2-item tuple containing new x and y coordinate arrays</span>
-
-<span class="sd">    WRITTEN: Adam S. Bolton, U. of Utah, 2009</span>
+<span class="sd">    performe ray-tracing for a SIE potential</span>
+<span class="sd">    two methods:    abs, using sie_grad_abs()</span>
+<span class="sd">                    ls, using lenstronomy</span>
+<span class="sd">    theta_e:  Einstein radius</span>
+<span class="sd">    xc,yc:    x/y position of center</span>
+<span class="sd">    pa:    P.A. (degree)</span>
+<span class="sd">    q:        axiasratio b/a</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">phirad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-    <span class="n">xnew</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">xcen</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phirad</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">ycen</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phirad</span><span class="p">)</span>
-    <span class="n">ynew</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">ycen</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phirad</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">xcen</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phirad</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">xnew</span><span class="p">,</span><span class="n">ynew</span><span class="p">)</span></div>
+    
+    <span class="k">if</span>  <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;ls&#39;</span><span class="p">:</span>
+        <span class="c1"># see e1/e2 def:</span>
+        <span class="c1">#   https://github.com/sibirrer/lenstronomy_extensions</span>
+        <span class="c1">#       enstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb</span>
+        <span class="c1"># we only used the &quot;ray_shotting&quot; api here but a higher-level module:</span>
+        <span class="c1">#   lenstronomy.ImSim.image_model import ImageModel </span>
+        <span class="c1"># can be used:</span>
+        <span class="c1"># see: lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb</span>
+        <span class="n">e1</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">/</span><span class="mi">180</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">e2</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">/</span><span class="mi">180</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">lensModel</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SIE&#39;</span><span class="p">])</span>
+        <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;theta_E&#39;</span><span class="p">:</span> <span class="n">theta_e</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="n">e1</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="n">e2</span><span class="p">,</span> 
+                        <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">xc</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">yc</span><span class="p">}]</span>        
+        <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+    
+    <span class="k">if</span>  <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">==</span><span class="s1">&#39;asb&#39;</span><span class="p">:</span>
+        
+        <span class="c1">#l_amp = 200   # Einstein radius</span>
+        <span class="c1">#l_xcen = 0.0  # x position of center</span>
+        <span class="c1">#l_ycen = 0.0  # y position of center</span>
+        <span class="c1">#l_axrat = 0.5 # minor-to-major axis ratio</span>
+        <span class="c1">#l_pa = 30.    # major-axis position angle (degrees) c.c.w. from x axis</span>
+        <span class="c1"># pa may need to rotated by 90degree due to different convention</span>
+        <span class="n">lpar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">theta_e</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">pa</span><span class="p">])</span>
+        
+        <span class="n">xg</span><span class="p">,</span><span class="n">yg</span><span class="o">=</span><span class="n">sie_grad_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">lpar</span><span class="p">)</span>
+        <span class="n">xs</span><span class="o">=</span><span class="n">x</span><span class="o">-</span><span class="n">xg</span> <span class="p">;</span> <span class="n">ys</span><span class="o">=</span><span class="n">y</span><span class="o">-</span><span class="n">yg</span>
+        <span class="c1"># xx-xg,yy-yg source plane coordins</span>
+        <span class="c1"># xx,yy lens plane</span>
+        
+    <span class="k">return</span> <span class="n">xs</span><span class="p">,</span><span class="n">ys</span></div>
 
-<div class="viewcode-block" id="gauss_2d"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.lens.gauss_2d.html#ism3d.arts.lens.gauss_2d">[docs]</a><span class="k">def</span> <span class="nf">gauss_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">par</span><span class="p">):</span>
+<div class="viewcode-block" id="sie_grad_abs"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.lens.sie_grad_abs.html#ism3d.arts.lens.sie_grad_abs">[docs]</a><span class="k">def</span> <span class="nf">sie_grad_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">par</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NAME: gauss_2d</span>
-
-<span class="sd">    PURPOSE: Implement 2D Gaussian function</span>
-
-<span class="sd">    USAGE: z = gauss_2d(x, y, par)</span>
-
-<span class="sd">    ARGUMENTS:</span>
-<span class="sd">      x, y: vecors or images of coordinates;</span>
-<span class="sd">            should be matching numpy ndarrays</span>
-<span class="sd">      par: vector of parameters, defined as follows:</span>
-<span class="sd">        par[0]: amplitude</span>
-<span class="sd">        par[1]: intermediate-axis sigma</span>
-<span class="sd">        par[2]: x-center</span>
-<span class="sd">        par[3]: y-center</span>
-<span class="sd">        par[4]: axis ratio</span>
-<span class="sd">        par[5]: c.c.w. major-axis rotation w.r.t. x-axis</span>
+<span class="sd">    source:</span>
+<span class="sd">        http://www.physics.utah.edu/~bolton/python_lens_demo/</span>
 <span class="sd">        </span>
-<span class="sd">    RETURNS: 2D Gaussian evaluated at x-y coords</span>
-
-<span class="sd">    NOTE: amplitude = 1 is not normalized, but rather has max = 1</span>
-
-<span class="sd">    WRITTEN: Adam S. Bolton, U. of Utah, 2009</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="p">(</span><span class="n">xnew</span><span class="p">,</span><span class="n">ynew</span><span class="p">)</span> <span class="o">=</span> <span class="n">xy_rotate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">par</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-    <span class="n">r_ell_sq</span> <span class="o">=</span> <span class="p">((</span><span class="n">xnew</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ynew</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">r_ell_sq</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="sie_grad"><a class="viewcode-back" href="../../../_autosummary/ism3d.arts.lens.sie_grad.html#ism3d.arts.lens.sie_grad">[docs]</a><span class="k">def</span> <span class="nf">sie_grad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">par</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NAME: sie_grad</span>
 
 <span class="sd">    PURPOSE: compute the deflection of an SIE potential</span>

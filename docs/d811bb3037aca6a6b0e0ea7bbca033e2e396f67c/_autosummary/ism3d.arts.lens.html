@@ -42,7 +42,7 @@
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.lens.gauss_2d" href="ism3d.arts.lens.gauss_2d.html" />
+    <link rel="next" title="ism3d.arts.lens.sie_grad_abs" href="ism3d.arts.lens.sie_grad_abs.html" />
     <link rel="prev" title="ism3d.arts.dynamics.vrot_from_rcProf" href="ism3d.arts.dynamics.vrot_from_rcProf.html" /> 
 </head>
 
@@ -117,7 +117,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources (lensing-related)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -154,9 +154,8 @@
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.arts.lens</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.gauss_2d.html">ism3d.arts.lens.gauss_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.sie_grad.html">ism3d.arts.lens.sie_grad</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.xy_rotate.html">ism3d.arts.lens.xy_rotate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.sie_grad_abs.html">ism3d.arts.lens.sie_grad_abs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.sie_rt.html">ism3d.arts.lens.sie_rt</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
@@ -278,14 +277,11 @@ Cleve got a lens, Kevin got a lens</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.lens.gauss_2d.html#ism3d.arts.lens.gauss_2d" title="ism3d.arts.lens.gauss_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gauss_2d</span></code></a></p></td>
-<td><p>NAME: gauss_2d</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.lens.sie_grad_abs.html#ism3d.arts.lens.sie_grad_abs" title="ism3d.arts.lens.sie_grad_abs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sie_grad_abs</span></code></a></p></td>
+<td><p>source:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.lens.sie_grad.html#ism3d.arts.lens.sie_grad" title="ism3d.arts.lens.sie_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sie_grad</span></code></a></p></td>
-<td><p>NAME: sie_grad</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="ism3d.arts.lens.xy_rotate.html#ism3d.arts.lens.xy_rotate" title="ism3d.arts.lens.xy_rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_rotate</span></code></a></p></td>
-<td><p>NAME: xy_rotate</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="ism3d.arts.lens.sie_rt.html#ism3d.arts.lens.sie_rt" title="ism3d.arts.lens.sie_rt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sie_rt</span></code></a></p></td>
+<td><p>performe ray-tracing for a SIE potential two methods:    abs, using sie_grad_abs()                 ls, using lenstronomy theta_e:  Einstein radius xc,yc:    x/y position of center pa:    P.A.</p></td>
 </tr>
 </tbody>
 </table>
@@ -299,7 +295,7 @@ Cleve got a lens, Kevin got a lens</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ism3d.arts.lens.gauss_2d.html" class="btn btn-neutral float-right" title="ism3d.arts.lens.gauss_2d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ism3d.arts.lens.sie_grad_abs.html" class="btn btn-neutral float-right" title="ism3d.arts.lens.sie_grad_abs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="ism3d.arts.dynamics.vrot_from_rcProf.html" class="btn btn-neutral float-left" title="ism3d.arts.dynamics.vrot_from_rcProf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

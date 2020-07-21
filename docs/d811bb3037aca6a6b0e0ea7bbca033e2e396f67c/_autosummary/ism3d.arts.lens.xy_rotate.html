@@ -41,9 +41,7 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.sparse" href="ism3d.arts.sparse.html" />
-    <link rel="prev" title="ism3d.arts.lens.sie_grad" href="ism3d.arts.lens.sie_grad.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -117,7 +115,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources (lensing-related)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -147,35 +145,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.apmodel2d.html">ism3d.arts.apmodel2d</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="ism3d.arts.lens.html">ism3d.arts.lens</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.gauss_2d.html">ism3d.arts.lens.gauss_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.sie_grad.html">ism3d.arts.lens.sie_grad</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.lens.xy_rotate</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.utils.html">ism3d.arts.utils</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -221,12 +192,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="ism3d.html">ism3d</a> &raquo;</li>
-        
-          <li><a href="ism3d.arts.html">ism3d.arts</a> &raquo;</li>
-        
-          <li><a href="ism3d.arts.lens.html">ism3d.arts.lens</a> &raquo;</li>
-        
       <li>ism3d.arts.lens.xy_rotate</li>
     
     
@@ -270,31 +235,6 @@
 </style>
 <div class="section" id="ism3d-arts-lens-xy-rotate">
 <h1>ism3d.arts.lens.xy_rotate<a class="headerlink" href="#ism3d-arts-lens-xy-rotate" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ism3d.arts.lens.xy_rotate">
-<code class="sig-prename descclassname">ism3d.arts.lens.</code><code class="sig-name descname">xy_rotate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">xcen</span></em>, <em class="sig-param"><span class="n">ycen</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/lens.html#xy_rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.lens.xy_rotate" title="Permalink to this definition">¶</a></dt>
-<dd><p>NAME: xy_rotate</p>
-<dl class="simple">
-<dt>PURPOSE: Transform input (x, y) coordiantes into the frame of a new</dt><dd><p>(x, y) coordinate system that has its origin at the point
-(xcen, ycen) in the old system, and whose x-axis is rotated
-c.c.w. by phi degrees with respect to the original x axis.</p>
-</dd>
-</dl>
-<p>USAGE: (xnew,ynew) = xy_rotate(x, y, xcen, ycen, phi)</p>
-<dl>
-<dt>ARGUMENTS:</dt><dd><dl class="simple">
-<dt>x, y: numpy ndarrays with (hopefully) matching sizes</dt><dd><p>giving coordinates in the old system</p>
-</dd>
-</dl>
-<p>xcen: old-system x coordinate of the new origin
-ycen: old-system y coordinate of the new origin
-phi: angle c.c.w. in degrees from old x to new x axis</p>
-</dd>
-</dl>
-<p>RETURNS: 2-item tuple containing new x and y coordinate arrays</p>
-<p>WRITTEN: Adam S. Bolton, U. of Utah, 2009</p>
-</dd></dl>
-
 </div>
 
 
@@ -302,15 +242,6 @@ phi: angle c.c.w. in degrees from old x to new x axis</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ism3d.arts.sparse.html" class="btn btn-neutral float-right" title="ism3d.arts.sparse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ism3d.arts.lens.sie_grad.html" class="btn btn-neutral float-left" title="ism3d.arts.lens.sie_grad" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

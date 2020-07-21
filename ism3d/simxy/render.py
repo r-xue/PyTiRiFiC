@@ -1,3 +1,7 @@
+"""
+sky mapper 
+"""
+
 import numpy as np
 import scipy
 import astropy.units as u
@@ -46,7 +50,7 @@ from ..arts.utils import fluxscale_from_contflux, clouds_split
 from ..arts.sparse import clouds_from_obj
 from pprint import pprint
 from ..arts.apmodel2d import get_apmodel2d
-
+from ..arts.lens import sie_rt
 """
     Note: 
         performance on Quanitu/Units
@@ -125,6 +129,45 @@ def render_spmodel3d(obj,w,out=None):
     
     return out
 
+
+def render_lens(obj,cube,w):
+    """
+    obj: lense model
+    note:
+        + pa is likely off by 90degs
+        + we will add more options of lensing potentials available in lenstronomy
+    """
+    
+    naxis=w._naxis
+        
+    # not all model requires x/y, but we set px,py to image center by default
+    try:
+        px,py=w.celestial.wcs_world2pix(obj['xypos'].ra,obj['xypos'].dec,0)
+        #xp, yp = skycoord_to_pixel(center, wcs)
+    except:
+        px=naxis[0]/2.0 ; py=naxis[1]/2.0  
+        
+    cell=np.mean(proj_plane_pixel_scales(w.celestial))*3600.0*u.arcsec
+    if  'z' in obj:
+        kps=cosmos.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
+        dp=cell*kps        
+        
+    theta_e=obj['lsProf'][1].to_value(u.arcsec)/cell.to_value(u.arcsec)
+    q=obj['lsProf'][2]
+    pa=obj['lsProf'][3].to_value(u.deg)
+    
+    x=np.arange(naxis[0])
+    y=np.arange(naxis[1])
+    xx,yy=np.meshgrid(x,y)    
+    xs,ys=sie_rt(xx,yy,
+                     theta_e=theta_e,
+                     xc=px,yc=py,
+                     pa=pa,q=q,method='ls')
+
+    out=cube[:,np.round(ys).astype(np.int),np.round(xs).astype(np.int)]
+    
+    return out
+
 def render_apmodel2d(obj,w,out=None,normalize=True):
     """
     obj:     object prescription
@@ -189,7 +232,6 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
     fluxscale=fluxscale_from_contflux(obj['contflux'],w)
     
     return out0,fluxscale
-
 
 def xy_render(objs,w,psf=None,pb=None,normalize_kernel=False):
            

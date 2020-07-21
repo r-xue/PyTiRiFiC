@@ -11,7 +11,9 @@ The documentation is currently available from the links below:
 
 * [Tutorials: ism3d.uvhelper API usages](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/tutorials/demo_api_uvhelper.html)
 
-* [Tutorials: ism3d.arts/.simxy/.simuv API usages](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/tutorials/demo_api_arts.html)
+* [Tutorials: ism3d.arts.simxy/.simuv API usages](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/tutorials/demo_api_arts.html)
+
+* [Tutorials: ism3d.arts.lens API usages](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/tutorials/demo_api_lens.html)
 
 * [casa6 installation](https://www.magclouds.org/ism3d/d811bb3037aca6a6b0e0ea7bbca033e2e396f67c/notes/casa6.html)
 

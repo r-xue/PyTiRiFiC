@@ -41,9 +41,7 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.arts.lens.xy_rotate" href="ism3d.arts.lens.xy_rotate.html" />
-    <link rel="prev" title="ism3d.arts.lens.gauss_2d" href="ism3d.arts.lens.gauss_2d.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -117,7 +115,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources (lensing-related)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -147,35 +145,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.apmodel2d.html">ism3d.arts.apmodel2d</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.discretize.html">ism3d.arts.discretize</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.dynamics.html">ism3d.arts.dynamics</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="ism3d.arts.lens.html">ism3d.arts.lens</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.gauss_2d.html">ism3d.arts.lens.gauss_2d</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ism3d.arts.lens.sie_grad</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ism3d.arts.lens.xy_rotate.html">ism3d.arts.lens.xy_rotate</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.sparse.html">ism3d.arts.sparse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.arts.utils.html">ism3d.arts.utils</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -221,12 +192,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="ism3d.html">ism3d</a> &raquo;</li>
-        
-          <li><a href="ism3d.arts.html">ism3d.arts</a> &raquo;</li>
-        
-          <li><a href="ism3d.arts.lens.html">ism3d.arts.lens</a> &raquo;</li>
-        
       <li>ism3d.arts.lens.sie_grad</li>
     
     
@@ -270,43 +235,6 @@
 </style>
 <div class="section" id="ism3d-arts-lens-sie-grad">
 <h1>ism3d.arts.lens.sie_grad<a class="headerlink" href="#ism3d-arts-lens-sie-grad" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ism3d.arts.lens.sie_grad">
-<code class="sig-prename descclassname">ism3d.arts.lens.</code><code class="sig-name descname">sie_grad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">par</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/arts/lens.html#sie_grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.arts.lens.sie_grad" title="Permalink to this definition">¶</a></dt>
-<dd><p>NAME: sie_grad</p>
-<p>PURPOSE: compute the deflection of an SIE potential</p>
-<p>USAGE: (xg, yg) = sie_grad(x, y, par)</p>
-<dl>
-<dt>ARGUMENTS:</dt><dd><dl>
-<dt>x, y: vectors or images of coordinates;</dt><dd><p>should be matching numpy ndarrays</p>
-</dd>
-<dt>par: vector of parameters with 1 to 5 elements, defined as follows:</dt><dd><p>par[0]: lens strength, or ‘Einstein radius’
-par[1]: (optional) x-center (default = 0.0)
-par[2]: (optional) y-center (default = 0.0)
-par[3]: (optional) axis ratio (default=1.0)
-par[4]: (optional) major axis Position Angle</p>
-<blockquote>
-<div><p>in degrees c.c.w. of x axis. (default = 0.0)</p>
-</div></blockquote>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>RETURNS: tuple (xg, yg) of gradients at the positions (x, y)</p>
-<dl>
-<dt>NOTES: This routine implements an ‘intermediate-axis’ conventionp.</dt><dd><dl class="simple">
-<dt>Analytic forms for the SIE potential can be found in:</dt><dd><p>Kassiola &amp; Kovner 1993, ApJ, 417, 450
-Kormann et al. 1994, A&amp;A, 284, 285
-Keeton &amp; Kochanek 1998, ApJ, 495, 157</p>
-</dd>
-</dl>
-<p>The parameter-order convention in this routine differs from that
-of a previous IDL routine of the same name by ASB.</p>
-</dd>
-</dl>
-<p>WRITTEN: Adam S. Bolton, U of Utah, 2009</p>
-</dd></dl>
-
 </div>
 
 
@@ -314,15 +242,6 @@ of a previous IDL routine of the same name by ASB.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ism3d.arts.lens.xy_rotate.html" class="btn btn-neutral float-right" title="ism3d.arts.lens.xy_rotate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ism3d.arts.lens.gauss_2d.html" class="btn btn-neutral float-left" title="ism3d.arts.lens.gauss_2d" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
