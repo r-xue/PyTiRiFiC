@@ -102,11 +102,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Parameter File Format</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interpreter">Interpreter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datatype-expression-support">DataType/Expression Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#section-keyword-reference">Section/Keyword Reference</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#sections">Sections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-magic-of">The magic of “&#64;”</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#others">Others</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#units">Units</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="casa6.html">CASA6 Installation</a></li>
@@ -245,16 +248,142 @@
 </style>
 <div class="section" id="parameter-file-format">
 <h1>Parameter File Format<a class="headerlink" href="#parameter-file-format" title="Permalink to this headline">¶</a></h1>
-<p>The basic syntax for the .inp file format is explained in the parameter definition file: <a class="reference external" href="https://github.com/r-xue/GMaKE/blob/master/gmake/parameters.inp">parameters.inp</a> .</p>
-<p>After a comparison among several readable plain-text syntaxes potentially suitable for the input file choice (e.g., csv/json/yaml/yanny/xml), I decide to keep using the native .inp format while gradually adding the support the traditional Python config file format (from the <a class="reference external" href="https://docs.python.org/3/library/configparser.html">ConfigParser</a> module).</p>
 <div class="section" id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
-<p>The content of a <strong>GMaKE</strong> input parameter file is always divided into <strong>sections</strong>.
-Any line begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> (followed with the <strong>section name</strong>) marks the beginning of a new input section (see <a class="reference external" href="https://github.com/r-xue/GMaKE/tree/master/examples/inpfile">examples</a>).
-Each section usually describes one specific aspect of parameterized models or provides controls on how the program works.</p>
+<p>The syntax of <strong>ism3d</strong> input parameter files (.inp or .ini) strictly follows the <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> format, which can be easily parsed by the built-in Python module <a class="reference external" href="https://docs.python.org/3/library/configparser.html">configparser</a>.
+The choice was made after a comparison among several readable plain-text syntaxes options (e.g., csv/json/yaml/yanny/xml), mainly due to its simplifcity and wide support from many other languages.
+Foundamentally, the file content is always divided into <strong>sections</strong>, each of which contains keys with values.
+As a regular <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> file, user comments (starting with <strong>#</strong>)are supported.</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/configparser.html">configparser</a> natively do not guess datatypes of values and always storing them internally as string.
+To support more advantages features, we build an under-layer intepreter to further convert the string-based input metadata into type-sensitive nested dictionary using <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>.
+This nested dictionary not only specifiy individual source models, but also contain the metadata of observed data and control model rendering and fitting workflows.
+Here, we describe some useful features built-in the parameter file intepreter and how to use sections to manage modeling workflows.</p>
+</div>
+<div class="section" id="interpreter">
+<h2>Interpreter<a class="headerlink" href="#interpreter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="datatype-expression-support">
+<h3>DataType/Expression Support<a class="headerlink" href="#datatype-expression-support" title="Permalink to this headline">¶</a></h3>
+<p>All values associated with individual keys will be evaluated by <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>, which treats strings as mathematical expressions and statements (as an alterantive to <a class="reference external" href="https://docs.python.org/3/library/ast.html#ast.literal_eval">ast.literal_eval()</a> or the built-in <a class="reference external" href="https://docs.python.org/3/library/functions.html#eval">eval()</a>).
+Therefore, all values specified parameter files should be written as Python literals, and later mapped into desired data types (see the example below). Beside the default built-in Python datatypes, we also include some objects from astropy (e.g., <code class="docutils literal notranslate"><span class="pre">astropy.units</span></code> and <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code>).
+Specifcailly, we add the following notation into the <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a> symtable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span>           <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">units</span>
+<span class="n">Angle</span>       <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">coordiante</span><span class="o">.</span><span class="n">Angle</span>
+<span class="n">Quantity</span>    <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">quantity</span>
+<span class="n">SkyCoord</span>    <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">SkyCoord</span>
+<span class="n">np</span>          <span class="p">:</span> <span class="n">numpy</span>
+</pre></div>
+</div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[disk1]</span>
+<span class="na">type</span>          <span class="o">=</span>      <span class="s">&#39;disk3d&#39;</span>
+<span class="na">import</span>        <span class="o">=</span>      <span class="s">&#39;basics&#39;</span>
+<span class="na">z</span>           <span class="o">=</span>        <span class="s">4.06</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">SkyCoord(ra=0,dec=0,unit=&quot;deg&quot;)</span>
+<span class="na">contflux</span>     <span class="o">=</span>       <span class="s">(0.00001 * u.Unit(&#39;Jy&#39;),20* u.Unit(&#39;GHz&#39;),1.0)</span>
+<span class="na">pa</span>          <span class="o">=</span>        <span class="s">(70+90)*u.deg</span>
+<span class="na">inc</span>         <span class="o">=</span>        <span class="s">60.00*u.deg</span>
+<span class="na">sbProf</span>       <span class="o">=</span>       <span class="s">(&#39;norm2d&#39;,40*u.kpc)</span>
+</pre></div>
+</div>
+<p>We note that the converted datatypes for some parameters is always restricted. For example, <code class="docutils literal notranslate"><span class="pre">xypos</span></code> will be saved as a SkyCoord object although it can be written as a two-element tuple, a string, or a litereal expression of SkyCoord.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[object1]</span>
+<span class="na">...</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">SkyCoord(ra=0,dec=0,unit=&quot;deg&quot;)    # option 1</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">&#39;23h46m09.4373s +12d49m19.2479s&#39;   # option 2</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">(189.2933333-1*40/3600,62.3711111+1*15/3600)  # option 3</span>
+<span class="na">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="section-keyword-reference">
+<h3>Section/Keyword Reference<a class="headerlink" href="#section-keyword-reference" title="Permalink to this headline">¶</a></h3>
+<p>Section referencing is introduced to link the parameters from one section (with dedicated purposes) to one keyword of another section.
+For example, we can link a section describing gravitional potential to the rotation curve of a disk model (see <code class="docutils literal notranslate"><span class="pre">basics.rcProf</span></code>)</p>
+<p>Another important application of section referencing is sharing common parameters between different sections.
+Specifcailly, a set of keyword which can be “imported” into another input section using the syntax <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">=</span> <span class="pre">'section_name'</span></code>
+Then a group of parameters can be shared across several sections of different purpose
+For example, if two emission lines arised from the same thin-disk galaxy geometry but with different spatial distribution in the disk plane,
+we can write the parameters describing disk geometry into one paramater section and only reference them from other two sections actually specifiying line models. This will simplying model fitting and reduce redudent paramater requirements (see <code class="docutils literal notranslate"><span class="pre">co43.import</span></code> and <code class="docutils literal notranslate"><span class="pre">ci10.import</span></code>)</p>
+<p>Keyword referencing can be used to “tie” different parameters within a section or even across differen section. In the example below, <code class="docutils literal notranslate"><span class="pre">ci10.lineflux</span></code> is set to a third of the value of <code class="docutils literal notranslate"><span class="pre">co43.lineflux</span></code>.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[basics]</span>
+<span class="na">object</span>         <span class="o">=</span>    <span class="s">&#39;bx610&#39;</span>
+<span class="na">z</span>              <span class="o">=</span>    <span class="s">2.21</span>
+<span class="na">pa</span>             <span class="o">=</span>    <span class="s">-54.22660862671279 * u.Unit(&#39;deg&#39;)</span>
+<span class="na">inc</span>            <span class="o">=</span>    <span class="s">46.24786218695453 * u.Unit(&#39;deg&#39;)</span>
+<span class="na">xypos</span>          <span class="o">=</span>    <span class="s">&#39;23h46m09.4373s +12d49m19.2479s&#39; # or SkyCoord(&#39;23h46m09.4373s +12d49m19.2479s&#39;,frame=&#39;icrs&#39;)</span>
+<span class="na">vsys</span>           <span class="o">=</span>      <span class="s">104 * u.Unit(&#39;km / s&#39;)</span>
+<span class="na">rcProf</span>         <span class="o">=</span>      <span class="s">(&#39;potential&#39;,&#39;pots&#39;)</span>
+<span class="na">vSigma</span>         <span class="o">=</span>        <span class="s">50.430210605487204 * u.Unit(&#39;km / s&#39;)</span>
+<span class="na">vrot_rpcorr</span>    <span class="o">=</span>      <span class="s">True</span>
+
+<span class="k">[pots]</span>
+<span class="na">type</span>           <span class="o">=</span>      <span class="s">&#39;potential&#39;</span>
+<span class="na">import</span>         <span class="o">=</span>      <span class="s">&#39;basics&#39;</span>
+<span class="na">expdisk</span>        <span class="o">=</span>      <span class="s">(1000.2938616145047 * u.Unit(&#39;solMass / pc2&#39;),3.5 * u.Unit(&#39;kpc&#39;))</span>
+<span class="na">dexpdisk</span>       <span class="o">=</span>       <span class="s">(10 * u.Unit(&#39;solMass / pc3&#39;),3.5 * u.Unit(&#39;kpc&#39;),0.5 * u.Unit(&#39;kpc&#39;))</span>
+<span class="na">nm3expdisk</span>     <span class="o">=</span>       <span class="s">(10 * u.Unit(&#39;solMass / pc3&#39;),3.5 * u.Unit(&#39;kpc&#39;),0.5 * u.Unit(&#39;kpc&#39;),True)</span>
+<span class="na">nfw</span>            <span class="o">=</span>      <span class="s">(500000000000.0 * u.Unit(&#39;solMass&#39;),2.21)</span>
+<span class="na">isochrone</span>      <span class="o">=</span>      <span class="s">(10**10*u.Unit(&#39;solMass&#39;),0.1*u.kpc)</span>
+<span class="na">kepler</span>         <span class="o">=</span>       <span class="s">10**10*u.Unit(&#39;solMass&#39;)</span>
+
+<span class="k">[co43]</span>
+<span class="na">type</span>               <span class="o">=</span>  <span class="s">&#39;disk3d&#39;</span>
+<span class="na">import</span>             <span class="o">=</span>  <span class="s">&#39;basics&#39;</span>
+<span class="na">note</span>               <span class="o">=</span>  <span class="s">&#39;CO 4-3 of BX610 in BB2&#39;</span>
+<span class="na">vis</span>                <span class="o">=</span>   <span class="s">&#39;../data/bx610/alma/2013.1.00059.S/bb3.ms.pt2&#39;</span>
+<span class="na">restfreq</span>           <span class="o">=</span>  <span class="s">461.0407682 * u.Unit(&#39;GHz&#39;)</span>
+<span class="na">lineflux</span>           <span class="o">=</span>  <span class="s">1.4 * u.Unit(&#39;Jy km / s&#39;)</span>
+<span class="na">sbProf</span>             <span class="o">=</span>  <span class="s">(&#39;sersic2d&#39;,2.0*u.kpc,1)</span>
+<span class="na">vbProf</span>             <span class="o">=</span>  <span class="s">(&#39;sech&#39;,0.25*u.kpc)</span>
+
+<span class="k">[ci10]</span>
+<span class="na">type</span>               <span class="o">=</span>  <span class="s">&#39;disk3d&#39;</span>
+<span class="na">import</span>             <span class="o">=</span>  <span class="s">&#39;basics&#39;</span>
+<span class="na">note</span>               <span class="o">=</span>  <span class="s">&#39;CI 1-0 of BX610 in BB2&#39;</span>
+<span class="na">vis</span>                <span class="o">=</span>  <span class="s">&#39;../data/bx610/alma/2013.1.00059.S/bb1.ms.pt2&#39;</span>
+<span class="na">restfreq</span>           <span class="o">=</span>  <span class="s">492.160651 * u.Unit(&#39;GHz&#39;)</span>
+<span class="na">lineflux</span>           <span class="o">=</span>  <span class="s">co43[&#39;lineflux&#39;]/3</span>
+<span class="na">sbProf</span>             <span class="o">=</span>  <span class="s">(&#39;sersic2d&#39;,3.0*u.kpc,1)</span>
+<span class="na">vbProf</span>             <span class="o">=</span>  <span class="s">(&#39;sech&#39;,0.5*u.kpc)</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="sections">
 <h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
+<p>Any line begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> (followed with the <strong>section name</strong>) marks the beginning of a new input section (see <a class="reference external" href="https://github.com/r-xue/GMaKE/tree/master/examples/inpfile">examples</a>).
+Each section usually describes one specific aspect of parameterized models or provides controls on how the program works.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">##########################################################################################</span>
+<span class="na">[disk1] # specifications of disk1</span>
+<span class="c1">##########################################################################################</span>
+
+<span class="na">type</span>          <span class="o">=</span>      <span class="s">&#39;disk3d&#39;</span>
+<span class="na">import</span>        <span class="o">=</span>      <span class="s">&#39;basics&#39;</span>
+<span class="na">z</span>           <span class="o">=</span>        <span class="s">4.06</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">(189.2933333+0*40/3600,62.3711111+1*15/3600)</span>
+<span class="na">contflux</span>     <span class="o">=</span>       <span class="s">(0.00001 * u.Unit(&#39;Jy&#39;),20* u.Unit(&#39;GHz&#39;),8.0)</span>
+<span class="na">pa</span>          <span class="o">=</span>        <span class="s">70.00*u.deg</span>
+<span class="na">inc</span>         <span class="o">=</span>        <span class="s">60.00*u.deg</span>
+<span class="na">sbProf</span>       <span class="o">=</span>       <span class="s">(&#39;norm2d&#39;,40*u.kpc)</span>
+
+<span class="c1">###########################################################################################</span>
+<span class="na">[disk2] # specifications of disk2 (eqvauilent to disk1, despite different rendering option</span>
+<span class="c1">###########################################################################################</span>
+
+<span class="na">type</span>          <span class="o">=</span>       <span class="s">&#39;apmodel&#39;</span>
+<span class="na">z</span>            <span class="o">=</span>       <span class="s">4.0548</span>
+<span class="na">xypos</span>        <span class="o">=</span>       <span class="s">(189.2933333+0*40/3600,62.3711111+0*15/3600)</span>
+<span class="na">contflux</span>     <span class="o">=</span>       <span class="s">(0.001 * u.Unit(&#39;Jy&#39;),46 * u.Unit(&#39;GHz&#39;),3.0)</span>
+<span class="na">sbProf</span>       <span class="o">=</span>       <span class="s">(&#39;Gaussian2D&#39;,40*u.kpc,20*u.kpc,70*u.deg)</span>
+
+<span class="c1">##########################################################################################</span>
+<span class="na">[sie1] # lense model</span>
+<span class="c1">##########################################################################################</span>
+
+<span class="na">type</span>        <span class="o">=</span> <span class="s">&#39;lens&#39;</span>
+<span class="na">xypos</span>       <span class="o">=</span>        <span class="s">&#39;12h37m11.89s +62d22m11.8s&#39;</span>
+<span class="na">lsProf</span>      <span class="o">=</span>  <span class="s">(&#39;sie&#39;,10*u.arcsec,0.5,70*u.deg)</span>
+</pre></div>
+</div>
 <p>A input section should fall into one of the following categories:</p>
 <ul>
 <li><p>Model Properties</p>
@@ -268,20 +397,14 @@ Its content will be parsed and used by <strong>GMaKE</strong>, to build a spatia
 </li>
 <li><p>Program Controls</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">optimize</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">[ism3d.optimize]</span></code></p>
 <p>a section named <code class="docutils literal notranslate"><span class="pre">optimize</span></code>, which contains parameters controlling how the program perform parameter optimization</p>
-<p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">analyze</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.analyze]</span></code></p>
 <p>a section named <code class="docutils literal notranslate"><span class="pre">analyze</span></code>, which contains parameters controlling how the program runs diagnostics analysis on fitting results.</p>
-<p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">plot</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.plot]</span></code></p>
 <p>a section named <code class="docutils literal notranslate"><span class="pre">plot</span></code>, which contains parameters controlling how the program generate diagnostic plots</p>
-<p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">general</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.general</span></code></p>
 <p>a section named <code class="docutils literal notranslate"><span class="pre">misc</span></code>, which contains some general configuration information on <strong>GMaKE</strong> (e.g., specifying the location of output files or working folders)</p>
-</div></blockquote>
-</li>
-<li><p>Keyword Groups</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">keyword_group_name</span></code></p>
-<p>A set of keyword which can be “imported” into another input section using the syntax <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">'keyword_group_name'</span></code>. One good user example is a group of parameters shared across different emission components.</p>
 </div></blockquote>
 </li>
 <li><p>Comments</p>
@@ -298,8 +421,8 @@ Its content will be parsed and used by <strong>GMaKE</strong>, to build a spatia
 <p>Within each none-comments section, every line always follow the basic keyword-value pair syntax, separated by white space.
 The first word is considered as the parameter “keyword”, and the rest of the line will be considered as its value.
 In the <strong>GMaKE</strong> input file, the “value” needs to be the string representation of a Python object (think about the output of the Python function <code class="docutils literal notranslate"><span class="pre">repr</span></code>), e.g.,</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>keyword1    <span class="s1">&#39;test&#39;</span>      <span class="c1">#   a string &quot;test&quot; is assigned to keyword1</span>
-keyword2    <span class="m">3</span>.0         <span class="c1">#   a float-type value of 3.0 is assigned to keyword2</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">keyword1</span>    <span class="s1">&#39;test&#39;</span>      <span class="c1">#   a string &quot;test&quot; is assigned to keyword1</span>
+<span class="n">keyword2</span>    <span class="mf">3.0</span>         <span class="c1">#   a float-type value of 3.0 is assigned to keyword2</span>
 </pre></div>
 </div>
 <p>The keywords from one section will not inference keywords from another section with a different section name.
@@ -318,9 +441,6 @@ This feature is only designed to work a backend solution for some special parama
 <p>The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
 To clear up any confusion, absolute paths can also be used.</p>
 </div></blockquote>
-</div>
-<div class="section" id="the-magic-of">
-<h2>The magic of “&#64;”<a class="headerlink" href="#the-magic-of" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Any line begins with ‘&#64;’ mark the beginning of a new section (as in this file)</p>
 <blockquote>
@@ -370,21 +490,6 @@ the place where this line is will be important as inp2mod will overwrite existin
 </ul>
 <p>A simple math function could be implemented in future, e.g.,
 <em>px = 2.0*(py&#64;objz)</em>; <em>px = sqrt(*(py&#64;objz))</em></p>
-<p><strong>“#”</strong>:</p>
-<ul class="simple">
-<li><p>user comments, not read by the <strong>*gmake_utils/gmake_readpars*</strong></p></li>
-<li><p>&#64;comments / &#64;changelog can be also used for comments/notes</p></li>
-</ul>
-</div>
-<div class="section" id="units">
-<h2>Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
-<p>We support astropy.units/coordinates syntax for defning parameter</p>
-<p>Ref:
-<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html">https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html</a></p>
-<p>Either number (with default units) or quality (number*quanity)</p>
-<p>By defauly, number if fine., but it can handle quatity and to conversion automatically</p>
-<p>u           : astropy.units
-Angle       : astropy.coordiante.Angle</p>
 </div>
 </div>
 
