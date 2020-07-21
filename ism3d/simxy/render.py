@@ -45,6 +45,7 @@ from astropy.modeling import models as apmodels
 from ..arts.utils import fluxscale_from_contflux, clouds_split
 from ..arts.sparse import clouds_from_obj
 from pprint import pprint
+from ..arts.apmodel2d import get_apmodel2d
 
 """
     Note: 
@@ -136,6 +137,8 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
                 False: normaliz the peak readout in the plane template to 1
                 
     """
+    
+    model_name=obj['sbProf'][0].lower()
 
     naxis=w._naxis
     # need to fix the astropy bug
@@ -154,65 +157,7 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
         kps=cosmos.kpc_proper_per_arcmin(obj['z']).to(u.kpc/u.arcsec)
         dp=cell*kps
     
-    if  not isinstance(obj['sbProf'],(tuple,list)):
-        obj['sbProf']=(obj['sbProf'],)
-    model_name=obj['sbProf'][0]
-    model_par=obj['sbProf'][1:]
-
-    if  model_name == 'AiryDisk2D':
-        radius=(model_par[0]/dp).value
-        apmodel=getattr(apmodels,model_name)(1,px,py,radius)
-
-    if  model_name == 'Box2D':
-        x_width=(model_par[0]/dp).value
-        y_width=(model_par[1]/dp).value
-        apmodel=getattr(apmodels,model_name)(1,px,py,x_width,y_width)
-
-    if  model_name == 'Const2D':
-        apmodel=getattr(apmodels,model_name)(1)
-
-    if  model_name == 'Ellipse2D':
-        a=(model_par[0]/dp).value
-        b=(model_par[1]/dp).value
-        theta=(model_par[2]+90*u.deg).to_value(u.rad)
-        apmodel=getattr(apmodels,model_name)(1, px,py, a, b, theta)
-
-    if  model_name == 'Disk2D':
-        R_0=(model_par[0]/dp).value
-        apmodel=getattr(apmodels,model_name)(1, px,py, R_0)
-
-    if  model_name == 'Gaussian2D':
-        x_stddev=(model_par[0]/dp).value
-        y_stddev=(model_par[1]/dp).value
-        theta=(model_par[2]+90*u.deg).to_value(u.rad)
-        apmodel=getattr(apmodels,model_name)(1, px,py,x_stddev,y_stddev,theta)
-    
-    if  model_name == 'Planar2D':
-        slope_x=(model_par[0]/dp).value
-        slope_y=(model_par[1]/dp).value
-        apmodel=getattr(apmodels,model_name)(slope_x,slope_y,1)
-    
-    if  model_name == 'Sersic2D':
-        r_eff=(model_par[0]/dp).value
-        n=model_par[1]
-        try:
-            ellip=model_par[2]
-        except:
-            ellip=0
-        try:
-            theta=(model_par[3]+90*u.deg).to_value(u.rad)
-        except:
-            theta=(90*u.deg).to_value(u.rad)
-        apmodel=getattr(apmodels,model_name)(1, r_eff,n,px,py,ellip,theta)   
-    
-    if  model_name == 'Ring2D':
-        r_in=(model_par[0]/dp).value
-        width=(model_par[1]/dp).value
-        apmodel=getattr(apmodels,model_name)(1, px,py,r_in,width)
-
-    if  model_name == 'RickerWavelet2D':
-        sigma=(model_par[0]/dp).value
-        apmodel=getattr(apmodels,model_name)(1, px,py,sigma)    
+    apmodel=get_apmodel2d(obj,px=px,py=py,pscale=dp)
     
     #   try to render apmodel
     try:
@@ -228,7 +173,7 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
         pass
     
     #   try to add point-source model
-    if  model_name == 'Point':
+    if  model_name == 'point':
         out0[round(float(py)),round(float(px))]=1.0
     else:
         # only need to normalizate for non-point source
@@ -236,7 +181,7 @@ def render_apmodel2d(obj,w,out=None,normalize=True):
             if  not out0.any():
                 out0/=out0.sum()
         else:
-            if  model_name=='Sersic2D':
+            if  model_name=='sersic2d':
                 # sersic model amp is not defined as peak value.
                 # we do a peak normalization to maintain consistency
                 out0/=np.max(out0)

@@ -5,66 +5,60 @@ Cleve got a lens, Kevin got a lens
 """
 
 import numpy as np
+import astropy.units as u
+from lenstronomy.LensModel.lens_model import LensModel
 
-
-def xy_rotate(x, y, xcen, ycen, phi):
+def sie_rt(x,y,
+           theta_e=1,xc=0,yc=0,pa=0,q=1.0,
+           method='ls'):
     """
-    NAME: xy_rotate
-
-    PURPOSE: Transform input (x, y) coordiantes into the frame of a new
-             (x, y) coordinate system that has its origin at the point
-             (xcen, ycen) in the old system, and whose x-axis is rotated
-             c.c.w. by phi degrees with respect to the original x axis.
-
-    USAGE: (xnew,ynew) = xy_rotate(x, y, xcen, ycen, phi)
-
-    ARGUMENTS:
-      x, y: numpy ndarrays with (hopefully) matching sizes
-            giving coordinates in the old system
-      xcen: old-system x coordinate of the new origin
-      ycen: old-system y coordinate of the new origin
-      phi: angle c.c.w. in degrees from old x to new x axis
-
-    RETURNS: 2-item tuple containing new x and y coordinate arrays
-
-    WRITTEN: Adam S. Bolton, U. of Utah, 2009
+    performe ray-tracing for a SIE potential
+    two methods:    abs, using sie_grad_abs()
+                    ls, using lenstronomy
+    theta_e:  Einstein radius
+    xc,yc:    x/y position of center
+    pa:    P.A. (degree)
+    q:        axiasratio b/a
+    
     """
-    phirad = np.deg2rad(phi)
-    xnew = (x - xcen) * np.cos(phirad) + (y - ycen) * np.sin(phirad)
-    ynew = (y - ycen) * np.cos(phirad) - (x - xcen) * np.sin(phirad)
-    return (xnew,ynew)
-
-def gauss_2d(x, y, par):
-    """
-    NAME: gauss_2d
-
-    PURPOSE: Implement 2D Gaussian function
-
-    USAGE: z = gauss_2d(x, y, par)
-
-    ARGUMENTS:
-      x, y: vecors or images of coordinates;
-            should be matching numpy ndarrays
-      par: vector of parameters, defined as follows:
-        par[0]: amplitude
-        par[1]: intermediate-axis sigma
-        par[2]: x-center
-        par[3]: y-center
-        par[4]: axis ratio
-        par[5]: c.c.w. major-axis rotation w.r.t. x-axis
+    
+    if  method.lower()=='ls':
+        # see e1/e2 def:
+        #   https://github.com/sibirrer/lenstronomy_extensions
+        #       enstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb
+        # we only used the "ray_shotting" api here but a higher-level module:
+        #   lenstronomy.ImSim.image_model import ImageModel 
+        # can be used:
+        # see: lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb
+        e1=(1-q)/(1+q)*np.cos(2*pa/180*np.pi)
+        e2=(1-q)/(1+q)*np.sin(2*pa/180*np.pi)
+        lensModel = LensModel(lens_model_list=['SIE'])
+        kwargs_lens = [{'theta_E': theta_e, 'e1': e1, 'e2': e2, 
+                        'center_x': xc, 'center_y': yc}]        
+        xs, ys = lensModel.ray_shooting(x,y, kwargs_lens)
+    
+    if  method.lower()=='asb':
         
-    RETURNS: 2D Gaussian evaluated at x-y coords
+        #l_amp = 200   # Einstein radius
+        #l_xcen = 0.0  # x position of center
+        #l_ycen = 0.0  # y position of center
+        #l_axrat = 0.5 # minor-to-major axis ratio
+        #l_pa = 30.    # major-axis position angle (degrees) c.c.w. from x axis
+        # pa may need to rotated by 90degree due to different convention
+        lpar = np.asarray([theta_e, xc, yc, q, pa])
+        
+        xg,yg=sie_grad_abs(x,y,lpar)
+        xs=x-xg ; ys=y-yg
+        # xx-xg,yy-yg source plane coordins
+        # xx,yy lens plane
+        
+    return xs,ys
 
-    NOTE: amplitude = 1 is not normalized, but rather has max = 1
-
-    WRITTEN: Adam S. Bolton, U. of Utah, 2009
+def sie_grad_abs(x, y, par):
     """
-    (xnew,ynew) = xy_rotate(x, y, par[2], par[3], par[5])
-    r_ell_sq = ((xnew**2)*par[4] + (ynew**2)/par[4]) / np.abs(par[1])**2
-    return par[0] * np.exp(-0.5*r_ell_sq)
-
-def sie_grad(x, y, par):
-    """
+    source:
+        http://www.physics.utah.edu/~bolton/python_lens_demo/
+        
     NAME: sie_grad
 
     PURPOSE: compute the deflection of an SIE potential
