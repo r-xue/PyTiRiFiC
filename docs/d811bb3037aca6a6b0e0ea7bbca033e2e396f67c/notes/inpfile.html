@@ -107,9 +107,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#section-keyword-reference">Section/Keyword Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#sections">Sections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#keyword-value-pairs">Keyword-Value Pairs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#others">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#section-types">Section Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source-model-type-disk3d-or-type-apmodel">Source Model (type=’disk3d’ or type=’apmodel’)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamical-model-type-potential">Dynamical Model (type=’potential’)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lense-model-type-lens">Lense Model (type=’lens’)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-type-data">Database (type=’data’)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-management-with-reserved-section-names">Workflow Management with Reserved Section Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keyword-value">Keyword-Value</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="casa6.html">CASA6 Installation</a></li>
@@ -251,11 +257,12 @@
 <div class="section" id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <p>The syntax of <strong>ism3d</strong> input parameter files (.inp or .ini) strictly follows the <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> format, which can be easily parsed by the built-in Python module <a class="reference external" href="https://docs.python.org/3/library/configparser.html">configparser</a>.
-The choice was made after a comparison among several readable plain-text syntaxes options (e.g., csv/json/yaml/yanny/xml), mainly due to its simplifcity and wide support from many other languages.
-Foundamentally, the file content is always divided into <strong>sections</strong>, each of which contains keys with values.
-As a regular <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> file, user comments (starting with <strong>#</strong>)are supported.</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/configparser.html">configparser</a> natively do not guess datatypes of values and always storing them internally as string.
-To support more advantages features, we build an under-layer intepreter to further convert the string-based input metadata into type-sensitive nested dictionary using <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>.
+The choice was made after a comparison among several readable plain-text syntaxes options (e.g., json/yaml/xml/TOML), mainly due to the simplifcity and wide support from many other languages for the <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> format.
+It’s also very readable and easy to write, much less verbose than other syntaxs, and support inline comments (starting with “#”).
+Foundamentally, the file content is always divided into <strong>sections</strong>, each of which contains keys with values.</p>
+<p>However, <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> is not designed as a data interchange format (not strongly typed), and <a class="reference external" href="https://docs.python.org/3/library/configparser.html">configparser</a> natively do not guess datatypes of values and always storing them internally as string,
+<a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> files are also typically limited to two levels and doesn’t support arbitary nesting.
+To support more advantages features need for our purpose, we build an under-layer interpreter to further convert the string-based input values into datatype-sensitive nested dictionary using <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>.
 This nested dictionary not only specifiy individual source models, but also contain the metadata of observed data and control model rendering and fitting workflows.
 Here, we describe some useful features built-in the parameter file intepreter and how to use sections to manage modeling workflows.</p>
 </div>
@@ -263,8 +270,9 @@ Here, we describe some useful features built-in the parameter file intepreter an
 <h2>Interpreter<a class="headerlink" href="#interpreter" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="datatype-expression-support">
 <h3>DataType/Expression Support<a class="headerlink" href="#datatype-expression-support" title="Permalink to this headline">¶</a></h3>
-<p>All values associated with individual keys will be evaluated by <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>, which treats strings as mathematical expressions and statements (as an alterantive to <a class="reference external" href="https://docs.python.org/3/library/ast.html#ast.literal_eval">ast.literal_eval()</a> or the built-in <a class="reference external" href="https://docs.python.org/3/library/functions.html#eval">eval()</a>).
-Therefore, all values specified parameter files should be written as Python literals, and later mapped into desired data types (see the example below). Beside the default built-in Python datatypes, we also include some objects from astropy (e.g., <code class="docutils literal notranslate"><span class="pre">astropy.units</span></code> and <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code>).
+<p>All values associated with individual keys will be evaluated by <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>, which treats strings as mathematical expressions and statements (an alterantive to <a class="reference external" href="https://docs.python.org/3/library/ast.html#ast.literal_eval">ast.literal_eval()</a> or the built-in “evil” <a class="reference external" href="https://docs.python.org/3/library/functions.html#eval">eval()</a>).
+Therefore, all values specified within parameter files should be written as Python literals（e.g., string representations of Python objects). They are evaluated and mapped into desired data types (see the example below).
+Beside the default built-in Python datatypes, we also include some objects from astropy (e.g., <code class="docutils literal notranslate"><span class="pre">astropy.units</span></code> and <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code>).
 Specifcailly, we add the following notation into the <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a> symtable:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span>           <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">units</span>
 <span class="n">Angle</span>       <span class="p">:</span> <span class="n">astropy</span><span class="o">.</span><span class="n">coordiante</span><span class="o">.</span><span class="n">Angle</span>
@@ -284,7 +292,11 @@ Specifcailly, we add the following notation into the <a class="reference externa
 <span class="na">sbProf</span>       <span class="o">=</span>       <span class="s">(&#39;norm2d&#39;,40*u.kpc)</span>
 </pre></div>
 </div>
-<p>We note that the converted datatypes for some parameters is always restricted. For example, <code class="docutils literal notranslate"><span class="pre">xypos</span></code> will be saved as a SkyCoord object although it can be written as a two-element tuple, a string, or a litereal expression of SkyCoord.</p>
+<p>While <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a> generally determines the value content and type, we note that the converted datatypes for some individual parameters will further passed through further parsing and converted into restricted object types.
+For example, <code class="docutils literal notranslate"><span class="pre">xypos</span></code> will be saved as a SkyCoord object although it can be written as a two-element tuple, a string, or a litereal expression of SkyCoord.</p>
+<p>In addition, the built-in interpreter in <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> will check parsed datatype with the expected datatype of each keyword, and provide warning when unexpected values are detected (e.g. the position angle keyword <code class="docutils literal notranslate"><span class="pre">pa</span></code> should not be a string).</p>
+<p>The datatype-sensitive extension from traditional <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> files is similar to the design built in the <a class="reference external" href="https://en.wikipedia.org/wiki/TOML">TOML</a> format and its parsers.
+However, we decide to use a custome interpreter to not only handle basic datatype, but also support advanced datatypes and literal mathematical expression. The built-in interpreter will decide and check on value datatype expected for individual keywords (as the <code class="docutils literal notranslate"><span class="pre">xypos</span></code> example above)</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[object1]</span>
 <span class="na">...</span>
 <span class="na">xypos</span>       <span class="o">=</span>        <span class="s">SkyCoord(ra=0,dec=0,unit=&quot;deg&quot;)    # option 1</span>
@@ -293,17 +305,46 @@ Specifcailly, we add the following notation into the <a class="reference externa
 <span class="na">...</span>
 </pre></div>
 </div>
+<dl class="simple">
+<dt>If the first ASTEVAL evaluation fails, the program will:</dt><dd><p>do split() -&gt; re-evaluate on each element -&gt; assemble the results into a list -&gt; assign the list to the keyword
+This feature is only designed to work a backend solution for some special paramater input files</p>
+</dd>
+</dl>
+<p>The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
+To clear up any confusion, absolute paths can also be used.</p>
 </div>
 <div class="section" id="section-keyword-reference">
 <h3>Section/Keyword Reference<a class="headerlink" href="#section-keyword-reference" title="Permalink to this headline">¶</a></h3>
+<p>The keywords from one section will not inference keywords from another section with a different section name.
+In another word, a keyword will only reside within a section (or local)</p>
 <p>Section referencing is introduced to link the parameters from one section (with dedicated purposes) to one keyword of another section.
-For example, we can link a section describing gravitional potential to the rotation curve of a disk model (see <code class="docutils literal notranslate"><span class="pre">basics.rcProf</span></code>)</p>
+For example, we can link a section describing gravitional potential to the rotation curve of a disk model (see <code class="docutils literal notranslate"><span class="pre">basics.rcProf</span></code>):</p>
+<blockquote>
+<div><p>rcProf         =      (‘potential’,’pots’)</p>
+</div></blockquote>
 <p>Another important application of section referencing is sharing common parameters between different sections.
 Specifcailly, a set of keyword which can be “imported” into another input section using the syntax <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">=</span> <span class="pre">'section_name'</span></code>
 Then a group of parameters can be shared across several sections of different purpose
 For example, if two emission lines arised from the same thin-disk galaxy geometry but with different spatial distribution in the disk plane,
-we can write the parameters describing disk geometry into one paramater section and only reference them from other two sections actually specifiying line models. This will simplying model fitting and reduce redudent paramater requirements (see <code class="docutils literal notranslate"><span class="pre">co43.import</span></code> and <code class="docutils literal notranslate"><span class="pre">ci10.import</span></code>)</p>
-<p>Keyword referencing can be used to “tie” different parameters within a section or even across differen section. In the example below, <code class="docutils literal notranslate"><span class="pre">ci10.lineflux</span></code> is set to a third of the value of <code class="docutils literal notranslate"><span class="pre">co43.lineflux</span></code>.</p>
+we can write the parameters describing disk geometry into one paramater section and only reference them from other two sections actually specifiying line models. This will simplying model fitting and reduce redudent paramater requirements (see <code class="docutils literal notranslate"><span class="pre">co43.import</span></code> and <code class="docutils literal notranslate"><span class="pre">ci10.import</span></code>):</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">import</span>             <span class="o">=</span>  <span class="s">&#39;basics&#39;</span>
+</pre></div>
+</div>
+<p>Note that the place where this line is will be important as inp2mod will overwrite existing keywords by design</p>
+<p>Keyword referencing can be used to “tie” different parameters within a section or even across differen section. In the example below, <code class="docutils literal notranslate"><span class="pre">ci10.lineflux</span></code> is set to a third of the value of <code class="docutils literal notranslate"><span class="pre">co43.lineflux</span></code> as:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">lineflux</span>           <span class="o">=</span>  <span class="s">co43[&#39;lineflux&#39;]/3</span>
+</pre></div>
+</div>
+<p>In general, ‘A[b]’, “b&#64;A”, or “${A:b}” is interpreted as the value of the keyword “b” from Section “A”.
+Value slicing is supported, as ‘A[b][2]’, “b[2]&#64;A”, or “${A:b}[2]” is interpreted as the third element of the “b” value from Section “A”.
+e.g. “pa&#64;co21disk” = the position angle of the components named “co21disk”
+This capability is similar to the function of <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ExtendedInterpolation">configparser.ExtendedInterpolation</a>.
+More advanced mathmetical expressions and keyword reference can be combiend together, for example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">px</span> <span class="o">=</span> <span class="s">2.0*(py@objz)</span>
+<span class="na">px</span> <span class="o">=</span> <span class="s">sqrt(2*(py@objz))</span>
+</pre></div>
+</div>
+<p>as long as it follows the correct referening syntax and the expression can be understood by <a class="reference external" href="https://newville.github.io/asteval">ASTEVAL</a>.</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[basics]</span>
 <span class="na">object</span>         <span class="o">=</span>    <span class="s">&#39;bx610&#39;</span>
 <span class="na">z</span>              <span class="o">=</span>    <span class="s">2.21</span>
@@ -348,10 +389,51 @@ we can write the parameters describing disk geometry into one paramater section 
 </div>
 </div>
 </div>
-<div class="section" id="sections">
-<h2>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
-<p>Any line begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> (followed with the <strong>section name</strong>) marks the beginning of a new input section (see <a class="reference external" href="https://github.com/r-xue/GMaKE/tree/master/examples/inpfile">examples</a>).
-Each section usually describes one specific aspect of parameterized models or provides controls on how the program works.</p>
+<div class="section" id="section-types">
+<h2>Section Types<a class="headerlink" href="#section-types" title="Permalink to this headline">¶</a></h2>
+<p>As any <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> configuration file, the basic strcuture of <strong>ism3d</strong> parameter file compose of <strong>sections</strong>.
+Related key-value pairs are grouped into arbitarily named sections, names of which appear in square brackets (<code class="docutils literal notranslate"><span class="pre">[</span></code> and <code class="docutils literal notranslate"><span class="pre">]</span></code>).</p>
+<p>Each section usually describes one specific aspect of parameterized models or provides controls on planned workflow tasks, i.e.  Source Specifications, Modeling Workflows, MISC.</p>
+<p>One named parameter section generally fall into one of the following categories:</p>
+<div class="section" id="source-model-type-disk3d-or-type-apmodel">
+<h3>Source Model (type=’disk3d’ or type=’apmodel’)<a class="headerlink" href="#source-model-type-disk3d-or-type-apmodel" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>A “source-model” section describes the physical properties of a emission component (either line or continuum), with the
+section name as its identification. The keyword <code class="docutils literal notranslate"><span class="pre">type</span></code> can be <cite>disk3d</cite> or <cite>apmodel</cite>, which determine how the emission model is constructured and rendered.</p>
+</div></blockquote>
+</div>
+<div class="section" id="dynamical-model-type-potential">
+<h3>Dynamical Model (type=’potential’)<a class="headerlink" href="#dynamical-model-type-potential" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>A “dynamics-model” section describes the properties of a dynamical component, and its content will be used to specify kinematic model (e.g. rotational curve, veloccity dispersion) for line emission component(s).
+Its section name (or i.d.) is usually referenced in the keyword <cite>rcProf</cite> of “source-model” sections.
+By combing a “dynamics-model” model with the prescription of line emission spatial distribution (from a “source-model” section, <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> can construct the representation of a line emission in a spectral cube dimension.</p>
+</div></blockquote>
+</div>
+<div class="section" id="lense-model-type-lens">
+<h3>Lense Model (type=’lens’)<a class="headerlink" href="#lense-model-type-lens" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>A “lens-model” section describe the properties of a lensing model betwen the observer and simulated source</p>
+</div></blockquote>
+</div>
+<div class="section" id="database-type-data">
+<h3>Database (type=’data’)<a class="headerlink" href="#database-type-data" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>A “database” section specify the metadata of actual or simulated data  which will be used by <code class="docutils literal notranslate"><span class="pre">ism3d</span></code>.
+The content can include file paths of FITS image/spectral-cube to be models or MeasurementSet to be fitted, or any ancillary data useful for modelling (PSF images, uncertainty images/cube)</p>
+</div></blockquote>
+</div>
+<div class="section" id="workflow-management-with-reserved-section-names">
+<h3>Workflow Management with Reserved Section Names<a class="headerlink" href="#workflow-management-with-reserved-section-names" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Several section names are resevered for workflow managment (especially useful for the CLI interface)</p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.optimize]</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ism3d.optimize</span></code> section specify how the program performs parameter optimization (i.e. model fitting)</p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.analyze]</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ism3d.analyze</span></code> section control how the program runs diagnostics analysis and plotting from modelling results.</p>
+<p><code class="docutils literal notranslate"><span class="pre">[ism3d.general]</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ism3d.general</span></code> section provide general configuration information for <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> (e.g., specifying the location of output files or working folders)</p>
+</div></blockquote>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">##########################################################################################</span>
 <span class="na">[disk1] # specifications of disk1</span>
 <span class="c1">##########################################################################################</span>
@@ -384,112 +466,11 @@ Each section usually describes one specific aspect of parameterized models or pr
 <span class="na">lsProf</span>      <span class="o">=</span>  <span class="s">(&#39;sie&#39;,10*u.arcsec,0.5,70*u.deg)</span>
 </pre></div>
 </div>
-<p>A input section should fall into one of the following categories:</p>
-<ul>
-<li><p>Model Properties</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">emission_component_name</span></code></p>
-<p>The section describes the physical properties of a emission component (either line or continuum), with a user-specified section name.
-Its content will be parsed and used by <strong>GMaKE</strong>, to build a spatially resolved multi-wavelength reference emission model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">dynamics_component_name</span></code></p>
-<p>The section describes the properties of a dynamical component, and its content will be used to a build kinematic model (e.g. rotational curve, veloccity dispersion) for line emission component(s). By combing the kinematic model with the prescription of line emission spatial distribution, <strong>GMaKE</strong> can construct the representation of a line emission in a spectral cube dimension.</p>
-</div></blockquote>
-</li>
-<li><p>Program Controls</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">[ism3d.optimize]</span></code></p>
-<p>a section named <code class="docutils literal notranslate"><span class="pre">optimize</span></code>, which contains parameters controlling how the program perform parameter optimization</p>
-<p><code class="docutils literal notranslate"><span class="pre">[ism3d.analyze]</span></code></p>
-<p>a section named <code class="docutils literal notranslate"><span class="pre">analyze</span></code>, which contains parameters controlling how the program runs diagnostics analysis on fitting results.</p>
-<p><code class="docutils literal notranslate"><span class="pre">[ism3d.plot]</span></code></p>
-<p>a section named <code class="docutils literal notranslate"><span class="pre">plot</span></code>, which contains parameters controlling how the program generate diagnostic plots</p>
-<p><code class="docutils literal notranslate"><span class="pre">[ism3d.general</span></code></p>
-<p>a section named <code class="docutils literal notranslate"><span class="pre">misc</span></code>, which contains some general configuration information on <strong>GMaKE</strong> (e.g., specifying the location of output files or working folders)</p>
-</div></blockquote>
-</li>
-<li><p>Comments</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">comment/note/changlog</span></code></p>
-<p>Any section with the name containing the following word: <code class="docutils literal notranslate"><span class="pre">comment</span></code>, <code class="docutils literal notranslate"><span class="pre">note</span></code>, <code class="docutils literal notranslate"><span class="pre">changelog</span></code>. The content of such section will flagged as comments by <em>GMaKE</em>.</p>
-<p><em>Note</em>: <code class="docutils literal notranslate"><span class="pre">#</span></code> still marks the beginning of inline comments or commented lines, i.a. anything behind <code class="docutils literal notranslate"><span class="pre">#</span></code> will not be passed to the program.</p>
-</div></blockquote>
-</li>
-</ul>
 </div>
-<div class="section" id="keyword-value-pairs">
-<h2>Keyword-Value Pairs<a class="headerlink" href="#keyword-value-pairs" title="Permalink to this headline">¶</a></h2>
-<p>Within each none-comments section, every line always follow the basic keyword-value pair syntax, separated by white space.
-The first word is considered as the parameter “keyword”, and the rest of the line will be considered as its value.
-In the <strong>GMaKE</strong> input file, the “value” needs to be the string representation of a Python object (think about the output of the Python function <code class="docutils literal notranslate"><span class="pre">repr</span></code>), e.g.,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">keyword1</span>    <span class="s1">&#39;test&#39;</span>      <span class="c1">#   a string &quot;test&quot; is assigned to keyword1</span>
-<span class="n">keyword2</span>    <span class="mf">3.0</span>         <span class="c1">#   a float-type value of 3.0 is assigned to keyword2</span>
-</pre></div>
 </div>
-<p>The keywords from one section will not inference keywords from another section with a different section name.
-In another word, a keyword will only reside within a section (or local)</p>
-<ul class="simple">
-<li><p>Directory Path</p></li>
-</ul>
-<p>Technical note:</p>
-<blockquote>
-<div><p>The program uses the Python package ASTEVAL to determine the value content and type, not the evil eval()…
-If the first ASTEVAL evaluation fails, the program will:</p>
-<blockquote>
-<div><p>do split() -&gt; re-evaluate on each element -&gt; assemble the results into a list -&gt; assign the list to the keyword
-This feature is only designed to work a backend solution for some special paramater input files</p>
-</div></blockquote>
-<p>The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
-To clear up any confusion, absolute paths can also be used.</p>
-</div></blockquote>
-<ul>
-<li><p>Any line begins with ‘&#64;’ mark the beginning of a new section (as in this file)</p>
-<blockquote>
-<div><p>The section name is created from valid characters (ignoring comments) following  “&#64;”, with leading/trailing space removed
-some section names are reserved for special purposes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A name containing “comment”, “changelog”, “ignore” is considered as comments and the content in that section will be discarded by the program</p></li>
-<li><p>A name containing “optimize” denote the parameter section control the optimization.</p></li>
-<li><p>A name not meeting the above standard will be considered as a model component</p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><dl class="simple">
-<dt>denote the “parent” object of a parameter:</dt><dd><p>e.g. “<a class="reference external" href="mailto:pa&#37;&#52;&#48;co21disk">pa<span>&#64;</span>co21disk</a>” = the position angle of the components named “co21disk”</p>
-</dd>
-</dl>
-</li>
-<li><p>Tie the parameter values:</p>
-<blockquote>
-<div><p>when a parameter value is set to a string containing “&#64;”, it means its value is tied to a math expression of some other parameter(s)
-e.g.    if <a class="reference external" href="mailto:'vdis&#37;&#52;&#48;co21disk">‘vdis<span>&#64;</span>co21disk</a>’ is assigned to ‘vdis’ in the object <a class="reference external" href="mailto:'&#37;&#52;&#48;co10disk">‘<span>&#64;</span>co10disk</a>’ parameter section,</p>
-<blockquote>
-<div><p>then the value of <a class="reference external" href="mailto:'vdis&#37;&#52;&#48;co10disk">‘vdis<span>&#64;</span>co10disk</a>’ is always tied to that of <a class="reference external" href="mailto:'vdis&#37;&#52;&#48;co21disk">‘vdis<span>&#64;</span>co21disk</a>’ in modeling.
-if <a class="reference external" href="mailto:'2&#46;*influx&#37;&#52;&#48;line1">‘2<span>&#46;</span>*influx<span>&#64;</span>line1</a>’ is assigned to ‘intflux’ in the object <a class="reference external" href="mailto:'&#37;&#52;&#48;line2">‘<span>&#64;</span>line2</a>’ parameter section,
-then the value of <a class="reference external" href="mailto:'intflux&#37;&#52;&#48;line2">‘intflux<span>&#64;</span>line2</a>’ is always twice of <a class="reference external" href="mailto:'flux&#37;&#52;&#48;line1">‘flux<span>&#64;</span>line1</a>’</p>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p>one can cross-reference all keywords from a different section by using</p>
-<blockquote>
-<div><p>import    ‘sectionname’
-the place where this line is will be important as inp2mod will overwrite existing keywords by design</p>
-</div></blockquote>
-</li>
-<li><p>cross reference will only work at 1st level.</p></li>
-</ul>
-</div>
-<div class="section" id="others">
-<h2>Others<a class="headerlink" href="#others" title="Permalink to this headline">¶</a></h2>
-<p>Special syntax in parameter input files:</p>
-<p><strong>“&#64;”</strong>:</p>
-<ul class="simple">
-<li><p>tag the parameter set associated with a specific object; in short, “A&#64;B” = A of B</p></li>
-<li><p>tie different parameters across different.</p></li>
-</ul>
-<p>A simple math function could be implemented in future, e.g.,
-<em>px = 2.0*(py&#64;objz)</em>; <em>px = sqrt(*(py&#64;objz))</em></p>
+<div class="section" id="keyword-value">
+<h2>Keyword-Value<a class="headerlink" href="#keyword-value" title="Permalink to this headline">¶</a></h2>
+<p>We provide a detailed table of all available keywords for different section types (see above)</p>
 </div>
 </div>
 
