@@ -24,7 +24,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements_dev.txt ./Downloads/
-RUN pip install --upgrade -r ./Downloads/requirements_dev.txt && \
+COPY . ./Downloads/ism3d
+RUN pip install -r ./Downloads/ism3d/requirements_dev.txt && \
     rm -rf ./.cache/pip /tmp/* /var/tmp/*
-
+RUN cd ./Downloads/ism3d/ && pip install . && \
+    rm -rf ./.cache/pip /tmp/* /var/tmp/* && \
+    cd ../ & rm -rf ism3d

@@ -21,9 +21,8 @@ dist
 build.bash
 Makefile
 README.md
-README.rst
+#README.rst
 requirements_casa6pip36.txt
-setup.py
 singularity.md
 trash.py
 
