@@ -1,0 +1,30 @@
+FROM rxastro/casa6:latest
+LABEL maintainer="rx.astro@gmail.com"
+
+# use bash instead of default sh
+
+SHELL ["/bin/bash", "-c"] 
+ENV APP_HOME /root
+WORKDIR ${APP_HOME}
+ENV DEBIAN_FRONTEND noninteractive
+
+####################################################################
+# note: we start from rxastro/casa6:latest (from r-xue/casa6-docker)
+# Bonus (for ism3d development)
+####################################################################
+
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install --no-install-recommends -y \
+        gfortran build-essential make \
+        cython3 \
+        libfftw3-dev numdiff python3-pybind11 \
+        && \
+    apt-get autoremove -y && \     
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY requirements_dev.txt ./Downloads/
+RUN pip install --upgrade -r ./Downloads/requirements_dev.txt && \
+    rm -rf ./.cache/pip /tmp/* /var/tmp/*
+

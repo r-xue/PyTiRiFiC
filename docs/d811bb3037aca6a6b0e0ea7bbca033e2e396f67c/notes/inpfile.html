@@ -119,6 +119,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="casa6.html">CASA6 Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -305,11 +306,11 @@ However, we decide to use a custome interpreter to not only handle basic datatyp
 <span class="na">...</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>If the first ASTEVAL evaluation fails, the program will:</dt><dd><p>do split() -&gt; re-evaluate on each element -&gt; assemble the results into a list -&gt; assign the list to the keyword
+<p>If the first ASTEVAL evaluation fails, the program will:</p>
+<blockquote>
+<div><p>do split() -&gt; re-evaluate on each element -&gt; assemble the results into a list -&gt; assign the list to the keyword
 This feature is only designed to work a backend solution for some special paramater input files</p>
-</dd>
-</dl>
+</div></blockquote>
 <p>The data/output file paths are specified in relative to the working directory (where you lunch GMaKE, either using CLI or a Python script).
 To clear up any confusion, absolute paths can also be used.</p>
 </div>
