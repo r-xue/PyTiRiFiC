@@ -78,11 +78,11 @@ try:
     fft_use.fftn(np.ones(1)) # work
     mkl.verbose(0)
     import mkl_fft._scipy_fft_backend as mkl_be
-except NameError:
+except:
     try:
         import pyfftw.interfaces.numpy_fft as fft_use
         from pyfftw import next_fast_len as fft_fastlen
-    except NameError:
+    except:
         """
         Note:
             latestscipy.fft & numpy.fft are using different implementaions of pocketfft

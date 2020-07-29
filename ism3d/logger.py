@@ -2,17 +2,20 @@ import os
 from pprint import pformat
 import tempfile
 
-from casatools import logsink
-from casatasks import casalog   
 
-# <- the default logsink instance casatask uses
-#   not logfile after the initallization of casalog 
-os.system('rm -rf '+casalog.logfile())
-casalog.setlogfile('/dev/null')
 
 import logging
-
 logger = logging.getLogger('ism3d')
+
+try:
+    from casatools import logsink
+    from casatasks import casalog   
+    # <- the default logsink instance casatask uses
+    #   not logfile after the initallization of casalog 
+    os.system('rm -rf '+casalog.logfile())
+    casalog.setlogfile('/dev/null')
+except:
+    pass
 
 def logger_config(logfile=None,
                   loglevel='INFO', logfilelevel='INFO',
@@ -57,8 +60,10 @@ def logger_config(logfile=None,
     #   config casa logsink
     #   https://casa.nrao.edu/docs/CasaRef/logsink-Tool.html#logsink.version.html
     #   https://casa.nrao.edu/Release3.3.0/docs/UserMan/UserMansu43.html
-
-    casalogger_config(logfile=logfile,loglevel=loglevel,onconsole=log2term)
+    try:
+        casalogger_config(logfile=logfile,loglevel=loglevel,onconsole=log2term)
+    except:
+        pass
     
     return
 
