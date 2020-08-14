@@ -28,6 +28,8 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -43,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ism3d.modeling.model.model_realize" href="ism3d.modeling.model.model_realize.html" />
-    <link rel="prev" title="ism3d.modeling" href="ism3d.modeling.html" /> 
+    <link rel="prev" title="ism3d.modeling.amoeba_sa.amotry_sa" href="ism3d.modeling.amoeba_sa.amotry_sa.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,7 +95,7 @@
             
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
@@ -101,7 +103,6 @@
 <p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
@@ -119,6 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -156,6 +158,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ism3d.modeling.amoeba_sa.html">ism3d.modeling.amoeba_sa</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.modeling.model</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.modeling.model.model_realize.html">ism3d.modeling.model.model_realize</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ism3d.modeling.model.model_render.html">ism3d.modeling.model.model_render</a></li>
@@ -295,7 +298,7 @@
         <a href="ism3d.modeling.model.model_realize.html" class="btn btn-neutral float-right" title="ism3d.modeling.model.model_realize" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ism3d.modeling.html" class="btn btn-neutral float-left" title="ism3d.modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ism3d.modeling.amoeba_sa.amotry_sa.html" class="btn btn-neutral float-left" title="ism3d.modeling.amoeba_sa.amotry_sa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -28,6 +28,8 @@
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -94,9 +96,16 @@
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#from-sources">From sources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#stable-release">Stable release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-sources">From sources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#from-docker">From Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#launch-with-an-interactive-shell">Launch with an interactive shell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-a-jupyter-server">Run a Jupyter Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launch-with-singularity">Launch with Singularity</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -106,7 +115,6 @@
 <p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
@@ -124,6 +132,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -246,55 +255,111 @@
 <div class="section" id="from-sources">
 <h2>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h2>
 <p>The sources for ism3d can be downloaded from the <a class="reference external" href="https://github.com/r-xue/ism3d">Github repo</a>.</p>
-<p>You can either clone the public repository:</p>
+<p>You can either clone the public repository and install the copy of source with:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone git://github.com/r-xue/ism3d
+<span class="gp">$</span> pip install --user .
 </pre></div>
 </div>
-<p>Or download the <a class="reference external" href="https://github.com/r-xue/ism3d/tarball/master">tarball</a>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -OJL https://github.com/r-xue/ism3d/tarball/master
-</pre></div>
-</div>
-<p>Once you have a copy of the source, you can install it with:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --user .
-</pre></div>
-</div>
-<p>To install the latest ism3d from GitHub in one step, you can also run this command in your terminal:</p>
+<p>To do this in one step, you can also run this command in your terminal:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --user --upgrade git+https://github.com/r-xue/ism3d.git
 </pre></div>
 </div>
-</div>
-<div class="section" id="stable-release">
-<h2>Stable release<a class="headerlink" href="#stable-release" title="Permalink to this headline">¶</a></h2>
-<p>Alternatively, the stable version is also available at Pypi. To install ism3d, run this command in your terminal:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --user ism3d
-</pre></div>
-</div>
-<p>This is the preferred method to install ism3d, as it will always install the most recent stable release.</p>
-</div>
 <div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>While most dependecies will be automatically checked and installed from the standard Pypi installation (specified in setup.cfg),
-we note the ones requiring manual installation here:</p>
-<p><strong>Required</strong>: for basic image-based modeling/fitting functions</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://finufft.readthedocs.io/en/latest/">FINUFF</a></p></li>
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<p>While most dependecies will be automatically checked and installed from the standard PyPI installation (specified in <a class="reference external" href="https://github.com/r-xue/ism3d/blob/master/setup.cfg">setup.cfg</a>),
+we note that some <em>might</em> require manual installations on certain platforms (most likley on macOS):</p>
+<ul>
+<li><p><strong>required</strong>, for Measurement Sets I/O</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://finufft.readthedocs.io/en/latest/">FINUFFT</a></p></li>
 <li><p><a class="reference external" href="https://casa.nrao.edu/casadocs/casa-5.6.0/introduction/casa6-installation-and-usage">casa6</a></p></li>
 </ul>
-<p><strong>Optional</strong>: for some special features</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/jobovy/galpy">galpy</a> <em>(only used when the kinematic model is built upon the galaxy mass distribution and potentials)</em></p></li>
-<li><p><a class="reference external" href="https://scikit-image.org">skimage</a> <em>(image 2D transform)</em></p></li>
+</div></blockquote>
+</li>
+<li><p><strong>required</strong>, for galactic dynamics modeling from mass potentials</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/jobovy/galpy">galpy</a></p></li>
 </ul>
-<p><strong>Recommaned</strong>: for performance improvements</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/IntelPython/mkl_fft">mkl_fft</a> <em>(improve FFT speed)</em></p></li>
-<li><p><a class="reference external" href="https://pypi.org/project/pyFFTW/">pyfftw</a> <em>(improve FFT speed)</em></p></li>
+</div></blockquote>
+</li>
+<li><p><strong>optional</strong>, for moderate performance improvement</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/IntelPython/mkl_fft">mkl_fft</a>/<a class="reference external" href="https://github.com/IntelPython/mkl_random">mkl_random</a> <em>(improve FFT speed)</em></p></li>
 </ul>
-<p><strong>test-only</strong>:  only needed for running the test suite or some benchmarking-related tutorils</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/mtazzari/galario">galario</a>  <em>(used for visibility-based modeling, but may fail in mutiple-source cases)</em></p></li>
+</div></blockquote>
+</li>
+<li><p><strong>test-only</strong>, for running certain benchmarking tests and tutorials</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mtazzari/galario">galario</a></p></li>
 <li><p><a class="reference external" href="https://github.com/casacore/python-casacore">python-casacore</a> &amp; <a class="reference external" href="https://github.com/casacore/casacore">casacore</a></p></li>
 </ul>
+</div></blockquote>
+</li>
+</ul>
+<p>For development, one can manually install most dependencies with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --user -r ./requirements_dev.txt
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="from-docker">
+<h2>From Docker<a class="headerlink" href="#from-docker" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> <a class="reference external" href="https://github.com/r-xue/ism3d">repository</a> contains a <a class="reference external" href="https://github.com/r-xue/casa6-docker/blob/master/Dockerfile.dev">Dockerfile</a>, that automatically builds the <cite>rxastro/ism3d:dev</cite> images hosted at the <a class="reference external" href="https://hub.docker.com/r/rxastro/ism3d/tags">Docker Hub</a>.
+The image contains a base Linux environment (based on <a class="reference external" href="https://releases.ubuntu.com/20.04/">Ubuntu 20.04</a>) with the <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> prototype, <a class="reference external" href="https://casa.nrao.edu/casa_obtaining.shtml">casa6</a>, and other Python packages (<a class="reference external" href="https://www.astropy.org/">astropy</a>, <a class="reference external" href="https://jupyter.org">Jupyter</a>, etc.) already installed.</p>
+<blockquote>
+<div><p><a class="reference external" href="https://registry.hub.docker.com/r/rxastro/ism3d">https://registry.hub.docker.com/r/rxastro/ism3d</a></p>
+</div></blockquote>
+<p>The  Docker image <code class="docutils literal notranslate"><span class="pre">rxastro/ism3d:dev</span></code> is built upon the base image offered by the <a class="reference external" href="https://r-xue.github.io/casa6-docker">casa6-docker</a> project:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://registry.hub.docker.com/r/rxastro/casa6">https://registry.hub.docker.com/r/rxastro/casa6</a></p>
+</div></blockquote>
+<p>The container launch instruction is the similar with <a class="reference external" href="https://www.magclouds.org/casa6-docker/html/docker/usage.html">that</a> of <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code>.</p>
+<div class="section" id="launch-with-an-interactive-shell">
+<h3>Launch with an interactive shell<a class="headerlink" href="#launch-with-an-interactive-shell" title="Permalink to this headline">¶</a></h3>
+<p>To launch the container with an interactive shell on a host with <a class="reference external" href="https://docs.docker.com/docker-for-mac/install/">Docker Desktop</a> running, just type:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -it -v ~/Workspace:/root/WorkDir rxastro/casa6:latest bash
+</pre></div>
+</div>
+<p>This will download the image <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code>, start a container instance, and login as <code class="docutils literal notranslate"><span class="pre">root</span></code> (bravely…). It will also try to mount the host directory <code class="docutils literal notranslate"><span class="pre">~/Workspace</span></code> (assuming it exists) to <code class="docutils literal notranslate"><span class="pre">/root/WorkDir</span></code> of your container.
+After this, you can perform code development and data analysis in <code class="docutils literal notranslate"><span class="pre">/root/WorkDir</span></code> of your container (now pointing to <code class="docutils literal notranslate"><span class="pre">~/Workspace</span></code> on the host), with the access of tools/environment (e.g. <strong>casa6</strong>, <strong>astropy</strong>, etc.) residing in the image.</p>
+<p>In case you would like to manually update local-cached images for whatever reasons, you probably want to run this before launching the container again:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker pull rxastro/casa6:latest
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-a-jupyter-server">
+<h3>Run a Jupyter Server<a class="headerlink" href="#run-a-jupyter-server" title="Permalink to this headline">¶</a></h3>
+<p>A Jupyter server has been built in the Docker image <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code> (see the <a class="reference external" href="https://github.com/r-xue/casa6-docker/blob/master/Dockerfile">Dockerfile</a> content for its customization).
+This creates a useful feature of <code class="docutils literal notranslate"><span class="pre">rx.astro/casa6:latest</span></code>: you can connect your host web browser to the Jupyter server running its container instance.
+This gives you a portable development environment semi-isolated from your host OS that offers all Jupyter-based features (e.g. <a class="reference external" href="https://ipywidgets.readthedocs.io">Widgets</a>) along with many Python packages: <strong>casatools</strong>, <strong>casatasks</strong>, <strong>astropy</strong>, <strong>numpy</strong>, <strong>matplotlib</strong>, and more.</p>
+<p>To log in a <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code> container and start the Jupyter session,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host      $</span> docker run -v ~/Workspace:/root/WorkDir --env <span class="nv">PORT</span><span class="o">=</span><span class="m">8890</span> -it -p <span class="m">8890</span>:8890 rxastro/casa6:latest bash
+<span class="gp">root@container $</span> jupyter-lab <span class="c1"># start a Jupyter session</span>
+</pre></div>
+</div>
+<p>Then you can move back to the host, open a web browser, and connect it to the Jupyter server running on the guest OS:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host      $</span> firefox --new-window <span class="si">${</span><span class="nv">address</span><span class="p">:</span><span class="nv">8890</span><span class="p">-with-token</span><span class="si">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="launch-with-singularity">
+<h3>Launch with Singularity<a class="headerlink" href="#launch-with-singularity" title="Permalink to this headline">¶</a></h3>
+<p>Docker images can be imported to <a class="reference external" href="https://singularity.lbl.gov/docs-hpc">Singularity</a> for HPC-based deployment:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> singularity pull docker://rxastro/casa6:latest
+<span class="gp">$</span> file casa6_latest.sif
+<span class="gp">$</span> singularity inspect casa6_latest.sif
+<span class="gp">$</span> singularity <span class="nb">exec</span> -H <span class="nv">$HOME</span>/vh:/Users/Rui casa6_latest.sif /bin/bash
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are significant design <a class="reference external" href="https://sylabs.io/guides/3.6/user-guide/singularity_and_docker.html">differences</a> between Docker and Singularity, and a detailed demonstration is beyond the scope of this documentation.</p>
+</div>
+</div>
 </div>
 </div>
 

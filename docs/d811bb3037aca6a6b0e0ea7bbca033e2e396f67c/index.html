@@ -28,6 +28,8 @@
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -42,7 +44,7 @@
   <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" /> 
+    <link rel="next" title="Installation" href="install.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
@@ -100,7 +102,6 @@
 <p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
@@ -118,6 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -288,10 +290,17 @@ Any comments and suggestions are appreciated and <a class="reference external" h
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#from-sources">From sources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#from-docker">From Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#launch-with-an-interactive-shell">Launch with an interactive shell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#run-a-jupyter-server">Run a Jupyter Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#launch-with-singularity">Launch with Singularity</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -327,13 +336,6 @@ Any comments and suggestions are appreciated and <a class="reference external" h
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="notes/inpfile.html#keyword-value">Keyword-Value</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#how-to-install">How to install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#verify-the-installation">Verify the Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#tips-tricks">Tips &amp; Tricks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/casa6.html#reference">Reference</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notes/keywords.html">Keywords</a></li>
@@ -385,6 +387,16 @@ Any comments and suggestions are appreciated and <a class="reference external" h
 <li class="toctree-l3"><a class="reference internal" href="tutorials/demo_api_lens.html#Sparse/Cloudlet-Rendering-Test3:">Sparse/Cloudlet Rendering Test3:</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Example-0:-Dilated-mask-with-no-smoothing.-Expand-from-4\sigma-to-2\sigma-contour.-Mask-regions-must-span-at-least-2-beam-areas-and-2-channels-at-any-pixel.">Example 0: Dilated mask with no smoothing. Expand from 4<span class="math notranslate nohighlight">\(\sigma\)</span> to 2<span class="math notranslate nohighlight">\(\sigma\)</span> contour. Mask regions must span at least 2 beam areas and 2 channels at any pixel.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Example-1:-Dilated-mask-with-2-pixel-padding-in-spatial-dimensions.-Start-at-5\sigma-contour-to-isolate-main-galaxy.-We-speed-up-execution-by-using-the-rms-cube-generated-by-Example-0.">Example 1: Dilated mask with 2 pixel padding in spatial dimensions. Start at 5<span class="math notranslate nohighlight">\(\sigma\)</span> contour to isolate main galaxy. We speed up execution by using the rms cube generated by Example 0.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Example-2:-Smooth-and-mask-method.-Generate-a-mask-using-the-3\sigma-contour-of-a-smoothed-(to-10&quot;)-cube.-Mask-regions-must-span-at-least-2-beam-areas.">Example 2: Smooth and mask method. Generate a mask using the 3<span class="math notranslate nohighlight">\(\sigma\)</span> contour of a smoothed (to 10”) cube. Mask regions must span at least 2 beam areas.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Example-3:-Dilated-smooth-and-mask.-Expand-from-the-4\sigma-to-2\sigma-contour-of-the-smoothed-cube.">Example 3: Dilated smooth-and-mask. Expand from the 4<span class="math notranslate nohighlight">\(\sigma\)</span> to 2<span class="math notranslate nohighlight">\(\sigma\)</span> contour of the smoothed cube.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Example-4:-Apply-an-existing-mask.-Here-we-apply-the-2D-version-of-the-mask-derived-in-Example-3.-Since-this-includes-a-lot-of-noise-the-results-are-not-as-good.">Example 4: Apply an existing mask. Here we apply the 2D version of the mask derived in Example 3. Since this includes a lot of noise the results are not as good.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/demo_api_maskmoment.html#Compare-integrated-spectra-from-the-5-masks.">Compare integrated spectra from the 5 masks.</a></li>
 </ul>
 </li>
 </ul>
@@ -541,7 +553,7 @@ the Python API can rapidly change at the current alpha development stage.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

@@ -38,11 +38,13 @@ scikit-image
 galpy
 fast-histogram
 numexpr
+dask
 git+https://github.com/flatironinstitute/finufft@master#egg=finufftpy
 
 git+https://github.com/radio-astro-tools/pvextractor@master#egg=pvextractor
 git+https://github.com/radio-astro-tools/spectral-cube@master#egg=spectral-cube
 git+https://github.com/radio-astro-tools/radio-beam@master#egg=radio-beam
+lenstronomy
 
 # testing-only
 

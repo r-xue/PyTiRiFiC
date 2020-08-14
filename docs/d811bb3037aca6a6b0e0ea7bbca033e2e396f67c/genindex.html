@@ -28,6 +28,8 @@
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -91,7 +93,7 @@
             
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
@@ -99,7 +101,6 @@
 <p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/inpfile.html">Parameter File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/casa6.html">CASA6 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
@@ -117,6 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -262,9 +264,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ft.advise_header">advise_header() (in module ism3d.uvhelper.ft)</a>, <a href="_autosummary/ism3d.uvhelper.ft.advise_header.html#ism3d.uvhelper.ft.advise_header">[1]</a>
 </li>
+      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ft.advise_imsize">advise_imsize() (in module ism3d.uvhelper.ft)</a>, <a href="_autosummary/ism3d.uvhelper.ft.advise_imsize.html#ism3d.uvhelper.ft.advise_imsize">[1]</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_apidoc/ism3d.uvhelper.html#ism3d.uvhelper.ft.advise_imsize">advise_imsize() (in module ism3d.uvhelper.ft)</a>, <a href="_autosummary/ism3d.uvhelper.ft.advise_imsize.html#ism3d.uvhelper.ft.advise_imsize">[1]</a>
+      <li><a href="_autosummary/ism3d.modeling.amoeba_sa.amoeba_sa.html#ism3d.modeling.amoeba_sa.amoeba_sa">amoeba_sa() (in module ism3d.modeling.amoeba_sa)</a>
+</li>
+      <li><a href="_autosummary/ism3d.modeling.amoeba_sa.amotry_sa.html#ism3d.modeling.amoeba_sa.amotry_sa">amotry_sa() (in module ism3d.modeling.amoeba_sa)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -284,6 +290,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.calc_moments">calc_moments() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.calc_moments.html#ism3d.xyhelper.maskmoment.momfuncs.calc_moments">[1]</a>
+</li>
       <li><a href="_apidoc/ism3d.xyhelper.html#ism3d.xyhelper.sky.calc_ppbeam">calc_ppbeam() (in module ism3d.xyhelper.sky)</a>, <a href="_autosummary/ism3d.xyhelper.sky.calc_ppbeam.html#ism3d.xyhelper.sky.calc_ppbeam">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.arts.html#ism3d.arts.dynamics.calc_vcirc">calc_vcirc() (in module ism3d.arts.dynamics)</a>, <a href="_autosummary/ism3d.arts.dynamics.calc_vcirc.html#ism3d.arts.dynamics.calc_vcirc">[1]</a>
@@ -326,10 +334,10 @@
         <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.utils.chi2red_to_lognsigma">(in module ism3d.utils.utils)</a>, <a href="_autosummary/ism3d.utils.utils.chi2red_to_lognsigma.html#ism3d.utils.utils.chi2red_to_lognsigma">[1]</a>
 </li>
       </ul></li>
-      <li><a href="_autosummary/ism3d.arts.sparse.cloudlet_moms.html#ism3d.arts.sparse.cloudlet_moms">cloudlet_moms() (in module ism3d.arts.sparse)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/ism3d.arts.sparse.cloudlet_moms.html#ism3d.arts.sparse.cloudlet_moms">cloudlet_moms() (in module ism3d.arts.sparse)</a>
+</li>
       <li><a href="_autosummary/ism3d.arts.sparse.clouds_discretize_2d.html#ism3d.arts.sparse.clouds_discretize_2d">clouds_discretize_2d() (in module ism3d.arts.sparse)</a>
 </li>
       <li><a href="_autosummary/ism3d.arts.sparse.clouds_from_disk3d.html#ism3d.arts.sparse.clouds_from_disk3d">clouds_from_disk3d() (in module ism3d.arts.sparse)</a>
@@ -378,11 +386,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.io.dct2fits">dct2fits() (in module ism3d.utils.io)</a>, <a href="_autosummary/ism3d.utils.io.dct2fits.html#ism3d.utils.io.dct2fits">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.io.dct2hdf">dct2hdf() (in module ism3d.utils.io)</a>, <a href="_autosummary/ism3d.utils.io.dct2hdf.html#ism3d.utils.io.dct2hdf">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.io.dct2npy">dct2npy() (in module ism3d.utils.io)</a>, <a href="_autosummary/ism3d.utils.io.dct2npy.html#ism3d.utils.io.dct2npy">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.dilmsk">dilmsk() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.dilmsk.html#ism3d.xyhelper.maskmoment.momfuncs.dilmsk">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -434,6 +444,8 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.findflux">findflux() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.findflux.html#ism3d.xyhelper.maskmoment.momfuncs.findflux">[1]</a>
+</li>
       <li><a href="_autosummary/ism3d.maths.stats.expon2d_gen.html#ism3d.maths.stats.expon2d_gen.fit">fit() (ism3d.maths.stats.expon2d_gen method)</a>
 
       <ul>
@@ -724,14 +736,19 @@
 </li>
       </ul></li>
       <li>
+    ism3d.modeling.amoeba_sa
+
+      <ul>
+        <li><a href="_autosummary/ism3d.modeling.amoeba_sa.html#module-ism3d.modeling.amoeba_sa">module</a>
+</li>
+      </ul></li>
+      <li>
     ism3d.modeling.model
 
       <ul>
         <li><a href="_autosummary/ism3d.modeling.model.html#module-ism3d.modeling.model">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ism3d.simuv
 
@@ -739,6 +756,8 @@
         <li><a href="_apidoc/ism3d.simuv.html#module-ism3d.simuv">module</a>, <a href="_autosummary/ism3d.simuv.html#module-ism3d.simuv">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ism3d.simuv.ft
 
@@ -786,13 +805,6 @@
 
       <ul>
         <li><a href="_apidoc/ism3d.utils.html#module-ism3d.utils.io">module</a>, <a href="_autosummary/ism3d.utils.io.html#module-ism3d.utils.io">[1]</a>
-</li>
-      </ul></li>
-      <li>
-    ism3d.utils.keys
-
-      <ul>
-        <li><a href="_autosummary/ism3d.utils.keys.html#module-ism3d.utils.keys">module</a>, <a href="notes/keywords.html#module-ism3d.utils.keys">[1]</a>
 </li>
       </ul></li>
       <li>
@@ -908,6 +920,27 @@
 </li>
       </ul></li>
       <li>
+    ism3d.xyhelper.maskmoment
+
+      <ul>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment">module</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.xyhelper.maskmoment.maskmoment
+
+      <ul>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment.maskmoment">module</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.maskmoment.html#module-ism3d.xyhelper.maskmoment.maskmoment">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    ism3d.xyhelper.maskmoment.momfuncs
+
+      <ul>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment.momfuncs">module</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.html#module-ism3d.xyhelper.maskmoment.momfuncs">[1]</a>
+</li>
+      </ul></li>
+      <li>
     ism3d.xyhelper.sky
 
       <ul>
@@ -1002,9 +1035,15 @@
       </ul></li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.makekernel">makekernel() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.makekernel.html#ism3d.utils.misc.makekernel">[1]</a>
 </li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.makenoise">makenoise() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.makenoise.html#ism3d.xyhelper.maskmoment.momfuncs.makenoise">[1]</a>
+</li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.makepb">makepb() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.makepb.html#ism3d.utils.misc.makepb">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.makepsf">makepsf() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.makepsf.html#ism3d.utils.misc.makepsf">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.maskguard">maskguard() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.maskguard.html#ism3d.xyhelper.maskmoment.momfuncs.maskguard">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.maskmoment.maskmoment">maskmoment() (in module ism3d.xyhelper.maskmoment.maskmoment)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.maskmoment.maskmoment.html#ism3d.xyhelper.maskmoment.maskmoment.maskmoment">[1]</a>
 </li>
       <li><a href="_autosummary/ism3d.maths.stats.expon2d_gen.html#ism3d.maths.stats.expon2d_gen.mean">mean() (ism3d.maths.stats.expon2d_gen method)</a>
 
@@ -1078,6 +1117,8 @@
 </li>
         <li><a href="_apidoc/ism3d.modeling.html#module-ism3d.modeling">ism3d.modeling</a>, <a href="_autosummary/ism3d.modeling.html#module-ism3d.modeling">[1]</a>
 </li>
+        <li><a href="_autosummary/ism3d.modeling.amoeba_sa.html#module-ism3d.modeling.amoeba_sa">ism3d.modeling.amoeba_sa</a>
+</li>
         <li><a href="_autosummary/ism3d.modeling.model.html#module-ism3d.modeling.model">ism3d.modeling.model</a>
 </li>
         <li><a href="_apidoc/ism3d.simuv.html#module-ism3d.simuv">ism3d.simuv</a>, <a href="_autosummary/ism3d.simuv.html#module-ism3d.simuv">[1]</a>
@@ -1095,8 +1136,6 @@
         <li><a href="_apidoc/ism3d.utils.html#module-ism3d.utils.cli_new">ism3d.utils.cli_new</a>, <a href="_autosummary/ism3d.utils.cli_new.html#module-ism3d.utils.cli_new">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.utils.html#module-ism3d.utils.io">ism3d.utils.io</a>, <a href="_autosummary/ism3d.utils.io.html#module-ism3d.utils.io">[1]</a>
-</li>
-        <li><a href="_autosummary/ism3d.utils.keys.html#module-ism3d.utils.keys">ism3d.utils.keys</a>, <a href="notes/keywords.html#module-ism3d.utils.keys">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.utils.html#module-ism3d.utils.meta">ism3d.utils.meta</a>, <a href="_autosummary/ism3d.utils.meta.html#module-ism3d.utils.meta">[1]</a>
 </li>
@@ -1129,6 +1168,12 @@
         <li><a href="_apidoc/ism3d.xyhelper.html#module-ism3d.xyhelper">ism3d.xyhelper</a>, <a href="_autosummary/ism3d.xyhelper.html#module-ism3d.xyhelper">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.xyhelper.html#module-ism3d.xyhelper.cube">ism3d.xyhelper.cube</a>, <a href="_autosummary/ism3d.xyhelper.cube.html#module-ism3d.xyhelper.cube">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment">ism3d.xyhelper.maskmoment</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment.maskmoment">ism3d.xyhelper.maskmoment.maskmoment</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.maskmoment.html#module-ism3d.xyhelper.maskmoment.maskmoment">[1]</a>
+</li>
+        <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#module-ism3d.xyhelper.maskmoment.momfuncs">ism3d.xyhelper.maskmoment.momfuncs</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.html#module-ism3d.xyhelper.maskmoment.momfuncs">[1]</a>
 </li>
         <li><a href="_apidoc/ism3d.xyhelper.html#module-ism3d.xyhelper.sky">ism3d.xyhelper.sky</a>, <a href="_autosummary/ism3d.xyhelper.sky.html#module-ism3d.xyhelper.sky">[1]</a>
 </li>
@@ -1241,10 +1286,10 @@
 </li>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_mom0xy">plt_mom0xy() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_mom0xy.html#ism3d.visualize.plts.plt_mom0xy">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_radprof">plt_radprof() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_radprof.html#ism3d.visualize.plts.plt_radprof">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_rc0">plt_rc0() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_rc0.html#ism3d.visualize.plts.plt_rc0">[1]</a>
 </li>
       <li><a href="_apidoc/ism3d.visualize.html#ism3d.visualize.plts.plt_rcProf">plt_rcProf() (in module ism3d.visualize.plts)</a>, <a href="_autosummary/ism3d.visualize.plts.plt_rcProf.html#ism3d.visualize.plts.plt_rcProf">[1]</a>
@@ -1280,6 +1325,8 @@
 </li>
       </ul></li>
       <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.misc.prepdir">prepdir() (in module ism3d.utils.misc)</a>, <a href="_autosummary/ism3d.utils.misc.prepdir.html#ism3d.utils.misc.prepdir">[1]</a>
+</li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.prunemask">prunemask() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.prunemask.html#ism3d.xyhelper.maskmoment.momfuncs.prunemask">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1405,6 +1452,8 @@
 </li>
       <li><a href="_autosummary/ism3d.arts.lens.sie_rt.html#ism3d.arts.lens.sie_rt">sie_rt() (in module ism3d.arts.lens)</a>
 </li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.smcube">smcube() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.smcube.html#ism3d.xyhelper.maskmoment.momfuncs.smcube">[1]</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/ism3d.utils.sort_on_runtime.html#ism3d.utils.sort_on_runtime">sort_on_runtime() (in module ism3d.utils)</a>
@@ -1525,6 +1574,8 @@
         <li><a href="_apidoc/ism3d.utils.html#ism3d.utils.utils.write_par">(in module ism3d.utils.utils)</a>, <a href="_autosummary/ism3d.utils.utils.write_par.html#ism3d.utils.utils.write_par">[1]</a>
 </li>
       </ul></li>
+      <li><a href="_apidoc/ism3d.xyhelper.maskmoment.html#ism3d.xyhelper.maskmoment.momfuncs.writemom">writemom() (in module ism3d.xyhelper.maskmoment.momfuncs)</a>, <a href="_autosummary/ism3d.xyhelper.maskmoment.momfuncs.writemom.html#ism3d.xyhelper.maskmoment.momfuncs.writemom">[1]</a>
+</li>
   </ul></td>
 </tr></table>
 

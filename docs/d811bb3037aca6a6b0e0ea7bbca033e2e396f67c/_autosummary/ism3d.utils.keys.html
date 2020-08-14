@@ -28,6 +28,8 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -41,9 +43,7 @@
   <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ism3d.utils.meta" href="ism3d.utils.meta.html" />
-    <link rel="prev" title="ism3d.utils.io.to_hdf5" href="ism3d.utils.io.to_hdf5.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,7 +93,7 @@
             
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
@@ -101,7 +101,6 @@
 <p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/casa6.html">CASA6 Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/keywords.html">Keywords</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
@@ -119,6 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Benchmarking</span></p>
 <ul>
@@ -148,30 +148,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="ism3d.html">ism3d</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html">ism3d.arts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.interface.html">ism3d.interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.ism3d.html">ism3d.ism3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.logger.html">ism3d.logger</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html">ism3d.maths</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="ism3d.utils.html">ism3d.utils</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.cli_new.html">ism3d.utils.cli_new</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.io.html">ism3d.utils.io</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ism3d.utils.keys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.meta.html">ism3d.utils.meta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.misc.html">ism3d.utils.misc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ism3d.utils.utils.html">ism3d.utils.utils</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.html">ism3d</a></li>
 </ul>
 
             
@@ -217,10 +195,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="ism3d.html">ism3d</a> &raquo;</li>
-        
-          <li><a href="ism3d.utils.html">ism3d.utils</a> &raquo;</li>
-        
       <li>ism3d.utils.keys</li>
     
     
@@ -262,10 +236,8 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-ism3d.utils.keys">
-<span id="ism3d-utils-keys"></span><h1>ism3d.utils.keys<a class="headerlink" href="#module-ism3d.utils.keys" title="Permalink to this headline">¶</a></h1>
-<p>testtest
-more</p>
+<div class="section" id="ism3d-utils-keys">
+<h1>ism3d.utils.keys<a class="headerlink" href="#ism3d-utils-keys" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -273,15 +245,6 @@ more</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ism3d.utils.meta.html" class="btn btn-neutral float-right" title="ism3d.utils.meta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ism3d.utils.io.to_hdf5.html" class="btn btn-neutral float-left" title="ism3d.utils.io.to_hdf5" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
