@@ -7,7 +7,7 @@ Welcome to ISM3D's documentation!
     :maxdepth: 3
     :caption: User Guide
 
-    install
+    install/install
     usage
     authors
     history

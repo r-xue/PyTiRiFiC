@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Credits" href="authors.html" />
-    <link rel="prev" title="Welcome to ISM3D’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Installation" href="install/install.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,7 +95,12 @@
             
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#use-as-a-command-line-tool">Use as a command-line tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-python-apis-and-utility-functions">Use Python APIs and utility functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
 </ul>
@@ -239,67 +244,77 @@
 </style>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>To use ism3d in a project:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ism3d</span>
+<div class="section" id="use-as-a-command-line-tool">
+<h2>Use as a command-line tool<a class="headerlink" href="#use-as-a-command-line-tool" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ism</span></code> provides a user-friendly console command-line interface for basic simulation or model fitting tasks/workflows.
+The task assignment is specified by a parameter file the <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI</a> format, as well as some CLI optional keywords.
+This appraoch is in line with other traditional model fitting programs (e.g. Galfit, Tirific) and doesn’t require Python programming in most common user cases.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">Ruis-Mac-mini:~ Rui$</span> ism3d --help
+<span class="go">usage: ism3d [-h] [-f] [-a] [-p] [-d] [-t] [-l LOGFILE] inpfile</span>
+
+<span class="go">The ISM3d CL entry point:</span>
+<span class="go">    ism3d path/example.inp</span>
+
+<span class="go">    model fitting:</span>
+<span class="go">        ism3d -f path/example.inp</span>
+<span class="go">    analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting</span>
+<span class="go">        ism3d -a path/example.inp</span>
+<span class="go">    generate diagnostic plots</span>
+<span class="go">        ism3d -p path/example.inp</span>
+
+<span class="go">Note:</span>
+<span class="go">    for more complicated / customized user cases, one should build a workflow by</span>
+<span class="go">    calling modules/functions directly (e.g. hz_examples.py)</span>
+
+
+
+<span class="go">positional arguments:</span>
+<span class="go">inpfile               A parameter input file</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">-h, --help            show this help message and exit</span>
+<span class="go">-f, --fit             perform parameter optimization</span>
+<span class="go">-a, --analyze         analyze the fitting results / exporting data+model</span>
+<span class="go">-p, --plot            generate diagnotisc plots</span>
+<span class="go">-d, --debug           Debug mode; prints extra statements</span>
+<span class="go">-t, --test            test mode; run benchmarking scripts</span>
+<span class="go">-l LOGFILE, --logfile LOGFILE</span>
+<span class="go">                        path to log file</span>
 </pre></div>
 </div>
-<p>To use uvrx utility functions in your Python script or package:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uvrx</span>
+</div>
+<div class="section" id="use-python-apis-and-utility-functions">
+<h2>Use Python APIs and utility functions<a class="headerlink" href="#use-python-apis-and-utility-functions" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ism3d</span></code> itself is written purely in Python, although most of its depedencies are not.
+You can use <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> as a general utility library for your own program and build your modeling / data analysis workflow.</p>
+<p>For example, to use the <code class="docutils literal notranslate"><span class="pre">invert</span></code> function in <code class="docutils literal notranslate"><span class="pre">ism3d</span></code>, try:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">ism3d.uvhelper</span> <span class="kn">import</span> <span class="n">invert</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">help</span><span class="p">(</span><span class="n">invert</span><span class="p">)</span>
+
+<span class="n">Help</span> <span class="n">on</span> <span class="n">function</span> <span class="n">invert</span> <span class="ow">in</span> <span class="n">module</span> <span class="n">ism3d</span><span class="o">.</span><span class="n">uvhelper</span><span class="o">.</span><span class="n">imager</span><span class="p">:</span>
+
+<span class="n">invert</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s1">&#39;briggs&#39;</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">npixels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span> <span class="n">imsize</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span> <span class="n">phasecenter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="s1">&#39;cube&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">perchanweightdensity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">restoringbeam</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">onlydm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pbmask</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pblimit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="s1">&#39;residual.tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;residual.tt1&#39;</span><span class="p">,</span> <span class="s1">&#39;sumwt&#39;</span><span class="p">,</span> <span class="s1">&#39;sumwt.tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;sumwt.tt1&#39;</span><span class="p">,</span> <span class="s1">&#39;sumwt.tt2&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;model.tt0&#39;</span><span class="p">,</span> <span class="s1">&#39;model.tt1&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">Generate</span> <span class="n">a</span> <span class="n">compact</span> <span class="n">dirty</span> <span class="n">image</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">MS</span> <span class="n">dataset</span> <span class="k">as</span> <span class="n">a</span> <span class="n">quick</span> <span class="n">imaging</span> <span class="n">snapshot</span><span class="p">;</span>
+
+    <span class="n">Note</span> <span class="n">about</span> <span class="n">the</span> <span class="n">default</span> <span class="n">setting</span><span class="p">:</span>
+
+    <span class="o">+</span>   <span class="n">restoringbeam</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="n">to</span> <span class="n">preserve</span> <span class="n">the</span> <span class="n">original</span> <span class="n">dirty</span> <span class="n">beam</span> <span class="n">shape</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;common&quot;</span> <span class="n">then</span> <span class="n">additional</span> <span class="n">undesired</span> <span class="n">convolution</span> <span class="n">will</span> <span class="n">happen</span>
+    <span class="o">+</span>   <span class="n">Another</span> <span class="n">faster</span> <span class="n">way</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span> <span class="n">would</span> <span class="n">be</span> <span class="n">using</span> <span class="n">the</span> <span class="n">toolkits</span><span class="p">:</span>
+        <span class="n">imager</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;3C273XC1.MS&#39;</span><span class="p">)</span>
+        <span class="n">imager</span><span class="o">.</span><span class="n">defineimage</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">cellx</span><span class="o">=</span><span class="s1">&#39;0.7arcsec&#39;</span><span class="p">,</span> <span class="n">celly</span><span class="o">=</span><span class="s1">&#39;0.7arcsec&#39;</span><span class="p">)</span>
+        <span class="n">imager</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;3C273XC1.dirty&#39;</span><span class="p">)</span>
+        <span class="n">imager</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">But</span> <span class="n">it</span> <span class="n">may</span> <span class="n">be</span> <span class="n">difficult</span> <span class="n">to</span> <span class="n">write</span> <span class="n">a</span> <span class="n">function</span> <span class="n">to</span> <span class="n">cover</span> <span class="nb">all</span> <span class="n">setting</span> <span class="n">already</span> <span class="ow">in</span> <span class="n">casatasks</span><span class="o">.</span><span class="n">tclean</span><span class="p">()</span>
+
+    <span class="n">note</span><span class="p">:</span>
+        <span class="n">apperantly</span> <span class="n">tclean</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">nchan</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">will</span> <span class="ow">not</span> <span class="n">follow</span> <span class="n">the</span> <span class="n">actual</span> <span class="n">spw</span><span class="o">-</span><span class="n">channel</span> <span class="n">arrangeent</span><span class="p">:</span>
+        <span class="n">it</span> <span class="n">will</span> <span class="n">sort</span> <span class="n">channel</span> <span class="n">by</span> <span class="n">frequency</span> <span class="n">forst</span> <span class="ow">and</span> <span class="n">then</span> <span class="n">start</span> <span class="n">the</span> <span class="n">sequence</span><span class="o">.</span>
+        <span class="n">That</span> <span class="n">means</span> <span class="n">even</span> <span class="n">when</span> <span class="n">negative</span> <span class="n">channel</span> <span class="n">width</span> <span class="n">will</span> <span class="n">still</span> <span class="n">get</span> <span class="n">frequency</span><span class="o">-</span><span class="n">increasing</span> <span class="n">cube</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">such</span> <span class="n">case</span><span class="p">,</span> <span class="n">width</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">nchanel</span><span class="o">=</span><span class="mi">240</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mi">239</span> <span class="n">will</span> <span class="n">get</span> <span class="n">a</span> <span class="n">cube</span> <span class="n">following</span> <span class="n">the</span> <span class="n">channel</span><span class="o">-</span><span class="n">frequency</span> <span class="n">arrangment</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>All functions will be available under its namespace:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">uvrx</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span>
-
-<span class="go">invert(vis=&#39;&#39;, imagename=&#39;&#39;, datacolumn=&#39;data&#39;, antenna=&#39;&#39;, weighting=&#39;briggs&#39;, robust=1.0, npixels=0, cell=0.04, imsize=[128, 128], phasecenter=&#39;&#39;, specmode=&#39;cube&#39;, start=0, width=1, nchan=-1, perchanweightdensity=True, restoringbeam=&#39;&#39;, onlydm=True, pbmask=0, pblimit=0)</span>
-<span class="go">    Generate a compact dirty image from a MS dataset as a quick imaging snapshot;</span>
-
-<span class="go">    Note about the default setting:</span>
-
-<span class="go">    +   restoringbeam=&#39;&#39; to preserve the original dirty beam shape:</span>
-<span class="go">        if &quot;common&quot; then additional undesired convolution will happen</span>
-<span class="go">    +   Another faster way to do this would be using the toolkits:</span>
-<span class="go">        imager.open(&#39;3C273XC1.MS&#39;)</span>
-<span class="go">        imager.defineimage(nx=256, ny=256, cellx=&#39;0.7arcsec&#39;, celly=&#39;0.7arcsec&#39;)</span>
-<span class="go">        imager.image(type=&#39;corrected&#39;, image=&#39;3C273XC1.dirty&#39;)</span>
-<span class="go">        imager.close()</span>
-<span class="go">        But it may be difficult to write a function to cover all setting already in casatasks.tclean()</span>
-</pre></div>
-</div>
-<p>Python API: Tuturials / Examples</p>
-<p>The command line usages..</p>
-<p>Although GMaKe is written as a Python package/module, a user-friendly console command-line interface is provided:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>hyperion:output Rui$ gmake_cli -h
-
-usage: gmake_cli [-h] [-f] [-a] [-p] [-d] [-t] [-l LOGFILE] inpfile
-
-The GMAKE CL entry point:
-    gmake path/example.inp
-
-    model fitting:
-        gmake -f path/example.inp
-    analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting
-        gmake -a path/example.inp
-    generate diagnostic plots
-        gmake -p path/example.inp
-
-Note:
-    for more complicated / customized user cases, one should build a workflow by
-    calling modules/functions directly (e.g. hz_examples.py)
-
-
-positional arguments:
-  inpfile               A parameter input file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -f, --fit             perform parameter optimization
-  -a, --analyze         analyze the fitting results / exporting data+model
-  -p, --plot            generate diagnotisc plots
-  -d, --debug           Debug mode; prints extra statements
-  -t, --test            test mode; run benchmarking scripts
-  -l LOGFILE, --logfile LOGFILE
-                        path to log file
-</pre></div>
 </div>
 </div>
 
@@ -314,7 +329,7 @@ optional arguments:
         <a href="authors.html" class="btn btn-neutral float-right" title="Credits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to ISM3D’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="install/install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

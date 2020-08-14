@@ -2,8 +2,8 @@
 
     usage:
         
-        >gmake_cli -a bx610/uvb6_ab.inp -d -l uvb6_ab.log
-        >gmake_cli --fit uv11_mc.inp --debug
+        >ism3d_cli -a bx610/uvb6_ab.inp -d -l uvb6_ab.log
+        >ism3d_cli --fit uv11_mc.inp --debug
 
     Here we include:
         workflow for CLI
@@ -11,9 +11,9 @@
         
     check mkl
 
-import gmake
-from gmake.utils import rng_seeded 
-print(gmake.fft_use)
+import ism3d
+from ism3d.utils import rng_seeded 
+print(ism3d.fft_use)
 print(rng_seeded(None))
 """
 
@@ -22,19 +22,19 @@ import argparse
 import glob
 import sys
 
-from gmake import read_inp
-from gmake import read_data
-from gmake import __version__
-from gmake import opt_setup
-from gmake import opt_iterate
-from gmake import opt_analyze
+#from ism3d import read_inp
+#from ism3d import read_data
+#from ism3d import __version__
+#from ism3d import opt_setup
+#from ism3d import opt_iterate
+#from ism3d import opt_analyze
 
 
-from .plts import plt_spec1d
-from .plts import plt_mom0xy
-from .plts import plt_makeslice
-from .plts import plt_slice
-from .plts import plt_radprof
+#from .plts import plt_spec1d
+#from .plts import plt_mom0xy
+#from .plts import plt_makeslice
+#from .plts import plt_slice
+#from .plts import plt_radprof
 from types import SimpleNamespace
 
 from .utils import *
@@ -54,15 +54,15 @@ def main():
     
     description="""
 
-The GMAKE CL entry point: 
-    gmake path/example.inp
+The ISM3d CL entry point: 
+    ism3d path/example.inp
 
     model fitting:
-        gmake -f path/example.inp
+        ism3d -f path/example.inp
     analyze fitting results (saved in FITS tables / HDFs?) and export model/data for diagnostic plotting  
-        gmake -a path/example.inp 
+        ism3d -a path/example.inp 
     generate diagnostic plots
-        gmake -p path/example.inp 
+        ism3d -p path/example.inp 
 
 Note:
     for more complicated / customized user cases, one should build a workflow by
@@ -106,7 +106,7 @@ Note:
     inp_dct=read_inp(args.inpfile)
     outdir=inp_dct['general']['outdir']    
     if  args.logfile=='':
-        args.logfile=outdir+'/gmake.log'  
+        args.logfile=outdir+'/ism3d.log'  
     loglevel='DEBUG' if args.debug==True else 'INFO'
 
     logger_config(logfile=args.logfile,loglevel=loglevel,logfilelevel=loglevel)
@@ -120,11 +120,11 @@ Note:
     logger.info(" ")      
     
     # show the CLI options
-    logger.debug("\ngmake_cli process options:")
+    logger.debug("\nism3d_cli process options:")
     for arg in vars(args):
         arg, getattr(args, arg)
         logger.debug("{:<10} :  {:}".format(arg,getattr(args,arg)) )    
-    logger.debug("\ngmake_cli process paths:")
+    logger.debug("\nism3d_cli process paths:")
     logger.debug("{:<10} :  {:}".format('outdir',outdir) )
     logger.debug("{:<10} :  {:}\n".format('currentdir',os.getcwd()) )
     
