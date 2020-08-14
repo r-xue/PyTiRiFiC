@@ -1,7 +1,7 @@
 .. highlight:: shell
 
 
-From sources
+From Sources
 ------------
 
 The sources for ism3d can be downloaded from the `Github repo`_.
