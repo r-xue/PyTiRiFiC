@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>From Docker &mdash; ism3d 0.3.dev1 documentation</title>
+  <title>From Docker Hub &mdash; ism3d 0.3.dev1 documentation</title>
   
 
   
@@ -195,7 +195,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>From Docker</li>
+      <li>From Docker Hub</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -236,38 +236,41 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="from-docker">
-<h1>From Docker<a class="headerlink" href="#from-docker" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="from-docker-hub">
+<h1>From Docker Hub<a class="headerlink" href="#from-docker-hub" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> <a class="reference external" href="https://github.com/r-xue/ism3d">repository</a> contains a <a class="reference external" href="https://github.com/r-xue/casa6-docker/blob/master/Dockerfile.dev">Dockerfile</a>, that automatically builds the <cite>rxastro/ism3d:dev</cite> images hosted at the <a class="reference external" href="https://hub.docker.com/r/rxastro/ism3d/tags">Docker Hub</a>.
 The image contains a base Linux environment (based on <a class="reference external" href="https://releases.ubuntu.com/20.04/">Ubuntu 20.04</a>) with the <code class="docutils literal notranslate"><span class="pre">ism3d</span></code> prototype, <a class="reference external" href="https://casa.nrao.edu/casa_obtaining.shtml">casa6</a>, and other Python packages (<a class="reference external" href="https://www.astropy.org/">astropy</a>, <a class="reference external" href="https://jupyter.org">Jupyter</a>, etc.) already installed.</p>
 <blockquote>
 <div><p><a class="reference external" href="https://registry.hub.docker.com/r/rxastro/ism3d">https://registry.hub.docker.com/r/rxastro/ism3d</a></p>
 </div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>The  Docker image <code class="docutils literal notranslate"><span class="pre">rxastro/ism3d:dev</span></code> is built upon the base image offered by the <a class="reference external" href="https://r-xue.github.io/casa6-docker">casa6-docker</a> project:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://registry.hub.docker.com/r/rxastro/casa6">https://registry.hub.docker.com/r/rxastro/casa6</a></p>
 </div></blockquote>
 <p>The container launch instruction is the similar with <a class="reference external" href="https://www.magclouds.org/casa6-docker/html/docker/usage.html">that</a> of <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code>.</p>
+</div>
 <div class="section" id="launch-with-an-interactive-shell">
 <h2>Launch with an interactive shell<a class="headerlink" href="#launch-with-an-interactive-shell" title="Permalink to this headline">¶</a></h2>
 <p>To launch the container with an interactive shell on a host with <a class="reference external" href="https://docs.docker.com/docker-for-mac/install/">Docker Desktop</a> running, just type:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -it -v ~/Workspace:/root/WorkDir rxastro/casa6:latest bash
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -it -v ~/Workspace:/root/WorkDir rxastro/ism3d:dev bash
 </pre></div>
 </div>
-<p>This will download the image <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code>, start a container instance, and login as <code class="docutils literal notranslate"><span class="pre">root</span></code> (bravely…). It will also try to mount the host directory <code class="docutils literal notranslate"><span class="pre">~/Workspace</span></code> (assuming it exists) to <code class="docutils literal notranslate"><span class="pre">/root/WorkDir</span></code> of your container.
+<p>This will download the image <code class="docutils literal notranslate"><span class="pre">rxastro/ism3d:dev</span></code>, start a container instance, and login as <code class="docutils literal notranslate"><span class="pre">root</span></code> (bravely…). It will also try to mount the host directory <code class="docutils literal notranslate"><span class="pre">~/Workspace</span></code> (assuming it exists) to <code class="docutils literal notranslate"><span class="pre">/root/WorkDir</span></code> of your container.
 After this, you can perform code development and data analysis in <code class="docutils literal notranslate"><span class="pre">/root/WorkDir</span></code> of your container (now pointing to <code class="docutils literal notranslate"><span class="pre">~/Workspace</span></code> on the host), with the access of tools/environment (e.g. <strong>casa6</strong>, <strong>astropy</strong>, etc.) residing in the image.</p>
 <p>In case you would like to manually update local-cached images for whatever reasons, you probably want to run this before launching the container again:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker pull rxastro/casa6:latest
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker pull rxastro/ism3d:dev
 </pre></div>
 </div>
 </div>
 <div class="section" id="run-a-jupyter-server">
-<h2>Run a Jupyter Server<a class="headerlink" href="#run-a-jupyter-server" title="Permalink to this headline">¶</a></h2>
-<p>A Jupyter server has been built in the Docker image <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code> (see the <a class="reference external" href="https://github.com/r-xue/casa6-docker/blob/master/Dockerfile">Dockerfile</a> content for its customization).
-This creates a useful feature of <code class="docutils literal notranslate"><span class="pre">rx.astro/casa6:latest</span></code>: you can connect your host web browser to the Jupyter server running its container instance.
+<h2>Run a Jupyter server<a class="headerlink" href="#run-a-jupyter-server" title="Permalink to this headline">¶</a></h2>
+<p>A Jupyter server has been built in the Docker image <code class="docutils literal notranslate"><span class="pre">rxastro/ism3d:dev</span></code> (see the <a class="reference external" href="https://github.com/r-xue/casa6-docker/blob/master/Dockerfile">Dockerfile</a> content for its customization).
+This creates a useful feature of <code class="docutils literal notranslate"><span class="pre">rx.astro/ism3d:dev</span></code>: you can connect your host web browser to the Jupyter server running its container instance.
 This gives you a portable development environment semi-isolated from your host OS that offers all Jupyter-based features (e.g. <a class="reference external" href="https://ipywidgets.readthedocs.io">Widgets</a>) along with many Python packages: <strong>casatools</strong>, <strong>casatasks</strong>, <strong>astropy</strong>, <strong>numpy</strong>, <strong>matplotlib</strong>, and more.</p>
-<p>To log in a <code class="docutils literal notranslate"><span class="pre">rxastro/casa6:latest</span></code> container and start the Jupyter session,</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host      $</span> docker run -v ~/Workspace:/root/WorkDir --env <span class="nv">PORT</span><span class="o">=</span><span class="m">8890</span> -it -p <span class="m">8890</span>:8890 rxastro/casa6:latest bash
+<p>To log in a <code class="docutils literal notranslate"><span class="pre">rxastro/ism3d:dev</span></code> container and start the Jupyter session,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host      $</span> docker run -v ~/Workspace:/root/WorkDir --env <span class="nv">PORT</span><span class="o">=</span><span class="m">8890</span> -it -p <span class="m">8890</span>:8890 rxastro/ism3d:dev bash
 <span class="gp">root@container $</span> jupyter-lab <span class="c1"># start a Jupyter session</span>
 </pre></div>
 </div>
@@ -279,7 +282,7 @@ This gives you a portable development environment semi-isolated from your host O
 <div class="section" id="launch-with-singularity">
 <h2>Launch with Singularity<a class="headerlink" href="#launch-with-singularity" title="Permalink to this headline">¶</a></h2>
 <p>Docker images can be imported to <a class="reference external" href="https://singularity.lbl.gov/docs-hpc">Singularity</a> for HPC-based deployment:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> singularity pull docker://rxastro/casa6:latest
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> singularity pull docker://rxastro/ism3d:dev
 <span class="gp">$</span> file casa6_latest.sif
 <span class="gp">$</span> singularity inspect casa6_latest.sif
 <span class="gp">$</span> singularity <span class="nb">exec</span> -H <span class="nv">$HOME</span>/vh:/Users/Rui casa6_latest.sif /bin/bash
