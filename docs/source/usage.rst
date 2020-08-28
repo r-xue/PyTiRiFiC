@@ -83,3 +83,8 @@ For example, to use the ``invert`` function in ``ism3d``, try:
                 for such case, width=-1,nchanel=240,start=239 will get a cube following the channel-frequency arrangment.
 
      
+example :cite:`Barnett:2018aa`
+
+.. bibliography:: sp-ism3d-resolved.bib
+    :cited:
+    :style: astrostyle
