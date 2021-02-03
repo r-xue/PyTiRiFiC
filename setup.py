@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 
 # encoding: utf-8
-"""
 
-The module can be installed via one of these commands:
 
-    python setup.py install --user      # from a local copy
-    pip install --user gmake            # or, from PyPI
-    pip install --user --editable .     # or, "Editable" install
-    
- usage:
+# Workaround: 
+#   See https://github.com/pypa/pip/issues/7953
 
-     >import gmake
-     >help(gmake.gmake_read_data)
-     >print(gmake.gmake_read_data())    
+import site
+import sys
+site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
-"""
 
 """The setup script."""
 
@@ -36,7 +30,7 @@ test_requirements = ['pytest>=3', ]
 setup(
     author="Rui Xue",
     author_email='rx.astro@gmail.com',
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -53,7 +47,6 @@ setup(
     entry_points={
         'console_scripts': [
             'ism3d = ism3d.cli:main',
-            'casatools_repack = ism3d.uvhelper.cli:casatools_repack'
         ],
     },
     install_requires=requirements,

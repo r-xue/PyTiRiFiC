@@ -2,7 +2,7 @@
 --index-url https://pypi.python.org/simple/
 
 pip>=19.2.3
-bump2version>=0.5.11
+bump2version>=0.6.0
 wheel>=0.33.6
 watchdog>=0.9.0
 flake8>=3.7.8
@@ -46,6 +46,13 @@ git+https://github.com/radio-astro-tools/spectral-cube@master#egg=spectral-cube
 git+https://github.com/radio-astro-tools/radio-beam@master#egg=radio-beam
 lenstronomy
 
+# analysis-related
+
+pvextractor >= 0.2.dev66
+spectral-cube >= 0.4.5.dev
+radio-beam >= 0.3
+reproject >= 0.6.dev
+
 # testing-only
 
 wurlitzer
@@ -53,3 +60,17 @@ wurlitzer
 psutil
 line_profiler
 memory_profiler
+#mkl-fft
+#galario >=0.0
+#reikna; yt; fitsio; fits-tools
+
+
+#python-casacore >= 3.1.1
+scikit-image
+galpy >=1.5
+
+alpy
+regions
+scipy
+reproject
+pyfftw
