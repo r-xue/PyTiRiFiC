@@ -1,0 +1,6 @@
+ism3d.utils.misc.makepsf
+========================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: makepsf

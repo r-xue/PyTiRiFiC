@@ -1,0 +1,6 @@
+ism3d.simuv.render.sample\_prep
+===============================
+
+.. currentmodule:: ism3d.simuv.render
+
+.. autofunction:: sample_prep

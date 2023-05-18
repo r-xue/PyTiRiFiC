@@ -1,0 +1,10 @@
+ism3d.simxy package
+===================
+
+Module contents
+---------------
+
+.. automodule:: ism3d.simxy
+   :members:
+   :undoc-members:
+   :show-inheritance:

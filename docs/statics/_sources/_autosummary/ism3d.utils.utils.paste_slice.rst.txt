@@ -1,0 +1,6 @@
+ism3d.utils.utils.paste\_slice
+==============================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: paste_slice

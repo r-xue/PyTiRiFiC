@@ -1,0 +1,6 @@
+ism3d.uvhelper.proc.flagchan
+============================
+
+.. currentmodule:: ism3d.uvhelper.proc
+
+.. autofunction:: flagchan

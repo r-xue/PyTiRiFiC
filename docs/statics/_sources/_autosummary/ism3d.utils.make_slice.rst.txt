@@ -1,0 +1,6 @@
+ism3d.utils.make\_slice
+=======================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: make_slice

@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.momfuncs.dilmsk
+=========================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+.. autofunction:: dilmsk

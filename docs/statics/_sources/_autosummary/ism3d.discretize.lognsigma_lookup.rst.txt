@@ -1,0 +1,6 @@
+ism3d.discretize.lognsigma\_lookup
+==================================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: lognsigma_lookup

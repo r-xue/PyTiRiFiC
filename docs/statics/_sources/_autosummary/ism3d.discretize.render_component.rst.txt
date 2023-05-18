@@ -1,0 +1,6 @@
+ism3d.discretize.render\_component
+==================================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: render_component

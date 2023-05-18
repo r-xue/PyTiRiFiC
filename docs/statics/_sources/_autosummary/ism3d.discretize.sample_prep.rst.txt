@@ -1,0 +1,6 @@
+ism3d.discretize.sample\_prep
+=============================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: sample_prep

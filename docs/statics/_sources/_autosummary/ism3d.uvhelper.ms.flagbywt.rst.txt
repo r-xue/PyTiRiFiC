@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.flagbywt
+==========================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: flagbywt

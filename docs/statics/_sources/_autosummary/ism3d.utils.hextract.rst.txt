@@ -1,0 +1,6 @@
+ism3d.utils.hextract
+====================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: hextract

@@ -1,0 +1,6 @@
+ism3d.arts.utils.pix2sky
+========================
+
+.. currentmodule:: ism3d.arts.utils
+
+.. autofunction:: pix2sky

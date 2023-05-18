@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.create\_sampling\_points
+===================================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: create_sampling_points

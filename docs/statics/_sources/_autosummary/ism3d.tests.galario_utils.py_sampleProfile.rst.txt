@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.py\_sampleProfile
+============================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: py_sampleProfile

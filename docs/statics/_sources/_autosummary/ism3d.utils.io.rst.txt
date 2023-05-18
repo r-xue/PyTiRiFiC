@@ -1,0 +1,40 @@
+ism3d.utils.io
+==============
+
+.. automodule:: ism3d.utils.io
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      dct2fits
+      dct2hdf
+      dct2npy
+      export_model
+      fits2dct
+      from_hdf5
+      hdf2dct
+      npy2dct
+      read_data
+      to_hdf5
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

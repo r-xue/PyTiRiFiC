@@ -1,0 +1,6 @@
+ism3d.discretize.pickplane
+==========================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: pickplane

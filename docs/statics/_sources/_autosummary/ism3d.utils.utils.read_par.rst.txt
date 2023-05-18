@@ -1,0 +1,6 @@
+ism3d.utils.utils.read\_par
+===========================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: read_par

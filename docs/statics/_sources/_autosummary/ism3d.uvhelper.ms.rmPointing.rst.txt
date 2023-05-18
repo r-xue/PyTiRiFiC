@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.rmPointing
+============================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: rmPointing

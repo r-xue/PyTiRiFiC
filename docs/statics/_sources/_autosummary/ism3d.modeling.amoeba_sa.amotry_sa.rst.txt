@@ -1,0 +1,6 @@
+ism3d.modeling.amoeba\_sa.amotry\_sa
+====================================
+
+.. currentmodule:: ism3d.modeling.amoeba_sa
+
+.. autofunction:: amotry_sa

@@ -1,0 +1,6 @@
+ism3d.simuv.ft.uv\_sample\_nufft
+================================
+
+.. currentmodule:: ism3d.simuv.ft
+
+.. autofunction:: uv_sample_nufft

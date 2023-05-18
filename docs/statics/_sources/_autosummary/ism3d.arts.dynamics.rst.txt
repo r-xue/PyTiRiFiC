@@ -1,0 +1,38 @@
+ism3d.arts.dynamics
+===================
+
+.. automodule:: ism3d.arts.dynamics
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      calc_vcirc
+      model_vcirc
+      model_vcirc_plot
+      model_vrot
+      model_vrot_plot
+      potential_fromobj
+      pots_to_vcirc
+      vrot_from_rcProf
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

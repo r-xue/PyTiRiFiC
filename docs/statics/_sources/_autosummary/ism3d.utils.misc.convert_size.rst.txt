@@ -1,0 +1,6 @@
+ism3d.utils.misc.convert\_size
+==============================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: convert_size

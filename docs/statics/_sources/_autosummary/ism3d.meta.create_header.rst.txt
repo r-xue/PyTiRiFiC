@@ -1,0 +1,6 @@
+ism3d.meta.create\_header
+=========================
+
+.. currentmodule:: ism3d.meta
+
+.. autofunction:: create_header

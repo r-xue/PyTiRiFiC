@@ -1,0 +1,32 @@
+ism3d.arts.apmodel2d
+====================
+
+.. automodule:: ism3d.arts.apmodel2d
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      eval_apmodel2d
+      get_apmodel2d
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

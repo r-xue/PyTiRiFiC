@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.momfuncs.makenoise
+============================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+.. autofunction:: makenoise

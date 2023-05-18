@@ -1,0 +1,53 @@
+ism3d.stats.sersic2d\_gen
+=========================
+
+.. currentmodule:: ism3d.stats
+
+.. autoclass:: sersic2d_gen
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~sersic2d_gen.cdf
+      ~sersic2d_gen.entropy
+      ~sersic2d_gen.expect
+      ~sersic2d_gen.fit
+      ~sersic2d_gen.fit_loc_scale
+      ~sersic2d_gen.freeze
+      ~sersic2d_gen.interval
+      ~sersic2d_gen.isf
+      ~sersic2d_gen.logcdf
+      ~sersic2d_gen.logpdf
+      ~sersic2d_gen.logsf
+      ~sersic2d_gen.mean
+      ~sersic2d_gen.median
+      ~sersic2d_gen.moment
+      ~sersic2d_gen.nnlf
+      ~sersic2d_gen.pdf
+      ~sersic2d_gen.ppf
+      ~sersic2d_gen.rvs
+      ~sersic2d_gen.sf
+      ~sersic2d_gen.stats
+      ~sersic2d_gen.std
+      ~sersic2d_gen.support
+      ~sersic2d_gen.var
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~sersic2d_gen.random_state
+   
+   

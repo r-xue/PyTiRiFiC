@@ -1,0 +1,6 @@
+ism3d.maths.stats.pdf2rv
+========================
+
+.. currentmodule:: ism3d.maths.stats
+
+.. autofunction:: pdf2rv

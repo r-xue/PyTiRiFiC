@@ -1,0 +1,6 @@
+ism3d.utils.misc.prepdir
+========================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: prepdir

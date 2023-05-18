@@ -1,0 +1,6 @@
+ism3d.plts.plt\_mom0xy
+======================
+
+.. currentmodule:: ism3d.plts
+
+.. autofunction:: plt_mom0xy

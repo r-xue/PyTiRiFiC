@@ -1,0 +1,6 @@
+ism3d.meta.read\_inp
+====================
+
+.. currentmodule:: ism3d.meta
+
+.. autofunction:: read_inp

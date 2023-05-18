@@ -1,0 +1,6 @@
+ism3d.arts.sparse.clouds\_morph
+===============================
+
+.. currentmodule:: ism3d.arts.sparse
+
+.. autofunction:: clouds_morph

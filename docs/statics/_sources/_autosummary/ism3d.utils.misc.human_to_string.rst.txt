@@ -1,0 +1,6 @@
+ism3d.utils.misc.human\_to\_string
+==================================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: human_to_string

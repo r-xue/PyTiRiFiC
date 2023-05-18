@@ -1,0 +1,6 @@
+ism3d.arts.lens.xy\_rotate
+==========================
+
+.. currentmodule:: ism3d.arts.lens
+
+.. autofunction:: xy_rotate

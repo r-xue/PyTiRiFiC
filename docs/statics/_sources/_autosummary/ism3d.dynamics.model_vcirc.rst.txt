@@ -1,0 +1,6 @@
+ism3d.dynamics.model\_vcirc
+===========================
+
+.. currentmodule:: ism3d.dynamics
+
+.. autofunction:: model_vcirc

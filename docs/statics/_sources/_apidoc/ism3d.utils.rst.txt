@@ -1,0 +1,54 @@
+ism3d.utils package
+===================
+
+Submodules
+----------
+
+ism3d.utils.cli\_new module
+---------------------------
+
+.. automodule:: ism3d.utils.cli_new
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.utils.io module
+---------------------
+
+.. automodule:: ism3d.utils.io
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.utils.meta module
+-----------------------
+
+.. automodule:: ism3d.utils.meta
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.utils.misc module
+-----------------------
+
+.. automodule:: ism3d.utils.misc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.utils.utils module
+------------------------
+
+.. automodule:: ism3d.utils.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

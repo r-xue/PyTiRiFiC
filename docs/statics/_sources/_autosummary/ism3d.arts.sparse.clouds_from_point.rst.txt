@@ -1,0 +1,6 @@
+ism3d.arts.sparse.clouds\_from\_point
+=====================================
+
+.. currentmodule:: ism3d.arts.sparse
+
+.. autofunction:: clouds_from_point

@@ -1,0 +1,6 @@
+ism3d.model.calc\_vcirc
+=======================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: calc_vcirc

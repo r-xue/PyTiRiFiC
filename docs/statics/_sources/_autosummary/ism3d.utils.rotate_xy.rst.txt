@@ -1,0 +1,6 @@
+ism3d.utils.rotate\_xy
+======================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: rotate_xy

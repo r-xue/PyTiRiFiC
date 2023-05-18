@@ -1,0 +1,34 @@
+ism3d.dynamics
+==============
+
+.. automodule:: ism3d.dynamics
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      model_vcirc
+      model_vcirc_plot
+      model_vrot
+      model_vrot_plot
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

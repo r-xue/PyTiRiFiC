@@ -1,0 +1,34 @@
+ism3d.tests.plt\_compare
+========================
+
+.. automodule:: ism3d.tests.plt_compare
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      comp_dirtymap
+      comp_specs
+      fmt
+      test_predict_ms_plot
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+ism3d.io.dct2hdf
+================
+
+.. currentmodule:: ism3d.io
+
+.. autofunction:: dct2hdf

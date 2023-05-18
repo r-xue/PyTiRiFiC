@@ -1,0 +1,6 @@
+ism3d.arts.dynamics.vrot\_from\_rcProf
+======================================
+
+.. currentmodule:: ism3d.arts.dynamics
+
+.. autofunction:: vrot_from_rcProf

@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.momfuncs.findflux
+===========================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+.. autofunction:: findflux

@@ -1,0 +1,6 @@
+ism3d.opt.amoeba\_sa
+====================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: amoeba_sa

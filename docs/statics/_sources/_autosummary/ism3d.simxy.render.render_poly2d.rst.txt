@@ -1,0 +1,6 @@
+ism3d.simxy.render.render\_poly2d
+=================================
+
+.. currentmodule:: ism3d.simxy.render
+
+.. autofunction:: render_poly2d

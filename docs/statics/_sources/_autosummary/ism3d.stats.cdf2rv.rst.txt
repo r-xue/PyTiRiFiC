@@ -1,0 +1,6 @@
+ism3d.stats.cdf2rv
+==================
+
+.. currentmodule:: ism3d.stats
+
+.. autofunction:: cdf2rv

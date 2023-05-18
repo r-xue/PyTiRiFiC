@@ -1,0 +1,6 @@
+ism3d.utils.misc.human\_unit
+============================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: human_unit

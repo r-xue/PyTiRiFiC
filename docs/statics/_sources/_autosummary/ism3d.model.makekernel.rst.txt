@@ -1,0 +1,6 @@
+ism3d.model.makekernel
+======================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: makekernel

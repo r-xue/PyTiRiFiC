@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example BX610: perform model fitting using method=‘emcee’ &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinx_astrorefs.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example HXMM01: test the MS-simulation modules" href="demo_hxmm01_simulate.html" />
+    <link rel="prev" title="Invert Visibility + Plot 1D spectra (may take a while)" href="demo_bx610_model_1dspec.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/keywords.html">Keywords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develop/maintain.html">Maintance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/dictionary.html">ISM3D Dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/callgraph.html">ISM3D call graph</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example BX610: perform model fitting using method=‘emcee’</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<p><a class="reference external" href="https://colab.research.google.com/github/r-xue/casa_proc/blob/master/demo/test_casaproc.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<div class="section" id="example-bx610-perform-model-fitting-using-method-emcee">
+<h1>Example BX610: perform model fitting using method=‘emcee’<a class="headerlink" href="#example-bx610-perform-model-fitting-using-method-emcee" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">emcee</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="k">if</span>  <span class="s1">&#39;hypersion&#39;</span> <span class="ow">or</span> <span class="s1">&#39;mini&#39;</span> <span class="ow">in</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span> <span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="kn">import</span> <span class="nn">gmake</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gmake</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gmake</span><span class="o">.</span><span class="n">__email__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gmake</span><span class="o">.</span><span class="n">__demo__</span><span class="p">)</span>
+<span class="n">gmake</span><span class="o">.</span><span class="n">check_deps</span><span class="p">()</span>
+
+<span class="c1">#inpfile=gmake.__demo__+&#39;/../examples/inpfile/bx610_b4c5_uv_mc.inp&#39;</span>
+<span class="n">inpfile</span><span class="o">=</span><span class="n">gmake</span><span class="o">.</span><span class="n">__demo__</span><span class="o">+</span><span class="s1">&#39;/../examples/inpfile/bx610_b6c3_uv_mc.inp&#39;</span>
+<span class="n">logfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+<span class="c1">#gmake.logger_config()</span>
+<span class="c1">#gmake.logger_status()</span>
+<span class="c1">#import pprint</span>
+<span class="c1">#pprint.pprint(logging.Logger.manager.loggerDict)</span>
+<span class="n">gmake</span><span class="o">.</span><span class="n">logger_config</span><span class="p">()</span>
+<span class="n">inp_dct</span><span class="o">=</span><span class="n">gmake</span><span class="o">.</span><span class="n">read_inp</span><span class="p">(</span><span class="n">inpfile</span><span class="p">)</span>
+<span class="n">outdir</span><span class="o">=</span><span class="n">inp_dct</span><span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">][</span><span class="s1">&#39;outdir&#39;</span><span class="p">]</span>
+<span class="n">gmake</span><span class="o">.</span><span class="n">logger_config</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="n">outdir</span><span class="o">+</span><span class="s1">&#39;/gmake.log&#39;</span><span class="p">,</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span><span class="n">logfilelevel</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+<span class="n">gmake</span><span class="o">.</span><span class="n">logger_status</span><span class="p">()</span>
+<span class="n">gmake</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">)</span>
+<span class="n">inp_dct</span><span class="o">=</span><span class="n">gmake</span><span class="o">.</span><span class="n">inp_validate</span><span class="p">(</span><span class="n">inp_dct</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre class="literal-block">3.7.5 (default, Oct 19 2019, 11:15:26)
+[Clang 11.0.0 (clang-1100.0.33.8)]
+hyperion
+/Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output
+<strong>********exe read_inp()************</strong></pre>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">astropy</span>            <span class="o">&gt;=</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">2</span>      <span class="mf">3.2</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">emcee</span>              <span class="o">&gt;=</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">corner</span>             <span class="o">&gt;=</span><span class="mf">2.0</span>        <span class="mf">2.0</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">tqdm</span>               <span class="n">unspecified</span>  <span class="mf">4.31</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">lmfit</span>              <span class="n">unspecified</span>  <span class="mf">0.9</span><span class="o">.</span><span class="mi">12</span>
+<span class="n">asteval</span>            <span class="o">&gt;=</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>     <span class="mf">0.9</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">numexpr</span>            <span class="o">&gt;=</span><span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>      <span class="mf">2.7</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">hickle</span>             <span class="n">unspecified</span>  <span class="mf">3.4</span><span class="o">.</span><span class="mi">5</span>
+<span class="n">alpy</span>               <span class="n">unspecified</span>  <span class="mf">0.22</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">regions</span>            <span class="n">unspecified</span>  <span class="mf">0.5</span><span class="o">.</span><span class="n">dev1001</span>
+<span class="n">scipy</span>              <span class="n">unspecified</span>  <span class="mf">1.2</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">reproject</span>          <span class="n">unspecified</span>  <span class="mf">0.6</span><span class="o">.</span><span class="n">dev646</span>
+<span class="n">python</span><span class="o">-</span><span class="n">casacore</span>    <span class="o">&gt;=</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>      <span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">scikit</span><span class="o">-</span><span class="n">image</span>       <span class="n">unspecified</span>  <span class="mf">0.14</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">galpy</span>              <span class="n">unspecified</span>  <span class="mf">1.5</span><span class="o">.</span><span class="n">dev0</span>
+<span class="n">mkl</span><span class="o">-</span><span class="n">fft</span>            <span class="n">unspecified</span>  <span class="mf">1.0</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">pvextractor</span>        <span class="o">&gt;=</span><span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span> <span class="mf">0.2</span><span class="o">.</span><span class="n">dev327</span>
+<span class="n">spectral</span><span class="o">-</span><span class="n">cube</span>      <span class="o">&gt;=</span><span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev</span>  <span class="mf">0.4</span><span class="o">.</span><span class="mf">5.</span><span class="n">dev2267</span>
+<span class="n">radio</span><span class="o">-</span><span class="n">beam</span>         <span class="o">&gt;=</span><span class="mf">0.3</span>        <span class="mf">0.3</span><span class="o">.</span><span class="mf">3.</span><span class="n">dev397</span>
+<span class="n">reproject</span>          <span class="o">&gt;=</span><span class="mf">0.6</span><span class="o">.</span><span class="n">dev</span>    <span class="mf">0.6</span><span class="o">.</span><span class="n">dev646</span>
+<span class="n">casa</span><span class="o">-</span><span class="n">proc</span>          <span class="n">unspecified</span>  <span class="mf">0.1</span><span class="o">.</span><span class="n">dev3</span>
+</pre></div>
+</div>
+<pre class="literal-block">0.2.dev1
+<a class="reference external" href="mailto:rx&#46;astro&#37;&#52;&#48;gmail&#46;com">rx<span>&#46;</span>astro<span>&#64;</span>gmail<span>&#46;</span>com</a>
+/Users/Rui/Dropbox/Worklib/projects/GMaKE/gmake
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+<strong>********exe read_inp()************</strong>
+&lt;Logger gmake (DEBUG)&gt;
+[&lt;FileHandler /Users/Rui/Dropbox/Worklib/projects/GMaKE/examples/output/bx610_b6c3_uv_mc/gmake.log (DEBUG)&gt;, &lt;StreamHandler stderr (DEBUG)&gt;]
+{'basics': {'object': 'bx610',
+            'z': 2.21,
+            'pa': &lt;Quantity -52.4 deg&gt;,
+            'inc': &lt;Quantity 44.06 deg&gt;,
+            'xypos': &lt;SkyCoord (ICRS): (ra, dec) in deg
+    (356.53932583, 12.82201819)&gt;,
+            'vsys': &lt;Quantity 117.5 km / s&gt;,
+            'vrad': &lt;Quantity [0.  , 0.12, 0.24, 0.36, 0.48] arcsec&gt;,
+            'vrot': &lt;Quantity [  0.        , 197.03794218, 197.03794218, 197.03794218,
+           197.03794218] km / s&gt;,
+            'vdis': &lt;Quantity [50.82245316, 50.82245316, 50.82245316, 50.82245316, 50.82245316] km / s&gt;},
+ 'dynamics   (not implemented yet)': {'disk_sd': &lt;Quantity 5.e+09 solMass / kpc2&gt;,
+                                      'disk_rs': &lt;Quantity 1. kpc&gt;,
+                                      'halo_mvir': &lt;Quantity 5.e+11 solMass&gt;},
+ 'co76': {'type': 'disk3d',
+          'import': 'basics',
+          'note': 'CO76 of BX610 in BB2',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb2.ms',
+          'restfreq': &lt;Quantity 806.65181 GHz&gt;,
+          'lineflux': &lt;Quantity 1.3025217 Jy km / s&gt;,
+          'sbser': [&lt;Quantity 0.21709428 arcsec&gt;, 1.0]},
+ 'ci21': {'type': 'disk3d',
+          'import': 'basics',
+          'note': 'CI21 of BX610 in BB2',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb2.ms',
+          'restfreq': &lt;Quantity 809.34197 GHz&gt;,
+          'lineflux': &lt;Quantity 0.6493 Jy km / s&gt;,
+          'sbser': [&lt;Quantity 0.18771502 arcsec&gt;, 1.0]},
+ 'h2o': {'type': 'disk3d',
+         'import': 'basics',
+         'note': 'H2O of BX610 in BB3',
+         'vis': '../data/bx610/alma/2015.1.00250.S/bb3.ms',
+         'restfreq': &lt;Quantity 752.03314 GHz&gt;,
+         'lineflux': &lt;Quantity 0.38320318 Jy km / s&gt;,
+         'sbser': [&lt;Quantity 0.16759061 arcsec&gt;, 1.0]},
+ 'cont': {'type': 'disk2d',
+          'import': 'basics',
+          'note': 'submm cont of BX610 in BB-1/2/3/4',
+          'vis': '../data/bx610/alma/2015.1.00250.S/bb1.mfs.ms,../data/bx610/alma/2015.1.00250.S/bb2.ms,../data/bx610/alma/2015.1.00250.S/bb3.ms,../data/bx610/alma/2015.1.00250.S/bb4.mfs.ms',
+          'pa': &lt;Quantity 12.05551076 deg&gt;,
+          'inc': &lt;Quantity 27.53227189 deg&gt;,
+          'restfreq': &lt;Quantity 251.68251775 GHz&gt;,
+          'alpha': 3.7183180041434882,
+          'contflux': &lt;Quantity 0.00175222 Jy&gt;,
+          'sbser': [&lt;Quantity 0.11831162 arcsec&gt;, 1.0]},
+ 'optimize': <a class="reference external" href="mailto:{'vsys&#37;&#52;&#48;basics">{'vsys<span>&#64;</span>basics</a>': ('a', &lt;Quantity [-120.,  280.,   40.] km / s&gt;),
+              'vrot[1:5]&#64;basics': ('a', &lt;Quantity [  0., 800.,  40.] km / s&gt;),
+              'vdis[0:5]&#64;basics': ('a', &lt;Quantity [  0., 200.,  10.] km / s&gt;),
+              <a class="reference external" href="mailto:'xypos&#46;ra&#37;&#52;&#48;basics">'xypos<span>&#46;</span>ra<span>&#64;</span>basics</a>': ('o', &lt;Quantity [-1. ,  1. ,  0.1] arcsec&gt;),
+              <a class="reference external" href="mailto:'xypos&#46;dec&#37;&#52;&#48;basics">'xypos<span>&#46;</span>dec<span>&#64;</span>basics</a>': ('o', &lt;Quantity [-1. ,  1. ,  0.1] arcsec&gt;),
+              'method': 'emcee',
+              'niter': 100,
+              'nwalkers': 20},
+ 'general': {'outdir': 'bx610_b6c3_uv_mc',
+             'outname_replace': [('../data/bx610/alma/2015.1.00250.S/',
+                                  '<a href="#id1"><span class="problematic" id="id2">b6c3_</span></a>')],
+             'outname_exclude': ['cube.', 'mfs.', 'cube3.']}}</pre>
+<p>dat_dct=gmake.read_data(inp_dct,fill_mask=True,fill_error=True,save_data=True)</p>
+<p>from gmake import model_lnprob
+#import gmake</p>
+<p>#mod_dct=gmake.inp2mod(inp_dct)
+#gmake.pprint(mod_dct)
+#obj_dct=gmake.obj_defunit(mod_dct[‘co76’])
+#gmake.pprint(obj_dct)
+inp_dct=gmake.read_inp(inpfile)
+fit_dct=gmake.fit_setup(inp_dct,dat_dct)
+gmake.fit_iterate(fit_dct,inp_dct,dat_dct)</p>
+<p>#lnl,blobs=model_lnprob(fit_dct[‘p_start’],fit_dct,inp_dct,dat_dct,
+#                               savemodel=inp_dct[‘general’][‘outdir’],packblobs=True)
+#
+#import numpy as np
+#print(type(blobs))
+#print(np.shape(blobs))</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gmake</span><span class="o">.</span><span class="n">fit_analyze</span><span class="p">(</span><span class="n">inpfile</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vsys</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">149.16</span>      <span class="o">-</span><span class="mf">99.80</span>      <span class="o">-</span><span class="mf">70.84</span>      <span class="mf">82.17</span>       <span class="mf">126.46</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">149.16</span>      <span class="mf">49.36</span>       <span class="mf">78.32</span>       <span class="mf">231.33</span>      <span class="mf">275.62</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">117.50</span>     <span class="o">/</span><span class="mf">2.38</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">94.35</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vrot</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">242.03</span>           <span class="o">-</span><span class="mf">214.42</span>          <span class="o">-</span><span class="mf">152.68</span>          <span class="mf">338.48</span>           <span class="mf">463.74</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">242.03</span>           <span class="mf">27.61</span>            <span class="mf">89.35</span>            <span class="mf">580.51</span>           <span class="mf">705.77</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">197.04</span>          <span class="o">/</span><span class="mf">6.03</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">199.54</span>
+<span class="o">&gt;&gt;&gt;</span>  <span class="n">vdis</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="nd">@basics</span><span class="p">:</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">=</span> <span class="mf">65.87</span>            <span class="o">-</span><span class="mf">63.34</span>           <span class="o">-</span><span class="mf">48.12</span>           <span class="mf">73.44</span>            <span class="mf">120.69</span>
+ <span class="n">median</span><span class="p">(</span><span class="n">ptile</span><span class="p">)</span> <span class="o">=</span> <span class="mf">65.87</span>            <span class="mf">2.53</span>             <span class="mf">17.75</span>            <span class="mf">139.30</span>           <span class="mf">186.56</span>
+ <span class="n">start</span><span class="p">(</span><span class="n">iscale</span><span class="p">)</span> <span class="o">=</span> <span class="mf">50.82</span>           <span class="o">/</span><span class="mf">1.49</span>
+ <span class="n">mode</span>          <span class="o">=</span> <span class="mf">10.80</span>
+</pre></div>
+</div>
+<pre class="literal-block"><strong>********exe read_inp()************</strong></pre>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">xypos</span><span class="o">.</span><span class="n">ra</span><span class="nd">@basics</span><span class="p">:</span>
+<span class="go"> median(sigma) = 356.5393255     -0.0000009      -0.0000005      0.0000005       0.0000009</span>
+<span class="go"> median(ptile) = 356.5393255     356.5393246     356.5393249     356.5393260     356.5393263</span>
+<span class="go"> start(iscale) = 356.5393258    /0.0000028</span>
+<span class="go"> mode          = 356.5393258</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">xypos</span><span class="o">.</span><span class="n">dec</span><span class="nd">@basics</span><span class="p">:</span>
+<span class="go"> median(sigma) = 12.8220191       -0.0000009       -0.0000004       0.0000005        0.0000010</span>
+<span class="go"> median(ptile) = 12.8220191       12.8220182       12.8220187       12.8220196       12.8220200</span>
+<span class="go"> start(iscale) = 12.8220182      /0.0000028</span>
+<span class="go"> mode          = 12.8220189</span>
+<span class="go">------------------------------------------------------------------------------------------</span>
+<span class="go">analyzing outfolder:bx610_b6c3_uv_mc</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/emcee-iteration.pdf</span>
+<span class="go">analyzing outfolder:bx610_b6c3_uv_mc</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/emcee-iteration-blobs.pdf</span>
+<span class="go">plotting...bx610_b6c3_uv_mc/line-triangle.pdf</span>
+<span class="go">input data size:(1000, 5)</span>
+<span class="go">Took 1.1343879699707031 seconds</span>
+<span class="go">/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.units.core.CompositeUnit&#39;&gt; type not understood, data have been serialized</span>
+<span class="go">  SerializedWarning)</span>
+<span class="go">/Users/Rui/Library/Python/3.7/lib/python/site-packages/hickle/hickle.py:403: SerializedWarning: &lt;class &#39;astropy.units.core.Unit&#39;&gt; type not understood, data have been serialized</span>
+<span class="go">  SerializedWarning)</span>
+<span class="go">--- save to: bx610_b6c3_uv_mc/fit.h5</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="demo_hxmm01_simulate.html" class="btn btn-neutral float-right" title="Example HXMM01: test the MS-simulation modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo_bx610_model_1dspec.html" class="btn btn-neutral float-left" title="Invert Visibility + Plot 1D spectra (may take a while)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

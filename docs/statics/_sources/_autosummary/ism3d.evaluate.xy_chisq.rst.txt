@@ -1,0 +1,6 @@
+ism3d.evaluate.xy\_chisq
+========================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: xy_chisq

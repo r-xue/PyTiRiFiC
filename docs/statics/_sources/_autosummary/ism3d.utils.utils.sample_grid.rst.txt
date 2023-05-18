@@ -1,0 +1,6 @@
+ism3d.utils.utils.sample\_grid
+==============================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: sample_grid

@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.write\_ms
+===========================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: write_ms

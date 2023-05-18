@@ -1,0 +1,6 @@
+ism3d.visualize.plts.plt\_rc
+============================
+
+.. currentmodule:: ism3d.visualize.plts
+
+.. autofunction:: plt_rc

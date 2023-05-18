@@ -1,0 +1,6 @@
+ism3d.interface.write\_inp
+==========================
+
+.. currentmodule:: ism3d.interface
+
+.. autofunction:: write_inp

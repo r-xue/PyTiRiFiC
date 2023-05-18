@@ -1,0 +1,31 @@
+ism3d.tests.test\_globals
+=========================
+
+.. automodule:: ism3d.tests.test_globals
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fun1
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

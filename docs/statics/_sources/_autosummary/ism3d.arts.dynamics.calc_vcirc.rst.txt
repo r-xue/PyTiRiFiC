@@ -1,0 +1,6 @@
+ism3d.arts.dynamics.calc\_vcirc
+===============================
+
+.. currentmodule:: ism3d.arts.dynamics
+
+.. autofunction:: calc_vcirc

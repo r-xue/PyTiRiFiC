@@ -1,0 +1,44 @@
+ism3d.discretize
+================
+
+.. automodule:: ism3d.discretize
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      channel_split
+      clouds_perchan
+      lognsigma_lookup
+      pickplane
+      pix2sky
+      render_component
+      sample_prep
+      uv_render
+      uv_sample
+      uv_sample_direct
+      uv_sample_interp2d
+      uv_sample_nearest
+      uv_sample_nufft
+      xy_render
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

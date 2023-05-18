@@ -1,0 +1,6 @@
+ism3d.evaluate.log\_prior
+=========================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: log_prior

@@ -1,0 +1,33 @@
+ism3d.meta
+==========
+
+.. automodule:: ism3d.meta
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      create_header
+      pars_interp
+      read_inp
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

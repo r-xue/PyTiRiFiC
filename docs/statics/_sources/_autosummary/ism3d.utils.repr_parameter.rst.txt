@@ -1,0 +1,6 @@
+ism3d.utils.repr\_parameter
+===========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: repr_parameter

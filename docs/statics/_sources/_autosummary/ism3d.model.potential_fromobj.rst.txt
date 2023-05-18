@@ -1,0 +1,6 @@
+ism3d.model.potential\_fromobj
+==============================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: potential_fromobj

@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.momfuncs.prunemask
+============================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+.. autofunction:: prunemask

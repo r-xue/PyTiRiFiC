@@ -1,0 +1,6 @@
+ism3d.visualize.plts.calc\_ppbeam
+=================================
+
+.. currentmodule:: ism3d.visualize.plts
+
+.. autofunction:: calc_ppbeam

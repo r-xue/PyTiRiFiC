@@ -1,0 +1,32 @@
+ism3d.xyhelper.sky
+==================
+
+.. automodule:: ism3d.xyhelper.sky
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      calc_ppbeam
+      linear_offset_coords
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

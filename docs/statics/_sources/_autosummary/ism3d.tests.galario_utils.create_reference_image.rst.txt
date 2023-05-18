@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.create\_reference\_image
+===================================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: create_reference_image

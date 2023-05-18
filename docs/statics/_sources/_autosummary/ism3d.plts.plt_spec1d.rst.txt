@@ -1,0 +1,6 @@
+ism3d.plts.plt\_spec1d
+======================
+
+.. currentmodule:: ism3d.plts
+
+.. autofunction:: plt_spec1d

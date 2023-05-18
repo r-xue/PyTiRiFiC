@@ -1,0 +1,6 @@
+ism3d.modeling.interface.read\_inp
+==================================
+
+.. currentmodule:: ism3d.modeling.interface
+
+.. autofunction:: read_inp

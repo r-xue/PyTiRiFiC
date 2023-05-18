@@ -1,0 +1,6 @@
+ism3d.opt.chisq\_iterate
+========================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: chisq_iterate

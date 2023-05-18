@@ -1,0 +1,6 @@
+ism3d.model.pots\_to\_vcirc
+===========================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: pots_to_vcirc

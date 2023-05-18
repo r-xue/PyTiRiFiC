@@ -1,0 +1,32 @@
+ism3d.modeling.amoeba\_sa
+=========================
+
+.. automodule:: ism3d.modeling.amoeba_sa
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      amoeba_sa
+      amotry_sa
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

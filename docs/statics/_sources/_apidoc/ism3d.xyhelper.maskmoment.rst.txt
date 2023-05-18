@@ -1,0 +1,30 @@
+ism3d.xyhelper.maskmoment package
+=================================
+
+Submodules
+----------
+
+ism3d.xyhelper.maskmoment.maskmoment module
+-------------------------------------------
+
+.. automodule:: ism3d.xyhelper.maskmoment.maskmoment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.xyhelper.maskmoment.momfuncs module
+-----------------------------------------
+
+.. automodule:: ism3d.xyhelper.maskmoment.momfuncs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.xyhelper.maskmoment
+   :members:
+   :undoc-members:
+   :show-inheritance:

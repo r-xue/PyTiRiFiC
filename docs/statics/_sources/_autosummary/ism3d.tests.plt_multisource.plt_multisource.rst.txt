@@ -1,0 +1,6 @@
+ism3d.tests.plt\_multisource.plt\_multisource
+=============================================
+
+.. currentmodule:: ism3d.tests.plt_multisource
+
+.. autofunction:: plt_multisource

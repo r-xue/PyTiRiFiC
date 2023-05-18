@@ -1,0 +1,6 @@
+ism3d.evaluate.uv\_chisq
+========================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: uv_chisq

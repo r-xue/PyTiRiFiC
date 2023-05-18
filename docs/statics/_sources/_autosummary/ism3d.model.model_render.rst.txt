@@ -1,0 +1,6 @@
+ism3d.model.model\_render
+=========================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: model_render

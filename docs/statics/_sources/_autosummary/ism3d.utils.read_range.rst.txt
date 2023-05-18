@@ -1,0 +1,6 @@
+ism3d.utils.read\_range
+=======================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: read_range

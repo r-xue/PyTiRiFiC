@@ -1,0 +1,6 @@
+ism3d.utils.misc.get\_obj\_size
+===============================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: get_obj_size

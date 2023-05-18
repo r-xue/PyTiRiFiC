@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.g\_sweep\_prototype
+==============================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: g_sweep_prototype

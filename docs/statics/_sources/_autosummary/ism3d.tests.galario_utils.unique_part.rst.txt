@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.unique\_part
+=======================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: unique_part

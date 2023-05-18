@@ -1,0 +1,6 @@
+ism3d.arts.dynamics.cr\_tanh
+============================
+
+.. currentmodule:: ism3d.arts.dynamics
+
+.. autofunction:: cr_tanh

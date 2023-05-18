@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.flagrow
+=========================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: flagrow

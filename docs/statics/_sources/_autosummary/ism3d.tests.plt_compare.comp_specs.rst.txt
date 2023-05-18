@@ -1,0 +1,6 @@
+ism3d.tests.plt\_compare.comp\_specs
+====================================
+
+.. currentmodule:: ism3d.tests.plt_compare
+
+.. autofunction:: comp_specs

@@ -1,0 +1,6 @@
+ism3d.interface.eval\_func
+==========================
+
+.. currentmodule:: ism3d.interface
+
+.. autofunction:: eval_func

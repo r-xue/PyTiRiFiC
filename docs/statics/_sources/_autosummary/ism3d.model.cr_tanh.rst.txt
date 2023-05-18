@@ -1,0 +1,6 @@
+ism3d.model.cr\_tanh
+====================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: cr_tanh

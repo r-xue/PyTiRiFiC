@@ -1,0 +1,6 @@
+ism3d.io.export\_model
+======================
+
+.. currentmodule:: ism3d.io
+
+.. autofunction:: export_model

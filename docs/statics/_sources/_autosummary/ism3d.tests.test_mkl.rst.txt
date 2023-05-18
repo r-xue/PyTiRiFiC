@@ -1,0 +1,33 @@
+ism3d.tests.test\_mkl
+=====================
+
+.. automodule:: ism3d.tests.test_mkl
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      test_mkl_fft
+      test_mkl_random
+      test_mkl_random2
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

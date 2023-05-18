@@ -1,0 +1,44 @@
+ism3d.utils.misc
+================
+
+.. automodule:: ism3d.utils.misc
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      check_config
+      check_deps
+      check_fftpack
+      convert_size
+      get_obj_size
+      human_to_string
+      human_unit
+      makekernel
+      makepb
+      makepsf
+      pickplane
+      prepdir
+      render_component
+      unit_shortname
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

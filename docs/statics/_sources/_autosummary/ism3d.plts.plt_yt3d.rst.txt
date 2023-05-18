@@ -1,0 +1,6 @@
+ism3d.plts.plt\_yt3d
+====================
+
+.. currentmodule:: ism3d.plts
+
+.. autofunction:: plt_yt3d

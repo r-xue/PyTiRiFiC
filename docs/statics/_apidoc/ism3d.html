@@ -1,0 +1,526 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ism3d package &mdash; ism3d 0.3.dev1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinx_astrorefs.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ism3d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.dev1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical Specification/Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/inpfile.html">Parameter File Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/keywords.html">Keywords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develop/maintain.html">Maintance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/goals.html">Design Goals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/ack.html">Acknowledgement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/seealso.html">See also</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/dictionary.html">ISM3D Dictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/callgraph.html">ISM3D call graph</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Direct API Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_uvhelper.html">ism3d.uvhelper: visibility imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_arts.html">ism3d.arts: model artificial sources in different shapes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_lens.html">ism3d.arts.lens: model artificial sources with gravitational lensing effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_api_maskmoment.html">ism3d.xyhelper.maskmoment: derive moment0/moment1 maps from spectral cubes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Benchmarking</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark/demo_invert_ft.html">Invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_uvsample_performance.html">Test the performance of the Image-to-MS-related modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Modeling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c2_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 2 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b4c5_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 4 Cycle 5 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_b6c3_uv_ab.html">Example BX610: perform model fitting using method=‘amoeba’ for the Band 6 Cycle 3 DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_model_1dspec.html">Invert Visibility + Plot 1D spectra (may take a while)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_emcee.html">Example BX610: perform model fitting using method=‘emcee’</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_simulate.html">Example HXMM01: test the MS-simulation modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials: Data Preparation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_prep.html">Example: GN20 (z~4 SMF) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_prep.html">Example: BX610 (High-z SFG) : Data Prep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_hxmm01_prep.html">Example: HXMM01 (High-z Merger)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_gn20_imaging.html">Example GN20: perform imaging of CO 2-1 dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/demo_bx610_imaging.html">Example: BX610 (High-z SFG) : Data Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/demo_notebook.html">Tutorials &amp; Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/ism3d.html">ism3d</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ism3d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>ism3d package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ism3d-package">
+<h1>ism3d package<a class="headerlink" href="#ism3d-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.arts.html">ism3d.arts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts.discretize">ism3d.arts.discretize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts.dynamics">ism3d.arts.dynamics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#ism3d-arts-model-module">ism3d.arts.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.arts.html#module-ism3d.arts">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.maths.html">ism3d.maths package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html#module-ism3d.maths.stats">ism3d.maths.stats module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.maths.html#module-ism3d.maths">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.modeling.html">ism3d.modeling package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html#ism3d-modeling-analyze-module">ism3d.modeling.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html#ism3d-modeling-evaluate-module">ism3d.modeling.evaluate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html#ism3d-modeling-opt-module">ism3d.modeling.opt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.modeling.html#module-ism3d.modeling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.simuv.html">ism3d.simuv package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.simuv.html#module-ism3d.simuv">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.simxy.html">ism3d.simxy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.simxy.html#module-ism3d.simxy">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.utils.html">ism3d.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils.cli_new">ism3d.utils.cli_new module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils.io">ism3d.utils.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils.meta">ism3d.utils.meta module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils.misc">ism3d.utils.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils.utils">ism3d.utils.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.utils.html#module-ism3d.utils">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.uvhelper.html">ism3d.uvhelper package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.cli">ism3d.uvhelper.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.ft">ism3d.uvhelper.ft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.imager">ism3d.uvhelper.imager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.ms">ism3d.uvhelper.ms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.plts">ism3d.uvhelper.plts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper.proc">ism3d.uvhelper.proc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#ism3d-uvhelper-vis-utils-module">ism3d.uvhelper.vis_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.uvhelper.html#module-ism3d.uvhelper">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.visualize.html">ism3d.visualize package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html#ism3d-visualize-msplot2-module">ism3d.visualize.msplot2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html#module-ism3d.visualize.nb">ism3d.visualize.nb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html#module-ism3d.visualize.plts">ism3d.visualize.plts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.visualize.html#module-ism3d.visualize">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ism3d.xyhelper.html">ism3d.xyhelper package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html#module-ism3d.xyhelper.cube">ism3d.xyhelper.cube module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html#module-ism3d.xyhelper.sky">ism3d.xyhelper.sky module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ism3d.xyhelper.html#module-ism3d.xyhelper">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ism3d-cli-module">
+<h2>ism3d.cli module<a class="headerlink" href="#ism3d-cli-module" title="Permalink to this headline">¶</a></h2>
+<p>import ism3d
+from ism3d.utils import rng_seeded
+print(ism3d.fft_use)
+print(rng_seeded(None))</p>
+<dl class="py function">
+<dt id="ism3d.cli.main">
+<code class="sig-prename descclassname">ism3d.cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse options and launch the workflow</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.cli.proc_inpfile">
+<code class="sig-prename descclassname">ism3d.cli.</code><code class="sig-name descname">proc_inpfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/cli.html#proc_inpfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.cli.proc_inpfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.interface">
+<span id="ism3d-interface-module"></span><h2>ism3d.interface module<a class="headerlink" href="#module-ism3d.interface" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="ism3d.interface.eval_func">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">eval_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vs_func_ps</span></em>, <em class="sig-param"><span class="n">var_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#eval_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.eval_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do an inline calculation from a string expression in a lambda function-like syntax</p>
+<blockquote>
+<div><p>1st: element</p>
+</div></blockquote>
+<dl>
+<dt>expr<span class="classifier">expected to be a tuple</span></dt><dd><dl class="simple">
+<dt>expr[0]   string:</dt><dd><p>lamabda function-like syntax defining a anonymous function and its variable(s)
+the variables’ name and content should exist in the dictionary “locals”</p>
+</dd>
+<dt>expr[1],expr[2],expr[3]</dt><dd><p>function parameters</p>
+</dd>
+</dl>
+</dd>
+<dt>output:</dt><dd><p>the function’s value at each points of variables under the given parameters</p>
+</dd>
+<dt>example:</dt><dd><p>eval_func((‘rho : minimum(rho/p2,1.0)*p1’,200*u.km/u.s,5*u.kpc),locals())</p>
+<p>the function call will calculate “minimum(rho/p2,1.0)*p1” assuming
+p1=200*u.km/u.s &amp; p2=5*u.kpc at each “rho” value.
+Here, “rho” is a local-scope variable containing a numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.inp_to_mod">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">inp_to_mod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#inp_to_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.inp_to_mod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.key_intepreter">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">key_intepreter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#key_intepreter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.key_intepreter" title="Permalink to this definition">¶</a></dt>
+<dd><p>additional customized interpretaion of key values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.read_inp">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">read_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parfile</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#read_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.read_inp" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>read parameters/setups from a .inp file into a dictionary nest:</dt><dd><p>inp_dct[id][keywords]=values.
+inp_dct[‘comments’]=’??’
+inp_dct[‘changlog’]=’??’
+inp_dct[‘optimize’]=’??’</p>
+</dd>
+<dt>keyword value formatting</dt><dd><p>1.remove trailing/prefix space / comments
+2.split my space
+3.first element is the key
+4.the rest elements will be filled into value</p>
+<blockquote>
+<div><p>more than one element : list
+one element: scaler</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.interface.write_inp">
+<code class="sig-prename descclassname">ism3d.interface.</code><code class="sig-name descname">write_inp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em>, <em class="sig-param"><span class="n">parfile</span><span class="o">=</span><span class="default_value">'test,inp'</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/interface.html#write_inp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.interface.write_inp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ism3d.ism3d">
+<span id="ism3d-ism3d-module"></span><h2>ism3d.ism3d module<a class="headerlink" href="#module-ism3d.ism3d" title="Permalink to this headline">¶</a></h2>
+<p>Main module.</p>
+</div>
+<div class="section" id="module-ism3d.logger">
+<span id="ism3d-logger-module"></span><h2>ism3d.logger module<a class="headerlink" href="#module-ism3d.logger" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="ism3d.logger.CustomFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">CustomFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fmt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">datefmt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="o">=</span><span class="default_value">'%'</span></em>, <em class="sig-param"><span class="n">validate</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#CustomFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.CustomFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></p>
+<p>customized logging formatter which can handle mutiple-line msgs</p>
+<dl class="py method">
+<dt id="ism3d.logger.CustomFormatter.format">
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">record</span><span class="p">:</span> <span class="n">logging.LogRecord</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#CustomFormatter.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.CustomFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the specified record as text.</p>
+<p>The record’s attribute dictionary is used as the operand to a
+string formatting operation which yields the returned string.
+Before formatting the dictionary, a couple of preparatory steps
+are carried out. The message attribute of the record is computed
+using LogRecord.getMessage(). If the formatting string uses the
+time (as determined by a call to usesTime(), formatTime() is
+called to format the event time. If there is exception information,
+it is formatted using formatException() and appended to the message.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.logger.casalogger_config">
+<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">casalogger_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">onconsole</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#casalogger_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.casalogger_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set CASA log file
+use reset=True when you don’t want the last casa log file (which could be autmatically created when import casataks)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.logger.casalogsink_config">
+<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">casalogsink_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">onconsole</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#casalogsink_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.casalogsink_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>obselete
+casatools.logsink can create a casalogger instance
+import casatasks will initialize a casalogger instance
+the casa logger setup will be initilized with “import casataks”</p>
+<p>to prevent this, we need the casalogger configuration at the toolkit ahead of
+import casatasks</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.logger.logger_config">
+<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">logger_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loglevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">logfilelevel</span><span class="o">=</span><span class="default_value">'INFO'</span></em>, <em class="sig-param"><span class="n">reset</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">log2term</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#logger_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.logger_config" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>set up a customized logger,e.g.,</dt><dd><dl class="simple">
+<dt>&gt;&gt;&gt;ism3d.logger_config(logfile=’logs/test_ism3d.log’,</dt><dd><p>loglevel=logging.WARNING,
+logfilelevel=logging.INFO)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>note: this will merge the logging output from ism3d and casa6 into a single log file.
+loglevel=’INFO’/’WARN’/’DEBUG’</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ism3d.logger.logger_status">
+<code class="sig-prename descclassname">ism3d.logger.</code><code class="sig-name descname">logger_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ism3d/logger.html#logger_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ism3d.logger.logger_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>print out the current status of ism3d logger</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ism3d">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ism3d" title="Permalink to this headline">¶</a></h2>
+<p>Top-level package for ism3d.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Rui Xue
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

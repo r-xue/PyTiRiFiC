@@ -1,0 +1,6 @@
+ism3d.stats.custom\_ppf
+=======================
+
+.. currentmodule:: ism3d.stats
+
+.. autofunction:: custom_ppf

@@ -1,0 +1,6 @@
+ism3d.plts.plt\_makeslice
+=========================
+
+.. currentmodule:: ism3d.plts
+
+.. autofunction:: plt_makeslice

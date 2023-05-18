@@ -1,0 +1,6 @@
+ism3d.tests.test\_globals.fun1
+==============================
+
+.. currentmodule:: ism3d.tests.test_globals
+
+.. autofunction:: fun1

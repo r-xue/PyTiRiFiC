@@ -1,0 +1,6 @@
+ism3d.analyze.chisq\_analyze
+============================
+
+.. currentmodule:: ism3d.analyze
+
+.. autofunction:: chisq_analyze

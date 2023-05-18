@@ -1,0 +1,6 @@
+ism3d.tests.test\_mkl.test\_mkl\_fft
+====================================
+
+.. currentmodule:: ism3d.tests.test_mkl
+
+.. autofunction:: test_mkl_fft

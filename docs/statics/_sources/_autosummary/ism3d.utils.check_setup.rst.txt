@@ -1,0 +1,6 @@
+ism3d.utils.check\_setup
+========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: check_setup

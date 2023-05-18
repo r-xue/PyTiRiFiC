@@ -1,0 +1,31 @@
+ism3d.tests.plt\_multisource
+============================
+
+.. automodule:: ism3d.tests.plt_multisource
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      plt_multisource
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

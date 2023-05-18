@@ -1,0 +1,6 @@
+ism3d.xyhelper.cube.hextract
+============================
+
+.. currentmodule:: ism3d.xyhelper.cube
+
+.. autofunction:: hextract

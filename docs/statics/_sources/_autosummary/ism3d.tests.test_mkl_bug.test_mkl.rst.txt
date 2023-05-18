@@ -1,0 +1,6 @@
+ism3d.tests.test\_mkl\_bug.test\_mkl
+====================================
+
+.. currentmodule:: ism3d.tests.test_mkl_bug
+
+.. autofunction:: test_mkl

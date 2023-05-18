@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.rmColumns
+===========================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: rmColumns

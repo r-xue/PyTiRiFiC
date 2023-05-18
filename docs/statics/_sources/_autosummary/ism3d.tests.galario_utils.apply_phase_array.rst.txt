@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.apply\_phase\_array
+==============================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: apply_phase_array

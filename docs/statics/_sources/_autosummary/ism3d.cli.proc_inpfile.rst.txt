@@ -1,0 +1,6 @@
+ism3d.cli.proc\_inpfile
+=======================
+
+.. currentmodule:: ism3d.cli
+
+.. autofunction:: proc_inpfile

@@ -1,0 +1,6 @@
+ism3d.interface.inp\_to\_mod
+============================
+
+.. currentmodule:: ism3d.interface
+
+.. autofunction:: inp_to_mod

@@ -1,0 +1,36 @@
+ism3d.opt
+=========
+
+.. automodule:: ism3d.opt
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      amoeba_sa
+      amotry_sa
+      chisq_iterate
+      emcee_iterate
+      opt_iterate
+      opt_setup
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

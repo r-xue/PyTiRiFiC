@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.uv\_idx
+==================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: uv_idx

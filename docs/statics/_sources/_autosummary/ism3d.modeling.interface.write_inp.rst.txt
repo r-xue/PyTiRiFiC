@@ -1,0 +1,6 @@
+ism3d.modeling.interface.write\_inp
+===================================
+
+.. currentmodule:: ism3d.modeling.interface
+
+.. autofunction:: write_inp

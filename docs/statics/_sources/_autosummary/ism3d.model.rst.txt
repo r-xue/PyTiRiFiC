@@ -1,0 +1,48 @@
+ism3d.model
+===========
+
+.. automodule:: ism3d.model
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      calc_vcirc
+      cloudlet_moms
+      clouds_discretize_2d
+      clouds_fromobj
+      clouds_kin
+      clouds_morph
+      clouds_tosky
+      cr_tanh
+      get_image_size
+      makekernel
+      makepb
+      makepsf
+      model_realize
+      model_render
+      model_setup
+      potential_fromobj
+      pots_to_vcirc
+      uv_to_header
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

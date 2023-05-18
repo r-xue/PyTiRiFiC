@@ -1,0 +1,32 @@
+ism3d.cli
+=========
+
+.. automodule:: ism3d.cli
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      main
+      proc_inpfile
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

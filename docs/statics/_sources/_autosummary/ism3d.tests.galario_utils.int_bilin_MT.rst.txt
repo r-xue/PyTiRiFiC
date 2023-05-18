@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.int\_bilin\_MT
+=========================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: int_bilin_MT

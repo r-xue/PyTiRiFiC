@@ -1,0 +1,6 @@
+ism3d.utils.io.read\_data
+=========================
+
+.. currentmodule:: ism3d.utils.io
+
+.. autofunction:: read_data

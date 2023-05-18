@@ -1,0 +1,6 @@
+ism3d.arts.dynamics.potential\_fromobj
+======================================
+
+.. currentmodule:: ism3d.arts.dynamics
+
+.. autofunction:: potential_fromobj

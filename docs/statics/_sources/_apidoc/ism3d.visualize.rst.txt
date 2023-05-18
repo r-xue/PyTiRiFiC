@@ -1,0 +1,38 @@
+ism3d.visualize package
+=======================
+
+Submodules
+----------
+
+ism3d.visualize.msplot2 module
+------------------------------
+
+.. automodule:: ism3d.visualize.msplot2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.visualize.nb module
+-------------------------
+
+.. automodule:: ism3d.visualize.nb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.visualize.plts module
+---------------------------
+
+.. automodule:: ism3d.visualize.plts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.visualize
+   :members:
+   :undoc-members:
+   :show-inheritance:

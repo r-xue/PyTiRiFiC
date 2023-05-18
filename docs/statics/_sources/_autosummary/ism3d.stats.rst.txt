@@ -1,0 +1,50 @@
+ism3d.stats
+===========
+
+.. automodule:: ism3d.stats
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      cdf2rv
+      custom_pdf
+      custom_ppf
+      custom_rvs
+      custom_sf
+      pdf2rv
+      pdf2rv_nd
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      expon2d_gen
+      laplace_gen
+      norm2d_gen
+      sechsq_gen
+      sersic2d_gen
+   
+   
+
+   
+   
+   
+
+
+

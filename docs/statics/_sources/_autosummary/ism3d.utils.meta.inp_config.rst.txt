@@ -1,0 +1,6 @@
+ism3d.utils.meta.inp\_config
+============================
+
+.. currentmodule:: ism3d.utils.meta
+
+.. autofunction:: inp_config

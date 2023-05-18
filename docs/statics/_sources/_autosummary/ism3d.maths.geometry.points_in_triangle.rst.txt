@@ -1,0 +1,6 @@
+ism3d.maths.geometry.points\_in\_triangle
+=========================================
+
+.. currentmodule:: ism3d.maths.geometry
+
+.. autofunction:: points_in_triangle

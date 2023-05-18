@@ -1,0 +1,6 @@
+ism3d.meta.pars\_interp
+=======================
+
+.. currentmodule:: ism3d.meta
+
+.. autofunction:: pars_interp

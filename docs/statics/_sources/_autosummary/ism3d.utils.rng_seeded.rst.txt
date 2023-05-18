@@ -1,0 +1,6 @@
+ism3d.utils.rng\_seeded
+=======================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: rng_seeded

@@ -1,0 +1,6 @@
+ism3d.utils.set\_threads
+========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: set_threads

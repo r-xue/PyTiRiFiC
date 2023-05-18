@@ -1,0 +1,6 @@
+ism3d.tests.test\_mkl.test\_mkl\_random
+=======================================
+
+.. currentmodule:: ism3d.tests.test_mkl
+
+.. autofunction:: test_mkl_random

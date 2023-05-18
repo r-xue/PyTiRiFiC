@@ -1,0 +1,53 @@
+ism3d.maths.stats.norm2d\_gen
+=============================
+
+.. currentmodule:: ism3d.maths.stats
+
+.. autoclass:: norm2d_gen
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~norm2d_gen.cdf
+      ~norm2d_gen.entropy
+      ~norm2d_gen.expect
+      ~norm2d_gen.fit
+      ~norm2d_gen.fit_loc_scale
+      ~norm2d_gen.freeze
+      ~norm2d_gen.interval
+      ~norm2d_gen.isf
+      ~norm2d_gen.logcdf
+      ~norm2d_gen.logpdf
+      ~norm2d_gen.logsf
+      ~norm2d_gen.mean
+      ~norm2d_gen.median
+      ~norm2d_gen.moment
+      ~norm2d_gen.nnlf
+      ~norm2d_gen.pdf
+      ~norm2d_gen.ppf
+      ~norm2d_gen.rvs
+      ~norm2d_gen.sf
+      ~norm2d_gen.stats
+      ~norm2d_gen.std
+      ~norm2d_gen.support
+      ~norm2d_gen.var
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~norm2d_gen.random_state
+   
+   

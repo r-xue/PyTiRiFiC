@@ -1,0 +1,6 @@
+ism3d.evaluate.log\_probability
+===============================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: log_probability

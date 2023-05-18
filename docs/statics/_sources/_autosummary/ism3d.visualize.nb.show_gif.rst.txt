@@ -1,0 +1,6 @@
+ism3d.visualize.nb.show\_gif
+============================
+
+.. currentmodule:: ism3d.visualize.nb
+
+.. autofunction:: show_gif

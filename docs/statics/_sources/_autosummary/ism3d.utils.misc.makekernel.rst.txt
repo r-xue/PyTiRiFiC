@@ -1,0 +1,6 @@
+ism3d.utils.misc.makekernel
+===========================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: makekernel

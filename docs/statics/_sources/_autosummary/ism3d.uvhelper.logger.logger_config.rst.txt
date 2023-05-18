@@ -1,0 +1,6 @@
+ism3d.uvhelper.logger.logger\_config
+====================================
+
+.. currentmodule:: ism3d.uvhelper.logger
+
+.. autofunction:: logger_config

@@ -1,0 +1,6 @@
+ism3d.utils.utils.get\_autocoor\_time
+=====================================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: get_autocoor_time

@@ -1,0 +1,6 @@
+ism3d.utils.misc.makepb
+=======================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: makepb

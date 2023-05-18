@@ -1,0 +1,6 @@
+ism3d.analyze.brute\_analyze
+============================
+
+.. currentmodule:: ism3d.analyze
+
+.. autofunction:: brute_analyze

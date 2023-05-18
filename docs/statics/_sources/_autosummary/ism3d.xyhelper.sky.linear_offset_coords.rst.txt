@@ -1,0 +1,6 @@
+ism3d.xyhelper.sky.linear\_offset\_coords
+=========================================
+
+.. currentmodule:: ism3d.xyhelper.sky
+
+.. autofunction:: linear_offset_coords

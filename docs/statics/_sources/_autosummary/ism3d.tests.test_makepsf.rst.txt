@@ -1,0 +1,31 @@
+ism3d.tests.test\_makepsf
+=========================
+
+.. automodule:: ism3d.tests.test_makepsf
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      test_makepsf
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+ism3d.uvhelper.proc.casa\_version
+=================================
+
+.. currentmodule:: ism3d.uvhelper.proc
+
+.. autofunction:: casa_version

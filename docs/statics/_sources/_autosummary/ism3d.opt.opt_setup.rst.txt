@@ -1,0 +1,6 @@
+ism3d.opt.opt\_setup
+====================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: opt_setup

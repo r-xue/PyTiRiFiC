@@ -1,0 +1,6 @@
+ism3d.evaluate.model\_eval
+==========================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: model_eval

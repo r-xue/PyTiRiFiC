@@ -1,0 +1,42 @@
+ism3d
+=====
+
+.. automodule:: ism3d
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.arts
+   ism3d.cli
+   ism3d.interface
+   ism3d.ism3d
+   ism3d.logger
+   ism3d.maths
+   ism3d.modeling
+   ism3d.simuv
+   ism3d.simxy
+   ism3d.utils
+   ism3d.uvhelper
+   ism3d.visualize
+   ism3d.xyhelper
+

@@ -1,0 +1,6 @@
+ism3d.uvhelper.ms.getfreqs
+==========================
+
+.. currentmodule:: ism3d.uvhelper.ms
+
+.. autofunction:: getfreqs

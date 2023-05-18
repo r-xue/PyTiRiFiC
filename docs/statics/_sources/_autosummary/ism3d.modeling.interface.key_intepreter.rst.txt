@@ -1,0 +1,6 @@
+ism3d.modeling.interface.key\_intepreter
+========================================
+
+.. currentmodule:: ism3d.modeling.interface
+
+.. autofunction:: key_intepreter

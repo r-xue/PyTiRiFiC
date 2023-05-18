@@ -1,0 +1,38 @@
+ism3d.xyhelper.maskmoment.momfuncs
+==================================
+
+.. automodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      calc_moments
+      dilmsk
+      findflux
+      makenoise
+      maskguard
+      prunemask
+      smcube
+      writemom
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

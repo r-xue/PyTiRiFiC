@@ -1,0 +1,6 @@
+ism3d.maths.geometry.triangle\_area
+===================================
+
+.. currentmodule:: ism3d.maths.geometry
+
+.. autofunction:: triangle_area

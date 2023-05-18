@@ -1,0 +1,31 @@
+ism3d.maths
+===========
+
+.. automodule:: ism3d.maths
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.maths.geometry
+   ism3d.maths.stats
+

@@ -1,0 +1,6 @@
+ism3d.utils.io.to\_hdf5
+=======================
+
+.. currentmodule:: ism3d.utils.io
+
+.. autofunction:: to_hdf5

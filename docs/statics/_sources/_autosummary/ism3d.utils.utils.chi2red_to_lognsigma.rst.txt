@@ -1,0 +1,6 @@
+ism3d.utils.utils.chi2red\_to\_lognsigma
+========================================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: chi2red_to_lognsigma

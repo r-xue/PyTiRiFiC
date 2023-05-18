@@ -1,0 +1,53 @@
+ism3d.maths.stats.laplace\_gen
+==============================
+
+.. currentmodule:: ism3d.maths.stats
+
+.. autoclass:: laplace_gen
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~laplace_gen.cdf
+      ~laplace_gen.entropy
+      ~laplace_gen.expect
+      ~laplace_gen.fit
+      ~laplace_gen.fit_loc_scale
+      ~laplace_gen.freeze
+      ~laplace_gen.interval
+      ~laplace_gen.isf
+      ~laplace_gen.logcdf
+      ~laplace_gen.logpdf
+      ~laplace_gen.logsf
+      ~laplace_gen.mean
+      ~laplace_gen.median
+      ~laplace_gen.moment
+      ~laplace_gen.nnlf
+      ~laplace_gen.pdf
+      ~laplace_gen.ppf
+      ~laplace_gen.rvs
+      ~laplace_gen.sf
+      ~laplace_gen.stats
+      ~laplace_gen.std
+      ~laplace_gen.support
+      ~laplace_gen.var
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~laplace_gen.random_state
+   
+   

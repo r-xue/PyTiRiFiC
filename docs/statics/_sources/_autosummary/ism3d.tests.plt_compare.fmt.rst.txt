@@ -1,0 +1,6 @@
+ism3d.tests.plt\_compare.fmt
+============================
+
+.. currentmodule:: ism3d.tests.plt_compare
+
+.. autofunction:: fmt

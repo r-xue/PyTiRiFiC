@@ -1,0 +1,6 @@
+ism3d.plts.calc\_ppbeam
+=======================
+
+.. currentmodule:: ism3d.plts
+
+.. autofunction:: calc_ppbeam

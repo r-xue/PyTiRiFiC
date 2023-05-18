@@ -1,0 +1,6 @@
+ism3d.arts.dynamics.model\_vrot\_plot
+=====================================
+
+.. currentmodule:: ism3d.arts.dynamics
+
+.. autofunction:: model_vrot_plot

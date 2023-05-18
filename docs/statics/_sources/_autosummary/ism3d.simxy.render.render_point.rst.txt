@@ -1,0 +1,6 @@
+ism3d.simxy.render.render\_point
+================================
+
+.. currentmodule:: ism3d.simxy.render
+
+.. autofunction:: render_point

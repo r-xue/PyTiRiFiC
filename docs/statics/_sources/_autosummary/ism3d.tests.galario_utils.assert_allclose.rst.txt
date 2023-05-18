@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.assert\_allclose
+===========================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: assert_allclose

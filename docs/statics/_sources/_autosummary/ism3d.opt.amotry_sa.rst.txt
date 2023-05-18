@@ -1,0 +1,6 @@
+ism3d.opt.amotry\_sa
+====================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: amotry_sa

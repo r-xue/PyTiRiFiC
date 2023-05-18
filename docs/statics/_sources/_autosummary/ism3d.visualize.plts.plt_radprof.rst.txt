@@ -1,0 +1,6 @@
+ism3d.visualize.plts.plt\_radprof
+=================================
+
+.. currentmodule:: ism3d.visualize.plts
+
+.. autofunction:: plt_radprof

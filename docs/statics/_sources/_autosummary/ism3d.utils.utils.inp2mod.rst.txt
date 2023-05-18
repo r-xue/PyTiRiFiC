@@ -1,0 +1,6 @@
+ism3d.utils.utils.inp2mod
+=========================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: inp2mod

@@ -1,0 +1,6 @@
+ism3d.maths.stats.rng\_seeded
+=============================
+
+.. currentmodule:: ism3d.maths.stats
+
+.. autofunction:: rng_seeded

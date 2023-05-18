@@ -1,0 +1,6 @@
+ism3d.uvhelper.ft.invert\_ft
+============================
+
+.. currentmodule:: ism3d.uvhelper.ft
+
+.. autofunction:: invert_ft

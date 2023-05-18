@@ -1,0 +1,6 @@
+ism3d.logger.casalogsink\_config
+================================
+
+.. currentmodule:: ism3d.logger
+
+.. autofunction:: casalogsink_config

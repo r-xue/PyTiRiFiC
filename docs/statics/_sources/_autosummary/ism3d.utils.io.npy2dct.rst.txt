@@ -1,0 +1,6 @@
+ism3d.utils.io.npy2dct
+======================
+
+.. currentmodule:: ism3d.utils.io
+
+.. autofunction:: npy2dct

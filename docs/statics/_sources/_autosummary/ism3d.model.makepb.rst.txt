@@ -1,0 +1,6 @@
+ism3d.model.makepb
+==================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: makepb

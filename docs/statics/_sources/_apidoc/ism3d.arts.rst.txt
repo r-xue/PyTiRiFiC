@@ -1,0 +1,38 @@
+ism3d.arts package
+==================
+
+Submodules
+----------
+
+ism3d.arts.discretize module
+----------------------------
+
+.. automodule:: ism3d.arts.discretize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.arts.dynamics module
+--------------------------
+
+.. automodule:: ism3d.arts.dynamics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.arts.model module
+-----------------------
+
+.. automodule:: ism3d.arts.model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.arts
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,36 @@
+ism3d.arts
+==========
+
+.. automodule:: ism3d.arts
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.arts.analytic
+   ism3d.arts.apmodel2d
+   ism3d.arts.discretize
+   ism3d.arts.dynamics
+   ism3d.arts.lens
+   ism3d.arts.sparse
+   ism3d.arts.utils
+

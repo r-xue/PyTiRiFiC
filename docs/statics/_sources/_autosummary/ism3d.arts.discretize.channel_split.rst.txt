@@ -1,0 +1,6 @@
+ism3d.arts.discretize.channel\_split
+====================================
+
+.. currentmodule:: ism3d.arts.discretize
+
+.. autofunction:: channel_split

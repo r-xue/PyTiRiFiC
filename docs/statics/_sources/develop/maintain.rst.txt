@@ -1,0 +1,66 @@
+
+Maintance
+==========
+
+
+Install Dependency
+------------------
+
+For code development,
+
+.. code-block:: console
+
+    $ pip install --user --upgrade -r requirements_dev.txt
+
+For building documentation,
+
+.. code-block:: console
+
+    $ pip install --user --upgrade -r docs/requirements_docs.txt
+
+Maintance
+---------
+
+To bump development verson (dry run first),
+
+.. code-block:: console
+
+    $ bump2version --dry-run --verbose --allow-dirty dev # add development version
+
+..
+    $ bump2version --dry-run --allow-dirty --current-version 0.1.dev1 --new-version 0.1.dev0 dev
+    $ bump2version --dry-run --verbose --allow-dirty --current-version 0.1.dev1 --new-version 0.1.dev0 dev
+    $ bump2version --dry-run --verbose --allow-dirty release # bump dev to release
+    $ bump2version --dry-run --verbose --allow-dirty major # add development version
+    $ bump2version --dry-run --verbose --allow-dirty minor # add development version
+
+To add a git tag,
+
+.. code-block:: console
+
+    $ git tag `python -c "import ism3d; print(ism3d.__version__)"`
+    $ git push --tags
+
+
+To make html/pdf for github hosting, run the following command in ``/docs``:
+
+.. code-block:: console
+
+    $ make github # other options: html, latex, latexpdf, pdf
+
+upload to PyPI:
+
+.. code-block:: comcole
+
+    $ rm -rf dist htau.egg-info build
+    $ python setup.py sdist bdist_wheel
+    $ twine check dist/*
+    $ twine upload dist/* 
+
+running test & coverage
+
+.. code-block:: comcole
+
+    $ pip install --user --upgrade pytest coverage
+    $ coverage run -m pytest
+    $ coverage report -m

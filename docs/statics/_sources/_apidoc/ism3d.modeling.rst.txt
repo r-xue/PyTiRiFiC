@@ -1,0 +1,38 @@
+ism3d.modeling package
+======================
+
+Submodules
+----------
+
+ism3d.modeling.analyze module
+-----------------------------
+
+.. automodule:: ism3d.modeling.analyze
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.modeling.evaluate module
+------------------------------
+
+.. automodule:: ism3d.modeling.evaluate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.modeling.opt module
+-------------------------
+
+.. automodule:: ism3d.modeling.opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.modeling
+   :members:
+   :undoc-members:
+   :show-inheritance:

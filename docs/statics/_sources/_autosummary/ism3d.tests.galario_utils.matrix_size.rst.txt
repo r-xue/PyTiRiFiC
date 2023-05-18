@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.matrix\_size
+=======================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: matrix_size

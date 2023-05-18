@@ -1,0 +1,6 @@
+ism3d.utils.utils.gal\_flat
+===========================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: gal_flat

@@ -1,0 +1,6 @@
+ism3d.utils.inp\_validate
+=========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: inp_validate

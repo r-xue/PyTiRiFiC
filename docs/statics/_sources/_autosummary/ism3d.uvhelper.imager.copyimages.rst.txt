@@ -1,0 +1,6 @@
+ism3d.uvhelper.imager.copyimages
+================================
+
+.. currentmodule:: ism3d.uvhelper.imager
+
+.. autofunction:: copyimages

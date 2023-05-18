@@ -1,0 +1,6 @@
+ism3d.discretize.pix2sky
+========================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: pix2sky

@@ -1,0 +1,6 @@
+ism3d.simxy.render.render\_spmodel3d\_xyz
+=========================================
+
+.. currentmodule:: ism3d.simxy.render
+
+.. autofunction:: render_spmodel3d_xyz

@@ -1,0 +1,6 @@
+ism3d.utils.write\_par
+======================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: write_par

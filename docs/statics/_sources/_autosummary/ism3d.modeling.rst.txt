@@ -1,0 +1,34 @@
+ism3d.modeling
+==============
+
+.. automodule:: ism3d.modeling
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.modeling.amoeba_sa
+   ism3d.modeling.analyze
+   ism3d.modeling.evaluate
+   ism3d.modeling.model
+   ism3d.modeling.opt
+

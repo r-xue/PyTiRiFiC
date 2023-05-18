@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.maskmoment.maskmoment
+===============================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.maskmoment
+
+.. autofunction:: maskmoment

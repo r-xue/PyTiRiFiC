@@ -1,0 +1,6 @@
+ism3d.tests.test\_makepsf.test\_makepsf
+=======================================
+
+.. currentmodule:: ism3d.tests.test_makepsf
+
+.. autofunction:: test_makepsf

@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.py\_chi2Image
+========================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: py_chi2Image

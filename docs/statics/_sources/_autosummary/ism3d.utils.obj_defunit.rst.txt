@@ -1,0 +1,6 @@
+ism3d.utils.obj\_defunit
+========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: obj_defunit

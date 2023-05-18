@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.central\_pixel
+=========================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: central_pixel

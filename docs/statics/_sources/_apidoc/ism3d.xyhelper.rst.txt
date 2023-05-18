@@ -1,0 +1,30 @@
+ism3d.xyhelper package
+======================
+
+Submodules
+----------
+
+ism3d.xyhelper.cube module
+--------------------------
+
+.. automodule:: ism3d.xyhelper.cube
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.xyhelper.sky module
+-------------------------
+
+.. automodule:: ism3d.xyhelper.sky
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.xyhelper
+   :members:
+   :undoc-members:
+   :show-inheritance:

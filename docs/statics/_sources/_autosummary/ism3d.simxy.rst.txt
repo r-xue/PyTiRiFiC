@@ -1,0 +1,30 @@
+ism3d.simxy
+===========
+
+.. automodule:: ism3d.simxy
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.simxy.render
+

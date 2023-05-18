@@ -1,0 +1,33 @@
+ism3d.arts.discretize
+=====================
+
+.. automodule:: ism3d.arts.discretize
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      channel_split
+      clouds_perchan
+      lognsigma_lookup
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

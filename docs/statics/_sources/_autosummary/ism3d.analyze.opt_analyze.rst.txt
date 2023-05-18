@@ -1,0 +1,6 @@
+ism3d.analyze.opt\_analyze
+==========================
+
+.. currentmodule:: ism3d.analyze
+
+.. autofunction:: opt_analyze

@@ -1,0 +1,53 @@
+ism3d.maths.stats.sechsq\_gen
+=============================
+
+.. currentmodule:: ism3d.maths.stats
+
+.. autoclass:: sechsq_gen
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~sechsq_gen.cdf
+      ~sechsq_gen.entropy
+      ~sechsq_gen.expect
+      ~sechsq_gen.fit
+      ~sechsq_gen.fit_loc_scale
+      ~sechsq_gen.freeze
+      ~sechsq_gen.interval
+      ~sechsq_gen.isf
+      ~sechsq_gen.logcdf
+      ~sechsq_gen.logpdf
+      ~sechsq_gen.logsf
+      ~sechsq_gen.mean
+      ~sechsq_gen.median
+      ~sechsq_gen.moment
+      ~sechsq_gen.nnlf
+      ~sechsq_gen.pdf
+      ~sechsq_gen.ppf
+      ~sechsq_gen.rvs
+      ~sechsq_gen.sf
+      ~sechsq_gen.stats
+      ~sechsq_gen.std
+      ~sechsq_gen.support
+      ~sechsq_gen.var
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~sechsq_gen.random_state
+   
+   

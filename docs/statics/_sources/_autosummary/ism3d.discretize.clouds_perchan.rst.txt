@@ -1,0 +1,6 @@
+ism3d.discretize.clouds\_perchan
+================================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: clouds_perchan

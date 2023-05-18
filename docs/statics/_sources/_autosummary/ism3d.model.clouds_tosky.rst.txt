@@ -1,0 +1,6 @@
+ism3d.model.clouds\_tosky
+=========================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: clouds_tosky

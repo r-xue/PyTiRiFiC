@@ -1,0 +1,6 @@
+ism3d.cli.main
+==============
+
+.. currentmodule:: ism3d.cli
+
+.. autofunction:: main

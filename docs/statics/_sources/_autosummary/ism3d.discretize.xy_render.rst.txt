@@ -1,0 +1,6 @@
+ism3d.discretize.xy\_render
+===========================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: xy_render

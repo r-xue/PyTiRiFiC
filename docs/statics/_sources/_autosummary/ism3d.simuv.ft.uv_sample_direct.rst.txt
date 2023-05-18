@@ -1,0 +1,6 @@
+ism3d.simuv.ft.uv\_sample\_direct
+=================================
+
+.. currentmodule:: ism3d.simuv.ft
+
+.. autofunction:: uv_sample_direct

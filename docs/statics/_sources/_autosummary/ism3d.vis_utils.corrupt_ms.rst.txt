@@ -1,0 +1,6 @@
+ism3d.vis\_utils.corrupt\_ms
+============================
+
+.. currentmodule:: ism3d.vis_utils
+
+.. autofunction:: corrupt_ms

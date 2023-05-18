@@ -1,0 +1,6 @@
+ism3d.visualize.plts.im\_grid
+=============================
+
+.. currentmodule:: ism3d.visualize.plts
+
+.. autofunction:: im_grid

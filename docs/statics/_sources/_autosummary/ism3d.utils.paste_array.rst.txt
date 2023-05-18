@@ -1,0 +1,6 @@
+ism3d.utils.paste\_array
+========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: paste_array

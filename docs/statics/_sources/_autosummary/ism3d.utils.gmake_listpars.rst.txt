@@ -1,0 +1,6 @@
+ism3d.utils.gmake\_listpars
+===========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: gmake_listpars

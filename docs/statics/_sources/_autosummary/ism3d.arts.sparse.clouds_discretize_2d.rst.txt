@@ -1,0 +1,6 @@
+ism3d.arts.sparse.clouds\_discretize\_2d
+========================================
+
+.. currentmodule:: ism3d.arts.sparse
+
+.. autofunction:: clouds_discretize_2d

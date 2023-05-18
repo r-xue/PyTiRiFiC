@@ -1,0 +1,6 @@
+ism3d.opt.opt\_iterate
+======================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: opt_iterate

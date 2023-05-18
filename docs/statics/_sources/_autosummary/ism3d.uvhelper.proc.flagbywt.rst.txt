@@ -1,0 +1,6 @@
+ism3d.uvhelper.proc.flagbywt
+============================
+
+.. currentmodule:: ism3d.uvhelper.proc
+
+.. autofunction:: flagbywt

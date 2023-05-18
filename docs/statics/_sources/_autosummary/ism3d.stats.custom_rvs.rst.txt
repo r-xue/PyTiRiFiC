@@ -1,0 +1,6 @@
+ism3d.stats.custom\_rvs
+=======================
+
+.. currentmodule:: ism3d.stats
+
+.. autofunction:: custom_rvs

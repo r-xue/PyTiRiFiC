@@ -1,0 +1,6 @@
+ism3d.vis\_utils.cpredict\_ms
+=============================
+
+.. currentmodule:: ism3d.vis_utils
+
+.. autofunction:: cpredict_ms

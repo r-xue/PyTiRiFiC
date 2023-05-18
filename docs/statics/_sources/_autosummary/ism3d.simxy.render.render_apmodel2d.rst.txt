@@ -1,0 +1,6 @@
+ism3d.simxy.render.render\_apmodel2d
+====================================
+
+.. currentmodule:: ism3d.simxy.render
+
+.. autofunction:: render_apmodel2d

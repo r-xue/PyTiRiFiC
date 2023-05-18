@@ -1,0 +1,61 @@
+ism3d package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   ism3d.arts
+   ism3d.maths
+   ism3d.modeling
+   ism3d.simuv
+   ism3d.simxy
+   ism3d.utils
+   ism3d.uvhelper
+   ism3d.visualize
+   ism3d.xyhelper
+
+Submodules
+----------
+
+ism3d.cli module
+----------------
+
+.. automodule:: ism3d.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.interface module
+----------------------
+
+.. automodule:: ism3d.interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.ism3d module
+------------------
+
+.. automodule:: ism3d.ism3d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ism3d.logger module
+-------------------
+
+.. automodule:: ism3d.logger
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: ism3d
+   :members:
+   :undoc-members:
+   :show-inheritance:

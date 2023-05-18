@@ -1,0 +1,53 @@
+ism3d.stats.expon2d\_gen
+========================
+
+.. currentmodule:: ism3d.stats
+
+.. autoclass:: expon2d_gen
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~expon2d_gen.cdf
+      ~expon2d_gen.entropy
+      ~expon2d_gen.expect
+      ~expon2d_gen.fit
+      ~expon2d_gen.fit_loc_scale
+      ~expon2d_gen.freeze
+      ~expon2d_gen.interval
+      ~expon2d_gen.isf
+      ~expon2d_gen.logcdf
+      ~expon2d_gen.logpdf
+      ~expon2d_gen.logsf
+      ~expon2d_gen.mean
+      ~expon2d_gen.median
+      ~expon2d_gen.moment
+      ~expon2d_gen.nnlf
+      ~expon2d_gen.pdf
+      ~expon2d_gen.ppf
+      ~expon2d_gen.rvs
+      ~expon2d_gen.sf
+      ~expon2d_gen.stats
+      ~expon2d_gen.std
+      ~expon2d_gen.support
+      ~expon2d_gen.var
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~expon2d_gen.random_state
+   
+   

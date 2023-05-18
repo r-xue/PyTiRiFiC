@@ -1,0 +1,6 @@
+ism3d.evaluate.calc\_lnprob2
+============================
+
+.. currentmodule:: ism3d.evaluate
+
+.. autofunction:: calc_lnprob2

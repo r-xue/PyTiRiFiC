@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.uv\_idx\_r2c
+=======================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: uv_idx_r2c

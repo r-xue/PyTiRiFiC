@@ -1,0 +1,6 @@
+ism3d.uvhelper.imager.xclean
+============================
+
+.. currentmodule:: ism3d.uvhelper.imager
+
+.. autofunction:: xclean

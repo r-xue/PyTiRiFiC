@@ -1,0 +1,6 @@
+ism3d.uvhelper.imager.invert
+============================
+
+.. currentmodule:: ism3d.uvhelper.imager
+
+.. autofunction:: invert

@@ -1,0 +1,6 @@
+ism3d.utils.pprint
+==================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: pprint

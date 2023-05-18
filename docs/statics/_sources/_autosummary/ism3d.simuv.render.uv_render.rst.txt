@@ -1,0 +1,6 @@
+ism3d.simuv.render.uv\_render
+=============================
+
+.. currentmodule:: ism3d.simuv.render
+
+.. autofunction:: uv_render

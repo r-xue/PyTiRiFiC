@@ -1,0 +1,6 @@
+ism3d.xyhelper.maskmoment.momfuncs.calc\_moments
+================================================
+
+.. currentmodule:: ism3d.xyhelper.maskmoment.momfuncs
+
+.. autofunction:: calc_moments

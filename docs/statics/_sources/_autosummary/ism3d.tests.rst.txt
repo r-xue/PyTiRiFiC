@@ -1,0 +1,72 @@
+ism3d.tests
+===========
+
+.. automodule:: ism3d.tests
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   ism3d.tests.bx610_chanmap
+   ism3d.tests.galario_utils
+   ism3d.tests.plt_compare
+   ism3d.tests.plt_coordsys
+   ism3d.tests.plt_multisource
+   ism3d.tests.test_all
+   ism3d.tests.test_array_operations
+   ism3d.tests.test_broadcast
+   ism3d.tests.test_cloudlet
+   ism3d.tests.test_convolve
+   ism3d.tests.test_df2rv
+   ism3d.tests.test_discretize_old
+   ism3d.tests.test_emcee_threading_pickle
+   ism3d.tests.test_eval
+   ism3d.tests.test_fft
+   ism3d.tests.test_fft2
+   ism3d.tests.test_galpy
+   ism3d.tests.test_globals
+   ism3d.tests.test_gmake_fft_choice
+   ism3d.tests.test_hexbin_map
+   ism3d.tests.test_hickle
+   ism3d.tests.test_human
+   ism3d.tests.test_import
+   ism3d.tests.test_inp_validate
+   ism3d.tests.test_inpfile_parser
+   ism3d.tests.test_input_parser
+   ism3d.tests.test_makepsf
+   ism3d.tests.test_mkl
+   ism3d.tests.test_mkl_bug
+   ism3d.tests.test_mockup
+   ism3d.tests.test_model_build
+   ism3d.tests.test_potential
+   ism3d.tests.test_pots_to_vcirc
+   ism3d.tests.test_predict_ms
+   ism3d.tests.test_print
+   ism3d.tests.test_read_par
+   ism3d.tests.test_repr_parameter
+   ism3d.tests.test_rng_performance
+   ism3d.tests.test_rp2rv
+   ism3d.tests.test_stats
+   ism3d.tests.test_unit_shortname
+   ism3d.tests.test_uv_sample
+   ism3d.tests.test_vis_utils
+

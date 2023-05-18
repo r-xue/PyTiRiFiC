@@ -1,0 +1,6 @@
+ism3d.vis\_utils.gpredict\_ms
+=============================
+
+.. currentmodule:: ism3d.vis_utils
+
+.. autofunction:: gpredict_ms

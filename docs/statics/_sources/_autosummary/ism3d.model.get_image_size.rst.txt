@@ -1,0 +1,6 @@
+ism3d.model.get\_image\_size
+============================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: get_image_size

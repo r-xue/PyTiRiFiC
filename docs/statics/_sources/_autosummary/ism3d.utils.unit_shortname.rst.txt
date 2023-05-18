@@ -1,0 +1,6 @@
+ism3d.utils.unit\_shortname
+===========================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: unit_shortname

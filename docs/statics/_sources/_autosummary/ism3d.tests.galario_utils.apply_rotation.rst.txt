@@ -1,0 +1,6 @@
+ism3d.tests.galario\_utils.apply\_rotation
+==========================================
+
+.. currentmodule:: ism3d.tests.galario_utils
+
+.. autofunction:: apply_rotation

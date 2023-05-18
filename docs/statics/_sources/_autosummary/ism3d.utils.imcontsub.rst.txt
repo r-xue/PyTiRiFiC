@@ -1,0 +1,6 @@
+ism3d.utils.imcontsub
+=====================
+
+.. currentmodule:: ism3d.utils
+
+.. autofunction:: imcontsub

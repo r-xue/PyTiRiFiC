@@ -1,0 +1,6 @@
+ism3d.tests.plt\_compare.test\_predict\_ms\_plot
+================================================
+
+.. currentmodule:: ism3d.tests.plt_compare
+
+.. autofunction:: test_predict_ms_plot

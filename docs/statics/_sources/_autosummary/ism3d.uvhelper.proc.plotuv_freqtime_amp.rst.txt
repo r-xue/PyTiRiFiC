@@ -1,0 +1,6 @@
+ism3d.uvhelper.proc.plotuv\_freqtime\_amp
+=========================================
+
+.. currentmodule:: ism3d.uvhelper.proc
+
+.. autofunction:: plotuv_freqtime_amp

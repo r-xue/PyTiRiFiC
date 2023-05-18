@@ -1,0 +1,6 @@
+ism3d.discretize.uv\_sample
+===========================
+
+.. currentmodule:: ism3d.discretize
+
+.. autofunction:: uv_sample

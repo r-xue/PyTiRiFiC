@@ -1,0 +1,6 @@
+ism3d.logger.logger\_config
+===========================
+
+.. currentmodule:: ism3d.logger
+
+.. autofunction:: logger_config

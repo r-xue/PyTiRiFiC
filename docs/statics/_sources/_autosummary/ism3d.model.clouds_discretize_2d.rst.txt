@@ -1,0 +1,6 @@
+ism3d.model.clouds\_discretize\_2d
+==================================
+
+.. currentmodule:: ism3d.model
+
+.. autofunction:: clouds_discretize_2d

@@ -1,0 +1,6 @@
+ism3d.opt.emcee\_iterate
+========================
+
+.. currentmodule:: ism3d.opt
+
+.. autofunction:: emcee_iterate

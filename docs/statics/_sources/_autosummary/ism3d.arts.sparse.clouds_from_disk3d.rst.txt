@@ -1,0 +1,6 @@
+ism3d.arts.sparse.clouds\_from\_disk3d
+======================================
+
+.. currentmodule:: ism3d.arts.sparse
+
+.. autofunction:: clouds_from_disk3d

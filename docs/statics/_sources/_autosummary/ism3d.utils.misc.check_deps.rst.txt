@@ -1,0 +1,6 @@
+ism3d.utils.misc.check\_deps
+============================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: check_deps

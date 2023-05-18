@@ -1,0 +1,23 @@
+ism3d.tests.test\_input\_parser
+===============================
+
+.. automodule:: ism3d.tests.test_input_parser
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

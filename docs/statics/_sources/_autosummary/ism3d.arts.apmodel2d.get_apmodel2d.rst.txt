@@ -1,0 +1,6 @@
+ism3d.arts.apmodel2d.get\_apmodel2d
+===================================
+
+.. currentmodule:: ism3d.arts.apmodel2d
+
+.. autofunction:: get_apmodel2d

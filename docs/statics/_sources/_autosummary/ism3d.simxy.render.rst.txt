@@ -1,0 +1,35 @@
+ism3d.simxy.render
+==================
+
+.. automodule:: ism3d.simxy.render
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      render_apmodel2d
+      render_lens
+      render_spmodel3d
+      render_spmodel3d_xyz
+      xy_render
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

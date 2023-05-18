@@ -1,0 +1,6 @@
+ism3d.vis\_utils.read\_ms
+=========================
+
+.. currentmodule:: ism3d.vis_utils
+
+.. autofunction:: read_ms

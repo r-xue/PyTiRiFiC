@@ -1,0 +1,6 @@
+ism3d.uvhelper.imager.exportimages
+==================================
+
+.. currentmodule:: ism3d.uvhelper.imager
+
+.. autofunction:: exportimages

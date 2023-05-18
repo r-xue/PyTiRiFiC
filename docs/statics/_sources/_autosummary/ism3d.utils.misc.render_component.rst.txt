@@ -1,0 +1,6 @@
+ism3d.utils.misc.render\_component
+==================================
+
+.. currentmodule:: ism3d.utils.misc
+
+.. autofunction:: render_component

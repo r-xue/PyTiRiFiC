@@ -1,0 +1,40 @@
+ism3d.arts.sparse
+=================
+
+.. automodule:: ism3d.arts.sparse
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      cloudlet_moms
+      clouds_discretize_2d
+      clouds_from_disk3d
+      clouds_from_obj
+      clouds_from_point
+      clouds_kin
+      clouds_morph
+      clouds_realize
+      clouds_tosky
+      cr_tanh
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

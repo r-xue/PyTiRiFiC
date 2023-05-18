@@ -1,0 +1,22 @@
+ism3d.maths package
+===================
+
+Submodules
+----------
+
+ism3d.maths.stats module
+------------------------
+
+.. automodule:: ism3d.maths.stats
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ism3d.maths
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,34 @@
+ism3d.analyze
+=============
+
+.. automodule:: ism3d.analyze
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      brute_analyze
+      chisq_analyze
+      emcee_analyze
+      opt_analyze
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

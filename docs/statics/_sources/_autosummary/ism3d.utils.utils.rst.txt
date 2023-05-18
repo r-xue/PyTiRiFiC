@@ -1,0 +1,56 @@
+ism3d.utils.utils
+=================
+
+.. automodule:: ism3d.utils.utils
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      backup
+      chi2red_to_lognsigma
+      gal_flat
+      get_autocoor_time
+      get_dirsize
+      gmake_listpars
+      gmake_pformat
+      h5ls
+      h5ls_print
+      imcontsub
+      inp_validate
+      make_slice
+      moments
+      obj_defunit
+      one_beam
+      paste_array
+      paste_slice
+      pprint
+      read_par
+      read_range
+      repr_parameter
+      rotate_xy
+      sample_grid
+      set_threads
+      sort_on_runtime
+      write_par
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

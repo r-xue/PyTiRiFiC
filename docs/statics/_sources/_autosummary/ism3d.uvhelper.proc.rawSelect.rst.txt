@@ -1,0 +1,6 @@
+ism3d.uvhelper.proc.rawSelect
+=============================
+
+.. currentmodule:: ism3d.uvhelper.proc
+
+.. autofunction:: rawSelect

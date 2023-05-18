@@ -1,0 +1,6 @@
+ism3d.utils.utils.sort\_on\_runtime
+===================================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: sort_on_runtime

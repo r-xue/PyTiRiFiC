@@ -1,0 +1,6 @@
+ism3d.utils.io.fits2dct
+=======================
+
+.. currentmodule:: ism3d.utils.io
+
+.. autofunction:: fits2dct

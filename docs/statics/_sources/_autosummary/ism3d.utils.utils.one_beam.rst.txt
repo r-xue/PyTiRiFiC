@@ -1,0 +1,6 @@
+ism3d.utils.utils.one\_beam
+===========================
+
+.. currentmodule:: ism3d.utils.utils
+
+.. autofunction:: one_beam

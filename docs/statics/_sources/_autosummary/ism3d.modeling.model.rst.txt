@@ -1,0 +1,33 @@
+ism3d.modeling.model
+====================
+
+.. automodule:: ism3d.modeling.model
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      model_realize
+      model_render
+      model_setup
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

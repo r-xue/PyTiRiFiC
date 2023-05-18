@@ -1,0 +1,6 @@
+ism3d.xyhelper.sky.calc\_ppbeam
+===============================
+
+.. currentmodule:: ism3d.xyhelper.sky
+
+.. autofunction:: calc_ppbeam

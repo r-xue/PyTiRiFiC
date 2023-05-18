@@ -1,0 +1,42 @@
+ism3d.evaluate
+==============
+
+.. automodule:: ism3d.evaluate
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      calc_chisq
+      calc_lnprob
+      calc_lnprob2
+      calc_lnprob2_initializer
+      calc_wdev
+      log_likelihood
+      log_prior
+      log_probability
+      model_eval
+      uv_chisq
+      xy_chisq
+      xy_chisq0
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

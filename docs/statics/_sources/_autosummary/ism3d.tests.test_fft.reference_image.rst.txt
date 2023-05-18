@@ -1,0 +1,6 @@
+ism3d.tests.test\_fft.reference\_image
+======================================
+
+.. currentmodule:: ism3d.tests.test_fft
+
+.. autodata:: reference_image

@@ -1,0 +1,6 @@
+ism3d.analyze.emcee\_analyze
+============================
+
+.. currentmodule:: ism3d.analyze
+
+.. autofunction:: emcee_analyze

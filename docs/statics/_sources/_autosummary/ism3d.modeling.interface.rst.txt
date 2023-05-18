@@ -1,0 +1,34 @@
+ism3d.modeling.interface
+========================
+
+.. automodule:: ism3d.modeling.interface
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      inp_to_mod
+      key_intepreter
+      read_inp
+      write_inp
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
